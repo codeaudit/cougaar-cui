@@ -37,6 +37,8 @@ public class COrderedLabeledMThumbSlider
     protected CMThumbSlider slider;
     protected DecimalFormat labelFormat;
 
+    private static Icon invisibleIcon = new ImageIcon(new byte[]{});
+
     /**
      * Default constructor.  Create a new mulitple thumbed slider with 5
      * thumbs, min value of 0, max value of 1, and unique track colors between
@@ -309,6 +311,16 @@ public class COrderedLabeledMThumbSlider
       slider.setPaintTicks(draw);
     }
 
+    public void showThumbAt(int index)
+    {
+        slider.setThumbRendererAt(null, index);
+    }
+
+    public void hideThumbAt(int index)
+    {
+        slider.setThumbRendererAt(invisibleIcon, index);
+    }
+
     /**
      * Paints floating value labels over thumbs of slider.
      *
@@ -325,17 +337,21 @@ public class COrderedLabeledMThumbSlider
 
         if (dynamicLabelsVisible)
         {
-        // paint dynamic value labels on component
-        for (int i = 0; i < numThumbs; i++)
-        {
-            String label =labelFormat.format(fromSlider(slider.getValueAt(i)));
-            int labelWidth = fm.stringWidth(label);
-            int borderOffset = (getBorder() == null) ? 0 :
-                                getBorder().getBorderInsets(this).left;
-            int thumbXLoc = slider.getThumbXLoc(i) + borderOffset;
-            g.drawString(label, thumbXLoc - (labelWidth / 2),
-                         (int)slider.getLocation().getY()-5);
-        }
+            // paint dynamic value labels on component
+            for (int i = 0; i < numThumbs; i++)
+            {
+                if (slider.getThumbRendererAt(i) != invisibleIcon)
+                {
+                    String label =
+                        labelFormat.format(fromSlider(slider.getValueAt(i)));
+                    int labelWidth = fm.stringWidth(label);
+                    int borderOffset = (getBorder() == null) ? 0 :
+                                        getBorder().getBorderInsets(this).left;
+                    int thumbXLoc = slider.getThumbXLoc(i) + borderOffset;
+                    g.drawString(label, thumbXLoc - (labelWidth / 2),
+                                 (int)slider.getLocation().getY()-5);
+                }
+            }
         }
 
         // Swing bug workaround
