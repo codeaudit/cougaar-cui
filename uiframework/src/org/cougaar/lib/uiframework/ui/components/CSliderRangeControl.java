@@ -103,8 +103,8 @@ public class CSliderRangeControl extends CMultipleSliderControl
      */
     public RangeModel getRange()
     {
-        return new RangeModel((int)getSlider(0).getValue(),
-                              (int)getSlider(1).getValue());
+        return new RangeModel(Math.round(getSlider(0).getValue()),
+                              Math.round(getSlider(1).getValue()));
     }
 
 

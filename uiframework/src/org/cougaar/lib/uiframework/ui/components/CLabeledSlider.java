@@ -253,7 +253,7 @@ public class CLabeledSlider extends JPanel
      */
     private int toSlider(float f)
     {
-        return (int)((f - minValue) / unit);
+        return Math.round((f - minValue) / unit);
     }
 
     /**
