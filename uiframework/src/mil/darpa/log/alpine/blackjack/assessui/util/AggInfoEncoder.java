@@ -10,12 +10,12 @@ public class AggInfoEncoder {
   private static final String start_xml_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
   private static final String start_begin_xml_string = "<xml_begin>";
   private static final String end_begin_xml_string = "</xml_begin>";
-  private static final String data_set_xml_string = "data-set";
-  private static final String begin_data_set_xml_string = "<data-set>";
-  private static final String end_data_set_xml_string = "</data-set>";
-  private static final String data_atom_xml_string = "data-atom";
-  private static final String begin_data_atom_xml_string = "<data-atom>";
-  private static final String end_data_atom_xml_string = "</data-atom>";
+  private static final String data_set_xml_string = "set";
+  private static final String begin_data_set_xml_string = "<set>";
+  private static final String end_data_set_xml_string = "</set>";
+  private static final String data_atom_xml_string = "atom";
+  private static final String begin_data_atom_xml_string = "<atom>";
+  private static final String end_data_atom_xml_string = "</atom>";
   private static final String org_xml_string = "org";
   private static final String start_org_xml_string = "<org>";
   private static final String end_org_xml_string = "</org>";
