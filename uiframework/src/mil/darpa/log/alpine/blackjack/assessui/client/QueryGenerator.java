@@ -23,6 +23,8 @@ public class QueryGenerator
 {
     private static final boolean debug = false;
     public static final String INV_SAF_METRIC = "Inventory Over Target Level";
+    public static final String DEMAND = "Demand";
+    public static final String DUEOUTS = "Due Outs";
     private static final String NO_DATA = "No Data Available";
 
     private VariableInterfaceManager variableManagerKludgeHelper = null;
@@ -161,10 +163,14 @@ public class QueryGenerator
             int[] significantColumns = {dbTableModel.getColumnIndex("org"),
                                         dbTableModel.getColumnIndex("item"),
                                         dbTableModel.getColumnIndex("metric")};
+            String metricString = metricDesc.getValue().toString();
+            DatabaseTableModel.Combiner timeCombiner =
+                (metricString.equals(DEMAND) || metricString.equals(DUEOUTS)) ?
+                new AdditiveCombiner() : new AverageCombiner();
             dbTableModel.aggregateRows(significantColumns,
                                        timeRange.toString(),
                                        timeHeaderColumn,
-                                       new AverageCombiner());
+                                       timeCombiner);
         }
 
         // transform based on needed X and Y variables
