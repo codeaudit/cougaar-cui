@@ -20,51 +20,31 @@ REM "</copyright>"
 
 echo off
 
-echo *************************************************************
-echo * To use, first place classes12.zip (Oracle JDBC driver),   *
-echo * core.jar, cuimap.jar, glm.jar, tops.jar, LocationInfo.jar *
-echo * and xerces.jar (XML parser) in ..\..\lib.                 *
-echo *************************************************************
+echo *******************************************************************
+echo * To use, set COUGAAR_INSTALL_PATH.  Set DEVELOPMENT_PATH only if *
+echo * you wish to override classes in the cougaar distribution.       *
+echo *******************************************************************
+set COUGAAR_INSTALL_PATH=c:\alpine\aggregationAgent\cougaar
+echo COUGAAR_INSTALL_PATH is set to %COUGAAR_INSTALL_PATH%
 
-copy marker.txt ..\map
-cd ..\map
+set DEVELOPMENT_PATH=..\..\classes
+set DEVELOPMENT_PATH=%DEVELOPMENT_PATH%;C:\alpine\aggregationAgent\aggagent\classes
+set DEVELOPMENT_PATH=%DEVELOPMENT_PATH%;C:\alpine\aggregationAgent\blackjack\classes
+set LIB_PATH=%COUGAAR_INSTALL_PATH%\lib
+set SYS_PATH=%COUGAAR_INSTALL_PATH%\sys
 
-set LIB_PATH=..\..\lib
-rem set LIB_PATH=s:\alp70\alp\lib
-set DATA_PATH=.\data
-
-set CP=..\..\classes
-set CP=%CP%;%LIB_PATH%\classes12.zip
-set CP=%CP%;%LIB_PATH%\xml4j_2_0_11.jar
+set CP=%DEVELOPMENT_PATH%
+set CP=%CP%;%SYS_PATH%\xerces.jar
 set CP=%CP%;%LIB_PATH%\core.jar
-set CP=%CP%;%LIB_PATH%\cuimap.jar
 set CP=%CP%;%LIB_PATH%\glm.jar
-set CP=%CP%;%DATA_PATH%
+set CP=%CP%;%LIB_PATH%\aggagent.jar
+set CP=%CP%;%LIB_PATH%\uiframework.jar
+set CP=%CP%;%LIB_PATH%\blackjack.jar
 
-rem set DBTYPE="oracle"
-set DBTYPE="access"
+set NAMESERVER="http://localhost:5555"
 
-rem set DBURL="pfischer:1521:alp"
-set DBURL="accessAssessment"
-rem set DBURL="alp-demo:1521:alp"
-rem set DBURL="eiger.alpine.bbn.com:1521:alp"
-rem set DBURL="alp-3.alp.isotic.org:1521:alp"
-rem set DBURL="alp-92.alp.isotic.org:1521:alp"
+rem LAUNCHER
+java -DNAMESERVER=%NAMESERVER% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentLauncher
 
-rem set DBUSER="pfischer"
-rem set DBUSER="jmeyer"
-rem set DBUSER="blackjack8"
-rem set DBUSER="blackjack"
-set DBUSER="blackjacka"
-
-rem set DBPASSWORD="pfischer"
-rem set DBPASSWORD="jmeyer"
-rem set DBPASSWORD="blackjack"
-set DBPASSWORD="blackjacka"
-
-java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentLauncher
-rem c:\jdk1.2.2\bin\java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentLauncher
-rem java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentDesktop
-
-del marker.txt
-cd ..\desktop
+rem DESKTOP
+rem java -DNAMESERVER=%NAMESERVER% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentDesktop
