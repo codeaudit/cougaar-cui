@@ -18,6 +18,8 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import java.util.*;
 
@@ -143,6 +145,8 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
   private Hashtable minorChart1VisibilityList = new Hashtable(1);
   private Hashtable minorChart2VisibilityList = new Hashtable(1);
 
+  private FileWriter logFile;
+
   public InventorySelector()
   {
   }
@@ -169,6 +173,8 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
     endParam = (int)eTime;
     
     fileName = file;
+    
+    logFile = getDefaultLogFile();
 
     if(file != null )
     {
@@ -177,6 +183,30 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
     }
 
   }
+
+  public static FileWriter getDefaultLogFile() {
+      String logFileName = System.getProperty("org.cougaar.log.displaytimes");
+      FileWriter logFile = null;
+      
+      if((logFileName != null) &&
+	 (!(logFileName.trim().equals("")))) {
+	  try {
+	    logFile = new FileWriter(logFileName,true);
+	    logFile.write("   Timestamp,    Display time (milliseconds)\n");
+	  }
+	  catch(IOException except) {
+	      System.err.println("Couldn't open file " + logFileName + " to log display times");
+	      System.err.println("Error was: " + except);
+	    logFile = null;
+	  }
+      }
+
+      return logFile;
+  }
+      
+
+
+
   public void install(JFrame installFrame)
   {
     frame = installFrame;
@@ -203,7 +233,16 @@ System.out.println("java.version: " + System.getProperty("java.version"));
             saveObject();
           if (frame instanceof JFrame)
           {
-            System.exit(0);
+	      if(logFile != null) {
+		  try {
+		      logFile.flush();
+		      logFile.close();
+		  }
+		  catch(IOException ioe) {
+		      System.err.println("Error closing log file: " + ioe);
+		  }
+	      }
+	      System.exit(0);
           }
           else if (frame instanceof JInternalFrame)
           {
@@ -1297,7 +1336,7 @@ System.out.println("java.version: " + System.getProperty("java.version"));
   {
     public void actionPerformed(ActionEvent e)
     {
-      queryListener.performQuery(true);
+      queryListener.performQueryUpdateChart(true,false);
     }
   }
 
@@ -1414,9 +1453,7 @@ System.out.println("java.version: " + System.getProperty("java.version"));
       {
         refreshTimer.stop();
 
-        InventoryQuery query = performQuery(true);
-        
-        updateChartView();
+        InventoryQuery query = performQueryUpdateChart(true);
       }
       catch(Throwable ex)
       {
@@ -1424,7 +1461,35 @@ System.out.println("java.version: " + System.getProperty("java.version"));
       }
     }
 
-    public InventoryQuery performQuery(boolean setCurrentAsset)
+
+    public InventoryQuery performQueryUpdateChart(boolean setCurrentAsset) {
+	  return performQueryUpdateChart(setCurrentAsset, true); 
+    }
+
+    public InventoryQuery performQueryUpdateChart(boolean setCurrentAsset,
+				   boolean updateChart) {
+	long startTime = System.currentTimeMillis();
+	InventoryQuery myQuery = performQuery(setCurrentAsset);
+	if(updateChart) {
+	    updateChartView();
+	}
+	if(logFile != null) {
+	    long endTime = System.currentTimeMillis();
+	    long diffTime = endTime - startTime;
+	    Date timestamp = new Date(startTime);
+	    try {
+		logFile.write(timestamp + ", " + diffTime + "\n");
+		logFile.flush();
+	    }
+	    catch (IOException e) {
+		System.err.println(e);
+	    }
+	}
+
+	return myQuery;
+    }
+
+    private InventoryQuery performQuery(boolean setCurrentAsset)
     {
       InventoryQuery query = null;
 
@@ -1550,8 +1615,9 @@ System.out.println("java.version: " + System.getProperty("java.version"));
 	      			//  do performQuery with current asset
 	      			//  set currentAsset as selected item
 	      			assetNameBox.setSelectedItem(currentAsset);
-	      			queryListener.performQuery(false);
-              updateChartView();
+
+				queryListener.performQueryUpdateChart(false);
+
 	      			foundMatch = true;
 	      			break;
 	      		}
@@ -1566,8 +1632,7 @@ System.out.println("java.version: " + System.getProperty("java.version"));
 		  			assetNameBox.removeActionListener(queryListener);
 		  			assetNameBox.setSelectedItem(myAssetNames.elementAt(0));
 		  			assetNameBox.addActionListener(queryListener);
-		  			queryListener.performQuery(false);
-            updateChartView();
+		  			queryListener.performQueryUpdateChart(false);
 		   		}
 	      }
 	      else

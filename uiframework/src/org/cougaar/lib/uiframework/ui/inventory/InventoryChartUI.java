@@ -12,6 +12,9 @@ package org.cougaar.lib.uiframework.ui.inventory;
 
 import java.util.StringTokenizer;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.*;
 import org.cougaar.util.OptionPane;
 import org.cougaar.util.ThemeFactory;
@@ -164,10 +167,12 @@ public class InventoryChartUI implements CougaarUI
           }
         }
       }
-      CFrame frame = new CFrame("Inventory/Capacity", true);
-      inventorySelector = new InventorySelector(clusterHost, clusterPort, file, cluster, asset, start, end);
-      inventorySelector.install(frame);
 
+     
+     CFrame frame = new CFrame("Inventory/Capacity", true);
+     inventorySelector = new InventorySelector(clusterHost, clusterPort, file, cluster, asset, start, end);
+     inventorySelector.install(frame);
+     
   }
 
   public static String getClusterHostPort(String defaultString, Object msg)
