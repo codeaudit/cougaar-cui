@@ -9,7 +9,7 @@ graph [
             Location ""
          ]
          center [
-            x -227.4000000000528
+            x -227.8250000000004
             y -1.0
             z 0.0
          ]
@@ -31,7 +31,7 @@ graph [
             Location ""
          ]
          center [
-            x -227.4000000000528
+            x -227.8250000000004
             y -81.0
             z 0.0
          ]
@@ -53,7 +53,7 @@ graph [
             Location ""
          ]
          center [
-            x 137.6999999999476
+            x 137.6749999999996
             y -2.0
             z 0.0
          ]
@@ -75,7 +75,7 @@ graph [
             Location ""
          ]
          center [
-            x 40.16999999999471
+            x 40.17499999999961
             y -82.0
             z 0.0
          ]
@@ -97,7 +97,7 @@ graph [
             Location ""
          ]
          center [
-            x 170.6999999999471
+            x 170.1749999999996
             y -82.0
             z 0.0
          ]
@@ -119,7 +119,7 @@ graph [
             Location ""
          ]
          center [
-            x 105.16999999999472
+            x 105.27499999999961
             y -82.0
             z 0.0
          ]
@@ -141,7 +141,7 @@ graph [
             Location ""
          ]
          center [
-            x 235.6999999999471
+            x 235.1749999999996
             y -82.0
             z 0.0
          ]
@@ -163,7 +163,7 @@ graph [
             Location ""
          ]
          center [
-            x 7.5317
+            x 7.7135
             y 79.0
             z 0.0
          ]
@@ -185,7 +185,7 @@ graph [
             Location ""
          ]
          center [
-            x -65.93000000000524
+            x -65.4250000000004
             y -1.0
             z 0.0
          ]
@@ -207,7 +207,7 @@ graph [
             Location ""
          ]
          center [
-            x -471.4000000000575
+            x -471.5750000000004
             y -1.0
             z 0.0
          ]
@@ -229,7 +229,7 @@ graph [
             Location ""
          ]
          center [
-            x 392.6999999999471
+            x 392.1749999999996
             y 6.0
             z 0.0
          ]
@@ -252,7 +252,7 @@ graph [
             Location ""
          ]
          center [
-            x 53.65999999999923
+            x 53.32999999999956
             y 250.0
             z 0.0
          ]
@@ -274,7 +274,7 @@ graph [
             Location ""
          ]
          center [
-            x 131.59999999999727
+            x 131.72799999999995
             y 160.0
             z 0.0
          ]
@@ -296,7 +296,7 @@ graph [
             Location ""
          ]
          center [
-            x 7.5317
+            x 7.7135
             y 159.0
             z 0.0
          ]
@@ -318,7 +318,7 @@ graph [
             Location ""
          ]
          center [
-            x -11.783000000000529
+            x -11.925000000000388
             y -108.0
             z 0.0
          ]
@@ -340,7 +340,7 @@ graph [
             Location ""
          ]
          center [
-            x -162.4000000000528
+            x -162.8250000000004
             y -81.0
             z 0.0
          ]
@@ -362,7 +362,7 @@ graph [
             Location ""
          ]
          center [
-            x -69.93000000000528
+            x -69.82500000000039
             y -86.0
             z 0.0
          ]
@@ -384,7 +384,7 @@ graph [
             Location ""
          ]
          center [
-            x -121.93000000000528
+            x -121.82500000000039
             y -110.0
             z 0.0
          ]
@@ -406,7 +406,7 @@ graph [
             Location ""
          ]
          center [
-            x -390.4000000000523
+            x -390.3250000000004
             y -81.0
             z 0.0
          ]
@@ -428,7 +428,7 @@ graph [
             Location ""
          ]
          center [
-            x -587.4000000000523
+            x -587.3250000000004
             y -66.0
             z 0.0
          ]
@@ -450,7 +450,7 @@ graph [
             Location ""
          ]
          center [
-            x -520.4000000000523
+            x -520.3250000000004
             y -81.0
             z 0.0
          ]
@@ -472,7 +472,7 @@ graph [
             Location ""
          ]
          center [
-            x -457.4000000000523
+            x -457.3250000000004
             y -116.0
             z 0.0
          ]
@@ -494,7 +494,7 @@ graph [
             Location ""
          ]
          center [
-            x -299.4000000000528
+            x -299.8250000000004
             y -82.0
             z 0.0
          ]
@@ -516,7 +516,7 @@ graph [
             Location ""
          ]
          center [
-            x -593.4000000000523
+            x -593.3250000000004
             y -198.0
             z 0.0
          ]
@@ -538,7 +538,7 @@ graph [
             Location ""
          ]
          center [
-            x 452.6999999999471
+            x 452.1749999999996
             y -110.0
             z 0.0
          ]
@@ -561,7 +561,7 @@ graph [
             Location ""
          ]
          center [
-            x 348.6999999999471
+            x 348.1749999999996
             y -114.0
             z 0.0
          ]
@@ -584,7 +584,7 @@ graph [
             Location ""
          ]
          center [
-            x 396.6999999999471
+            x 396.1749999999996
             y -82.0
             z 0.0
          ]
@@ -607,7 +607,7 @@ graph [
             Location ""
          ]
          center [
-            x 306.6999999999471
+            x 306.1749999999996
             y -82.0
             z 0.0
          ]
@@ -630,7 +630,7 @@ graph [
             Location ""
          ]
          center [
-            x 486.6999999999471
+            x 486.1749999999996
             y -74.0
             z 0.0
          ]
@@ -653,7 +653,7 @@ graph [
             Location ""
          ]
          center [
-            x -541.4000000000528
+            x -541.8250000000004
             y -156.0
             z 0.0
          ]
@@ -675,96 +675,8 @@ graph [
             Location ""
          ]
          center [
-            x -495.4000000000528
+            x -495.8250000000004
             y -184.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 68
-      label "HNS"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -66.93000000000002
-            y 88.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 69
-      label "HOST-NATION-REFINERY"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -172.4000000000002
-            y 92.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 70
-      label "DFSP"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 165.6999999999997
-            y 88.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 71
-      label "APS-3"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 91.16999999999997
-            y 86.0
             z 0.0
          ]
          width 60.0
@@ -785,7 +697,7 @@ graph [
             Location ""
          ]
          center [
-            x -292.4000000000528
+            x -292.8250000000004
             y -161.0
             z 0.0
          ]
@@ -807,7 +719,7 @@ graph [
             Location ""
          ]
          center [
-            x -422.4000000000528
+            x -422.8250000000004
             y -161.0
             z 0.0
          ]
@@ -829,7 +741,7 @@ graph [
             Location ""
          ]
          center [
-            x -355.4000000000528
+            x -355.8250000000004
             y -188.0
             z 0.0
          ]
