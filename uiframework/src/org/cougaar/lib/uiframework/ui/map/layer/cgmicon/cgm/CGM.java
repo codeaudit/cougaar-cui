@@ -2,9 +2,15 @@ package org.cougaar.lib.uiframework.ui.map.layer.cgmicon.cgm;
 
 import java.io.*;
 import java.util.*;
+import java.awt.Color;
 
 public class CGM implements Cloneable
 { Vector V;
+  public boolean changeCGMFill = false;
+        public void setChangeFill(boolean custom)
+        {
+          changeCGMFill = custom;
+        }
 
 	public void read (DataInputStream in)
 		throws IOException
@@ -20,7 +26,13 @@ public class CGM implements Cloneable
 	{	Enumeration e=V.elements();
 		while (e.hasMoreElements())
 		{	Command c=(Command)e.nextElement();
-			c.paint(d);
+			if (!((c instanceof FillColor || c instanceof ColorCommand)&& changeCGMFill))
+                        // FillColor.paint changes the fill color of d
+                        {
+                          c.paint(d);
+                        }
+                        else
+                          {/*System.out.println("Command not painted: " + c.toString());*/}
 		}
 	}
 
@@ -54,14 +66,40 @@ public class CGM implements Cloneable
   public Object clone()
   {
     CGM newOne = new CGM();
-
+//System.out.println("in cgm.clone");
     newOne.V = new Vector ();
     for (int i=0;i<this.V.size();i++)
     {
       newOne.V.addElement(((Command)this.V.elementAt(i)).clone());
-//      System.out.println("Command: " + (Command)newOne.V.elementAt(i));
+      //System.out.println("Command: " + (Command)newOne.V.elementAt(i));
     }
     return newOne;
   }
 
+  public void showCGMCommands()
+  {
+    for (int i=0;i<V.size();i++)
+      System.out.println("Command: " + (Command)V.elementAt(i));
+  }
+
+    public void changeColor(Color oldc, Color newc)
+    {// actually changes the color in the cgm commands having this oldc, replacing
+    // it with newc
+    // find each color command whose color matches oldc, and substitute newc
+    Command temp;
+    Color currcolor;
+    for (int i=0;i<V.size();i++)
+    {
+      temp = (Command)V.elementAt(i);
+      if (temp instanceof ColorCommand)
+      {// compare color to oldc
+        currcolor = ((ColorCommand)temp).C;
+        if (currcolor.equals(oldc))
+        {
+          ((ColorCommand)temp).C = new Color(newc.getRed(),newc.getGreen(),newc.getBlue());
+        }
+      }
+    }
+
+    }
 }

@@ -20,6 +20,7 @@ public class OpenMapCGMDisplay extends CGMDisplay
 
   private CGM myCGM = null;
 
+
   public OpenMapCGMDisplay (CGM cgm)
   {
 
@@ -30,11 +31,22 @@ public class OpenMapCGMDisplay extends CGMDisplay
     myCGM = cgm;
   }
 
+  public void setChangeFill(boolean custom)
+  {
+    myCGM.setChangeFill(custom);
+  }
+
   public void setOrigin (int orgX, int orgY)
   {
     W=orgX;
     H=orgY;
   }
+
+  public void showCGMCommands()
+  {
+    myCGM.showCGMCommands();
+  }
+
 
 	public void scale (int w, int h)
 	{	if (Extent==null) return;
@@ -54,6 +66,6 @@ public class OpenMapCGMDisplay extends CGMDisplay
     return (new OpenMapCGMDisplay(newCGM));
 
   }
-  
 
-} 
+
+}

@@ -8,11 +8,11 @@ public class FillColor extends ColorCommand
 		throws IOException
 	{	super(ec,eid,l,in);
 	}
-	
+
 	public String toString ()
 	{	return "Fill Color Input "+R+","+G+","+B;
 	}
-	
+
 	public void paint (CGMDisplay d)
 	{	d.setFillColor(C);
 	}

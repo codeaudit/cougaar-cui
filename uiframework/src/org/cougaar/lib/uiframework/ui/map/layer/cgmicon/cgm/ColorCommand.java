@@ -23,7 +23,7 @@ public class ColorCommand extends Command
 			B=args[2];
 			C=new Color(R,G,B);
 		}
-		else if (args.length>0 && 
+		else if (args.length>0 &&
 			args[0]>=1 && args[0]<=Colors.length)
 		{	C=Colors[args[0]-1];
 		}
@@ -31,11 +31,11 @@ public class ColorCommand extends Command
 		{	C=new Color(128,128,128);
 		}
 	}
-	
+
 	public String toString ()
 	{	return "Fill Color Input "+R+","+G+","+B;
 	}
-	
+
 	public void paint (CGMDisplay d)
 	{	d.setFillColor(C);
 	}

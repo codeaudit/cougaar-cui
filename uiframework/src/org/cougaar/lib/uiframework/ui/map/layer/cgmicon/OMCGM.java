@@ -37,10 +37,8 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.LineType;
 
-import org.cougaar.lib.uiframework.ui.map.layer.VecIcon;
 
-
-public class OMCGM extends VecIcon // OMGraphic
+public class OMCGM extends OMGraphic
 {
 
   public static final String SQUAD_SIZE="squad";
@@ -58,7 +56,7 @@ public class OMCGM extends VecIcon // OMGraphic
 
   protected float latOrigin, lonOrigin;  // in radians
   protected float degLat, degLon; // in decimal degrees
-  
+
   protected int xOrigin, yOrigin;
 
   // keep track of the decorations on the CGM display
@@ -70,37 +68,41 @@ public class OMCGM extends VecIcon // OMGraphic
 
   public OMCGM ()
   {
-//       super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+      super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
   }
 
   public OMCGM( String cgmFile) throws java.io.IOException
   {
-//     super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+    super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
     cgmFileName = new String (cgmFile);
 
     CGM cgm = new CGM ();
     cgm.read ( new DataInputStream ( new FileInputStream (cgmFile) ) );
     omcgmdisp = new OpenMapCGMDisplay (cgm);
-  }
+
+
+  }
 
 
   public OMCGM( String cgmFile, String unitSizeDesignation) throws java.io.IOException
   {
-//     super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+    super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
     cgmFileName = new String (cgmFile);
     unitSize = new String (unitSizeDesignation);
 
     CGM cgm = new CGM ();
+
     cgm.read ( new DataInputStream ( new FileInputStream (cgmFile) ) );
     omcgmdisp = new OpenMapCGMDisplay (cgm);
-  }
+
+  }
 
     //
     // Swiped from OMPoly.java ... heh-heh-heh
     //
-    
+
     /**
      * Set the location based on a latitude, longitude, and some xy
      * points.
@@ -127,10 +129,6 @@ public class OMCGM extends VecIcon // OMGraphic
         lonOrigin = lonPoint;
       }
 
-      System.out.println("OMCGM.setLocation calling initLocation("+latOrigin+", "+lonOrigin+")");
-      initLocation(latOrigin, lonOrigin);
-      System.out.println("OMCGM.setLocation calling initLabel(\"initialDefaultLabel\"");
-      initLabel("initialDefaultLabel");
       setNeedToRegenerate(true);
       setRenderType(RENDERTYPE_LATLON);
 
@@ -140,7 +138,7 @@ public class OMCGM extends VecIcon // OMGraphic
   public boolean generate (Projection proj)
   {
 
-    System.out.println ("OMCGM generate, degLon is: " + degLon);
+//    System.out.println ("generate, degLon is: " + degLon);
 
     /**
      * Establish new x and y origin based on projection.
@@ -164,7 +162,8 @@ public class OMCGM extends VecIcon // OMGraphic
     yOrigin = origin.y;
 
     LatLonPoint llp1 = new LatLonPoint (latOrigin, lonOrigin);
-    LatLonPoint llp2 = new LatLonPoint (latOrigin + 0.1, lonOrigin + 0.1);
+    // LatLonPoint llp2 = new LatLonPoint (latOrigin + 0.1, lonOrigin + 0.1);
+    LatLonPoint llp2 = new LatLonPoint (latOrigin + 0.3, lonOrigin + 0.3);
 
     Vector xys = proj.forwardLine(llp1, llp2, LineType.Straight, -1);
 
@@ -181,8 +180,6 @@ public class OMCGM extends VecIcon // OMGraphic
     {
       drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
       ogl.generate(proj);
-      System.out.println("OMCGM.generate calling super.generate("+proj+")");
-      super.generate(proj);
     }
 
 
@@ -190,7 +187,8 @@ public class OMCGM extends VecIcon // OMGraphic
 
     return true;
 
-  }
+
+  }
 
 
   public void render (Graphics g)
@@ -207,7 +205,7 @@ public class OMCGM extends VecIcon // OMGraphic
      }
 
      omcgmdisp.paint(g);
-     
+
   }
 
    public float distance (int x, int y)
@@ -238,7 +236,7 @@ public class OMCGM extends VecIcon // OMGraphic
      }
 
      return null;
-     
+
    }
 
    protected void drawUnitSizeDesignation (String unitSize, float xCoord, float yCoord)
@@ -256,7 +254,11 @@ public class OMCGM extends VecIcon // OMGraphic
 
        OMCircle dot1= new OMCircle ( degLat + (float) 0.08, degLon + (float)0.05, (float) 0.005);
 /*
+       try {
        dot1.setlinepaint ( Color.black);
+       } catch (Exception ex) {
+	   ex.printStackTrace();
+       }
 */
        //dot1.setfillpaint(Color.black);
 
@@ -271,8 +273,12 @@ public class OMCGM extends VecIcon // OMGraphic
        OMCircle dot1= new OMCircle ( degLat + (float) 0.08, degLon + (float)0.04, (float) 0.005);
        OMCircle dot2= new OMCircle ( degLat + (float) 0.08, degLon + (float)0.06, (float) 0.005);
 /* openmap 4.0 specific
+       try {
 	   dot1.setlinepaint ( Color.black);
 	   dot2.setlinepaint ( Color.black);
+       } catch (Exception ex) {
+	   ex.printStackTrace();
+       }
 */
        //dot1.setfillpaint(Color.black);
        //dot2.setfillpaint(Color.black);
@@ -399,4 +405,15 @@ public class OMCGM extends VecIcon // OMGraphic
       ogl.add (line2);
 
    }
-} 
+
+   public void showCGMCommands()
+   {
+    omcgmdisp.showCGMCommands();
+    }
+
+    public void changeColor(Color oldc, Color newc)
+    {
+      omcgmdisp.changeColor(oldc,newc);
+    }
+
+}

@@ -24,6 +24,9 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.event.ProjectionEvent;
 
+import org.cougaar.lib.uiframework.ui.map.layer.IntelVecIcon;
+import org.cougaar.lib.uiframework.ui.map.layer.NonMilSalesVecIcon;
+
 //import org.cougaar.lib.uiframework.ui.map.layer.ArmoredVecIcon;
 //import org.cougaar.lib.uiframework.ui.map.layer.InfantryVecIcon;
 
@@ -41,6 +44,7 @@ public class IconLayer extends Layer {
 
     protected OMGraphicList graphics;
 
+    protected int red,green,blue;
 
     /**
      * Construct the layer.
@@ -66,7 +70,7 @@ public class IconLayer extends Layer {
      * Invoked when the projection has changed or this Layer has been
      * added to the MapBean.
      * @param e ProjectionEvent
-     */    
+     */
     public void projectionChanged (ProjectionEvent e) {
 	graphics.generate(e.getProjection());
 	repaint();
@@ -90,147 +94,88 @@ public class IconLayer extends Layer {
       // Create the icons
       try
       {
+        // Coded icons, i.e. objects that were written to display an icon
+        IntelVecIcon intelIcon = new IntelVecIcon ( (float) 11.0, (float) 0.0, Color.lightGray );
+        list.add(intelIcon);
 
+        NonMilSalesVecIcon nonMilIcon = new NonMilSalesVecIcon ( (float) 11.0, (float) 0.3, Color.lightGray );
+        list.add(nonMilIcon);
+
+        // CGMIcons
         OMCGMIcons cgmicons = new OMCGMIcons ("../config/cgmload.txt");
 
-        OMCGM linfIcon = cgmicons.get ("light infantry");
-        linfIcon.setLocation ( (float) 10.0, (float) 0.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(linfIcon);
-
-        
-        OMCGM armorIcon = cgmicons.get ("armor");
-        armorIcon.setLocation( (float) 10.1, (float) 0.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(armorIcon);
-
-        OMCGM mechIcon = cgmicons.get ("mechanized infantry");
-        mechIcon.setLocation( (float) 10.0, (float) 1.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(mechIcon);
-
-        OMCGM infIcon = cgmicons.get ("infantry");
-        infIcon.setLocation( (float) 10.1, (float) 1.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(infIcon);
-
-
-        OMCGM infIcon2 = infIcon.makeAnother();
-        infIcon2.setLocation( (float) 10.1, (float) 0.8, OMGraphic.DECIMAL_DEGREES);
-        list.add(infIcon2);
-
-
-	OMCGM infIcon3 = infIcon.makeAnother();
-        infIcon3.setLocation( (float) 10.1, (float) 2.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(infIcon3);
-
-
-
-        OMCGM icon;
-
-        icon = cgmicons.get ("armored cavalry");
-        icon.setLocation( (float) 10.2, (float) 1.0, OMGraphic.DECIMAL_DEGREES);
+        CGMVecIcon icon = new CGMVecIcon ( (OMCGM) cgmicons.get ("light infantry"), 10.0f, 0.0f );
+        icon.cgmIcon.changeColor(new Color(128,224,255),createRandomColor());
         list.add(icon);
+        icon = new CGMVecIcon ( (OMCGM) cgmicons.get ("armor"), 10.1f, 0.0f);
+         icon.cgmIcon.changeColor(new Color(128,224,255),createRandomColor());
+        list.add (icon);
+        icon =new CGMVecIcon ( (OMCGM) cgmicons.get ("mechanized infantry"), 10.0f, 1.0f );
+         icon.cgmIcon.changeColor(new Color(128,224,255),createRandomColor());
+        list.add (icon);
 
-        icon = cgmicons.get ("recon");
-        icon.setLocation( (float) 10.3, (float) 1.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        icon =new CGMVecIcon ( (OMCGM) cgmicons.get ("infantry"), 10.1f, 1.0f );
+         icon.cgmIcon.changeColor(new Color(128,224,255),createRandomColor());
+        list.add (icon );
 
-        icon = cgmicons.get ("airborne");
-        icon.setLocation( (float) 10.4, (float) 1.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        // second infantry
+        icon = new CGMVecIcon ( (OMCGM) cgmicons.get ("infantry"), 10.1f, 0.8f );
+         icon.cgmIcon.changeColor(new Color(128,224,255),createRandomColor());
+        list.add (icon );
 
-        icon = cgmicons.get ("air assault");
-        icon.setLocation( (float) 10.5, (float) 1.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("armored cavalry"), 10.2f, 1.0f ));
 
-        icon = cgmicons.get ("field artillery");
-        icon.setLocation( (float) 10.5, (float) 1.1, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("recon"), 10.3f, 1.0f) );
 
-        icon = cgmicons.get ("air defense");
-        icon.setLocation( (float) 10.3, (float) 1.2, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("airborne"), 10.4f, 0.0f ));
 
-        icon = cgmicons.get ("anti-armor");
-        icon.setLocation( (float) 10.2, (float) 0.9, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("air assault"), 10.5f, 1.0f) );
 
-        icon = cgmicons.get ("aviation");
-        icon.setLocation( (float) 10.2, (float) -0.2, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("field artillery"), 10.5f, 1.1f ));
 
-        icon = cgmicons.get ("attack helicopter");
-        icon.setLocation( (float) 10.0, (float) -0.1, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("air defense"), 10.3f, 1.2f ) );
 
-        icon = cgmicons.get ("air cavalry");
-        icon.setLocation( (float) 10.3, (float) 0.1, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("anti-armor"), 10.2f, 0.9f ));
 
-        icon = cgmicons.get ("engineer");
-        icon.setLocation( (float) 10.2, (float) 0.3, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("aviation"), 10.2f, -0.2f ));
 
-        icon = cgmicons.get ("chemical");
-        icon.setLocation( (float) 10.3, (float) -0.3, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("attack helicopter"), 10.0f, -0.1f) );
 
-        icon = cgmicons.get ("signal");
-        icon.setLocation( (float) 10.2, (float) -0.3, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("air cavalry"), 10.3f, 0.1f ));
 
-        icon = cgmicons.get ("intelligence");
-        icon.setLocation( (float) 10.4, (float) -0.3, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("engineer"), 10.2f, 0.3f) );
 
-        icon = cgmicons.get ("transport");
-        icon.setLocation( (float) 10.35, (float) -0.5, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("chemical"), 10.3f, -0.3f) );
 
-        icon = cgmicons.get ("supply");
-        icon.setLocation( (float) 10.25, (float) -0.5, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("signal"), 10.2f, -0.3f ));
 
-        icon = cgmicons.get ("maintenance");
-        icon.setLocation( (float) 10.2, (float) -0.7, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("intelligence"), 10.4f, -0.3f) );
 
-        icon = cgmicons.get ("subsistence");
-        icon.setLocation( (float) 10.4, (float) -1.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("transport"), 10.35f, -0.5f) );
 
-        icon = cgmicons.get ("clothing");
-        icon.setLocation( (float) 10.2, (float) -2.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("supply"), 10.25f, -0.5f) );
 
-        icon = cgmicons.get ("petroleum");
-        icon.setLocation( (float) 10.35, (float) -0.9, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("maintenance"), 10.2f, -0.7f) );
 
-        icon = cgmicons.get ("construction materials");
-        icon.setLocation( (float) 10.2, (float) -0.9, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("subsistence"), 10.4f, -1.0f) );
 
-        icon = cgmicons.get ("ammunition");
-        icon.setLocation( (float) 9.9, (float) -2.2, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("clothing"), 10.2f, -2.0f) );
 
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("petroleum"), 10.35f, -0.9f) );
 
-        icon = cgmicons.get ("personal demand");
-        icon.setLocation( (float) 10.1, (float) -2.2, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("construction materials"), 10.2f, -0.9f) );
 
-        
-        icon = cgmicons.get ("medical");
-        icon.setLocation( (float) 10.0, (float) -2.4, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("ammunition"), 9.9f, -2.2f) );
 
-        icon = cgmicons.get ("major end items");
-        icon.setLocation( (float) 10.0, (float) -2.0, OMGraphic.DECIMAL_DEGREES);
-        list.add(icon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("personal demand"), 10.1f, -2.2f ));
 
-        // new CGM icon created via Visio, requires special scaling (sporadic display also)
-        icon = cgmicons.get ("medical supply");
-        OMCGMbyVisio visIcon = new OMCGMbyVisio (icon);
-        visIcon.setLocation( (float) 10.0, (float) -2.2, OMGraphic.DECIMAL_DEGREES);
-        list.add(visIcon);
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("medical"), 10.0f, -2.4f ) );
+
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("major end items"), 10.0f, -2.0f) );
+
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("medical supply"), 9.7f, 0.0f ));
+
+        list.add (new CGMVecIcon ( (OMCGM) cgmicons.get ("nonmilitary supply"), 9.7f, 1.0f) );
 
     }
 
@@ -240,5 +185,21 @@ public class IconLayer extends Layer {
         ioexc.printStackTrace();
     }
 
+    catch (Exception exc)
+    {
+        System.err.println (exc.toString());
+        exc.printStackTrace();
+    }
+
+
   }
+
+  private Color createRandomColor()
+  {
+   red = (int)(Math.random()*255.0);
+   green = (int)(Math.random()*255.0);
+   blue = (int)(Math.random()*255.0);
+   return (new Color(red,green,blue));
+  }
+
 }

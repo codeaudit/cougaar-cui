@@ -19,7 +19,7 @@ import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
-
+import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -50,6 +50,7 @@ public class OMCGMIcons
 
   private void loadUp (String loadMe) throws FileNotFoundException, IOException
   {
+    System.out.println ("loading CGM icons from file: " + loadMe);
 
     BufferedReader br = new BufferedReader ( new InputStreamReader (new FileInputStream (loadMe)));
 
@@ -58,6 +59,8 @@ public class OMCGMIcons
     OMCGM omcgmVal;
     while (line != null)
     {
+
+//      System.out.println ("loading CGM icons line is: " + line);
 
       // tab separated file, like from Excel
       StringTokenizer stok = new StringTokenizer (line, "\t");
@@ -68,19 +71,45 @@ public class OMCGMIcons
 
       try
       {
-        String unitSize = stok.nextToken();
+        String nextTok = (String) stok.nextElement();
+
+        if (nextTok.equals ("V"))
+        {
+          // this is a VISIO generated CGM file
+
+          try
+          {
+            // after this "V" (for Visio) will we find the echelon indication, if any
+            String unitSize = stok.nextToken();
+
+            //omcgmVal = new OMCGMbyVisio (fileName,unitSize);
+            omcgmVal = new OMCGM (fileName,unitSize);
+            omcgmVal = new OMCGMbyVisio(omcgmVal);
+            //omcgmVal.omcgmdisp.setChangeFill(true);
+          }
+          catch (java.util.NoSuchElementException nsee)
+          {
+            omcgmVal = new OMCGM(fileName);
+            omcgmVal = new OMCGMbyVisio (omcgmVal);
+            //omcgmVal.omcgmdisp.setChangeFill(true);
+          }
+
+        }
+
+        String unitSize = nextTok;
 
         // if we catch an exception above this next line won't be called
         omcgmVal = new OMCGM ( fileName, unitSize );
-
+            //omcgmVal.omcgmdisp.setChangeFill(true);
       }
 
       catch ( java.util.NoSuchElementException nsee)
       {
         omcgmVal = new OMCGM (fileName);
+            //omcgmVal.omcgmdisp.setChangeFill(true);
 
       }
-
+      //omcgmVal.omcgmdisp.setFillColor(Color.red);
       iconsByName.put(idkey, omcgmVal);
 
       line = br.readLine();
@@ -90,7 +119,7 @@ public class OMCGMIcons
 
   public OMCGM get (String idkey)
   {
-    return (OMCGM) iconsByName.get(idkey);
+    return ((OMCGM) iconsByName.get(idkey)).makeAnother();
   }
 
 }

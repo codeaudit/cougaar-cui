@@ -7,6 +7,7 @@ import java.util.*;
 
 public class CGMDisplay
 {	Graphics G;
+
 	protected double X=0,Y=0;
 	protected double DX=1,DY=1;
 	protected int W,H;
@@ -22,12 +23,12 @@ public class CGMDisplay
 		if (extent!=null) Extent=extent;
 		Cgm=cgm;
 	}
-	
+
 	public void paint (Graphics g)
 	{	G=g;
 		Cgm.paint(this);
 	}
-	
+
 	public int x (int x)
 	{	return W+(int)(X+x*DX);
 	}
@@ -35,11 +36,11 @@ public class CGMDisplay
 	public int y (int y)
 	{	return H-(int)(Y+y*DY);
 	}
-	
+
 	public Graphics graphics ()
 	{	return G;
 	}
-	
+
 	public void setFillColor (Color c) { FillColor=c; }
 	public Color getFillColor () { return FillColor; }
 	public void setFilled (boolean flag) { Filled=flag; }
@@ -100,5 +101,11 @@ public class CGMDisplay
 		f.setLayout(new BorderLayout());
 		f.add("Center",p);
 		f.setVisible(true);
-	}	
+	}
+    public void changeColor(Color oldc, Color newc)
+    {// actually changes the color in the cgm commands having this oldc, replacing
+    // it with newc
+      Cgm.changeColor(oldc,newc);
+    }
+
 }
