@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+
+  <!-- poll some clusters in the society (cuimap UI) -->
+  <source ignore="false">
+    <name>3ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-BDE-2ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>1-BDE-3ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+</xml>

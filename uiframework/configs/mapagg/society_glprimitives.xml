@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+<!--
+  this is for real society org location data; copy this element into the
+  society's society_glprimitives.xml file
+-->
+<!--
+  <glquery>
+    <keyname>ORG_LOC</keyname>
+    <predicate>
+      <instanceof>org.cougaar.domain.glm.ldm.asset.Organization</instanceof>
+    </predicate>
+    <adapter>org.cougaar.lib.uiframework.ui.orglocation.psp.xmlservice.LocationScheduleToXml</adapter>
+  </glquery>
+-->
+</xml>
+
