@@ -20,8 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JSplitPane;
 
-import com.ibm.xml.parser.Visitor;
-
 import org.cougaar.lib.uiframework.ui.components.CChartLegend;
 
 import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
