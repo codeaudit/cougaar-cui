@@ -166,11 +166,13 @@ public class QueryGenerator
         // Create query(s) that aggregate over organizations
         VariableModel orgDesc = vim.getDescriptor("Org");
         VariableModel metricDesc = vim.getDescriptor("Metric");
+        String metricString = metricDesc.getValue().toString();
         TreeNode selectedOrgNode = (TreeNode)orgDesc.getValue();
         if ((orgDesc.getState() == VariableModel.FIXED) ||
             (selectedOrgNode.isLeaf()))
         {
-            String query = generateSingleQuery(vim, selectedOrgNode);
+            String query =
+                generateSingleQuery(vim, selectedOrgNode, metricString);
             System.out.println(query);
             dbTableModel.setDBQuery(query, 4, 1);
         }
@@ -179,7 +181,8 @@ public class QueryGenerator
             for (int i = 0; i < selectedOrgNode.getChildCount(); i++)
             {
                 String query =
-                    generateSingleQuery(vim, selectedOrgNode.getChildAt(i));
+                    generateSingleQuery(vim, selectedOrgNode.getChildAt(i),
+                                        metricString);
 
                 System.out.println("query #" + i + ": " + query);
                 if (i == 0)
@@ -203,7 +206,6 @@ public class QueryGenerator
             int[] significantColumns = {dbTableModel.getColumnIndex("org"),
                                         dbTableModel.getColumnIndex("item"),
                                         dbTableModel.getColumnIndex("metric")};
-            String metricString = metricDesc.getValue().toString();
             DatabaseTableModel.Combiner timeCombiner =
                 (metricString.equals(DEMAND_METRIC) ||
                  metricString.equals(DUEOUT_METRIC) ||
@@ -373,24 +375,30 @@ public class QueryGenerator
     }
 
     private String generateSingleQuery(VariableInterfaceManager vim,
-                                       TreeNode orgNode)
+                                       TreeNode orgNode, String metricString)
     {
         String query = null;
-        String metricString =vim.getDescriptor("Metric").getValue().toString();
 
         if (metricString.equals(INV_SAF_METRIC))
         {
+            int metricInt = Integer.parseInt(DBInterface.lookupValue(
+              DBInterface.getTableName("Metric"), "name", "id", metricString));
+
             query = generateRatioQuery(vim, "Org", orgNode,
-                                       INVENTORY_METRIC, TARGET_LEVEL_METRIC);
+                                       INVENTORY_METRIC, TARGET_LEVEL_METRIC,
+                                       metricInt);
         }
         else if (metricString.equals(RES_DEM_METRIC))
         {
+            int metricInt = Integer.parseInt(DBInterface.lookupValue(
+              DBInterface.getTableName("Metric"), "name", "id", metricString));
+
             // Cumulative Resupply Over Cumulative Demand
             String numQuery = generateCumulativeSumQuery(
                 generateQueryUsingRootNode(vim, "Org", orgNode,DUEIN_METRIC));
             String denQuery = generateCumulativeSumQuery(
                 generateQueryUsingRootNode(vim, "Org", orgNode,DEMAND_METRIC));
-            query = generateRatioQuery(numQuery, denQuery);
+            query = generateRatioQuery(numQuery, denQuery, metricInt);
         }
         else
         {
@@ -403,26 +411,28 @@ public class QueryGenerator
 
     private String generateRatioQuery(VariableInterfaceManager vim,
                                    String varName, TreeNode tn,
-                                   String numMetric, String denMetric)
+                                   String numMetric, String denMetric,
+                                   int metricInt)
     {
         String numQuery =
             generateQueryUsingRootNode(vim, varName, tn, numMetric);
         String denQuery =
             generateQueryUsingRootNode(vim, "Org", tn, denMetric);
 
-        return generateRatioQuery(numQuery, denQuery);
+        return generateRatioQuery(numQuery, denQuery, metricInt);
     }
 
-    private String generateRatioQuery(String numQuery, String denQuery)
+    private String generateRatioQuery(String numQuery, String denQuery,
+                                      int metricInt)
     {
         String query = null;
 
         if (DBInterface.DBTYPE.equalsIgnoreCase("oracle"))
         {
             // if numerator data does not exist, assume 0
-            query = "select t2.org, t2.item, t2.unitsOfTime, t2.metric, " +
-                "(NVL(t1.assessmentValue, 0)/t2.assessmentValue) as " +
-                "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1, (" +
+            query = "select t2.org, t2.item, t2.unitsOfTime, " + metricInt +
+                " as METRIC, (NVL(t1.assessmentValue, 0)/t2.assessmentValue)" +
+                " as \"ASSESSMENTVALUE\" from (" + numQuery + ") t1, (" +
                 denQuery + ") t2 WHERE (t1.ORG (+) = t2.ORG and" +
                 " t1.UnitsOfTime (+) = t2.UnitsOfTime and " +
                 "t1.item (+) = t2.item and t2.assessmentValue <> 0)";
@@ -431,8 +441,8 @@ public class QueryGenerator
         {
             // if numerator data does not exist, NULL will be returned
             // (could not get Access to assume 0 as with Oracle)
-            query = "select t2.org, t2.item, t2.unitsOfTime, t2.metric, " +
-                "(t1.assessmentValue/t2.assessmentValue) as " +
+            query = "select t2.org, t2.item, t2.unitsOfTime, " + metricInt +
+                " as METRIC, (t1.assessmentValue/t2.assessmentValue) as " +
                 "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1 " +
                 "RIGHT OUTER JOIN (" +denQuery+ ") t2 ON (t1.ORG=t2.ORG and" +
                 " t1.UnitsOfTime=t2.UnitsOfTime and t1.item=t2.item and" +
@@ -471,7 +481,7 @@ public class QueryGenerator
         StringBuffer query = new StringBuffer();
 
         // determine whether single or multiple metric
-        if (metric.equals("Group A") || metric.equals("Group B"))
+        if (metric.startsWith("Group"))
         {
             DefaultMutableTreeNode metricNode =
                 (DefaultMutableTreeNode)vim.getDescriptor("Metric").getValue();
@@ -481,7 +491,7 @@ public class QueryGenerator
                 String childMetric = ((DefaultMutableTreeNode)
                     metrics.nextElement()).getUserObject().toString();
                 query.append(
-                    generateQueryUsingRootNode(vim, varName, tn, childMetric));
+                    generateSingleQuery(vim, tn, childMetric));
                 if (metrics.hasMoreElements())
                 {
                     query.append(" UNION ALL ");
@@ -1008,7 +1018,7 @@ public class QueryGenerator
             return row;
         }
 
-        public Vector finalize(Vector row)
+        public Vector finalize(Vector row, int headerColumn)
         {
             for (int i = 0; i < row.size(); i++)
             {
