@@ -175,7 +175,7 @@ public class TableSorter extends TableMap {
 
         // Set up a new array of indexes with the right number of elements
         // for the new data model.
-        indexes = new int[rowCount];
+        indexes = new int[(rowCount < 0) ? 0 : rowCount];
 
         // Initialise with the identity mapping.
         for (int row = 0; row < rowCount; row++) {

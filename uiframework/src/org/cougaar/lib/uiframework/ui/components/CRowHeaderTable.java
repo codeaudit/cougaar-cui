@@ -82,7 +82,10 @@ public class CRowHeaderTable extends JTable
         {
             // Remove repeated header column
             TableColumnModel cm = getColumnModel();
-            cm.removeColumn(cm.getColumn(0));
+            if (cm.getColumnCount() > 0)
+            {
+                cm.removeColumn(cm.getColumn(0));
+            }
         }
     }
 
