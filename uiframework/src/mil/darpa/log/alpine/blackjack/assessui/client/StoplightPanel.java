@@ -123,7 +123,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private void createComponents()
     {
         stoplightMetrics.add("Supply as Proportion of Demand");
-        //stoplightMetrics.add("Inventory Over Safety Level");
+        stoplightMetrics.add("Inventory Over Safety Level");
 
         //DefaultMutableTreeNode root =
         //    DBInterface.createTree(DBInterface.getTableName("item"));
@@ -357,14 +357,15 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
     private void updateStoplightViewOptions(String newSelectedMetric)
     {
-        if (stoplightMetrics.contains(newSelectedMetric))
-        {
-            viewPanel.setSelectedItem(CViewFeatureSelectionControl.COLOR);
-        }
-        else
-        {
+        //if (stoplightMetrics.contains(newSelectedMetric))
+        //{
+        //    viewPanel.setSelectedItem(CViewFeatureSelectionControl.COLOR);
+        //}
+        //else
+        //{
             viewPanel.setSelectedItem(CViewFeatureSelectionControl.VALUE);
-        }
+        //}
+
     }
 
     private void updateView()
@@ -485,6 +486,15 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
     private void updateThresholdExtents()
     {
+        if (stoplightMetrics.contains(
+            variableManager.getDescriptor("Metric").getValue().toString()))
+        {
+            ((SliderControl)thresholdsPanel).setMinValue(0);
+            ((SliderControl)thresholdsPanel).setMaxValue(2);
+            ((SliderControl)thresholdsPanel).evenlyDistributeValues();
+            return;
+        }
+
         // find minimum and maximum values in table
         float minValue = Float.MAX_VALUE;
         float maxValue = Float.MIN_VALUE;
