@@ -330,7 +330,7 @@ public class DatabaseTableModel implements TableModel
                 if (transformedColumnIndex == -1)
                 {
                     columnHeaders.addElement(newColumnHeader);
-                    transformedColumnIndex = columnHeaders.size();
+                    transformedColumnIndex = columnHeaders.size() - 1;
                 }
 
                 Object newRowHeader = origRowVector.elementAt(yColumn);
@@ -346,20 +346,33 @@ public class DatabaseTableModel implements TableModel
                                   origRowVector.elementAt(valueColumn)));
             }
 
-            // create new rows
+            // use data point vector to create new row vectors
+            int maxRowSize = 0;
             Vector newRows = new Vector();
             newRows.addElement(columnHeaders);
             for (int i = 0; i < dataPoints.size(); i++)
             {
                 DataPoint dp = (DataPoint)dataPoints.elementAt(i);
-                if (dp.rowIndex >= newRows.size())
+
+                while(dp.rowIndex > newRows.size())
+                {
+                    Vector newRow = new Vector();
+                    newRows.addElement(newRow);
+                }
+
+                if (dp.rowIndex == newRows.size())
                 {
                     Vector newRow = new Vector();
                     newRow.addElement(rowHeaders.elementAt(dp.rowIndex-1));
                     newRows.addElement(newRow);
                 }
-
                 Vector targetRow = (Vector)newRows.elementAt(dp.rowIndex);
+
+                while(dp.columnIndex > targetRow.size())
+                {
+                    targetRow.add("N/A");
+                }
+
                 if (dp.columnIndex >= targetRow.size())
                 {
                     targetRow.add(dp.value);
@@ -367,6 +380,18 @@ public class DatabaseTableModel implements TableModel
                 else
                 {
                     targetRow.setElementAt(dp.value, dp.columnIndex);
+                }
+
+                maxRowSize = Math.max(maxRowSize, targetRow.size());
+            }
+
+            // Make sure that all rows are the same size by padding with N/As
+            for (int i = 0; i < newRows.size(); i++)
+            {
+                Vector row = (Vector)newRows.elementAt(i);
+                while (row.size() < maxRowSize)
+                {
+                    row.add("N/A");
                 }
             }
 
