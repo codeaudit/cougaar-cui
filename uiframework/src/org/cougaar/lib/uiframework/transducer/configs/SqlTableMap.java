@@ -29,6 +29,9 @@ public class SqlTableMap {
   // primary id field referenced by the child-parent links
   private String idKey = null;
 
+  // alternate name for id field in case of name collision
+  private String idKeyAlternateName = null;
+
   // field in which the parent link is stored
   private String parentKey = null;
 
@@ -67,6 +70,15 @@ public class SqlTableMap {
    */
   public void setIdKey (String s) {
     idKey = s;
+  }
+
+  /**
+   *  Specify an alternate name for the id key, in case the id is to be treated
+   *  as a data field.  The alternate name should be any valid SQL identifier
+   *  other than the name of a column in the DB table.
+   */
+  public void setIdKeyAlternateName (String s) {
+    idKeyAlternateName = s;
   }
 
   /**
@@ -150,7 +162,12 @@ public class SqlTableMap {
   public String createQuery (String[] id) {
     SqlQuery q = new SqlQuery();
     q.addTable(dbTable);
-    q.addSelection(idKey);
+    StringBuffer fullIdKey = new StringBuffer(idKey);
+    if (idKeyAlternateName != null) {
+      fullIdKey.append(" ");
+      fullIdKey.append(idKeyAlternateName);
+    }
+    q.addSelection(fullIdKey);
     q.addSelection(parentKey);
     for (Enumeration e = colNames.elements(); e.hasMoreElements(); )
       q.addSelection(e.nextElement());
@@ -158,8 +175,6 @@ public class SqlTableMap {
     if (id != null && primaryKeys != null)
       for (int i = 0; i < id.length && i < primaryKeys.length; i++)
         q.addCondition(primaryKeys[i] + " = " + id[i]);
-
-    q.addOrdering(idKey);
 
     return q.toString();
   }
