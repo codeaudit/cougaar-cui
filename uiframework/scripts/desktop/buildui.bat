@@ -1,9 +1,9 @@
 echo off
 
 echo *************************************************************
-echo * To use, first place class122.zip (Oracle JDBC driver),    *
-echo * core.jar, openmap.jar, and                                *
-echo * xml4j_2_0_11.jar (IMB XML parser) in ..\..\lib.           *
+echo * To use, first place classes12.zip (Oracle JDBC driver),   *
+echo * core.jar, cuimap.jar, glm.jar, tops.jar, LocationInfo.jar *
+echo * and xerces.jar (XML parser) in ..\..\lib.                 *
 echo *************************************************************
 
 set LIB_PATH=..\..\lib
@@ -11,12 +11,13 @@ rem set LIB_PATH=s:\alp70\alp\lib
 set DATA_PATH=.\data
 
 set CP=..\..\classes
-rem set CP=%CP%;%LIB_PATH%\class122.zip
 set CP=%CP%;%LIB_PATH%\classes12.zip
-set CP=%CP%;%LIB_PATH%\xml4j_2_0_11.jar
+set CP=%CP%;%LIB_PATH%\xerces.jar
 set CP=%CP%;%LIB_PATH%\core.jar
-rem set CP=%CP%;%LIB_PATH%\openmap.jar
 set CP=%CP%;%LIB_PATH%\cuimap.jar
+set CP=%CP%;%LIB_PATH%\glm.jar
+set CP=%CP%;%LIB_PATH%\LocationInfo.jar
+set CP=%CP%;%LIB_PATH%\tops.jar
 set CP=%CP%;%DATA_PATH%
 
 set SRCR=..\..\src\org\cougaar\lib\uiframework
@@ -44,3 +45,4 @@ set JF=%JF% %SRBJ%\assessui\util\OrgXMLGenerator.java
 if NOT EXIST ..\..\classes mkdir ..\..\classes
 
 javac -classpath %CP% -d ..\..\classes %JF%
+rem c:\jdk1.2.2\bin\javac -classpath %CP% -d ..\..\classes %JF%
