@@ -35,7 +35,7 @@ public class TestHarness {
     Structure query = readQuery(file);
 
     Structure result = gi.query(query);
-    PrettyPrinter pp = new PrettyPrinter(new PrintWriter(System.out));
+    PrettyPrinter pp = new PrettyPrinter(System.out);
     result.generateXml(pp);
     pp.flush();
   }
