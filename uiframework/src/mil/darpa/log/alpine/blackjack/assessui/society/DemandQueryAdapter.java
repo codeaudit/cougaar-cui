@@ -83,20 +83,6 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           time_long = time_double.longValue ();
           end_time = String.valueOf (time_long);
 
-          // Find what the demand rate is and put it in a string
-
-          Rate demand_rate = TaskUtils.getRate (t);
-
-          if ((demand_rate != null) && (demand_rate instanceof CountRate)) {
-            CountRate cr = (CountRate) demand_rate;
-            rate = new String ("" + cr.getEachesPerDay());
-          }
-          else
-          {
-            System.out.println ("WARNING: No rate");
-            continue;
-          }
-
           // Find the organization in the "For" preposition
 
           PrepositionalPhrase for_phrase = t.getPrepositionalPhrase ("For");
@@ -125,6 +111,20 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           }
 
           item = type_id_pg.getTypeIdentification();
+
+          // Find what the demand rate is and put it in a string
+
+          Rate demand_rate = TaskUtils.getRate (t);
+
+          if ((demand_rate != null) && (demand_rate instanceof CountRate)) {
+            CountRate cr = (CountRate) demand_rate;
+            rate = new String ("" + cr.getEachesPerDay());
+          }
+          else
+          {
+            System.out.println ("WARNING: No rate for org " + org + ", item " + item);
+            continue;
+          }
 
 /*
           if (index < 5) {
