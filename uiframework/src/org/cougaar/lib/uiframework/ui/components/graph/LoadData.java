@@ -40,7 +40,7 @@ import java.net.URL;
  * This class will load data (as a seperate thread) into a DataSet
  * given a URL.
  *
- *
+ * @version  $Revision: 1.5 $, $Date: 2001-10-26 21:38:34 $
  * @author   Leigh Brookshaw
  */
 

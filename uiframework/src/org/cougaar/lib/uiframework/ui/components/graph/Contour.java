@@ -38,7 +38,7 @@ import java.io.InputStream;
  * This class extends the interactive graphics class G2Dint to incorporate
  * contouring.
  *
- *
+ * @version  $Revision: 1.5 $, $Date: 2001-10-26 21:38:34 $.
  * @author   Leigh Brookshaw
  */
 

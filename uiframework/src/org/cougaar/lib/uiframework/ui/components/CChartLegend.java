@@ -1,22 +1,24 @@
-/*
- * <copyright>
- *  Copyright 1997-2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
 
 package org.cougaar.lib.uiframework.ui.components;
@@ -34,6 +36,13 @@ import java.beans.PropertyChangeEvent;
 import org.cougaar.lib.uiframework.ui.components.graph.*;
 import org.cougaar.lib.uiframework.ui.components.*;
 
+/***********************************************************************************************************************
+<b>Description</b>: A legend component for chart data sets with the capability to notify property listeners when the
+                    legend sets data set visibility on and off.
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class CChartLegend extends JPanel
 {
   private Hashtable dataSetGroups = new Hashtable(1);
@@ -41,11 +50,20 @@ public class CChartLegend extends JPanel
   private Color foregroundColor = null;
   private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Default legend constructor.
+	*********************************************************************************************************************/
   public CChartLegend()
   {
     updateUI();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Adds a data set to the legend.
+
+  <br>
+  @param dataSet Data set to add to the legend
+	*********************************************************************************************************************/
   public void addDataSet(DataSet dataSet)
   {
     Vector group = null;
@@ -60,6 +78,9 @@ public class CChartLegend extends JPanel
     resetCheckBoxes();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Removes all of the data sets from the legend.
+	*********************************************************************************************************************/
   public void removeAllDataSets()
   {
     dataSetGroups.clear();
@@ -146,11 +167,23 @@ public class CChartLegend extends JPanel
     validate();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Add a property change listener to be notified when the legend changes data set visibility.
+
+  <br>
+  @param propertyChangeListener Listener to add
+	*********************************************************************************************************************/
   public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener)
   {
     propertyChangeSupport.addPropertyChangeListener(propertyChangeListener);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Remove a property change listener.
+
+  <br>
+  @param propertyChangeListener Listener to remove
+	*********************************************************************************************************************/
   public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener)
   {
     propertyChangeSupport.removePropertyChangeListener(propertyChangeListener);

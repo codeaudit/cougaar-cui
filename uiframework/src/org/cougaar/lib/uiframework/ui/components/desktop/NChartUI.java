@@ -1,21 +1,10 @@
 /*
  * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ * Copyright 1997-2000 Defense Advanced Research Projects Agency (DARPA)
+ * and Clark Software Engineering (CSE) This software to be used in
+ * accordance with the COUGAAR license agreement.  The license agreement
+ * and other information on the Cognitive Agent Architecture (COUGAAR)
+ * Project can be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
  */
 package org.cougaar.lib.uiframework.ui.components.desktop;
@@ -38,7 +27,17 @@ import org.cougaar.lib.uiframework.ui.inventory.MenuUtility;
 
 import org.cougaar.util.OptionPane;
 
-public class NChartUI implements CougaarUI
+/***********************************************************************************************************************
+<b>Description</b>: NChartUI GUI component for NChart example.
+
+<br><br><b>Notes</b>:<br>
+									Provides the ui components to NChart.
+
+@author Frank Cooley, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
+
+public class NChartUI //implements CougaarUI
 {
 	private static final int FILL_PATTERN = -2;
   private static final int VISIBLE      = -1;
@@ -62,24 +61,29 @@ public class NChartUI implements CougaarUI
 	public NChartUI(int numberOfCharts)
 	{
 		totalCharts = numberOfCharts;
+		//dataSetVector = new Vector();
 	}
-	public NChartUI(Vector data)
+	public NChartUI(int numberOfCharts, JInternalFrame installFrame)
+	{
+		totalCharts = numberOfCharts;
+		init(installFrame);
+		//dataSetVector = new Vector();
+	}
+	public NChartUI(Vector data,JInternalFrame installFrame)
 	{
 		dataSetVector = data;
+		init(installFrame);
+		//System.out.println("%%%% datset vector is " + data);
 	}
 	
-	public void install(JFrame installFrame)
+	public void init(JFrame installFrame)
   {
+  	//System.out.println("%%%% install");
   	frame = installFrame;
   	installFrame.setJMenuBar(new JMenuBar());
   	buildChart(installFrame.getContentPane(), installFrame.getJMenuBar());
   	
-  	if(dataSetVector != null)
-  	{
-  	  chart.setDataIntoChart(dataSetVector); 
-  	  setDataSetMenu();
-  	} 
-  	
+  	  	
   	installFrame.addWindowListener(new WindowAdapter()
       {
         public void windowClosing(WindowEvent e)
@@ -101,64 +105,105 @@ public class NChartUI implements CougaarUI
     installFrame.validate();
   }
   
-  public void install(JInternalFrame installFrame)
+  public void init(JInternalFrame installFrame)
   {
   	frame = installFrame;
   	installFrame.setJMenuBar(new JMenuBar());
   	buildChart(installFrame.getContentPane(), installFrame.getJMenuBar());
   	
-  	if(dataSetVector != null)
-  	{
-  	  chart.setDataIntoChart(dataSetVector); 
-  	  setDataSetMenu();
-  	} 	
+  	//if(dataSetVector != null)
+  	//{
+  		//chart.setDataIntoChart(dataSetVector, false); 
+  	  //setDataSetMenu();
+  	//} 
+  	//else
+  	//{
+      Vector graphData = initialData();
+      chart.setDataIntoChart(graphData, true);
+      setDataSetMenu();
+    //}
+  	
   	installFrame.show();
     installFrame.validate();
   }
   
-  public void buildControlPanel(Container contentPane)
-  {
-  	chart = new NChart(totalCharts, this);
-  	
-  	double[] data = new double[] {0.0, 10.0, 20.0, 5.0, 30.0, 75.0, 40.0, 14.0};
-  	PolygonFillableDataSet dataSet = null;
-  	try
-  	{
-  	  dataSet = new PolygonFillableDataSet(data, data.length/2, false);
-  	}
-    catch(Exception e)
-    {
-  	
-    }
-	  for(int i = 0; i < totalCharts; i++)
-	  {
-	  	chart.attachDataSet(dataSet, i);
-	  }
-	  
-  	chart.resetTR();
-  	chart.resetR();
-  	JPanel chartPanel = new JPanel(new BorderLayout());
-  	chartPanel.add(chart, BorderLayout.CENTER);
-  	contentPane.add(chartPanel, BorderLayout.SOUTH);
-  }
   
   
   public void buildChart(Container contentPane, JMenuBar menuBar)
   {
   	createMenuAndDialogs(contentPane, menuBar);
-  	chart = new NChart(totalCharts, this);
+  	chart = new NChart(totalCharts, "Time", "y-label", this);
+  	  	
+  	JScrollPane jChartScrollPane = new JScrollPane(chart);
+  	contentPane.add(jChartScrollPane, BorderLayout.CENTER);
+  }
+  
+  public Vector initialData()
+  {
+  	double[] data1 = new double[] {0.0, 0.0};
+  	double[] data2 = new double[] {0.0, 0.0};
+  	double[] data3 = new double[] {0.0, 0.0};
+  	double[] data4 = new double[] {0.0, 0.0};
   	
-  	JPanel chartPanel = new JPanel(new BorderLayout());
-  	chartPanel.add(chart, BorderLayout.CENTER);
-  	contentPane.add(chartPanel, BorderLayout.SOUTH);
+  	
+  	Vector data1V = new Vector();
+  	Vector data2V = new Vector();
+  	Vector data3V = new Vector();
+  	Vector data4V = new Vector();
+	  	try
+	  	{
+	  		
+	  		//  chart 1
+	  		DataSet d1a = new PolygonFillableDataSet(data1, data1.length/2, false);
+	  		d1a.dataName = "d1a";
+	  		data1V.add(d1a);
+	  		
+	  		
+	  		//  chart 2
+	  		DataSet d1b = new PolygonFillableDataSet(data1, data1.length/2, false);
+	  		d1b.dataName = "d1b";
+	  		data2V.add(d1b);
+	  		
+	  		
+	  		//  chart 3
+	  		DataSet d1c = new PolygonFillableDataSet(data1, data1.length/2, false);
+	  		d1c.dataName = "d1c";
+	  		data3V.add(d1c);
+	  		
+	  		
+	  		//  chart 4
+	  		
+	  		DataSet d1d = new PolygonFillableDataSet(data1, data1.length/2, false);
+	  		d1d.dataName = "d1d";
+	  		data4V.add(d1d);
+	  		
+	  		
+	  	  	  
+	    }
+	    catch(Exception e)
+	    {
+	  	
+	  }
+	  dataSetVector = new Vector(4);
+	  dataSetVector.add(data1V);
+  	dataSetVector.add(data2V);
+  	dataSetVector.add(data3V);
+  	dataSetVector.add(data4V);
+	  	
+	  return dataSetVector;
   }
   
   public Vector testData()
   {
-  	double[] data1 = new double[] {0.0, 10.0, 20.0, 5.0, 30.0, 40.0, 40.0, 14.0};
+/*  	double[] data1 = new double[] {0.0, 10.0, 20.0, 5.0, 30.0, 40.0, 50.0, 14.0};
   	double[] data2 = new double[] {0.0, 50.0, 20.0, 7.0, 30.0, 50.0, 40.0, 25.0};
   	double[] data3 = new double[] {0.0, 14.0, 20.0, 78.0, 30.0, 60.0, 40.0, 35.0};
   	double[] data4 = new double[] {0.0, 16.0, 20.0, 11.0, 30.0, 5.0, 40.0, 45.0};
+*/
+  	double[] data1 = new double[] {0.0, 10.0, 20.0, 5.0, 30.0, 40.0, 50.0, 14.0};
+  	double[] data2 = new double[] {0.0, 50.0, 20.0, 7.0, 30.0, 50.0, 40.0, 25.0, 60.0, 11.0};
+  	double[] data3 = new double[] {0.0, 14.0, 20.0, 78.0, 30.0, 60.0, 40.0, 35.0, 60.0, 11.0};
+  	double[] data4 = new double[] {0.0, 16.0, 20.0, 11.0, 30.0, 5.0, 40.0, 45.0, 60.0, 11.0};
   	
   	
   	Vector data1V = new Vector();
@@ -447,7 +492,7 @@ public class NChartUI implements CougaarUI
       	}
       	newData.add(newElement);
       }
-      chart.setDataIntoChart(newData);
+      chart.setDataIntoChart(newData, false);
       setDataSetMenu();
     }
 
@@ -549,14 +594,245 @@ public class NChartUI implements CougaarUI
 	    {
 	      jMenu = (JMenu)menu[cindex].add(new JMenu(dataSets[i].dataName));
 	      addDataSetTypeRadioButtons((PolygonFillableDataSet)dataSets[i], jMenu);
+        JMenuItem pieChartItem = new JMenuItem("Data Pie Chart");
+        final int chartIndex = cindex;
+        final int dataSetIndex = i;
+        final String chartLabel = "Data Set: " + dataSets[i].dataName;
+        pieChartItem.addActionListener(new ActionListener()
+          {
+            public void actionPerformed(ActionEvent e)
+            {
+              NChartUI.this.showDataPieChart(chartLabel, chartIndex, dataSetIndex);
+            }
+          });
+        jMenu.add(pieChartItem);
 	    }
+      
+      if (dataSets.length > 0)
+      {
+        JMenuItem pieChartItem = new JMenuItem("Data Pie Charts");
+        final int chartIndex = cindex;
+        final String chartLabel = "Data: " + menu[cindex].getText();
+        pieChartItem.addActionListener(new ActionListener()
+          {
+            public void actionPerformed(ActionEvent e)
+            {
+              NChartUI.this.showDataPieCharts(chartLabel, chartIndex);
+            }
+          });
+        menu[cindex].add(pieChartItem);
+
+        pieChartItem = new JMenuItem("Cumulative Data Pie Chart");
+        final int chartIndex2 = cindex;
+        final String chartLabel2 = "Cumulative Data: " + menu[cindex].getText();
+        pieChartItem.addActionListener(new ActionListener()
+          {
+            public void actionPerformed(ActionEvent e)
+            {
+              NChartUI.this.showCumulativeDataPieChart(chartLabel2, chartIndex2);
+            }
+          });
+        menu[cindex].add(pieChartItem);
+      }
     }
    
   }
   
-  
-  
-  
+  private void showDataPieCharts(String chartLabel, int chartIndex)
+  {
+    DataSet[] dataSets = (DataSet[])chart.getDataSets().elementAt(chartIndex);
+    Vector setList = new Vector(0);
+    for (int i=0; i<dataSets.length; i++)
+    {
+      if (dataSets[i].getData().length > 0)
+      {
+        setList.add(dataSets[i]);
+      }
+    }
+
+    Vector chartList = new Vector(0);
+    int indexCount = 0;
+    while (!setList.isEmpty())
+    {
+      String[] labels = new String[setList.size()];
+      double[] values = new double[setList.size()];
+      Color[] colors = new Color[setList.size()];
+
+      for (int i=0, count=0; i<setList.size(); i++, count++)
+      {
+        DataSet dataSet = (DataSet)setList.elementAt(i);
+        double[] data = dataSet.getData();
+        labels[count] = dataSet.dataName;
+        values[count] = data[indexCount+1];
+        colors[count] = dataSet.linecolor;
+        
+        if (data.length <= (indexCount+2))
+        {
+          setList.remove(i);
+          i--;
+        }
+      }
+
+      indexCount+=2;
+
+      PieChart chart = new PieChart(labels, values, colors, false);
+      chartList.add(chart);
+    }
+    
+    JFrame frame = new JFrame(chartLabel);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    double root = Math.sqrt(chartList.size());
+
+    final JPanel panel = new JPanel();
+    panel.setPreferredSize(new Dimension(((int)Math.round(root)) * 220, ((int)root) * 220));
+    frame.getContentPane().setLayout(new BorderLayout());
+    frame.getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
+
+    panel.setLayout(new GridLayout((int)Math.round(root), (int)root));
+    
+    final Vector finalChartList = chartList;
+    PieChartSizer sizer = new PieChartSizer()
+      {
+        public int getRadius(Graphics g)
+        {
+          int maxRadius = Integer.MAX_VALUE;
+          for (int i=0, isize=finalChartList.size(); i<isize; i++)
+          {
+            int radius = ((PieChart)finalChartList.elementAt(i)).getMaxRadius(g);
+            maxRadius = (radius < maxRadius) ? radius : maxRadius;
+          }
+          
+          return(maxRadius);
+        }
+      };
+    
+    Font font = new Font("Times-Roman", Font.PLAIN, 10);
+    PopupMouseListener listener = new PopupMouseListener(finalChartList);
+    panel.addMouseListener(listener);
+    
+    for (int i=0, isize=chartList.size(); i<isize; i++)
+    {
+      PieChart chart = (PieChart)chartList.elementAt(i);
+      chart.addMouseListener(listener);
+      chart.setPieChartSizer(sizer);
+      chart.setFont(font);
+      panel.add(chart);
+    }
+
+    frame.setSize(320, 320 + 26);
+    frame.show();
+  }
+
+  private class PopupMouseListener extends MouseAdapter implements ActionListener
+  {
+    private JPopupMenu popup = new JPopupMenu();
+    private JCheckBoxMenuItem antiAliasingCheck = new JCheckBoxMenuItem("Anti-Aliasing", true);
+    private JCheckBoxMenuItem outlineSlicesCheck = new JCheckBoxMenuItem("Outline Slices", true);
+    private JCheckBoxMenuItem shadowCheck = new JCheckBoxMenuItem("Show Shadow", true);
+    private JCheckBoxMenuItem drawLabelsCheck = new JCheckBoxMenuItem("Draw Labels", true);
+    private JCheckBoxMenuItem showLabelsCheck = new JCheckBoxMenuItem("Show Labels", true);
+    private JCheckBoxMenuItem showValuesCheck = new JCheckBoxMenuItem("Show Values", true);
+    private JCheckBoxMenuItem showPercentsCheck = new JCheckBoxMenuItem("Show Percents", true);
+
+    private Vector chartList;
+
+    public PopupMouseListener(Vector chartList)
+    {
+      this.chartList = chartList;
+      
+      popup.add(antiAliasingCheck);
+      popup.add(outlineSlicesCheck);
+      popup.add(shadowCheck);
+      popup.addSeparator();
+      popup.add(drawLabelsCheck);
+      popup.add(showLabelsCheck);
+      popup.add(showValuesCheck);
+      popup.add(showPercentsCheck);
+      
+      antiAliasingCheck.addActionListener(PopupMouseListener.this);
+      outlineSlicesCheck.addActionListener(PopupMouseListener.this);
+      shadowCheck.addActionListener(PopupMouseListener.this);
+      drawLabelsCheck.addActionListener(PopupMouseListener.this);
+      showLabelsCheck.addActionListener(PopupMouseListener.this);
+      showValuesCheck.addActionListener(PopupMouseListener.this);
+      showPercentsCheck.addActionListener(PopupMouseListener.this);
+    }
+    
+    public void actionPerformed(ActionEvent e)
+    {
+      for (int i=0, isize=chartList.size(); i<isize; i++)
+      {
+        PieChart chart = (PieChart)chartList.elementAt(i);
+        chart.setAntiAliasing(antiAliasingCheck.isSelected());
+        chart.setOutlineSlices(outlineSlicesCheck.isSelected());
+        chart.setShadow(shadowCheck.isSelected());
+        chart.setDrawLabels(drawLabelsCheck.isSelected());
+        chart.setShowLabels(showLabelsCheck.isSelected());
+        chart.setShowValues(showValuesCheck.isSelected());
+        chart.setShowPercents(showPercentsCheck.isSelected());
+
+        chart.repaint();
+      }
+    }
+    
+    public void mouseReleased(MouseEvent e)
+    {
+      if (e.isPopupTrigger())
+      {
+        popup.show(e.getComponent(), e.getX(), e.getY());
+      }
+    }
+  }
+
+  private void showCumulativeDataPieChart(String chartLabel, int chartIndex)
+  {
+    DataSet[] dataSets = (DataSet[])chart.getDataSets().elementAt(chartIndex);
+    String[] labels = new String[dataSets.length];
+    double[] values = new double[dataSets.length];
+    Color[] colors = new Color[dataSets.length];
+    for (int i=0; i<dataSets.length; i++)
+    {
+      labels[i] = dataSets[i].dataName;
+      values[i] = 0.0;
+      colors[i] = dataSets[i].linecolor;
+      double[] data = dataSets[i].getData();
+      for (int j=0; j<data.length; j+=2)
+      {
+        values[i] += data[j+1];
+      }
+    }
+    
+    JFrame frame = new JFrame(chartLabel);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    frame.getContentPane().setLayout(new BorderLayout());
+    PieChart pc = new PieChart(labels, values, colors);
+    frame.getContentPane().add(pc, BorderLayout.CENTER);
+    frame.setSize(320, 320 + 26);
+    frame.show();
+  }
+
+  private void showDataPieChart(String chartLabel, int chartIndex, int dataSetIndex)
+  {
+    DataSet[] dataSets = (DataSet[])chart.getDataSets().elementAt(chartIndex);
+    double[] data = dataSets[dataSetIndex].getData();
+
+    String[] labels = new String[data.length/2];
+    double[] values = new double[data.length/2];
+    for (int i=0; i<labels.length; i++)
+    {
+      labels[i] = Double.toString(data[i*2]);
+      values[i] = data[i*2+1];
+    }
+    
+    JFrame frame = new JFrame(chartLabel);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    frame.getContentPane().setLayout(new BorderLayout());
+    PieChart pc = new PieChart(labels, values);
+    frame.getContentPane().add(pc, BorderLayout.CENTER);
+    frame.setSize(320, 320 + 26);
+    frame.show();
+  }
+
   public boolean supportsPlaf()
   {
     return(true);
@@ -663,7 +939,7 @@ public class NChartUI implements CougaarUI
      public void actionPerformed(ActionEvent e)
      {
         Vector graphData = testData();
-        chart.setDataIntoChart(graphData);
+        chart.setDataIntoChart(graphData, false);
         setDataSetMenu();
         
      }

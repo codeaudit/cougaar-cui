@@ -1,24 +1,13 @@
+
 /*
  * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ * Copyright 1997-2000 Defense Advanced Research Projects Agency (DARPA)
+ * and Clark Software Engineering (CSE) This software to be used in
+ * accordance with the COUGAAR license agreement.  The license agreement
+ * and other information on the Cognitive Agent Architecture (COUGAAR)
+ * Project can be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
- */
-package org.cougaar.lib.uiframework.ui.components.desktop;
+ */package org.cougaar.lib.uiframework.ui.components.desktop;
 
 import java.awt.*;
 import java.util.*;
@@ -34,7 +23,18 @@ import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 import org.cougaar.lib.uiframework.ui.inventory.*;
 import org.cougaar.lib.uiframework.ui.components.graph.*;
 
-public class NChartUIComponent extends ComponentFactory implements CougaarDesktopUI
+
+/***********************************************************************************************************************
+<b>Description</b>: NChartUIComponent GUI component for NChart example.
+
+<br><br><b>Notes</b>:<br>
+									Provides the component factory to NChart.
+
+@author Frank Cooley, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
+
+public class NChartUIComponent extends ComponentFactory implements CougaarDesktopPropertiesUI
 {
   private NChartUI selector = null;
   private Vector persistedData = null;
@@ -50,14 +50,13 @@ public class NChartUIComponent extends ComponentFactory implements CougaarDeskto
 
   public void install(CDesktopFrame f)
   {
-    
     try
     {
     	if(persistedData != null)
-    	  selector = new NChartUI(persistedData);
+    	  selector = new NChartUI(persistedData, f);
     	else
-        selector = new NChartUI(5);
-      selector.install(f);
+        selector = new NChartUI(6, f);
+      //selector.install(f);
     }
     catch(Exception e)
     {
@@ -182,17 +181,27 @@ public class NChartUIComponent extends ComponentFactory implements CougaarDeskto
   
   public String getTitle()
   {
-    return(null);
+    return("NChartUI");
   }
 
   public Dimension getPreferredSize()
   {
-    return(new Dimension(800, 600));
+    return(new Dimension(900, 600));
   }
 
   public boolean isResizable()
   {
     return(true);
+  }
+  
+  public String getProperties()
+  {
+    String msg = "Author - Frank Cooley";
+  	msg += '\n';
+  	msg += "Company - Clark Software Engineering LTD.";
+  	msg += '\n';
+  	msg += "User dir - " + System.getProperty("user.dir");
+    return msg;
   }
 
 }

@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/components/IconScalePanel.java,v $
- * $Revision: 1.2 $
- * $Date: 2001-07-25 18:19:18 $
+ * $Revision: 1.3 $
+ * $Date: 2001-10-26 21:38:21 $
  * $Author: mdavis $
  * 
  * **********************************************************************
@@ -39,6 +39,7 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.Tool;
 
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
+import org.cougaar.lib.uiframework.ui.map.ScenarioMapBean;
 
 /**
  * Bean to zoom the Map.
@@ -65,13 +66,17 @@ public class IconScalePanel extends JPanel implements Serializable, Tool
               {
                 String command = e.getActionCommand();
 
+//                System.out.println ("IconScalePanel: actionListener looking for map bean with parent: " + getParent().getParent().getParent().toString());
+                ScenarioMapBean mapBean = ScenarioMap.getMapBean(getRootPane());
+
                 if (command.equals(IconScalePanel.scaleUpCmd))
                 {
-                  ScenarioMap.mapBean.findPspIconLayer().changeIconScale (2.0f);
+                  mapBean.findPspIconLayer().changeIconScale (2.0f);
+//                  ScenarioMap.mapBean.findPspIconLayer().changeIconScale (2.0f);
                 }
 	              else if (command.equals(IconScalePanel.scaleDownCmd))
                 {
-                  ScenarioMap.mapBean.findPspIconLayer().changeIconScale (-2.0f);
+                  mapBean.findPspIconLayer().changeIconScale (-2.0f);
                 }
               }
           };

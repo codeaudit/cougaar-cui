@@ -85,10 +85,11 @@ public class JumpToPanel implements Tool
             System.err.println("Do not know about location: "+location);
             location="Default location";
         }
-        ScenarioMapBean mymap = ScenarioMap.mapBean;
+        
+//        System.out.println ("\nJumpToPanel: getMapBean with root pane: " + mycb.getRootPane().toString() );
+        ScenarioMapBean mymap = ScenarioMap.getMapBean(mycb.getRootPane());
         mymap.setScale(zoom);
         mymap.setCenter(new LatLonPoint(lat,lon));
-        // System.out.println("Move to " +location);
 
     }
      /**

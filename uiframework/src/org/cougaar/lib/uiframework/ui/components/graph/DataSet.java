@@ -40,7 +40,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- *
+ * @version $Revision: 1.7 $, $Date: 2001-10-26 21:38:34 $
  * @author Leigh Brookshaw
  */
 public class DataSet extends Object {
@@ -84,6 +84,12 @@ public class DataSet extends Object {
       public String dataName = null;
 
       public float lineThickness = 3.0f;
+      
+      //  for nchart drag
+      
+      public String xAxisLabel = "";
+      public String yAxisLabel = "";
+      public String title = "";
 
   /*********************************************************************************************************************
   <b>Description</b>: Indicates the amount to offset each X value of this data set.
@@ -531,6 +537,37 @@ public class DataSet extends Object {
    */
       public double getYmin() {  return dymin; }
 
+  /**
+   * return the data X minimum.
+   */
+    public double getXDataValueMin()
+    {
+      return(getXmin());
+    }
+
+  /**
+   * return the data Y minimum.
+   */
+    public double getYDataValueMin()
+    {
+      return(getYmin());
+    }
+
+  /**
+   * return the data X maximum.
+   */
+    public double getXDataValueMax()
+    {
+      return(getXmax());
+    }
+
+  /**
+   * return the data Y maximum.
+   */
+    public double getYDataValueMax()
+    {
+      return(getYmax());
+    }
 
   /**
    * Define a data legend in the graph window
@@ -986,6 +1023,21 @@ public class DataSet extends Object {
            }
      }
 
+  protected String getPointAsString(double x, double y)
+  {
+    String s = "";
+    if (dataGroup != null)
+    {
+      s += dataGroup + ": ";
+    }
+
+    if (dataName != null)
+    {
+      s += dataName + " ";
+    }
+
+    return(s + "(" + xaxis.getPointAsString(x) + "," + yaxis.getPointAsString(y) + ")");
+  }
 }
 
 

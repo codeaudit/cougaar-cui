@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.desktop;
 
 import java.io.Serializable;
@@ -25,20 +28,50 @@ import java.io.Serializable;
 import java.awt.Insets;
 import java.awt.Dimension;
 
+import java.awt.Component;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 
+import java.util.Hashtable;
+
 import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+
 import javax.swing.event.InternalFrameEvent;
 
+/***********************************************************************************************************************
+<b>Description</b>: This class represents the internal frame components displayed in the Cougaar Desktop.  It is used
+                    as the communication medium between the CougaarDesktopUI instance and the Cougaar Desktop which it
+                    is being displayed in.
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class CDesktopFrame extends javax.swing.JInternalFrame implements javax.swing.event.InternalFrameListener, java.beans.VetoableChangeListener
 {
+  private static Hashtable instanceTitles = new Hashtable(1);
+
 	private CougaarDesktopUI component = null;
 
   private FrameInfo frameInfo = null;
 
   private Dimension deiconifiedSize = new Dimension();
 
+  private JMenuBar menuBar = null;
+  private boolean menuBarVisible = true;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Constructs a CDesktopFrame object.
+
+  <br><b>Notes</b>:<br>
+	                  - CDesktopFrame objects are generally constructed by the CougaarDesktop class and do not need to
+	                    be instantiated by a user application.
+
+  <br>
+  @param desktopPane Desktop pane this frame is to be displayed within
+  @param info Frame information such as CougaarDesktopUI object to display, etc.
+	*********************************************************************************************************************/
 	public CDesktopFrame(CDesktopPane desktopPane, FrameInfo info)
 	{
 		super(null, true, true, true, true);
@@ -77,7 +110,7 @@ public class CDesktopFrame extends javax.swing.JInternalFrame implements javax.s
 
 	  	setLocation(frameInfo.frameLocation); // Must set the location after the component is installed (bug???)
 
-//      addInternalFrameListener(this);
+      addInternalFrameListener(this);
 //      addVetoableChangeListener(this);
 
 			setVisible(true);
@@ -88,21 +121,143 @@ public class CDesktopFrame extends javax.swing.JInternalFrame implements javax.s
     }
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the title of this desktop frame.  CougaarDesktopUI components can use this method to change
+                      the window title of the desktop frame.
+
+  <br>
+  @param title New title of the frame window
+	*********************************************************************************************************************/
+  public void setTitle(String title)
+  {
+    if (getTitle() != null)
+    {
+      instanceTitles.remove(getTitle());
+    }
+    
+    int count = 2;
+    title = (title == null || title.length() == 0) ? " " : title;
+    String newTitle = title;
+    while (instanceTitles.get(newTitle) != null)
+    {
+      newTitle = title + " (" + count + ")";
+      count++;
+    }
+
+    instanceTitles.put(newTitle, newTitle);
+
+    super.setTitle(newTitle);
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Provides a method for turning on/off the desktop frame's menu bar visibility.
+
+  <br>
+  @param visible True if the menu bar should be visible, false otherwise
+	*********************************************************************************************************************/
+	public void setMenuBarVisible(boolean visible)
+	{
+	  menuBarVisible = visible;
+	  setJMenuBar(menuBar);
+	}
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Provides a method for setting the desktop frame's menu bar.
+
+  <br>
+  @param menuBar Menu bar to display on the desktop frame
+	*********************************************************************************************************************/
+	public void setJMenuBar(JMenuBar menuBar)
+	{
+	  this.menuBar = menuBar;
+
+	  if (menuBar != null)
+	  {
+  	  if (menuBarVisible)
+  	  {
+  	    super.setJMenuBar(menuBar);
+  	  }
+  	  else
+  	  {
+  	    super.setJMenuBar(null);
+  	  }
+  	  
+  	  menuBar.revalidate();
+  	}
+	}
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the desktop frame's current menu bar.
+
+  <br>
+  @return Current menu bar
+	*********************************************************************************************************************/
+	public JMenuBar getJMenuBar()
+	{
+		return(menuBar);
+	}
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
 	public void frameDragged()
 	{
 		repaint();
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the Cougaar Desktop instance the desktop frame is displayed within.
+
+  <br>
+  @return Cougaar Desktop instance
+	*********************************************************************************************************************/
   public CougaarDesktop getDesktop()
   {
     return(((CDesktopPane)getDesktopPane()).getDesktop());
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns all of the desktop frames displayed within the Cougaar Desktop instance of the current
+                      desktop frame.
+
+  <br>
+  @return Array of all desktop frames
+	*********************************************************************************************************************/
+  public CDesktopFrame[] getAllDesktopFrames()
+  {
+    CDesktopPane desktopPane = (CDesktopPane)getDesktopPane();
+    if (desktopPane != null)
+    {
+		  return(desktopPane.getAllDesktopFrames());
+		}
+		
+		return(new CDesktopFrame[0]);
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Creates a CougaarDesktopUI from the specified parameters.  The new CougaarDesktopUI component
+                      will be displayed in a new desktop frame window.
+
+  <br><b>Notes</b>:<br>
+	                  - Desktop applications use this method to display secondary application windows
+
+  <br>
+  @param factoryName Fully qualified class name of the factory to use to build the CougaarDesktopUI object
+  @param data Data used to initialize the component, or null if not needed
+  @return CougaarDesktopUI object created
+	*********************************************************************************************************************/
   public CougaarDesktopUI createTool(String factoryName, Serializable data)
   {
     return(((CDesktopPane)getDesktopPane()).getDesktop().createTool(factoryName, data));
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the frame information of this desktop frame.  This method is generally used only by the
+                      Cougaar Desktop when saving a desktop environment.
+
+  <br>
+  @return Frame information of the desktop frame
+	*********************************************************************************************************************/
   public FrameInfo getFrameInfo()
   {
     getLocation(frameInfo.frameLocation);
@@ -129,46 +284,90 @@ public class CDesktopFrame extends javax.swing.JInternalFrame implements javax.s
 		return(frameInfo);
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the CougaarDesktopUI instance of the desktop frame.  This method is generally used
+                      only by the Cougaar Desktop when saving a desktop environment and tile managers when arranging
+                      desktop windows by type.
+
+  <br>
+  @return CougaarDesktopUI instance of the desktop frame
+	*********************************************************************************************************************/
+  public CougaarDesktopUI getComponent()
+  {
+    return(frameInfo.getComponent());
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void internalFrameOpened(InternalFrameEvent e)
   {
 //    System.out.println("internalFrameOpened");
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void internalFrameClosing(InternalFrameEvent e)
   {
 //    System.out.println("internalFrameClosing");
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void internalFrameClosed(InternalFrameEvent e)
   {
 //    System.out.println("internalFrameClosed");
+    if (getTitle() != null)
+    {
+      instanceTitles.remove(getTitle());
+    }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void internalFrameIconified(InternalFrameEvent e)
   {
 //    System.out.println("internalFrameIconified");
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void internalFrameDeiconified(InternalFrameEvent e)
   {
 //    System.out.println("internalFrameDeiconified");
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void internalFrameActivated(InternalFrameEvent e)
   {
 //    System.out.println("internalFrameActivated");
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void internalFrameDeactivated(InternalFrameEvent e)
   {
 //    System.out.println("internalFrameDeactivated");
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException
   {
   }
 
   private Dimension viewSize = new Dimension();
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame listener callback.
+	*********************************************************************************************************************/
   public void setMaximum(boolean toMax) throws PropertyVetoException
   {
     if (toMax)

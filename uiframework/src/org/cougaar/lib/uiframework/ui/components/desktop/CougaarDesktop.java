@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.desktop;
 
 import javax.swing.SwingUtilities;
@@ -59,6 +62,8 @@ import java.awt.GridLayout;
 import java.awt.BorderLayout;
 
 import java.awt.event.AWTEventListener;
+import java.awt.event.ContainerListener;
+import java.awt.event.ContainerEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -68,6 +73,7 @@ import java.awt.AWTEvent;
 import javax.swing.event.MouseInputListener;
 
 import java.util.Vector;
+import java.util.Hashtable;
 import java.util.EventObject;
 
 import java.io.Serializable;
@@ -79,11 +85,25 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
-import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 
+import org.cougaar.lib.uiframework.ui.util.CougaarUI;
+import org.cougaar.lib.uiframework.ui.components.desktop.osm.ObjectStorageManager;
+
+/***********************************************************************************************************************
+<b>Description</b>: This class represents the Cougaar Desktop application.
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CFrame implements javax.swing.SwingConstants
 {
+	/*********************************************************************************************************************
+  <b>Description</b>: Name of the desktop configuration file.  The configuration file contains information such as
+                      desktop screen location/size and last desktop.
+	*********************************************************************************************************************/
 	public static final String DEFAULT_CONFIG_FILE_NAME = "DefaultCougaarDesktop.config";
+
+  private ObjectStorageManager osm = new ObjectStorageManager();
 
 	private String configFileName = null;
 
@@ -97,13 +117,24 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 	
 	private JMenu windowMenu = null;
 	private JMenu toolMenu = null;
+	private JMenu propertiesMenu = null;
 
 	private JMenuItem printSelectedMenuItem = null;
 	private JMenuItem closeMenuItem = null;
-
+	
+	
 	// Used to place new frames
 	private int count = 0;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Constructs a new Cougaar Desktop instance based on the specified configuration file name.
+
+  <br><b>Notes</b>:<br>
+	                  - Normally, this class is constructed by the main() method
+
+  <br>
+  @param configFileName File name of the desktop application configuration file
+	*********************************************************************************************************************/
 	public CougaarDesktop(String configFileName) throws Throwable
 	{
     this.configFileName = configFileName;
@@ -255,6 +286,11 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		closeMenuItem.addActionListener(new ListenerAction(this, "closeSelectedWindow", new Object[] {}, ListenerAction.actionPerformed));
 		fileMenu.add(closeMenuItem);
 		
+		propertiesMenu = new JMenu("View Properties");
+		menuItem = new JMenuItem("All");
+		menuItem.addActionListener(new ListenerAction(this, "getPropertiesEntireDesktop", new Object[] {}, ListenerAction.actionPerformed));
+		propertiesMenu.add(menuItem);
+		fileMenu.add(propertiesMenu);
 
     fileMenu.addSeparator();
 
@@ -270,17 +306,43 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 
 	protected JMenu getWindowMenu() throws Throwable
 	{
-		JCheckBoxMenuItem menuItem = null;
+		JMenuItem menuItem = null;
 		windowMenu = (JMenu)menuBar.add(new JMenu("Window"));
 		windowMenu.setMnemonic(KeyEvent.VK_W);
 
+		menuItem = new JCheckBoxMenuItem("Show Menu On Window");
+		menuItem.setMnemonic(KeyEvent.VK_W);
+		((JCheckBoxMenuItem)menuItem).setState(true);
+		menuItem.addActionListener(new ListenerAction(this, "showMenuOnWindow", new Object[] {menuItem}, ListenerAction.actionPerformed));
+		windowMenu.add(menuItem);
 
 		menuItem = new JCheckBoxMenuItem("Snap Selected Window To Center");
 		menuItem.setMnemonic(KeyEvent.VK_A);
-		menuItem.setState(desktopConfig.snapWindowToCenter);
+		((JCheckBoxMenuItem)menuItem).setState(desktopConfig.snapWindowToCenter);
 		menuItem.addActionListener(new ListenerAction(this, "snapSelectedWindowToCenter", new Object[] {menuItem}, ListenerAction.actionPerformed));
 		windowMenu.add(menuItem);
 
+		menuItem = new JMenuItem("Tile Horizontal By Type");
+		menuItem.setMnemonic(KeyEvent.VK_T);
+		menuItem.addActionListener(new ListenerAction(this, "tileHorizontalByClass", new Object[] {}, ListenerAction.actionPerformed));
+		windowMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Tile Vertical By Type");
+		menuItem.setMnemonic(KeyEvent.VK_T);
+		menuItem.addActionListener(new ListenerAction(this, "tileVerticalByClass", new Object[] {}, ListenerAction.actionPerformed));
+		windowMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Tile Horizontal By Size");
+		menuItem.setMnemonic(KeyEvent.VK_T);
+		menuItem.addActionListener(new ListenerAction(this, "tileHorizontalBySize", new Object[] {}, ListenerAction.actionPerformed));
+		windowMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Tile Vertical By Size");
+		menuItem.setMnemonic(KeyEvent.VK_T);
+		menuItem.addActionListener(new ListenerAction(this, "tileVerticalBySize", new Object[] {}, ListenerAction.actionPerformed));
+		windowMenu.add(menuItem);
+
+    windowMenu.addSeparator();
 
 		return(windowMenu);
 	}
@@ -311,16 +373,219 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		return(menu);
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void snapSelectedWindowToCenter(JCheckBoxMenuItem menuItem)
 	{
 		desktopConfig.snapWindowToCenter = menuItem.getState();
 	}
 
+  private JMenuBar currentWindowMenuBar = null;
+
+  private boolean showWindowMenu = true;
+
+  private Hashtable proxyList = new Hashtable(1);
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
+	public void showMenuOnWindow(JCheckBoxMenuItem menuItem)
+	{
+		showWindowMenu = menuItem.getState();
+		
+		CDesktopFrame[] frameList = desktopPane.getAllDesktopFrames();
+		for(int i=0; i<frameList.length; i++)
+		{
+		  frameList[i].setMenuBarVisible(showWindowMenu);
+		}
+		
+		showMenus();
+	}
+
+  private void showMenus()
+  {
+    if (showWindowMenu)
+    {
+      removeMenuProxies();
+    }
+    else
+    {
+      CDesktopFrame frame = desktopPane.getSelectedDesktopFrame();
+      if (frame != null)
+      {
+        addMenuProxies(frame.getJMenuBar());
+      }
+    }
+  }
+
+  private ContainerListener currentWMBContainerListener = new ContainerListener()
+    {
+      public void componentAdded(ContainerEvent e)
+      {
+        refeshMenuProxies();
+      }
+
+      public void componentRemoved(ContainerEvent e)
+      {
+        refeshMenuProxies();
+      }
+      
+      private void refeshMenuProxies()
+      {
+        removeMenuProxies();
+        CDesktopFrame frame = desktopPane.getSelectedDesktopFrame();
+        if (frame != null)
+        {
+          addMenuProxies(frame.getJMenuBar());
+        }
+      }
+    };
+
+  private void addMenuProxies(JMenuBar menuBarToProxy)
+  {
+    currentWindowMenuBar = menuBarToProxy;
+    if (currentWindowMenuBar != null)
+    {
+      Component[] menus = currentWindowMenuBar.getComponents();
+      for (int i=0; i<menus.length; i++)
+      {
+        Component parentComponent = getMenu(((JMenu)menus[i]).getText());
+        if (parentComponent == null)
+        {
+          parentComponent = menuBar;
+        }
+
+        MenuProxy menuProxy = MenuProxyRegistry.getProxy(menus[i], parentComponent, currentWMBContainerListener);
+        
+        proxyList.put(menus[i], menuProxy);
+      }
+    }
+
+    // Need to do this after menu components are added
+    currentWindowMenuBar.addContainerListener(currentWMBContainerListener);
+    menuBar.addContainerListener(currentWMBContainerListener);
+
+		menuBar.revalidate();
+		menuBar.repaint();
+  }
+
+  private void removeMenuProxies()
+  {
+    if (currentWindowMenuBar != null)
+    {
+      currentWindowMenuBar.removeContainerListener(currentWMBContainerListener);
+      menuBar.removeContainerListener(currentWMBContainerListener);
+
+      Component[] menus = currentWindowMenuBar.getComponents();
+      for (int i=0; i<menus.length; i++)
+      {
+        MenuProxy proxy = (MenuProxy)proxyList.remove(menus[i]);
+        if (proxy != null)
+        {
+          proxy.dispose();
+        }
+      }
+
+      currentWindowMenuBar = null;
+
+  		menuBar.revalidate();
+  		menuBar.repaint();
+    }
+  }
+
+  private JMenu getMenu(String menuName)
+  {
+    Component[] menus = menuBar.getComponents();
+    for (int i=0; i<menus.length; i++)
+    {
+      // Return only non-JMenuProxy objects
+      if ((((JMenu)menus[i]).getText().equals(menuName)) && !(menus[i] instanceof JMenuProxy))
+      {
+        return((JMenu)menus[i]);
+      }
+    }
+
+    return(null);
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame action callback method.
+	*********************************************************************************************************************/
+	public void frameActivated(CDesktopFrame frame)
+	{
+    showMenus();
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame action callback method.
+	*********************************************************************************************************************/
+	public void frameDeactivated(CDesktopFrame frame)
+	{
+	  if (!showWindowMenu)
+	  {
+      removeMenuProxies();
+    }
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Frame action callback method.
+	*********************************************************************************************************************/
+	public void frameClosed(CDesktopFrame frame)
+	{
+	  if (!showWindowMenu)
+	  {
+      removeMenuProxies();
+    }
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
+	public void tileHorizontalByClass()
+	{
+	  TileManager htm = new HorizontalClassTileManager();
+	  htm.tile(desktopPane);
+	}
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
+	public void tileVerticalByClass()
+	{
+	  TileManager vtm = new VerticalClassTileManager();
+	  vtm.tile(desktopPane);
+	}
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
+	public void tileHorizontalBySize()
+	{
+	  TileManager htm = new HorizontalSizeTileManager();
+	  htm.tile(desktopPane);
+	}
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
+	public void tileVerticalBySize()
+	{
+	  TileManager vtm = new VerticalSizeTileManager();
+	  vtm.tile(desktopPane);
+	}
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void setAutoSaveDesktopOnExit(JCheckBoxMenuItem menuItem)
 	{
 		desktopConfig.autoSaveDesktop = menuItem.getState();
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void newDesktopDialog()
 	{
 		if ((!desktopConfig.autoSaveDesktop) || (desktopConfig.currentDesktopFileName == null))
@@ -362,6 +627,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		}
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void loadDesktopDialog()
 	{
 		if ((!desktopConfig.autoSaveDesktop) || (desktopConfig.currentDesktopFileName == null))
@@ -436,7 +704,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 	  initDesktop(desktopInfo);
   }
 
-  // Returns flase if the save operation was canceled
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.  Returns false if the save operation was canceled.
+	*********************************************************************************************************************/
 	public boolean saveDesktopDialog()
 	{
     String fileName = desktopConfig.currentDesktopFileName;
@@ -466,6 +736,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		return(true);
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void saveDesktopAsDialog()
 	{
     String fileName = null;
@@ -503,6 +776,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		desktopInfo.scrollPaneVerticalPosition = scrollPane.getVerticalScrollBar().getModel().getValue();
 		desktopInfo.scrollPaneHorizontalPosition = scrollPane.getHorizontalScrollBar().getModel().getValue();
 
+		desktopInfo.desktopWidth = desktopPane.getSize().width;
+		desktopInfo.desktopHeight = desktopPane.getSize().height;
+
     desktopInfo.save(fileName);
 
 	  desktopConfig.currentDesktopFileName = fileName;
@@ -511,6 +787,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		resetDesktopTitle();
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void exit()
 	{
 	  try
@@ -556,6 +835,8 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 	protected void initDesktop(DesktopInfo info)
 	{
     desktopPane.setBackground(info.backgroundImage, info.tiledBackground);
+		desktopPane.setPreferredSize(new Dimension(info.desktopWidth, info.desktopHeight));
+		desktopPane.revalidate();
 
     buildToolMenu();
 
@@ -625,6 +906,15 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		buildToolMenu();
 	}
 */
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Builds a CougaarDesktopUI instance from the specified factory and adds it to a desktop frame and
+                      displays it .
+
+  <br>
+  @param factoryName Name of the factory
+  @return Created instance of CougaarDesktopUI object
+	*********************************************************************************************************************/
 	public CougaarDesktopUI createTool(String factoryName)
 	{
 	  FrameInfo info = new FrameInfo(factoryName, getNextWindowLocation(), false, true);
@@ -634,6 +924,15 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
     return(info.getComponent());
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Builds a CougaarDesktopUI instance from the specified factory with persisted data and adds it to
+                      a desktop frame and displays it .
+
+  <br>
+  @param factoryName Name of the factory
+  @param data Persisted data
+  @return Created instance of CougaarDesktopUI object
+	*********************************************************************************************************************/
 	public CougaarDesktopUI createTool(String factoryName, Serializable data)
 	{
 	  FrameInfo info = new FrameInfo(factoryName, data, getNextWindowLocation(), false, true);
@@ -674,7 +973,19 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
   		menuItem.addActionListener(new ListenerAction(this, "selectWindow", new Object[] {frame}, ListenerAction.actionPerformed));
   		frame.addPropertyChangeListener(JInternalFrame.TITLE_PROPERTY, new ListenerAction(this, "windowTitleChanged", new Object[] {frame, menuItem}, ListenerAction.propertyChange));
   		frame.addInternalFrameListener(new ListenerAction(windowMenu, "remove", new Object[] {menuItem}, ListenerAction.internalFrameClosed));
+  		frame.addInternalFrameListener(new ListenerAction(this, "frameActivated", new Object[] {frame}, ListenerAction.internalFrameActivated));
+  		frame.addInternalFrameListener(new ListenerAction(this, "frameDeactivated", new Object[] {frame}, ListenerAction.internalFrameDeactivated));
+  		frame.addInternalFrameListener(new ListenerAction(this, "frameClosed", new Object[] {frame}, ListenerAction.internalFrameClosed));
   		windowMenu.add(menuItem);
+      
+      // for properties menu
+      
+      JMenuItem PropMenuItem = new JMenuItem(frame.getTitle());
+      PropMenuItem.addActionListener(new ListenerAction(this, "getFrameProperties", new Object[] {frame}, ListenerAction.actionPerformed));
+      propertiesMenu.add(PropMenuItem);
+      
+		  frame.setMenuBarVisible(showWindowMenu);
+  		showMenus();
   	}
   	catch (Throwable t)
   	{
@@ -696,11 +1007,69 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 	  setTitle(desktopInfo.desktopName + fileTitle);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
   public void printEntireDesktop()
   {
 		printComponent((Component)this);
   }
+  
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
+  public void getPropertiesEntireDesktop()
+  {
+  	CDesktopFrame[] frameList = desktopPane.getAllDesktopFrames();
+  	String title = "All Supported Frames";
+    String msg = "";
+  	for(int i = 0; i < frameList.length; i++)
+  	{
+  		CDesktopFrame frame = frameList[i];
+  		CougaarDesktopUI component = frame.getComponent();
+  		if(component instanceof CougaarDesktopPropertiesUI)
+  	  {
+  	  	//msg += System.getProperty("line.separator");
+  	  	msg += '\n';
+  	  	msg += '\n';
+  	  	msg += frame.getTitle() + " Properties";
+  	  	//msg += System.getProperty("line.separator");
+  	  	msg += '\n';
+  	  	msg += '\n';
+  	  	msg += ((CougaarDesktopPropertiesUI)component).getProperties(); 
+  	  	msg += '\n';
+  	  	msg += "__________________";
+  	  }
+  	}
+  	JOptionPane.showMessageDialog(this, msg, title, JOptionPane.PLAIN_MESSAGE);
+  	//System.out.println("get all properties");
+  }
+  
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
+  public void getFrameProperties(CDesktopFrame frame)
+  {
+  	CougaarDesktopUI component = frame.getComponent();
+  	if(component instanceof CougaarDesktopPropertiesUI)
+  	{
+  		
+  		JOptionPane.showMessageDialog(this, ((CougaarDesktopPropertiesUI)component).getProperties(), frame.getTitle() + " Properties", JOptionPane.PLAIN_MESSAGE);
+  		/*System.out.println("result of getproperties " + ((CougaarDesktopPropertiesUI)component).getProperties()); 
+  		String msg = ((CougaarDesktopPropertiesUI)component).getProperties();
+        String defaultString = "1";
+        if ((messageString = OptionPane.showInputDialog(frame, msg, "Chart Number", 3, null, null, defaultString)) == null)
+        {
+          return;
+        }
+        */
+  	}
+  	System.out.println("Get frame properties " + frame.getTitle());
+  }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
   public void printSelectedView()
   {
 		CDesktopFrame selectedFrame = desktopPane.getSelectedDesktopFrame();
@@ -711,6 +1080,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		}
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Print interface callback method.
+	*********************************************************************************************************************/
   public void printComponent(final Component component)
   {
 		(new Thread()
@@ -722,6 +1094,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 			}).start();
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void selectWindow(CDesktopFrame frame)
 	{
 		// Make frame visible (non-icon) and selected and move the viewing area to where the frame is located
@@ -809,6 +1184,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		}
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void windowTitleChanged(CDesktopFrame frame, JMenuItem menuItem)
   {
     menuItem.setText(frame.getTitle());
@@ -830,6 +1208,9 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
   	}
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Menu callback method.
+	*********************************************************************************************************************/
 	public void closeSelectedWindow()
 	{
 		if (desktopPane.getSelectedDesktopFrame() != null)
@@ -873,7 +1254,13 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		return((point.x >= 0) && (point.y >=0) && (point.x <= size.width) && (point.y <= size.height));
 	}*/
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current desktop size using the provided Dimension object.
 
+  <br>
+  @param dim Dimension object to store the result in
+  @return Current imensions of the desktop
+	*********************************************************************************************************************/
   public Dimension getDesktopViewSize(Dimension dim)
   {
 		Rectangle viewLocation = scrollPane.getViewport().getViewRect();
@@ -883,19 +1270,44 @@ public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CF
 		return(dim);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the Object Storage Manager.  The OSM is used to send data between applications and to
+                      provide object storage/query support.
 
+  <br>
+  @return OSM instance
+	*********************************************************************************************************************/
+	public ObjectStorageManager getOSM()
+	{
+	  return(osm);
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current theme.
+
+  <br>
+  @return Current theme
+	*********************************************************************************************************************/
 	public DefaultMetalTheme getCurrentTheme()
 	{
 		return(currentTheme);
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current look and feel.
 
+  <br>
+  @return Current look and feel
+	*********************************************************************************************************************/
 	public String getCurrentLookAndFeel()
 	{
     return(UIManager.getLookAndFeel().getClass().getName());
 	}
 
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Main method for starting the Cougaar Desktop application.
+	*********************************************************************************************************************/
 	public static void main(String[] args)
 	{
 		try

@@ -3,6 +3,7 @@ package org.cougaar.lib.uiframework.ui.components.graph;
 import javax.swing.JPanel; // PHF
 
 import java.awt.*;
+import java.awt.image.*;
 import java.applet.*;
 import java.util.*;
 import java.lang.*;
@@ -51,7 +52,7 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- *
+ * @version  $Revision: 1.7 $, $Date: 2001-10-26 21:38:34 $
  * @author   Leigh Brookshaw
  */
 
@@ -739,7 +740,19 @@ public class Graph2D extends JPanel { // PHF
             {
               dataSet.draw_data(lg,r);
             }
-           }
+         }
+
+          // Draw all other types of data sets
+          for (i=0; i<dataset.size(); i++)
+          {
+            dataSet = (DataSet)dataset.elementAt(i);
+            filled = ((dataSet instanceof PolygonFillableDataSet) && (((PolygonFillableDataSet)dataSet).polygonFill));
+
+            if (!dataSet.getClass().equals(PolygonFillableDataSet.class) && !dataSet.getClass().equals(BarDataSet.class) && !dataSet.getClass().equals(StackableBarDataSet.class) && !dataSet.getClass().equals(StepDataSet.class) && !dataSet.getClass().equals(DataSet.class))
+            {
+              dataSet.draw_data(lg,r);
+            }
+         }
   }
 
         paintLast(lg,r);
@@ -984,6 +997,44 @@ public class Graph2D extends JPanel { // PHF
 
 
   }
+
+  private static Graphics displayGraphics = (new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)).createGraphics();
+
+/**
+ *  Returns the height of 1 pixel in the graph coordinate units assumming the largest data value will be
+ *  drawn at the entire height of the graph, if not, the exrtaPixels parameter allows pading the height
+ */
+  public double get1PixelHeight(int extraPixels)
+  {
+    Axis a = null;
+    for (int i=0; i<axis.size(); i++)
+    {
+      a = (Axis)axis.elementAt(i);
+      if ((a.getAxisPos() == Axis.LEFT) || (a.getAxisPos() == Axis.RIGHT))
+      {
+        break;
+      }
+    }
+
+    if (a == null)
+    {
+      return(Integer.MIN_VALUE);
+    }
+
+    Rectangle r = getBounds();
+    r.x = 0;
+    r.y = 0;
+    r.x      += borderLeft;
+    r.y      += borderTop;
+    r.width  -= borderLeft+borderRight;
+    r.height -= borderBottom+borderTop;
+    
+    r = getDataRectangle(displayGraphics, r);
+
+    return((a.getDataValueMax()-a.getDataValueMin())/((double)(r.height-extraPixels)));
+  }
+
+
 /**
  *  Calculate the rectangle occupied by the data
  */
@@ -1157,7 +1208,6 @@ public class Graph2D extends JPanel { // PHF
     DataSet dataSet = null;
     double yMax = Double.NaN;
     double y = 0.0;
-
     for (int i=0; i<dataset.size(); i++)
     {
       dataSet = (DataSet)dataset.elementAt(i);

@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 1997-2001 Clark Software Engineering (CSE)  
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.graph;
 
 import java.awt.*;
@@ -239,6 +242,14 @@ public class StackableBarDataSet extends DataSet
    if(yaxisRight != null) yaxisRight.resetRange();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the maximum Y value within the specified X range.
+
+  <br>
+  @param xMin Minimum X value
+  @param xMax Maximum X value
+  @return Maximum Y value in the specified X range
+	*********************************************************************************************************************/
   public double getYmaxInRange(double xMin, double xMax)
   {
     DataSet dataSet = null;
@@ -261,6 +272,9 @@ public class StackableBarDataSet extends DataSet
     return(yMax);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Resets the data set line/fill color to a new value supplied by the color producer.
+	*********************************************************************************************************************/
   public void resetDataSetColors()
   {
     if (colorProducer != null)
@@ -387,11 +401,31 @@ public class StackableBarDataSet extends DataSet
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the closest point to the specified coordinates.
+
+  <br>
+  @param x X coordinate
+  @param x Y Coordinate
+  @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
+            double[2] = distance where distance will be -1 if no point was found
+	*********************************************************************************************************************/
   public double[] getClosestPoint(double x, double y)
   {
     return(getClosestPoint(x, y, false));
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the closest point to the specified coordinates specifying whether or not to use the data
+                      set's offset value (if it has one).
+
+  <br>
+  @param x X coordinate
+  @param x Y Coordinate
+  @param useOffset Use data set offset
+  @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
+            double[2] = distance where distance will be -1 if no point was found
+	*********************************************************************************************************************/
   public double[] getClosestPoint(double x, double y, boolean useOffset)
   {
     DataSet ds;
@@ -418,6 +452,17 @@ public class StackableBarDataSet extends DataSet
     return data;
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the closest point to the specified coordinates within the specified maximum squared
+                      distance specifying whether or not to use the data set's offset value (if it has one).
+
+  <br>
+  @param x X coordinate
+  @param x Y Coordinate
+  @param maxDist2 Maximum squared distance of the closest point
+  @param useOffset Use data set offset
+  @return Closest point to the specified coordinates, or null if there is no such point
+	*********************************************************************************************************************/
   public double[] getClosestPoint(double x, double y, double maxDist2, boolean useOffset)
   {
     double point[] = getClosestPoint(x, y, useOffset);

@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 1997-2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components;
 
 import java.awt.BorderLayout;
@@ -67,12 +70,25 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
     }
 
     /**
+     * Creates a new range slider with given minimum and maximum values.
+     *
+     * @param minValue minimum setting for range
+     * @param maxValue maximum value for range
+     */
+    public CMThumbSliderRangeControl(double minValue, double maxValue)
+    {
+        super(NUMBER_OF_THUMBS, minValue, maxValue);
+
+        init(minValue, maxValue);
+    }
+
+    /**
      * Initialize range control.
      *
      * @param minValue minimum setting for range
      * @param maxValue maximum value for range
      */
-    private void init(float minValue, float maxValue)
+    private void init(double minValue, double maxValue)
     {
         slider.setFillColorAt(Color.red, 1);
 
@@ -82,6 +98,7 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
                 public void stateChanged(ChangeEvent e)
                 {
                     RangeModel newRange = getRange();
+
                     if (!range.equals(newRange))
                     {
                         firePropertyChange("range", range, newRange);
@@ -107,8 +124,8 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
      */
     public void setRange(RangeModel range)
     {
-        slider.setValueAt(toSlider(range.getFMin()), 0);
-        slider.setValueAt(toSlider(range.getFMax()), 1);
+        slider.setValueAt(toSlider(range.getDMin()), 0);
+        slider.setValueAt(toSlider(range.getDMax()), 1);
 
         RangeModel newRange = getRange();
         firePropertyChange("range", range, newRange);
@@ -122,7 +139,7 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
      */
     public RangeModel getRange()
     {
-        return new RangeModel(fromSlider(slider.getValueAt(0)), fromSlider(slider.getValueAt(1)));
+        return new RangeModel(fromDSlider(slider.getValueAt(0)), fromDSlider(slider.getValueAt(1)));
     }
 
     /**

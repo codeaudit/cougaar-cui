@@ -1,29 +1,30 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.desktop.dnd;
 
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.BorderLayout;
-import java.awt.Point;
+import java.awt.*;
+import java.awt.datatransfer.*;
 
 import java.io.Serializable;
 
@@ -38,6 +39,14 @@ import java.util.Vector;
 import org.cougaar.lib.uiframework.ui.components.desktop.CougaarDesktopUI;
 import org.cougaar.lib.uiframework.ui.components.desktop.CDesktopFrame;
 
+/***********************************************************************************************************************
+<b>Description</b>: This class is a test Cougaar Desktop component for drag and drop capabilities in the Cougaar
+                    Desktop application.  This is the target component which a text string can be dropped to from the
+                    DnDSourceTestGUI desktop component.
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class DnDTargetTestGUI extends org.cougaar.lib.uiframework.ui.components.desktop.ComponentFactory implements org.cougaar.lib.uiframework.ui.components.desktop.CougaarDesktopUI, DropTarget
 {
   private JTextArea textArea = new JTextArea();
@@ -63,12 +72,12 @@ public class DnDTargetTestGUI extends org.cougaar.lib.uiframework.ui.components.
     return(true);
   }
 
-  public boolean readyForDrop(Point location)
+  public boolean readyForDrop(Component componentAt, Point location, DataFlavor flavor)
   {
     return(true);
   }
 
-  public void showAsDroppable(boolean show, boolean droppable)
+  public void showAsDroppable(Component componentAt, Point location, DataFlavor flavor, boolean show, boolean droppable)
   {
 		if(show)
 		{
@@ -87,12 +96,12 @@ public class DnDTargetTestGUI extends org.cougaar.lib.uiframework.ui.components.
 		}
   }
 
-  public void dropData(Object data)
+  public void dropData(Component componentAt, Point location, DataFlavor flavor, Object data)
   {
   	textArea.setText(data.toString());
   }
 
-  public Vector getSupportedDataFlavors()
+  public Vector getSupportedDataFlavors(Component componentAt, Point location)
   {
     Vector flavors = new Vector(1);
     flavors.add(ObjectTransferable.getDataFlavor(String.class));

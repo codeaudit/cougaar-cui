@@ -1,23 +1,3 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.map.layer;
 
 import java.awt.*;
@@ -43,9 +23,13 @@ import com.bbn.openmap.proj.Projection;
 
 import java.awt.event.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
+
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Projection;
+
+import org.cougaar.lib.uiframework.ui.map.ScenarioMapBean;
 
 import org.cougaar.domain.planning.ldm.plan.*;
 import org.cougaar.domain.mlm.ui.grabber.connect.DGPSPConstants;
@@ -215,12 +199,11 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
     return(true);
   }
 
-  public boolean readyForDrop(Point dragPoint)
+  public boolean readyForDrop(Component componentAt, Point dragPoint, DataFlavor flavor)
   {
-    this.dragPoint = dragPoint;
     boolean ready = false;
 
-    if (areaSelected && selG.contains(scenarioMap.mapBean.getProjection(), dragPoint))
+    if (areaSelected && selG.contains(scenarioMap.getMapBean(getRootPane()).getProjection(), dragPoint))
     {
       ready = true;
     }
@@ -236,22 +219,20 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
     return(ready);
   }
 
-  public void showAsDroppable(boolean show, boolean dropable)
+  public void showAsDroppable(Component componentAt, Point location, DataFlavor flavor, boolean show, boolean dropable)
   {
     // Do nothing here
   }
 
-  private Point dragPoint = null;
-  public void dropData(Object droppedData)
+  public void dropData(Component componentAt, Point dragPoint, DataFlavor flavor, Object droppedData)
   {
-    Point dragPoint = this.dragPoint;
     // Find the closest units
     Vector unitNames = getSelectedUnitNamesAt(dragPoint);
 
     new MultiUnitAssetQuery(unitNames, (InventoryDataProvider)droppedData);
   }
 
-  public Vector getSupportedDataFlavors()
+  public Vector getSupportedDataFlavors(Component componentAt, Point location)
   {
     return(flavors);
   }
@@ -322,7 +303,14 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
       }
     }    
 
-    AssetBarGraphic.max = max;
+    // now set the max value in all the AssetBarGraphics
+    for (Enumeration e = unitDataSetList.elements(); e.hasMoreElements();)
+    {
+      AssetBarGraphic abg = (AssetBarGraphic)e.nextElement();
+      abg.max = max;
+    }
+
+    // AssetBarGraphic.max = max;
   }
 
 
@@ -654,11 +642,13 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
   {
     if (e.getSource() instanceof MapBean)
     {
-      if (areaSelected && !selG.contains(scenarioMap.mapBean.getProjection(), e.getPoint()))
+
+      System.out.println ("PspIconLayer:mousePressed - getting mapbean from parent: " + getParent().toString() );
+      if (areaSelected && !selG.contains(scenarioMap.getMapBean(getRootPane()).getProjection(), e.getPoint()))
       {
         hideSelectedArea();
       }
-      
+
       if (!areaSelected)
       {
         // set the new first point
@@ -829,9 +819,11 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
   {
     Vector data = null;
 
-    if (areaSelected && selG.contains(scenarioMap.mapBean.getProjection(), dragPoint))
+    ScenarioMapBean mapBean = scenarioMap.getMapBean (getRootPane());
+    
+    if (areaSelected && selG.contains(mapBean.getProjection(), dragPoint))
     {
-		  data = getSelectedUnits(ScenarioMap.mapBean, false);
+		  data = getSelectedUnits(mapBean, false);
 		  for (int i=0, isize=data.size(); i<isize; i++)
 		  {
 		    VecIcon icon = (VecIcon)((NamedLocationTime)data.elementAt(i)).getUnit().getGraphic();
@@ -913,6 +905,11 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
 
   public void showIconDialog()
   {
+    if (myState == null)
+    {
+      return;
+    }
+
     IconDialog iconDialog = IconDialog.getDialog(this);
     Vector namedLocationTimeList = new Vector(0);
     NamedLocationTime nltm = null;

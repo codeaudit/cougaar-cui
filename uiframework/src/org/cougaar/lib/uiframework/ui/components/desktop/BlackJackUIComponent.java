@@ -1,27 +1,31 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.desktop;
 
 import java.awt.*;
 import java.util.*;
+import java.awt.datatransfer.*;
 
 import java.io.Serializable;
 
@@ -34,7 +38,15 @@ import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 import org.cougaar.lib.uiframework.ui.inventory.*;
 import org.cougaar.lib.uiframework.ui.components.mthumbslider.*;
 
-public class BlackJackUIComponent extends ComponentFactory implements CougaarDesktopUI, DragSource, DropTarget
+/***********************************************************************************************************************
+<b>Description</b>: This class is the implementation of the BlackJackUI chart Cougaar Desktop component.  It provides
+                    the display of the BlackJackUI inventory chart application from within the Cougaar Desktop
+                    application.
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
+public class BlackJackUIComponent extends ComponentFactory implements DateControllableSliderUI, DragSource, DropTarget
 {
   private InventorySelector selector = null;
 
@@ -84,6 +96,16 @@ public class BlackJackUIComponent extends ComponentFactory implements CougaarDes
     }
   }
 
+  public SliderProxy getDateControllableSlider()
+  {
+    if (selector != null)
+    {
+      return(new CDateRangeSliderProxy(selector.getRangeControl()));
+    }
+    
+    return(null);
+  }
+
   // ------------- DragSource Support -------------------
 
   public Vector getSourceComponents()
@@ -96,7 +118,7 @@ public class BlackJackUIComponent extends ComponentFactory implements CougaarDes
     return(false);
   }
 
-  public Object getData(Point location)
+  public Object getData(Component componentAt, Point location)
   {
     return(selector);
   }
@@ -119,17 +141,17 @@ public class BlackJackUIComponent extends ComponentFactory implements CougaarDes
     return(true);
   }
 
-  public boolean readyForDrop(Point location)
+  public boolean readyForDrop(Component componentAt, Point location, DataFlavor flavor)
   {
     return(true);
   }
 
-  public void showAsDroppable(boolean show, boolean droppable)
+  public void showAsDroppable(Component componentAt, Point location, DataFlavor flavor, boolean show, boolean droppable)
   {
     // Do nothing here
   }
 
-  public void dropData(Object droppedData)
+  public void dropData(Component componentAt, Point location, DataFlavor flavor, Object droppedData)
   {
     Vector nameList = (Vector)droppedData;
     
@@ -152,7 +174,7 @@ public class BlackJackUIComponent extends ComponentFactory implements CougaarDes
     }
   }
 
-  public Vector getSupportedDataFlavors()
+  public Vector getSupportedDataFlavors(Component componentAt, Point location)
   {
     return(flavors);
   }
@@ -169,7 +191,7 @@ public class BlackJackUIComponent extends ComponentFactory implements CougaarDes
 
 	public CougaarDesktopUI create()
 	{
-	  return(this);
+	  return(new BlackJackUIComponent());
 	}
 
   public boolean supportsPlaf()
@@ -210,7 +232,7 @@ public class BlackJackUIComponent extends ComponentFactory implements CougaarDes
 
   public String getTitle()
   {
-    return(null);
+    return("BlackJack UI");
   }
 
   public Dimension getPreferredSize()

@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 1997-2001 Clark Software Engineering (CSE)  
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.graph;
 
 import java.awt.*;
@@ -34,9 +37,9 @@ import java.lang.*;
 ***********************************************************************************************************************/
 public class BarDataSet extends PolygonFillableDataSet
 {
-  private double[] barData = new double[0];
+  protected double[] barData = new double[0];
 
-  private Hashtable heightTable = new Hashtable(1);
+  protected Hashtable heightTable = new Hashtable(1);
 
   protected boolean stacked = false;
 
@@ -83,6 +86,16 @@ public class BarDataSet extends PolygonFillableDataSet
     appendBarData(d, count);
   }
 
+  /*********************************************************************************************************************
+  <b>Description</b>: Constructor that builds a data set of values based on the specified array and count of data
+                      points, sets the polygonFill flag of this data set and sets the width of the data bars.
+
+  <br>
+  @param d Array of (x,y) points where d[n] is the x value and d[n+1] is the y value
+  @param n Number of data point pairs in the array
+  @param fill Indicates if this data set should use polygon fill for rendering
+  @param width Indicates the width, in units, of the data bars
+  *********************************************************************************************************************/
   public BarDataSet(double d[], int count, boolean fill, double width) throws Exception
   {
     // Set the fillable property to true (fills in the bar with the data set's color when the bar is rendered)
@@ -94,11 +107,24 @@ public class BarDataSet extends PolygonFillableDataSet
     appendBarData(d, count);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns number of data points contained by the data set.
+
+  @return Number of data points
+	*********************************************************************************************************************/
   public int dataPoints()
   {
     return(barData.length/2);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the data point at a specified index.
+
+  <br>
+  @param index Index to retrieve data point from
+  @return Double array of the data point at the index where double[0] = X value and double[1] = Y value, or null if
+            the index does not exist
+	*********************************************************************************************************************/
   public double[] getPoint(int index)
   {
     if ((index < 0) || (index >= (barData.length/2)))
@@ -109,6 +135,14 @@ public class BarDataSet extends PolygonFillableDataSet
     return(new double[] {data[index*2+0], data[index*2+1]});
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the maximum Y value within the specified X range.
+
+  <br>
+  @param xMin Minimum X value
+  @param xMax Maximum X value
+  @return Maximum Y value in the specified X range
+	*********************************************************************************************************************/
   public double getYmaxInRange(double xMin, double xMax)
   {
     // Go through each data point in the range, comparing them to find the largest Y value
@@ -124,6 +158,12 @@ public class BarDataSet extends PolygonFillableDataSet
     return(yMax);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the data points of the data set.
+
+  <br>
+  @return Data points of the data set where double[n] = X value and double[n+1] = Y value
+	*********************************************************************************************************************/
   public double[] getData()
   {
     return(barData);
@@ -156,7 +196,7 @@ public class BarDataSet extends PolygonFillableDataSet
     calculateTemp();
   }
 
-  private int resizeBarData(int newSize)
+  protected int resizeBarData(int newSize)
   {
     // Create a new array with the new size and copy the old array's contents to it
     int previousSize = barData.length;
@@ -218,7 +258,7 @@ public class BarDataSet extends PolygonFillableDataSet
     calculateTemp();
   }
 
-  private void change(double x, double newY)
+  protected void change(double x, double newY)
   {
     // Find the X value in the data array and change its corresponding Y value
     for (int i=0; i<barData.length; i+=2)
@@ -272,9 +312,9 @@ public class BarDataSet extends PolygonFillableDataSet
     }
   }
 
-  private double[] temp = null;
+  protected double[] temp = null;
 
-  private void calculateTemp()
+  protected void calculateTemp()
   {
     temp = new double[barData.length*4];
     double width = barWidth/2.0;
@@ -421,11 +461,31 @@ public class BarDataSet extends PolygonFillableDataSet
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the closest point to the specified coordinates.
+
+  <br>
+  @param x X coordinate
+  @param x Y Coordinate
+  @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
+            double[2] = distance where distance will be -1 if no point was found
+	*********************************************************************************************************************/
   public double[] getClosestPoint(double x, double y)
   {
     return(getClosestPoint(x, y, false));
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the closest point to the specified coordinates specifying whether or not to use the data
+                      set's offset value (if it has one).
+
+  <br>
+  @param x X coordinate
+  @param x Y Coordinate
+  @param useOffset Use data set offset
+  @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
+            double[2] = distance where distance will be -1 if no point was found
+	*********************************************************************************************************************/
   public double[] getClosestPoint(double x, double y, boolean useOffset)
   {
     double xOffset = 0.0;
@@ -461,6 +521,17 @@ public class BarDataSet extends PolygonFillableDataSet
     return(point);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the closest point to the specified coordinates within the specified maximum squared
+                      distance specifying whether or not to use the data set's offset value (if it has one).
+
+  <br>
+  @param x X coordinate
+  @param x Y Coordinate
+  @param maxDist2 Maximum squared distance of the closest point
+  @param useOffset Use data set offset
+  @return Closest point to the specified coordinates, or null if there is no such point
+	*********************************************************************************************************************/
   public double[] getClosestPoint(double x, double y, double maxDist2, boolean useOffset)
   {
     double point[] = getClosestPoint(x, y, useOffset);

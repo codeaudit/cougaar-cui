@@ -1,21 +1,10 @@
 /*
  * <copyright>
- *  Copyright 1997-2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ * Copyright 1997-2001 Defense Advanced Research Projects
+ * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
+ * Raytheon Systems Company (RSC) Consortium).
+ * This software to be used only in accordance with the
+ * COUGAAR licence agreement.
  * </copyright>
  */
 package org.cougaar.lib.uiframework.ui.models;
@@ -31,6 +20,9 @@ public class RangeModel
     private float fMin = 0.0f;
     private float fMax = 0.0f;
 
+    private double dMin = 0.0f;
+    private double dMax = 0.0f;
+
     /**
      * Create a new range object
      *
@@ -43,6 +35,8 @@ public class RangeModel
         this.max = max;
         fMin = (float)min;
         fMax = (float)max;
+        dMin = (double)min;
+        dMax = (double)max;
     }
 
     /**
@@ -55,8 +49,26 @@ public class RangeModel
     {
         fMin = min;
         fMax = max;
+        dMin = (double)min;
+        dMax = (double)max;
         this.min = Math.round(min);
         this.max = Math.round(max);
+    }
+
+    /**
+     * Create a new range object
+     *
+     * @param min the minimum value for range.
+     * @param max the maximum value for range.
+     */
+    public RangeModel(double min, double max)
+    {
+        dMin = min;
+        dMax = max;
+        fMin = (float)min;
+        fMax = (float)max;
+        this.min = (int)Math.round(min);
+        this.max = (int)Math.round(max);
     }
 
     /**
@@ -68,6 +80,7 @@ public class RangeModel
     {
         this.min = min;
         fMin = (float)min;
+        dMin = (double)min;
     }
 
     /**
@@ -89,6 +102,7 @@ public class RangeModel
     {
         this.max = max;
         fMax = (float)max;
+        dMax = (double)max;
     }
 
     /**
@@ -109,6 +123,7 @@ public class RangeModel
     public void setFMin(float min)
     {
         fMin = min;
+        dMin = (double)min;
         this.min = Math.round(min);
     }
 
@@ -130,7 +145,7 @@ public class RangeModel
     public void setFMax(float max)
     {
         fMax = max;
-        this.max = (int)max;
+        dMax = (double)max;
         this.max = Math.round(max);
     }
 
@@ -145,13 +160,57 @@ public class RangeModel
     }
 
     /**
+     * Set the minimum value for range
+     *
+     * @param min the new minimum value for range
+     */
+    public void setDMin(double min)
+    {
+        fMin = (float)min;
+        dMin = min;
+        this.min = (int)Math.round(min);
+    }
+
+    /**
+     * Get the minimum value for range
+     *
+     * @return the current minimum value for range
+     */
+    public double getDMin()
+    {
+        return(dMin);
+    }
+
+    /**
+     * Set the maximum value for range
+     *
+     * @param min the new maximum value for range
+     */
+    public void setDMax(double max)
+    {
+        fMax = (float)max;
+        dMax = max;
+        this.max = (int)Math.round(max);
+    }
+
+    /**
+     * Get the maximum value for range
+     *
+     * @return the current maximum value for range
+     */
+     public double getDMax()
+    {
+        return(dMax);
+    }
+
+    /**
      * represent range as string
      *
      * @return string representation of range
      */
     public String toString()
     {
-        return (String.valueOf(fMin) + "-" + String.valueOf(fMax));
+        return (String.valueOf(dMin) + "-" + String.valueOf(dMax));
     }
 
     /**
@@ -165,7 +224,7 @@ public class RangeModel
         if (o instanceof RangeModel)
         {
             RangeModel r = (RangeModel)o;
-            if ((r.fMin == fMin) && (r.fMax == fMax))
+            if ((r.dMin == dMin) && (r.dMax == dMax))
             {
                 return true;
             }

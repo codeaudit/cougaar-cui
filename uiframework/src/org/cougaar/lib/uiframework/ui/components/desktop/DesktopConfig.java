@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.desktop;
 
 import java.awt.Toolkit;
@@ -34,32 +37,98 @@ import java.util.StringTokenizer;
 
 import org.cougaar.lib.uiframework.ui.components.CFrame;
 
+/***********************************************************************************************************************
+<b>Description</b>: This class represents the Cougaar Desktop applicaiton configuration file.  It holds information
+                    such as application window size and location as well as last desktop.  The Cougaar Desktop
+                    application will load and save its instance of this class automatically.
+
+<br><br><b>Notes</b>:<br>
+									- This class is saved and loaded as an ASCII text file
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class DesktopConfig
 {
-	public static final int desktopWidth = 2000;
-	public static final int desktopHeight = 2000;
-
+	/*********************************************************************************************************************
+  <b>Description</b>: Pixel increment associated with the up/down arrows of a scroll pane.
+	*********************************************************************************************************************/
 	public static final int verticalScrollBarUnitIncrement = 50;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Pixel increment associated with the left/right arrows of a scroll pane.
+	*********************************************************************************************************************/
 	public static final int horizontalScrollBarUnitIncrement = 50;
 
   private transient CougaarDesktop desktop = null;
 
   private NVFileReader desktopConfigParameters = null;
-  // Desktop config
+
+	/*********************************************************************************************************************
+  <b>Description</b>: X pixel location of the application window.
+	*********************************************************************************************************************/
 	public int xLocation = 50;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Y pixel location of the application window.
+	*********************************************************************************************************************/
 	public int yLocation = 50;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Width, in pixels, of the application window.
+	*********************************************************************************************************************/
 	public int width = Toolkit.getDefaultToolkit().getScreenSize().width - 100;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Height, in pixels, of the application window.
+	*********************************************************************************************************************/
 	public int height = Toolkit.getDefaultToolkit().getScreenSize().height - 100;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Width, in pixels, of the desktop within the application scroll pane.
+	*********************************************************************************************************************/
+	public int desktopWidth = 1024;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Height, in pixels, of the desktop within the application scroll pane.
+	*********************************************************************************************************************/
+	public int desktopHeight = 768;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Indicator as to whether or not to automatically save the current desktop when exiting.
+	*********************************************************************************************************************/
 	public boolean autoSaveDesktop = false;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Indicator as to whether or not try and make viewing are centered on the selected window
+                      location, otherwise, try to move the viewing area a little as possible to put the selected
+                      window in full view.  A window is "selected" from the Windows menu.
+	*********************************************************************************************************************/
 	public boolean snapWindowToCenter = true;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: The current look and feel model.
+	*********************************************************************************************************************/
   public String currentLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
 
+	/*********************************************************************************************************************
+  <b>Description</b>: The configuration file name of the last desktop to be saved/loaded in the desktop application.
+	*********************************************************************************************************************/
 	public String currentDesktopFileName = null;
 
 //	public Vector componentFactoryClass = null;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Reads the specified desktop application configuration file and constructs a configuration object
+                      from it.
+
+  <br><b>Notes</b>:<br>
+	                  - If the file name given does not exist, default values will be used
+
+  <br>
+  @param configFileName Configuration file name
+  @param desktop Desktop application the configuration file describes
+	*********************************************************************************************************************/
 	public DesktopConfig(String configFileName, CougaarDesktop desktop)
 	{
 	  this.desktop = desktop;
@@ -70,6 +139,8 @@ public class DesktopConfig
 	  yLocation = desktopConfigParameters.getInt("yLocation", yLocation);
 	  width = desktopConfigParameters.getInt("width", width);
 	  height = desktopConfigParameters.getInt("height", height);
+	  desktopWidth = desktopConfigParameters.getInt("desktopWidth", desktopWidth);
+	  desktopHeight = desktopConfigParameters.getInt("desktopHeight", desktopHeight);
 
 	  autoSaveDesktop = desktopConfigParameters.getBoolean("autoSaveDesktop", autoSaveDesktop);
 	  snapWindowToCenter = desktopConfigParameters.getBoolean("snapWindowToCenter", snapWindowToCenter);
@@ -83,6 +154,15 @@ public class DesktopConfig
 //	  ComponentFactoryRegistry.loadFactoryClasses(componentFactoryClass);
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Saves the desktop application configuration file with the specified file name.
+
+  <br><b>Notes</b>:<br>
+	                  - If the file name given does not exist, it will be created
+
+  <br>
+  @param configFileName Configuration file name
+	*********************************************************************************************************************/
 	public void save(String configFileName)
 	{
 		Rectangle bounds = desktop.getBounds();
@@ -97,6 +177,9 @@ public class DesktopConfig
     desktopConfigParameters.addValue("yLocation", "" + yLocation);
     desktopConfigParameters.addValue("width", "" + width);
     desktopConfigParameters.addValue("height", "" + height);
+
+    desktopConfigParameters.addValue("desktopWidth", "" + desktopWidth);
+    desktopConfigParameters.addValue("desktopHeight", "" + desktopHeight);
 
     desktopConfigParameters.addValue("autoSaveDesktop", "" + autoSaveDesktop);
     desktopConfigParameters.addValue("snapWindowToCenter", "" + snapWindowToCenter);

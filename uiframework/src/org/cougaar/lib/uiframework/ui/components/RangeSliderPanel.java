@@ -121,14 +121,14 @@ public class RangeSliderPanel extends JPanel implements Tool
     {
 
       long newMillis = newSecs * 1000;
-      PspIconLayer myLayer= ScenarioMap.mapBean.findPspIconLayer();
-//        System.out.println ("update for milliseconds " + newMillis);
+//      System.out.println ("RangeSliderPanel:updateTime - getting mapBean with parent: " + getParent().getParent().toString() +"\t" + getParent().getParent() );
+      PspIconLayer myLayer= ScenarioMap.getMapBean( getRootPane() ).findPspIconLayer();
+
       if (myLayer!=null)
       {
 //        System.err.println("new time: " + newValue);
         myLayer.setTime(String.valueOf(newMillis));
         myLayer.repaint();
-        // ScenarioMap.mapBean.setScale(ScenarioMap.mapBean.getScale()); // make openmap redraw
       }
 
       else

@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 1997-2001 Clark Software Engineering (CSE)  
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.graph;
 
 import java.awt.*;
@@ -41,21 +44,54 @@ public class PolygonFillableDataSet extends DataSet
   *********************************************************************************************************************/
   public boolean polygonFill = false;
 
+  /*********************************************************************************************************************
+  <b>Description</b>: Flag to indicate if the data set should use a fill pattern to produce a stripped graph rendering
+                      instead of a line (wire frame) rendering of the graph.
+
+  <br><br><b>Notes</b>:<br>
+                    - useFillPattern is false by default
+  *********************************************************************************************************************/
   public boolean useFillPattern = false;
 
+  /*********************************************************************************************************************
+  <b>Description</b>: Color of fill pattern stripe.
+
+  <br><br><b>Notes</b>:<br>
+                    - fillPatternColor is Color.white by default
+  *********************************************************************************************************************/
   public Color fillPatternColor = Color.white;
+
+  /*********************************************************************************************************************
+  <b>Description</b>: Distance of fill pattern stripes from each other in pixels.
+
+  <br><br><b>Notes</b>:<br>
+                    - distanceBetweenStripes is 8 pixels by default
+  *********************************************************************************************************************/
   public int distanceBetweenStripes = 8;
+
+  /*********************************************************************************************************************
+  <b>Description</b>: Thickness of fill pattern stripes in pixels.
+
+  <br><br><b>Notes</b>:<br>
+                    - stripeThickness is 4 pixels by default
+  *********************************************************************************************************************/
   public int stripeThickness = 4;
 
+  /*********************************************************************************************************************
+  <b>Description</b>: Adjusts plot locations based on drawn line thickness.
+
+  <br><br><b>Notes</b>:<br>
+                    - adjustLineWidthInsets is false by default
+  *********************************************************************************************************************/
   public boolean adjustLineWidthInsets = false;
 
-  private int[] xPoints = new int[0];
-  private int[] yPoints = new int[0];
+  protected int[] xPoints = new int[0];
+  protected int[] yPoints = new int[0];
 
   public int patternArrayIncrement = 512;
-  private int[] xPatternPoints = new int[patternArrayIncrement];
-  private int[] yPatternPoints = new int[patternArrayIncrement];
-  private int patternPointsCount = 0;
+  protected int[] xPatternPoints = new int[patternArrayIncrement];
+  protected int[] yPatternPoints = new int[patternArrayIncrement];
+  protected int patternPointsCount = 0;
 
   /*********************************************************************************************************************
   <b>Description</b>: Default constructor.
@@ -65,6 +101,15 @@ public class PolygonFillableDataSet extends DataSet
     super();
   }
 
+  /*********************************************************************************************************************
+  <b>Description</b>: Constructor that builds a data set of values based on the specified array and count of data
+                      points and sets the polygonFill flag of this data set.
+
+  <br>
+  @param d Array of (x,y) points where d[n] is the x value and d[n+1] is the y value
+  @param n Number of data point pairs in the array
+  @param fill Indicates if this data set should use polygon fill for rendering
+  *********************************************************************************************************************/
   public PolygonFillableDataSet(double d[], int n, boolean fill) throws Exception
   {
     super(d, n);
@@ -111,7 +156,7 @@ public class PolygonFillableDataSet extends DataSet
       g.setColor(linecolor);
     }
 
-    if( linestyle != DataSet.NOLINE )
+    if((linestyle != DataSet.NOLINE) && (yrange > 0.0))
     {
       draw_lines(g, bounds);
     }
@@ -266,6 +311,7 @@ public class PolygonFillableDataSet extends DataSet
             xPoints[pointCount] = x1;
             yPoints[pointCount] = ycmax;
             pointCount++;
+
           }
         }
         else
@@ -336,7 +382,7 @@ public class PolygonFillableDataSet extends DataSet
       x0 = x1;
       y0 = y1;
     }
-
+//System.println();
     // No points to draw
     if (pointCount == 0)
     {
@@ -371,7 +417,7 @@ public class PolygonFillableDataSet extends DataSet
 // EBM: Break glass in case of emergency
 /*
   // This methods will mutate the values of the int arrays passed in
-  private void drawPattern(int[] x, int[] y, int ycmax, int ycmin, Graphics g)
+  protected void drawPattern(int[] x, int[] y, int ycmax, int ycmin, Graphics g)
   {
     int y0pixel = y[2] + 10;
     int y1pixel = y[2];
@@ -402,7 +448,7 @@ public class PolygonFillableDataSet extends DataSet
   }*/
 
   // This method will mutate the values of the int arrays passed in
-/*  private void drawPattern(int[] x, int[] y, int ycmax, int ycmin, Graphics g)
+/*  protected void drawPattern(int[] x, int[] y, int ycmax, int ycmin, Graphics g)
   {
     int y0pixel = y[1];
     int y1pixel = y[2];
@@ -425,7 +471,7 @@ public class PolygonFillableDataSet extends DataSet
   }*/
 
   // That's not natural ... but Oak Express is
-  private void drawPattern(Graphics g, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, int ycmax, int ycmin)
+  protected void drawPattern(Graphics g, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, int ycmax, int ycmin)
   {
     int y0pixel = y1;
     int y1pixel = y2;
@@ -476,7 +522,7 @@ public class PolygonFillableDataSet extends DataSet
     g.fillPolygon(xPatternPoints, yPatternPoints, patternPointsCount);
   }
 
-  private void drawLine(int[] x, int[] y, int pointCount, Graphics g)
+  protected void drawLine(int[] x, int[] y, int pointCount, Graphics g)
   {
     if (g instanceof Graphics2D)
     {

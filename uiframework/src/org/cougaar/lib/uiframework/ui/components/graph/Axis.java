@@ -59,7 +59,7 @@ import java.lang.*;
  * but in this mode nothing is automated, the user must code everything
  * manually
  *
- *
+ * @version  $Revision: 1.5 $, $Date: 2001-10-26 21:38:33 $.
  * @author   Leigh Brookshaw
  */
 
@@ -108,12 +108,31 @@ public class Axis extends Object {
 ** Public Variables
 **********************/
 
+  /**
+   *    If <i>true</i> the data set is visible
+   */
       public boolean visible = true;
 
-      // 2D array of Double/Color pairs for divider locations and colors
+  /**
+   *    2D array of Double/Color pairs for divider locations and colors
+   */
       public Object[][] dividers = null;
+
+  /**
+   *    If <i>true</i> dividers are shown
+   */
       public boolean showDividers = false;
+
+  /**
+   *    Line thickness of the dividers
+   */
       public float dividerThickness = 3.0f;
+
+  /**
+   *    If <i>true</i> tic marks and labels are drawn
+   */
+      public boolean drawTicMarks = true;
+
   /**
    *    If <i>true</i> draw a grid positioned on major ticks over the graph
    */
@@ -181,14 +200,18 @@ public class Axis extends Object {
    */
       public Graph2D g2d = null;
 
-      // #CSE# 10/09/2000
-      // Point to begin displaying decimals in exponential format
-      // for the axis label
+  /**
+      #CSE# 10/09/2000
+      Point to begin displaying decimals in exponential format
+      for the axis label
+   */
       public int exponentDisplayThreshold = 5;
 
-      // #CSE# 10/09/2000
-      // How may digits to the right of the decimal point to display
-      // for the axis label
+  /**
+      #CSE# 10/09/2000
+      How may digits to the right of the decimal point to display
+      for the axis label
+   */
       public int sigDigitDisplay = 0;
 
 /*
@@ -272,6 +295,11 @@ public class Axis extends Object {
    * Initial guess for the number of labels required
    */
       protected int    guess_label_number = 4;
+      
+  /**
+   * The value extra space for the axis - used by nchartapplet
+   */
+      protected double maxHeadRoom        = 0.0;
 
   /**
    * If true the axis range must be manually set by setting the
@@ -306,6 +334,32 @@ public class Axis extends Object {
 
            setPosition(p);
 
+           switch (position) {
+              case LEFT: case VERTICAL:
+                          title.setRotation(90);
+                          break;
+              case RIGHT:
+                          title.setRotation(-90);
+                          break;
+              default:
+                          title.setRotation(0);
+                          break;
+           }
+
+
+    }
+    
+    /**
+   * Instantiate the class. Setting the position.
+   * @param p Set the axis position. Must be one of Axis.BOTTOM,
+   * Axis.TOP, Axis.LEFT, Axis.RIGHT, Axis.HORIZONTAL or Axis.VERTICAL.
+   * If one of the latter two are used then Axis.BOTTOM or
+   * Axis.LEFT is assumed.
+   */
+      public Axis(int p, double room) {
+
+           setPosition(p);
+           maxHeadRoom = room;
            switch (position) {
               case LEFT: case VERTICAL:
                           title.setRotation(90);
@@ -492,6 +546,77 @@ public class Axis extends Object {
 
             return m;
       }
+
+  /**
+   * Return the minimum value of All datasets attached to the axis.
+   * @return Data minimum
+   */
+      public double getDataValueMin() {
+            double m;
+            Enumeration e;
+            DataSet d;
+
+            if( dataset.isEmpty() ) return 0.0;
+
+            d = (DataSet)(dataset.firstElement());
+            if(d == null) return 0.0;
+
+            if( orientation == HORIZONTAL ) {
+                 m = d.getXDataValueMin();
+                 for (e = dataset.elements() ; e.hasMoreElements() ;) {
+
+                     d = (DataSet)e.nextElement();
+                     m = Math.min(d.getXDataValueMin(),m);
+
+                 }
+            } else {
+                 m = d.getYDataValueMin();
+                 for (e = dataset.elements() ; e.hasMoreElements() ;) {
+
+                     d = (DataSet)e.nextElement();
+                     m = Math.min(d.getYDataValueMin(),m);
+
+                 }
+            }
+
+            return m;
+      }
+  /**
+   * Return the maximum value of All datasets attached to the axis.
+   * @return Data maximum
+   */
+      public double getDataValueMax()
+      {
+            double m;
+            Enumeration e;
+            DataSet d;
+
+            if( dataset.isEmpty() ) return 0.0;
+
+            d = (DataSet)(dataset.firstElement());
+
+            if(d == null) return 0.0;
+
+
+            if( orientation == HORIZONTAL ) {
+                 m = d.getXDataValueMax();
+                 for (e = dataset.elements() ; e.hasMoreElements() ;) {
+
+                     d = (DataSet)e.nextElement();
+                     m = Math.max(d.getXDataValueMax(),m);
+                 }
+            } else {
+                 m = d.getYDataValueMax();
+                 for (e = dataset.elements() ; e.hasMoreElements() ;) {
+
+                     d = (DataSet)e.nextElement();
+
+                     m = Math.max(d.getYDataValueMax(),m);
+                 }
+            }
+
+            return m;
+      }
   /**
    * Return the pixel equivalent of the passed data value. Using the
    * position of the axis and the maximum and minimum values convert
@@ -547,6 +672,11 @@ public class Axis extends Object {
 
        minimum = getDataMin();
        maximum = getDataMax();
+       //  for nchartapplet
+       if (orientation == VERTICAL && maxHeadRoom != 0.0)
+       {
+       	maximum *= maxHeadRoom;
+       }
      }
 
   /**
@@ -794,6 +924,8 @@ public class Axis extends Object {
           if(position == TOP )     direction =  1;
           else                     direction = -1;
 
+        if (drawTicMarks)
+        {
           minor_step = label_step/(minor_tic_count+1);
           val = label_start;
           for(i=0; i<label_count; i++) {
@@ -838,7 +970,7 @@ public class Axis extends Object {
 
               val += label_step;
           }
-
+        }
 
           if (showDividers && (dividers != null))
           {
@@ -876,7 +1008,8 @@ public class Axis extends Object {
              offset = + label.getLeading(g) + label.getAscent(g);
           }
 
-
+        if (drawTicMarks)
+        {
           val = label_start;
           for(i=0; i<label_count; i++) {
               if( val >= vmin && val <= vmax ) {
@@ -907,6 +1040,7 @@ public class Axis extends Object {
               exponent.draw(g,x0,y0,TextLine.LEFT);
 
           }
+        }
 
           if( !title.isNull() ) {
              if(position == TOP ) {
@@ -965,6 +1099,8 @@ public class Axis extends Object {
           if(position == RIGHT )     direction = -1;
           else                       direction =  1;
 
+        if (drawTicMarks)
+        {
           minor_step = label_step/(minor_tic_count+1);
           val = label_start;
           for(i=0; i<label_count; i++) {
@@ -1007,7 +1143,7 @@ public class Axis extends Object {
               }
               val += label_step;
           }
-
+        }
 
           if (showDividers && (dividers != null))
           {
@@ -1039,6 +1175,8 @@ public class Axis extends Object {
           }
 
 
+        if (drawTicMarks)
+        {
           val = label_start;
           for(i=0; i<label_count; i++) {
               if( val >= vmin && val <= vmax ) {
@@ -1072,6 +1210,7 @@ public class Axis extends Object {
              }
 
           }
+        }
 
           if( !title.isNull() ) {
 

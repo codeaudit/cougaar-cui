@@ -50,7 +50,7 @@ import java.awt.geom.*;
  * unless the text is large the integer mapping will blur the text.
  * Also positioning of arbitrarily rotated text becomes problematic.
  *
- *
+ * @version $Revision: 1.5 $, $Date: 2001-10-26 21:38:35 $
  * @author  Leigh Brookshaw
  */
 

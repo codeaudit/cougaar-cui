@@ -42,7 +42,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- *
+ * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:36 $
  * @author Leigh Brookshaw
  */
 public class VectorSet extends DataSet {

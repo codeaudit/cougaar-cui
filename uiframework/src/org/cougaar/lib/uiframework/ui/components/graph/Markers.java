@@ -46,7 +46,7 @@ import java.net.URL;
  * Markers are stroked using the line drawing method of the class Graph.
  * This means that any stroked figure can become a marker.
  *
- *
+ * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:34 $
  * @author  Leigh Brookshaw
  */
 

@@ -1,23 +1,3 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.map.app;
 
 import java.awt.*;
@@ -40,9 +20,19 @@ public class DnDMouseDelegator extends com.bbn.openmap.MouseDelegator
   * Construct a MouseDelegator with an associated MapBean.
   * @param map MapBean
   */
+  public DnDMouseDelegator()
+  {
+  }
+
   public DnDMouseDelegator(MapBean map)
   {
     super(map);
+    dragRec = DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(map, DnDConstants.ACTION_MOVE, null);
+  }
+
+  public void setMap(MapBean map)
+  {
+    super.setMap(map);
     dragRec = DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(map, DnDConstants.ACTION_MOVE, null);
   }
 
@@ -52,7 +42,7 @@ public class DnDMouseDelegator extends com.bbn.openmap.MouseDelegator
   * SelectMouseMode (MouseEvents go to Layers), and NullMouseMode
   * (MouseEvents are ignored).
   */
-  public void setDefaultMouseModes()
+/*  public void setDefaultMouseModes()
   {
     MapMouseMode[] modes = new MapMouseMode[3];
     modes[0] = new NavMouseMode(true);
@@ -60,7 +50,7 @@ public class DnDMouseDelegator extends com.bbn.openmap.MouseDelegator
     modes[2] = new NullMouseMode();
 
     setMouseModes(modes);
-  }
+  }*/
 
   /**
   * Set the active MapMouseMode.
@@ -69,21 +59,10 @@ public class DnDMouseDelegator extends com.bbn.openmap.MouseDelegator
   */
   public void setActive(MapMouseMode mm)
   {
-    if (Debug.debugging("mousemode"))
-    {
-      Debug.output("MouseDelegator.setActive(): " + mm.getID());
-    }
+    super.setActive(mm);
 
     if (map != null)
     {
-      map.addMouseListener(mm);
-      map.addMouseMotionListener(mm);
-
-      if (mm instanceof ProjectionListener)
-      {
-        map.addProjectionListener((ProjectionListener)mm);
-      }
-
       if (mm instanceof DragGestureListener)
       {
         try
@@ -97,22 +76,17 @@ public class DnDMouseDelegator extends com.bbn.openmap.MouseDelegator
       }
     }
   }
-  
+
   /**
   * Deactivate the MapMouseMode.
   * @param mm MapMouseMode.
   */
   public void setInactive(MapMouseMode mm)
   {
+    super.setInactive(mm);
+
     if (map != null)
     {
-      map.removeMouseListener(mm);
-      map.removeMouseMotionListener(mm);
-      if (mm instanceof ProjectionListener) 
-      {
-        map.removeProjectionListener((ProjectionListener)mm);
-      }
-
       if (mm instanceof DragGestureListener)
       {
         dragRec.removeDragGestureListener((DragGestureListener)mm);

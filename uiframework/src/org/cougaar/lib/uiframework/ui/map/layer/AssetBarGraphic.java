@@ -1,23 +1,3 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.map.layer;
 
 import java.awt.Graphics;
@@ -30,6 +10,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import java.text.*;
 
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
 import org.cougaar.lib.uiframework.ui.map.layer.VecIcon;
@@ -47,7 +29,8 @@ public class AssetBarGraphic extends OMGraphic
   public static final String ON_HAND = "On Hand";
   public static final Color PLOT_COLOR = new Color(25, 25, 112);
 
-  public static double max = 0.0;
+//  public static double max = 0.0;
+  public double max = 0.0;
 
   private ScenarioMap map = null;
   private Vector dataSetList = new Vector(0);
@@ -55,6 +38,8 @@ public class AssetBarGraphic extends OMGraphic
   private String assetName = null;
 
   private boolean visible = true;
+
+  private DecimalFormat dformat = new DecimalFormat("0.00");
 
   public AssetBarGraphic(ScenarioMap map, Hashtable dataSets, String assetName)
   {
@@ -172,7 +157,7 @@ public class AssetBarGraphic extends OMGraphic
 
     // Asset quantity
 
-    String dataString = " " + quantity + " ";
+    String dataString = " " + dformat.format(quantity) + " ";
     Rectangle2D dataBounds = fm.getStringBounds(dataString, g);
     x = (int)((textBounds.x + textBounds.width/2) - (dataBounds.getWidth()/2.0));
     y = (int)(textBounds.y - dataBounds.getHeight() - nameBounds.getHeight() - 24);

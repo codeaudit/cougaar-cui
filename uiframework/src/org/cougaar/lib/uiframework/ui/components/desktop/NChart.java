@@ -1,27 +1,17 @@
 /*
  * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ * Copyright 1997-2000 Defense Advanced Research Projects Agency (DARPA)
+ * and Clark Software Engineering (CSE) This software to be used in
+ * accordance with the COUGAAR license agreement.  The license agreement
+ * and other information on the Cognitive Agent Architecture (COUGAAR)
+ * Project can be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
  */
 package org.cougaar.lib.uiframework.ui.components.desktop;
 
 import java.awt.*;
 import java.util.*;
+import java.awt.datatransfer.*;
 
 
 import javax.swing.*;
@@ -35,34 +25,198 @@ import org.cougaar.lib.uiframework.ui.components.graph.*;
 import org.cougaar.lib.uiframework.ui.models.RangeModel;
 
 import org.cougaar.lib.uiframework.ui.components.desktop.dnd.*;
+//import NChartApplet;
+
+
+/***********************************************************************************************************************
+<b>Description</b>: NChart multiple CChart with test data example.
+
+<br><br><b>Notes</b>:<br>
+									Builds a 4 chart frame.
+
+@author Frank Cooley, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 
 public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 {
+	/*********************
+  ** Private Variables
+  **********************/
+  /*********************************************************************************************************************
+  <b>Description</b>: double holds the default minmax for x axis.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************************************/
 	private double[] xMinMax = {0.0, 200.0};
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Pointer to NChartUI - used to call back to NChartUI to change the menus when changes to chart occur.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
 	private NChartUI nChartUI = null;
+	
+	
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Pointer to NChartApplet - used to call back to NChartApplet to change the menus when changes to chart occur.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
+	private ReadinessChartApplet rChartApplet = null;
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Pointer to NChartApplet - used to call back to NChartApplet to change the menus when changes to chart occur.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
+	private NChartApplet nChartApplet = null;
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: boolean scroll lock flag.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************************************/
 	private boolean xRangeScrollLock = false;
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: double.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************************************/
   private double xScrollSize = 0.0;
+  
+  /*********************************************************************************************************************
+  <b>Description</b>: double.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************************************/
+  private double additionalSpace = 0.10;
+  
+  /*********************************************************************************************************************
+  <b>Description</b>: int number of charts to lay out.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
 	private int totalCharts;
-	public CChart mainChart = null;
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: String holds the x axis label.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
+	//public CChart mainChart = null;
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Array of CChart objects.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************************************/
 	public CChart[] chartElement;
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Array of CChart objects.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
 	private CChart[] chartList = null;
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Vector of DataSet objects on the charts.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
 	public Vector data = null;
-	private JPanel inventoryChartLegend = new JPanel();
+	//private JPanel inventoryChartLegend = new JPanel();
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: JPanel pane which holds the charts.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
 	private JPanel chartPanel = new JPanel(new GridBagLayout());
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Thumb slider control.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
 	private CMThumbSliderRangeControl xRC = new CMThumbSliderRangeControl(0.0f, 0.0f);
+	
+	/*********************************************************************************************************************
+  <b>Description</b>: Boolean holds twoup flag (charts side by side in 2 rows as opposed to one under the other).
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
 	private boolean twoUp = true;
-  public NChart(int numberOfCharts, NChartUI uiPtr)
+	
+	/*
+***********************
+** Public Variables
+**********************/
+
+/*********************************************************************************************************************
+  <b>Description</b>: String holds the x axis label.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
+	public String xAxisLabel = null;
+/*********************************************************************************************************************
+  <b>Description</b>: String holds the y axis label.
+
+  <br><br><b>Notes</b>:<br>
+                    - null by default
+  *********************************************************************************************************************/
+	public String yAxisLabel = null;
+	
+	// ---------------------------------------------------------------------------------------------------------------------
+  // Public Constructors
+  // ---------------------------------------------------------------------------------------------------------------------
+	/*********************************************************************************************************************
+  <b>Description</b>: Constructor called by NChartUI
+
+  <br><b>Notes</b>:<br>
+	                  -Sets up the Gridbag Layout
+
+  <br>
+
+	*********************************************************************************************************************/
+	
+  public NChart(int numberOfCharts, String xLabel, String yLabel, NChartUI uiPtr)
   {
   	nChartUI = uiPtr;
+  	   
+  	yAxisLabel = yLabel;
+  	xAxisLabel = xLabel;
   	setLayout(new BorderLayout());
   	totalCharts = numberOfCharts;
   	chartElement = new CChart[numberOfCharts];
   	chartList = new CChart[numberOfCharts];
   	//buildLegends();
+  	//System.out.println("%%%% nchart constructor " + numberOfCharts);
   	for(int i = 0; i < numberOfCharts; i++)
   	{
-  		chartElement[i] = new CChart("chart " + i, inventoryChartLegend, "x-label" + i, "y-label" + i, false);
-  		chartElement[i].setShowXRangeScroller(true);
+  		JPanel titlePanel = new JPanel();
+  		JLabel titleLabel = new JLabel("Title");
+  		chartElement[i] = new CChart("chart " + i, titlePanel, yAxisLabel, xAxisLabel, true);
+  		//chartElement[i].setShowXRangeScroller(true);
   		chartElement[i].setShowXDividers(true);
   		chartElement[i].setXScrollerRange(new RangeModel(0, 200));
       chartElement[i].setXAxisSigDigitDisplay(1);
@@ -83,15 +237,144 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 	    
   	  
     }
-    xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, chartList));
-    xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
+    //xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, chartList));
+    //xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
     add(chartPanel, BorderLayout.CENTER);
-	  add(xRC, BorderLayout.SOUTH);
+	  //add(xRC, BorderLayout.SOUTH);
 	  validate();
 	  
   }
   
-  //
+  
+	/*********************************************************************************************************************
+  <b>Description</b>: Constructor called by applet
+
+  <br><b>Notes</b>:<br>
+	                  -sets up Gridbag Layout
+
+  <br>
+
+	*********************************************************************************************************************/
+  
+  public NChart(int numberOfCharts, String xLabel, String yLabel, NChartApplet uiPtr)
+  {
+  	nChartApplet = uiPtr;
+  	   
+  	yAxisLabel = yLabel;
+  	xAxisLabel = xLabel;
+  	setLayout(new BorderLayout());
+  	totalCharts = numberOfCharts;
+  	chartElement = new CChart[numberOfCharts];
+  	chartList = new CChart[numberOfCharts];
+  	//buildLegends();
+  	//System.out.println("%%%% nchart constructor " + numberOfCharts);
+  	for(int i = 0; i < numberOfCharts; i++)
+  	{
+  		JPanel titlePanel = new JPanel();
+  		JLabel titleLabel = new JLabel("Title");
+  		chartElement[i] = new CChart("chart " + i, titlePanel, xAxisLabel, yAxisLabel, true);
+  		//chartElement[i].setShowXRangeScroller(true);
+  		chartElement[i].setShowXDividers(true);
+  		chartElement[i].setXScrollerRange(new RangeModel(0, 200));
+      chartElement[i].setXAxisSigDigitDisplay(1);
+      chartElement[i].setToolTipDelay(0);
+      chartList[i] = chartElement[i];
+  		  		
+  		GridBagConstraints constraints = new GridBagConstraints();
+
+	    constraints.gridx = 0;
+	    constraints.gridy = i;
+	    constraints.gridwidth = 1;
+	    constraints.gridheight = 1;
+	    constraints.weightx = 2.0;
+	    constraints.weighty = 2.0;
+	    constraints.fill = GridBagConstraints.BOTH;
+	    
+	    chartPanel.add(chartElement[i], constraints);
+	    
+  	  
+    }
+    //xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, chartList));
+    //xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
+    add(chartPanel, BorderLayout.CENTER);
+	 // add(xRC, BorderLayout.SOUTH);
+	  validate();
+	  
+  }
+  
+  /*********************************************************************************************************************
+  <b>Description</b>: Constructor called by applet
+
+  <br><b>Notes</b>:<br>
+	                  -sets up Gridbag Layout
+
+  <br>
+
+	*********************************************************************************************************************/
+  
+  public NChart(int numberOfCharts, String xLabel, String yLabel, ReadinessChartApplet uiPtr, double space)
+  {
+  	rChartApplet = uiPtr;
+  	additionalSpace = space;   
+  	yAxisLabel = yLabel;
+  	xAxisLabel = xLabel;
+  	setLayout(new BorderLayout());
+  	totalCharts = numberOfCharts;
+  	chartElement = new CChart[numberOfCharts];
+  	chartList = new CChart[numberOfCharts];
+  	//buildLegends();
+  	System.out.println("%%%% readiness constructor " + numberOfCharts);
+  	for(int i = 0; i < numberOfCharts; i++)
+  	{
+  		JPanel titlePanel = new JPanel();
+  		JLabel titleLabel = new JLabel("Title");
+  		chartElement[i] = new CChart("chart " + i, titlePanel, xAxisLabel, yAxisLabel, true, additionalSpace);
+  		//chartElement[i].setShowXRangeScroller(true);
+  		chartElement[i].setShowXDividers(true);
+  		chartElement[i].setXScrollerRange(new RangeModel(0, 200));
+      chartElement[i].setXAxisSigDigitDisplay(2);
+      chartElement[i].setYAxisSigDigitDisplay(2);
+      chartElement[i].setXAxisExponentDisplayThreshold(0);
+      chartElement[i].setYAxisExponentDisplayThreshold(0);
+      chartElement[i].setToolTipDelay(0);
+      chartList[i] = chartElement[i];
+  		  		
+  		GridBagConstraints constraints = new GridBagConstraints();
+
+	    constraints.gridx = 0;
+	    constraints.gridy = i;
+	    constraints.gridwidth = 1;
+	    constraints.gridheight = 1;
+	    constraints.weightx = 2.0;
+	    constraints.weighty = 2.0;
+	    constraints.fill = GridBagConstraints.BOTH;
+	    
+	    chartPanel.add(chartElement[i], constraints);
+	    
+  	  
+    }
+    //xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, chartList));
+    //xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
+    add(chartPanel, BorderLayout.CENTER);
+	 // add(xRC, BorderLayout.SOUTH);
+	  validate();
+	  
+  }
+  // ---------------------------------------------------------------------------------------------------------------------
+  // Public Member Methods
+  // ---------------------------------------------------------------------------------------------------------------------
+  /*********************************************************************************************************************
+  <b>Description</b>: Set Scrollers
+
+  <br><b>Notes</b>:<br>
+	                  -Set X scroll range and X dividers
+
+  <br>
+  
+
+  @return void
+
+	*********************************************************************************************************************/
   public void setScrollers()
   {
   	for(int i = 0; i < chartList.length; i++)
@@ -100,17 +383,50 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       chartList[i].setShowXDividers(false);
     }
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: setTwoUp
+
+  <br><b>Notes</b>:<br>
+	                  -set twoup flag to boolean
+
+  <br>
+  @param t boolean determines chart layout.
   
+  @return void
+
+	*********************************************************************************************************************/
   public void setTwoUp(boolean t)
   {
   	twoUp = t;
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: reDrawCharts
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return void
+
+	*********************************************************************************************************************/
   public void redrawCharts()
   {
-  	setDataIntoChart(data);
+  	//System.out.println("%% redraw charts");
+  	setDataIntoChart(data, false);
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: swapCharts
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param chart1Index int first chart t swap.
+  @param chart2Index int second chart to swap.
+  @return void
+
+	*********************************************************************************************************************/
   public void swapCharts(int chart1Index, int chart2Index)
   {
   	if(chart1Index < data.size()&& chart2Index < data.size())
@@ -127,19 +443,40 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 	  		
 	  	}
 	  	data = newData;
-	  	setDataIntoChart(data);
+	  	setDataIntoChart(data, false);
 	 }
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: removeCharts
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param chartIndex int chart to remove.
+  @return void
+
+	*********************************************************************************************************************/
   
   public void removeCharts(int chartIndex)
   {
   	if(data.size() == 1)
   	  return;
   	data.removeElementAt(chartIndex);
-  	setDataIntoChart(data);
+  	setDataIntoChart(data, false);
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: setVisible
+
+  <br><b>Notes</b>:<br>
+	                  - sets a DataSet visible
+
+  <br>
+  @param dataSet DataSet containing the (x,y) data pairs.
+  @param visible boolean .
+  @return void
+
+	*********************************************************************************************************************/
   
   public void setVisible(DataSet dataSet, boolean visible)
   {
@@ -151,9 +488,20 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
     }
     repaint();
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: detachAllDataSets
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return void
+
+	*********************************************************************************************************************/
   public void detachAllDataSets()
   {
+  	//System.out.println("%%%% detach");
     for (int i=0; i<chartList.length; i++)
     {
       chartList[i].detachAllDataSets();
@@ -162,11 +510,23 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
     
   }
   
-  //
-  public void setDataIntoChart(Vector dataVector)
+  /*********************************************************************************************************************
+  <b>Description</b>: setDataIntoChart
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param dataVector Vector containing DataSets.
+  @param initial boolean if its the first time we don't display.
+  @return void
+
+	*********************************************************************************************************************/
+  public void setDataIntoChart(Vector dataVector, boolean initial)
   {
   	chartPanel.removeAll();
   	data = dataVector;
+  	
   	for(int i = 0; i < totalCharts; i++)
   	{
   		remove(chartList[i]);
@@ -179,16 +539,24 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
   	//buildLegends();
   	int xPos = 0;
   	int yPos = 0;
-  	
+  	System.out.println("%%%% set data " + numberOfCharts);
   	for(int i = 0; i < numberOfCharts; i++)
   	{
-  		
-  		chartElement[i] = new CChart("chart " + i, inventoryChartLegend, "x-label" + i, "y-label" + i, false);
+  		System.out.println("%%%% setdata into chart");
+  		JPanel titlePanel = new JPanel();
+  		JLabel titleLabel = new JLabel("Title");
+  		chartElement[i] = new CChart("chart " + i, titlePanel, xAxisLabel, yAxisLabel , true);
   		new DragSourceDropTarget(chartElement[i]);
-  		chartElement[i].setShowXRangeScroller(true);
+  		if(totalCharts > 1)
+  		{
+  		  chartElement[i].setShowXRangeScroller(true);
+  		  chartElement[i].setXScrollerRange(new RangeModel(0, 200));
+  		}
   		chartElement[i].setShowXDividers(true);
-  		chartElement[i].setXScrollerRange(new RangeModel(0, 200));
-      chartElement[i].setXAxisSigDigitDisplay(1);
+  		chartElement[i].setXAxisSigDigitDisplay(2);
+      chartElement[i].setYAxisSigDigitDisplay(2);
+      chartElement[i].setXAxisExponentDisplayThreshold(0);
+      chartElement[i].setYAxisExponentDisplayThreshold(0);
       chartElement[i].setToolTipDelay(0);
       chartList[i] = chartElement[i];
   		  		
@@ -223,27 +591,52 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
     }
     
 	  validate();
+	  if(!initial)
+	  {
+	  	displayDataSets(dataVector);
+	  	RangeModel range = chartElement[0].getTotalXRange();
+	  	if(numberOfCharts > 1)
+	  	{
+		  	xRC.setSliderRange(range.getMin(), range.getMax());     
+	      xRC.setRange(range);
+	      xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, chartList));
+	      xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
+	      setScrollers();
+	      setXRangeScrollLock(false);
+	      add(xRC, BorderLayout.SOUTH);
+      }
+	  }
 	  
-	  displayDataSets(dataVector);
+	  
 	  setLayout(new BorderLayout());
 	  RangeModel range = chartElement[0].getTotalXRange();
-    xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, chartList));
-    xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
-    
-    xRC.setSliderRange(range.getMin(), range.getMax());     
-    xRC.setRange(new RangeModel(10, 30));
-    
-    setScrollers();
-    setXRangeScrollLock(true);
+	  if(numberOfCharts > 1)
+	  {
+	    xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, chartList));
+	    xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
+	    add(xRC, BorderLayout.SOUTH);
+	    setScrollers();
+    }       
+    setXRangeScrollLock(false);
     add(chartPanel, BorderLayout.CENTER);
-	  add(xRC, BorderLayout.SOUTH);
 	  setShowRightYAxis(false);	
 	  
 	  	  
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: displayDataSets
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param myData Vector containing DataSets.
+  @return void
+
+	*********************************************************************************************************************/
   public void displayDataSets(Vector myData)
   {
+  	System.out.println("%%%% display datasets");
   	for(int i = 0; i < myData.size(); i++)
   	{
   		Vector dataForChart = (Vector)myData.elementAt(i);
@@ -257,15 +650,37 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
   	}
   	resetTR();
   	resetR();
+  	
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: attachDataSet
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param dataSet DataSet to attach.
+  @param chartNumber int of chart number to use.
+  @return void
+
+	*********************************************************************************************************************/
   public void attachDataSet(DataSet dataSet, int chartNumber)
   {
-    chartList[chartNumber].attachDataSet(dataSet);
-    
-    //buildLegends();
+  	//System.out.println("%%%% attach # " + chartNumber);
+  	chartList[chartNumber].attachDataSet(dataSet);
+     
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: getDataSets
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return Vector of DataSets
+
+	*********************************************************************************************************************/
   public Vector getDataSets()
   {
     Vector list = new Vector(0);
@@ -277,7 +692,17 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
     return(list);
   }
   
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: setAutoYRange
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
   public void setAutoYRange(boolean value)
   {
     for (int i=0; i<chartList.length; i++)
@@ -285,16 +710,36 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       chartList[i].setAutoYRange(value);
     }
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: setShowTitle
 
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param show boolean .
+  @return void
+
+	*********************************************************************************************************************/
   public void setShowTitle(boolean show)
   {
     for (int i=0; i<chartList.length; i++)
     {
-      chartList[i].setShowTitle(show);
+      chartList[i].setShowTitle(true);
     }
   }
 
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: setShowXRangeScroller
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
 
   public void setShowXRangeScroller(boolean value)
   {
@@ -309,12 +754,32 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       validate();
     }
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: setShowXRangeTickLabels
 
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
   public void setShowXRangeTickLabels(boolean value)
   {
     xRC.setDrawTickLabels(value);
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: setShowLeftYAxis
 
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
   public void setShowLeftYAxis(boolean value)
   {
     for (int i=0; i<chartList.length; i++)
@@ -322,7 +787,17 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       chartList[i].setShowLeftYAxis(value);
     }
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: setShowRightYAxis
 
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
   public void setShowRightYAxis(boolean value)
   {
     for (int i=0; i<chartList.length; i++)
@@ -332,7 +807,17 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
   }
   
   
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: setShoeYRangeScroller
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
 
   public void setShowYRangeScroller(boolean value)
   {
@@ -341,7 +826,17 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       chartList[i].setShowYRangeScroller(value);
     }
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: setShowYRangeTickLabels
 
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
   public void setShowYRangeTickLabels(boolean value)
   {
     for (int i=0; i<chartList.length; i++)
@@ -349,7 +844,17 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       chartList[i].setShowYRangeTickLabels(value);
     }
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: setYRangeScrollLock
 
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean .
+  @return void
+
+	*********************************************************************************************************************/
   public void setYRangeScrollLock(boolean value)
   {
     for (int i=0; i<chartList.length; i++)
@@ -357,15 +862,36 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       chartList[i].setYRangeScrollLock(value);
     }
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: propertyChange
+
+  <br><b>Notes</b>:<br>
+	                  - repaint the charts after property change
+
+  <br>
+  @param e PropertyChangeEvent .
+  @return void
+
+	*********************************************************************************************************************/
   public void propertyChange(PropertyChangeEvent e)
   {
+  	//System.out.println("%%%% repaint charts");
     for (int i=0; i<chartList.length; i++)
     {
       chartList[i].repaint();
     }
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: rangeChangeListener
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return void
+
+	*********************************************************************************************************************/
   private class RangeChangeListener implements PropertyChangeListener
   {
     private CMThumbSliderRangeControl rC = null;
@@ -385,7 +911,22 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
     }
   }
   
-  // -----------------------------------------------------------------------------------------------
+  /*********************************************************************************************************************
+  <b>Description</b>: rangeChanged
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param rC CMThumbSliderRangeControl.
+  @param minMax double[].
+  @param chartList CChart[].
+  @param scrollSize double.
+  @param scrollLock boolean.
+  @param listener PropertyChangeListener.
+  @return void
+
+	*********************************************************************************************************************/
 
   private void rangeChanged(CMThumbSliderRangeControl rC, double[] minMax, CChart[] chartList, double scrollSize, boolean scrollLock, PropertyChangeListener listener)
   {
@@ -425,7 +966,17 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
     }
     
   }
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: resetR
+
+  <br><b>Notes</b>:<br>
+	                  - reset range for each chart
+
+  <br>
+
+  @return void
+
+	*********************************************************************************************************************/
   public void resetR()
   {
   	for(int i = 0; i < totalCharts; i++)
@@ -433,6 +984,18 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
   	  chartList[i].resetRange();
   	}
   }
+  
+  /*********************************************************************************************************************
+  <b>Description</b>: resetR
+
+  <br><b>Notes</b>:<br>
+	                  - reset total range for each chart
+
+  <br>
+
+  @return void
+
+	*********************************************************************************************************************/
   public void resetTR()
   {
   	for(int i = 0; i < totalCharts; i++)
@@ -441,7 +1004,17 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
   	}
   }
   
-  
+  /*********************************************************************************************************************
+  <b>Description</b>: setXRangeScrollLock
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param value boolean.
+  @return void
+
+	*********************************************************************************************************************/
   
   public void setXRangeScrollLock(boolean value)
   {
@@ -452,8 +1025,18 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
       xScrollSize = xRC.getRange().getMax() - xRC.getRange().getMin();
     }
   }
+ 
+  /*********************************************************************************************************************
+  <b>Description</b>: DragSourceDropTarget class implements DragSource and DropTarget
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
   
-  
+
+	*********************************************************************************************************************/
   
   private class DragSourceDropTarget implements DragSource, DropTarget
   {
@@ -461,7 +1044,18 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
     private DragAndDropSupport dndSupport = new DragAndDropSupport();
     private Color background = null;
   	CChart chart = null;
-  	
+  	// ---------------------------------------------------------------------------------------------------------------------
+  // Public Constructors
+  // ---------------------------------------------------------------------------------------------------------------------
+  /*********************************************************************************************************************
+  <b>Description</b>: Constructor 
+
+  <br><b>Notes</b>:<br>
+	                  -Sets up drag and drop component
+
+  <br>
+
+	*********************************************************************************************************************/
   	public DragSourceDropTarget(CChart cChart)
   	{
   		chart = cChart;
@@ -477,6 +1071,21 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 
 
   // ------------------- DragSource Interface ----------------------------  
+  // ---------------------------------------------------------------------------------------------------------------------
+  // Public Member Methods
+  // ---------------------------------------------------------------------------------------------------------------------
+  
+  /*********************************************************************************************************************
+  <b>Description</b>: getSourceComponents
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return Vector of draggable components
+
+	*********************************************************************************************************************/
 
 	  public Vector getSourceComponents()
 	  {
@@ -485,23 +1094,70 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 	    
 	    return(components);
 	  }
-	
+	/*********************************************************************************************************************
+  <b>Description</b>: dragFromSubComponents
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return boolean
+
+	*********************************************************************************************************************/
 	  public boolean dragFromSubComponents()
 	  {
 	    return(true);
 	  }
-	
-	  public Object getData(Point location)
+	/*********************************************************************************************************************
+  <b>Description</b>: getData
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param componentAt Component to drag from.
+  @param location Point of drag occurence.
+  @return Object - the drag object
+
+	*********************************************************************************************************************/
+	  public Object getData(Component componentAt, Point location)
 	  {
-	    return(chart.getClosestDataSet(location.x, location.y));
+	  	
+	  	DataSet ds = chart.getClosestDataSet(location.x, location.y);
+	  	if(ds == null)
+	  	  return null;
+	  	ds.xAxisLabel = xAxisLabel;
+	  	ds.yAxisLabel = yAxisLabel;
+	    return(ds);
 	  }
-	
+	 /*********************************************************************************************************************
+  <b>Description</b>: dragDropEnd
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param success boolean
+  @return void
+
+	*********************************************************************************************************************/
 	  public void dragDropEnd(boolean success)
 	  {
   	}
 	
 		// ------------------- DragSource Interface ----------------------------  
-	
+	/*********************************************************************************************************************
+  <b>Description</b>: getTargetComponents
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return Vector of components
+
+	*********************************************************************************************************************/
 	  public Vector getTargetComponents()
 	  {
 	    Vector components = new Vector(1);
@@ -509,18 +1165,54 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 	    
 	    return(components);
 	  }
-	
+	/*********************************************************************************************************************
+  <b>Description</b>: dropToSubComponents
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+
+  @return boolean
+
+	*********************************************************************************************************************/
 	  public boolean dropToSubComponents()
 	  {
 	    return(true);
 	  }
-	
-	  public boolean readyForDrop(Point location)
+	/*********************************************************************************************************************
+  <b>Description</b>: readyForDrop
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param componentAt Component
+  @param location Point
+  @param flavor DataFlavor
+  @return boolean
+
+	*********************************************************************************************************************/
+	  public boolean readyForDrop(Component componentAt, Point location, DataFlavor flavor)
 	  {
 	    return(true);
 	  }
-	
-	  public void showAsDroppable(boolean show, boolean droppable)
+	/*********************************************************************************************************************
+  <b>Description</b>: showAsDroppable
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param componentAt Component
+  @param location Point
+  @param flavor DataFlavor
+  @param show boolean
+  @param droppable boolean
+  @return void
+
+	*********************************************************************************************************************/
+	  public void showAsDroppable(Component componentAt, Point location, DataFlavor flavor, boolean show, boolean droppable)
 	  {
 			if(show)
 			{
@@ -538,14 +1230,81 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 				chart.setBackground(background);
 			}
 	  }
-	
-	  public void dropData(Object data)
+	/*********************************************************************************************************************
+  <b>Description</b>: dropData
+
+  <br><b>Notes</b>:<br>
+	                  - act on dropped object (data)
+
+  <br>
+  @param componentAt Component
+  @param location Point
+  @param flavor DataFlavor
+  @param data Object
+  @return void
+
+	*********************************************************************************************************************/
+	  public void dropData(Component componentAt, Point location, DataFlavor flavor, Object data)
 	  {
+	  	//System.out.println("%%%% drop dataset");
 	  	try
 	  	{
-	  	  chart.attachDataSet((DataSet)data);
-	  	  DataSet[] dsArray = chart.getDataSets();
-	  	  nChartUI.setDataSetMenu();
+	  		double[] values  = ((DataSet)data).getData();
+	  		
+	  		String newName = ((DataSet)data).dataName;
+	  		DataSet newDataSet = new PolygonFillableDataSet(values, values.length/2, false);
+	  		newDataSet.dataName = newName;
+	  		
+	  		
+	  		
+      	int lowX = (int)values[0];
+      	int highX = (int)values[values.length -2];
+      	      	
+      	xMinMax[0] = lowX;
+      	xMinMax[1] = highX;
+      	
+	  	  chart.attachDataSet(newDataSet);
+	  	  RangeModel range = chart.getTotalXRange();
+      	xRC.setSliderRange(range.getMin(), range.getMax());     
+        xRC.setRange(range);
+        chart.setXScrollerRange(new RangeModel(lowX, highX));
+        setScrollers();
+        
+        
+        if(nChartUI != null)
+  	     nChartUI.setDataSetMenu();
+  	    else if(nChartApplet != null)
+  	     nChartApplet.setDataSetMenu();
+  	    else if(rChartApplet != null)
+  	     rChartApplet.setDataSetMenu();
+  	     
+  	   
+  	   
+  	    //  comment this out for applet
+	  	  //nChartUI.setDataSetMenu();
+	  	  	  	  
+	  	  chart.setShowTitle(true);
+	  	  chart.setTitle(((DataSet)data).title);
+	  	  
+	  	  chart.setYAxisLabel(((DataSet)data).yAxisLabel);
+	  	  chart.setXMinorTicMarks(2);
+	  	  chart.resetTotalRange();
+	  	  chart.resetRange();
+        
+        
+        
+        /*
+        chart = new CChart("A Chart!!!", new JPanel(), "Time", "xAxisLabel", false);
+      chart.attachDataSet((DataSet)data);
+      chart.setShowTitle(true);
+	    chart.setTitle(((DataSet)data).title);
+      chart.setYAxisLabel(((DataSet)data).yAxisLabel);
+      //chart.setXAxisLabel(dataSet.yAxisLabel);
+      chart.resetTotalRange();
+      chart.resetRange();*/
+      	
+      	
+      	
 	  	}
     	  catch(Exception e)
   	  {
@@ -553,8 +1312,19 @@ public class NChart extends javax.swing.JPanel implements PropertyChangeListener
 	    }
 	  	
 	  }
-	
-	  public Vector getSupportedDataFlavors()
+	/*********************************************************************************************************************
+  <b>Description</b>: getSupportedDataFlavors
+
+  <br><b>Notes</b>:<br>
+	                  -
+
+  <br>
+  @param componentAt Component
+  @param location  Point
+  @return Vector of supported dataflavors
+
+	*********************************************************************************************************************/
+	  public Vector getSupportedDataFlavors(Component componentAt, Point location)
 	  {
 	    Vector flavors = new Vector(1);
 	    flavors.add(ObjectTransferable.getDataFlavor(DataSet.class));

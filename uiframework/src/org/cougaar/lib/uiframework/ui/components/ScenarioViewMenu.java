@@ -1,23 +1,3 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.components;
 
 import java.beans.*;
@@ -78,7 +58,7 @@ public class ScenarioViewMenu extends AbstractOpenMapMenu
           {
             public void actionPerformed(ActionEvent e)
             {
-              ScenarioMap.mapBean.findPspIconLayer().showIconDialog();
+              ScenarioMap.getMapBean(getRootPane()).findPspIconLayer().showIconDialog();
             }
           });
 
@@ -88,7 +68,7 @@ public class ScenarioViewMenu extends AbstractOpenMapMenu
           {
             public void actionPerformed(ActionEvent e)
             {
-              ScenarioMap.mapBean.findPspIconLayer().showSelectionDialog(ScenarioMap.mapBean);
+              ScenarioMap.getMapBean(getRootPane()).findPspIconLayer().showSelectionDialog(ScenarioMap.getMapBean(getRootPane()));
             }
           });
 
@@ -167,7 +147,7 @@ public class ScenarioViewMenu extends AbstractOpenMapMenu
         {
             public void actionPerformed(ActionEvent e)
             {
-             ScenarioMap.mapBean.findPspIconLayer().changeIconScale (2.0f);
+             ScenarioMap.getMapBean(getRootPane()).findPspIconLayer().changeIconScale (2.0f);
             }
         });
 
@@ -176,7 +156,7 @@ public class ScenarioViewMenu extends AbstractOpenMapMenu
         {
             public void actionPerformed(ActionEvent e)
             {
-              ScenarioMap.mapBean.findPspIconLayer().changeIconScale (-2.0f);
+              ScenarioMap.getMapBean(getRootPane()).findPspIconLayer().changeIconScale (-2.0f);
             }
         });
 
@@ -185,7 +165,7 @@ public class ScenarioViewMenu extends AbstractOpenMapMenu
         {
             public void actionPerformed(ActionEvent e)
             {
-              ScenarioMap.mapBean.findPspIconLayer().clearAllRouteGraphics();
+              ScenarioMap.getMapBean(getRootPane()).findPspIconLayer().clearAllRouteGraphics();
             }
         });
 
@@ -220,8 +200,8 @@ public class ScenarioViewMenu extends AbstractOpenMapMenu
             rangeSlider.setSliderRange(time1, time2);
             rangeSlider.setValue(rangeSlider.getValue());
 
-            ScenarioMap.mapBean.findPspIconLayer().myState.buildDailyNLUnits(((long)rangeSlider.getMinValue()) * 1000L, ((long)rangeSlider.getMaxValue()) * 1000L);
-            ScenarioMap.mapBean.findPspIconLayer().setTime("" + (((long)rangeSlider.getValue()) * 1000L));
+            ScenarioMap.getMapBean(getRootPane()).findPspIconLayer().myState.buildDailyNLUnits(((long)rangeSlider.getMinValue()) * 1000L, ((long)rangeSlider.getMaxValue()) * 1000L);
+            ScenarioMap.getMapBean(getRootPane()).findPspIconLayer().setTime("" + (((long)rangeSlider.getValue()) * 1000L));
           }
           catch (Exception ex)
           {

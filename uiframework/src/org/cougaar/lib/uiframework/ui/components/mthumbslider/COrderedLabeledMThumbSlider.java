@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 1997-2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.mthumbslider;
 
 import java.awt.*;
@@ -45,10 +48,14 @@ public class COrderedLabeledMThumbSlider
     protected float maxValue = 0f;
     protected float unit =  0f;
 
+    protected double minDValue = 0f;
+    protected double maxDValue = 0f;
+    protected double unitD =  0f;
+
     protected CMThumbSlider slider;
     protected DecimalFormat labelFormat;
 
-    private static Icon invisibleIcon = new ImageIcon(new byte[]{});
+    protected static Icon invisibleIcon = new ImageIcon(new byte[]{});
 
     /**
      * Default constructor.  Create a new mulitple thumbed slider with 5
@@ -78,8 +85,22 @@ public class COrderedLabeledMThumbSlider
      * @param minValue the minimum value for this slider
      * @param maxValue the maximum value for this slider
      */
-    public COrderedLabeledMThumbSlider(int numThumbs, float minValue,
-                                       float maxValue)
+    public COrderedLabeledMThumbSlider(int numThumbs, float minValue, float maxValue)
+    {
+        super(new BorderLayout());
+
+        this.numThumbs = numThumbs;
+        initialize(minValue, maxValue);
+    }
+
+    /**
+     * Create a new mulitple thumbed slider with the given number of thumbs
+     *
+     * @param numThumb the number of thumb for slider control.
+     * @param minValue the minimum value for this slider
+     * @param maxValue the maximum value for this slider
+     */
+    public COrderedLabeledMThumbSlider(int numThumbs, double minValue, double maxValue)
     {
         super(new BorderLayout());
 
@@ -103,7 +124,7 @@ public class COrderedLabeledMThumbSlider
      * @param minValue the minimum value for this slider
      * @param maxValue the maximum value for this slider
      */
-    protected void initialize(float minValue, float maxValue)
+    protected void initialize(double minValue, double maxValue)
     {
         slider = new CMThumbSlider(numThumbs);
         slider.setMaximum(FIDELITY);
@@ -172,11 +193,10 @@ public class COrderedLabeledMThumbSlider
      */
     public void evenlyDistributeValues()
     {
-        float defaultSeperation = (maxValue - minValue)/(numThumbs + 1);
+        double defaultSeperation = (maxDValue - minDValue)/(numThumbs + 1);
         for (int i = 0; i < numThumbs; i++)
         {
-            slider.setValueAt(
-                toSlider(minValue + defaultSeperation * (i + 1)), i);
+            slider.setValueAt(toSlider(minDValue + defaultSeperation * (i + 1)), i);
         }
         SwingUtilities.updateComponentTreeUI(this);
     }
@@ -192,13 +212,33 @@ public class COrderedLabeledMThumbSlider
     }
 
     /**
+     * Get the minimum value of this slider
+     *
+     * @return the minimum value of this slider
+     */
+    public double getMinDValue()
+    {
+        return minDValue;
+    }
+
+    /**
      * Set the minimum value of this slider
      *
      * @param minValue the minimum value of this slider
      */
     public void setMinValue(float minValue)
     {
-        setSliderRange(minValue, maxValue);
+        setSliderRange(minValue, maxDValue);
+    }
+
+    /**
+     * Set the minimum value of this slider
+     *
+     * @param minValue the minimum value of this slider
+     */
+    public void setMinValue(double minValue)
+    {
+        setSliderRange(minValue, maxDValue);
     }
 
     /**
@@ -212,13 +252,33 @@ public class COrderedLabeledMThumbSlider
     }
 
     /**
+     * Get the maximum value of this slider
+     *
+     * @return the maximum value of this slider
+     */
+    public double getMaxDValue()
+    {
+        return maxDValue;
+    }
+
+    /**
      * Set the maximum value of this slider
      *
      * @param maxValue the maximum value of this slider
      */
     public void setMaxValue(float maxValue)
     {
-        setSliderRange(minValue, maxValue);
+        setSliderRange(minDValue, maxValue);
+    }
+
+    /**
+     * Set the maximum value of this slider
+     *
+     * @param maxValue the maximum value of this slider
+     */
+    public void setMaxValue(double maxValue)
+    {
+        setSliderRange(minDValue, maxValue);
     }
 
     /**
@@ -227,20 +287,25 @@ public class COrderedLabeledMThumbSlider
      * @param minValue the new minimum value of this slider
      * @param maxValue the new maximum value of this slider
      */
-    public void setSliderRange(float minValue, float maxValue)
+    public void setSliderRange(double minValue, double maxValue)
     {
         // Try to maintain the same values if possible
         Vector currentValues = new Vector();
         for (int i = 0; i < numThumbs; i++)
         {
-            currentValues.add(new Float(fromSlider(slider.getValueAt(i))));
+//            currentValues.add(new Float(fromSlider(slider.getValueAt(i))));
+            currentValues.add(new Double(fromDSlider(slider.getValueAt(i))));
         }
 
-        this.minValue = minValue;
-        this.maxValue = maxValue;
-        unit = (maxValue - minValue) / FIDELITY;
+        this.minDValue = minValue;
+        this.maxDValue = maxValue;
+        this.minValue = (float)minValue;
+        this.maxValue = (float)maxValue;
 
-        if (Math.abs(maxValue) > 10)
+        unit = (float)((maxValue - minValue) / FIDELITY);
+        unitD = (maxDValue - minDValue) / FIDELITY;
+        
+        if (Math.abs(maxDValue) > 10)
         {
             labelFormat = new DecimalFormat("####");
         }
@@ -249,8 +314,8 @@ public class COrderedLabeledMThumbSlider
             labelFormat = new DecimalFormat("##.##");
         }
 
-        int sliderMin = toSlider(minValue);
-        int sliderMax = toSlider(maxValue);
+        int sliderMin = toSlider(minDValue);
+        int sliderMax = toSlider(maxDValue);
         for (int i = 0; i < numThumbs; i++)
         {
             BoundedRangeModel model = slider.getModelAt(i);
@@ -261,8 +326,8 @@ public class COrderedLabeledMThumbSlider
         Hashtable valueLabels = new Hashtable();
         for (int i = 0; i <= FIDELITY; i += MAJOR_TICK_SPACING)
         {
-            valueLabels.put(new Integer(i),
-                            new JLabel(labelFormat.format(fromSlider(i))));
+//            valueLabels.put(new Integer(i), new JLabel(labelFormat.format(fromSlider(i))));
+            valueLabels.put(new Integer(i), new JLabel(labelFormat.format(fromDSlider(i))));
         }
         slider.setLabelTable(valueLabels);
 
@@ -270,7 +335,7 @@ public class COrderedLabeledMThumbSlider
         for (int i = 0; i < currentValues.size(); i++)
         {
             Number currentValue = (Number)currentValues.elementAt(i);
-            slider.setValueAt(toSlider(currentValue.floatValue()), i);
+            slider.setValueAt(toSlider(currentValue.doubleValue()), i);
         }
         SwingUtilities.updateComponentTreeUI(this);
     }
@@ -310,23 +375,47 @@ public class COrderedLabeledMThumbSlider
 
     protected boolean dynamicLabelsVisible = true;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/disables the dynamic labels above thumbs.
+
+  <br>
+  @param visible True if the dynamc labels should be visible, false otherwise
+	*********************************************************************************************************************/
     public void setDynamicLabelsVisible(boolean visible)
     {
       dynamicLabelsVisible = visible;
       adjustValueLabelHeight();
     }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/disables drawing the tic labels below the slider track.
+
+  <br>
+  @param draw True if the tic labels should be drawn, false otherwise
+	*********************************************************************************************************************/
     public void setDrawTickLabels(boolean draw)
     {
       slider.setPaintLabels(draw);
       slider.setPaintTicks(draw);
     }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Shows the thumb at the specified index.
+
+  <br>
+  @param index Index of the thumb to show
+	*********************************************************************************************************************/
     public void showThumbAt(int index)
     {
         slider.setThumbRendererAt(null, index);
     }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Hides the thumb at the specified index.
+
+  <br>
+  @param index Index of the thumb to hide
+	*********************************************************************************************************************/
     public void hideThumbAt(int index)
     {
         slider.setThumbRendererAt(invisibleIcon, index);
@@ -342,36 +431,35 @@ public class COrderedLabeledMThumbSlider
      */
     public void paintComponent(Graphics g)
     {
-        super.paintComponent(g);
+      super.paintComponent(g);
+      if (dynamicLabelsVisible)
+      {
         g.setFont(MetalLookAndFeel.getSystemTextFont());
         FontMetrics fm = getFontMetrics(g.getFont());
 
-        if (dynamicLabelsVisible)
+        // paint dynamic value labels on component
+        for (int i = 0; i < numThumbs; i++)
         {
-            // paint dynamic value labels on component
-            for (int i = 0; i < numThumbs; i++)
-            {
-                if (slider.getThumbRendererAt(i) != invisibleIcon)
-                {
-                    String label =
-                        labelFormat.format(fromSlider(slider.getValueAt(i)));
-                    int labelWidth = fm.stringWidth(label);
-                    int borderOffset = (getBorder() == null) ? 0 :
-                                        getBorder().getBorderInsets(this).left;
-                    int thumbXLoc = slider.getThumbXLoc(i) + borderOffset;
-                    g.drawString(label, thumbXLoc - (labelWidth / 2),
-                                 (int)slider.getLocation().getY()-5);
-                }
-            }
+          if (slider.getThumbRendererAt(i) != invisibleIcon)
+          {
+//            String label = labelFormat.format(fromSlider(slider.getValueAt(i)));
+            String label = labelFormat.format(fromDSlider(slider.getValueAt(i)));
+            int labelWidth = fm.stringWidth(label);
+            int borderOffset = (getBorder() == null) ? 0 : getBorder().getBorderInsets(this).left;
+            int thumbXLoc = slider.getThumbXLoc(i) + borderOffset;
+            g.drawString(label, thumbXLoc - (labelWidth / 2), (int)slider.getLocation().getY()-5);
+          }
         }
+      }
 
-        // Swing bug workaround
-        if (updateUIAfterPaint)
-        {
-            SwingUtilities.updateComponentTreeUI(this);
-            updateUIAfterPaint = false;
-        }
+      // Swing bug workaround
+      if (updateUIAfterPaint)
+      {
+        SwingUtilities.updateComponentTreeUI(this);
+        updateUIAfterPaint = false;
+      }
     }
+
     protected boolean updateUIAfterPaint = true;
 
     /**
@@ -386,14 +474,25 @@ public class COrderedLabeledMThumbSlider
     }
 
     /**
+     * get value of thumb at given index.
+     *
+     * @param index index of thumb
+     * @return value of thumb at given index
+     */
+    public double getDValueAt(int index)
+    {
+        return fromDSlider(slider.getValueAt(index));
+    }
+
+    /**
      * set value of thumb at given index.
      *
      * @param f new value for thumb at given index
      * @param index index of thumb
     */
-    public void setValueAt(float f, int index)
+    public void setValueAt(double d, int index)
     {
-        slider.setValueAt(toSlider(f), index);
+        slider.setValueAt(toSlider(d), index);
     }
 
     /**
@@ -402,9 +501,9 @@ public class COrderedLabeledMThumbSlider
      * @param f "value" float value
      * @return slider's integer value
      */
-    public int toSlider(float f)
+    public int toSlider(double d)
     {
-        return Math.round((f - minValue) / unit);
+        return((int)Math.round((d - minDValue) / unitD));
     }
 
     /**
@@ -416,6 +515,17 @@ public class COrderedLabeledMThumbSlider
     public float fromSlider(int i)
     {
         return minValue + (unit * i);
+    }
+
+    /**
+     * Translates from slider's integer value to float value.
+     *
+     * @param i slider's integer value
+     * @return "value" float value
+     */
+    public double fromDSlider(int i)
+    {
+        return(minDValue + (unitD * i));
     }
 
     /**

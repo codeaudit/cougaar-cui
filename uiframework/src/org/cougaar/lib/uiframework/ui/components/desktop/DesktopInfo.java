@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components.desktop;
 
 import java.util.Vector;
@@ -30,39 +33,102 @@ import java.io.FileOutputStream;
 
 import java.io.IOException;
 
+/***********************************************************************************************************************
+<b>Description</b>: This class represents a desktop configuration file.  It holds information such as current
+                    applications open and scroll pane window size and location.
+
+<br><br><b>Notes</b>:<br>
+									- This class is saved and loaded as a serialized file
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class DesktopInfo implements Serializable
 {
   private static final String[] factoryList = new String[]
     {
       "org.cougaar.lib.uiframework.ui.components.desktop.DesktopTestComponent",
-//      "My Imaginary Class Name",
       "org.cougaar.lib.uiframework.ui.components.desktop.NChartUIComponent",
+      "org.cougaar.lib.uiframework.ui.components.desktop.DnDUIComponent",
       "org.cougaar.lib.uiframework.ui.components.desktop.BlackJackUIComponent",
       "org.cougaar.lib.uiframework.ui.components.desktop.dnd.DnDSourceTestGUI",
       "org.cougaar.lib.uiframework.ui.components.desktop.dnd.DnDTargetTestGUI",
-      "org.cougaar.lib.uiframework.ui.components.desktop.PspIconComponent"
+      "org.cougaar.lib.uiframework.ui.components.desktop.dnd.DnDFileTargetGUI",
+      "org.cougaar.lib.uiframework.ui.components.desktop.dnd.JTableDnDGUI",
+      "org.cougaar.lib.uiframework.ui.components.desktop.RemoteFileNodeGUI",
+      "org.cougaar.lib.uiframework.ui.components.desktop.PspIconComponent",
+      "org.cougaar.lib.uiframework.ui.components.desktop.CougaarSocietyExplorerComponent",
+      "org.cougaar.lib.uiframework.ui.components.desktop.MenuTestGUI",
+      "org.cougaar.lib.uiframework.ui.components.desktop.DateCommandSliderComponent",
+      "org.cougaar.lib.uiframework.ui.components.desktop.USAImageMapComponent",
+      "org.cougaar.lib.uiframework.ui.components.desktop.osm.OSMDataEntryTestComponent",
+      "org.cougaar.lib.uiframework.ui.components.desktop.osm.OSMDataQueryTestComponent",
+      "org.cougaar.lib.uiframework.ui.components.desktop.osm.OSMDataListenerTestComponent"
+
     };
   
+	/*********************************************************************************************************************
+  <b>Description</b>: Name of the desktop.
+	*********************************************************************************************************************/
 	public String desktopName = "Cougaar Desktop";
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Width of the desktop within the Cougaar Desktop application scroll pane.
+	*********************************************************************************************************************/
+	public int desktopWidth = 1024;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Height of the desktop within the Cougaar Desktop application scroll pane.
+	*********************************************************************************************************************/
+	public int desktopHeight = 768;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Vertical location of the Cougaar Desktop application scroll pane.
+	*********************************************************************************************************************/
 	public int scrollPaneVerticalPosition = 0;
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Horizontal location of the Cougaar Desktop application scroll pane.
+	*********************************************************************************************************************/
 	public int scrollPaneHorizontalPosition = 0;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Location of the image to use as the Cougaar Desktop application scroll pane background.
+	*********************************************************************************************************************/
 	public String backgroundImage = "images/CougaarLogo.gif";
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Indicator as to whether or not tile the Cougaar Desktop application scroll pane background image.
+	*********************************************************************************************************************/
 	public boolean tiledBackground = false;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: List of all of the available component/application factories.
+	*********************************************************************************************************************/
 	public Vector componentFactories = new Vector(0);
 
+	/*********************************************************************************************************************
+  <b>Description</b>: List of all of the available component/application factories.
+	*********************************************************************************************************************/
   public FrameInfo[] frameInfoList = null;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Constructs a desktop configuration instance with default settings.
+	*********************************************************************************************************************/
   public DesktopInfo()
   {
-    for (int i=0; i<factoryList.length; i++)
+  	for (int i=0; i<factoryList.length; i++)
     {
       componentFactories.add(factoryList[i]);
     }
   }
   
+	/*********************************************************************************************************************
+  <b>Description</b>: Saves (serializes) this configuration file as the specified file name.
+
+  <br>
+  @param fileName File name to save configuration to
+	*********************************************************************************************************************/
 	public void save(String fileName) throws IOException
 	{
   	FileOutputStream fos = new FileOutputStream(fileName);
@@ -72,6 +138,13 @@ public class DesktopInfo implements Serializable
 		fos.close();
 	}
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Loads (deserializes) this configuration file from the specified file name.
+
+  <br>
+  @param fileName File name to load configuration from
+  @return Desktop configuration object
+	*********************************************************************************************************************/
 	public static DesktopInfo load(String fileName) throws IOException
 	{
 	  DesktopInfo desktopInfo = null;

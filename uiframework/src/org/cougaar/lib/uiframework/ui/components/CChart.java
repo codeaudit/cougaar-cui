@@ -1,23 +1,26 @@
-/*
- * <copyright>
- *  Copyright 2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
- * </copyright>
+/* 
+ * <copyright> 
+ *  Copyright 1997-2001 Clark Software Engineering (CSE)
+ *  under sponsorship of the Defense Advanced Research Projects 
+ *  Agency (DARPA). 
+ *  
+ *  This program is free software; you can redistribute it and/or modify 
+ *  it under the terms of the Cougaar Open Source License as published by 
+ *  DARPA on the Cougaar Open Source Website (www.cougaar.org).  
+ *  
+ *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS  
+ *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR  
+ *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF  
+ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT  
+ *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT  
+ *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL  
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,  
+ *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR  
+ *  PERFORMANCE OF THE COUGAAR SOFTWARE.  
+ *  
+ * </copyright> 
  */
+
 package org.cougaar.lib.uiframework.ui.components;
 
 import java.awt.*;
@@ -39,47 +42,75 @@ import org.cougaar.lib.uiframework.ui.components.mthumbslider.*;
 import org.cougaar.lib.uiframework.ui.components.*;
 import org.cougaar.lib.uiframework.ui.models.*;
 
+/***********************************************************************************************************************
+<b>Description</b>: This class is a Chart display component that provides X and Y dual-thumb range sliders to narrow
+                    or broaden the view of the data on the chart.
+
+@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class CChart extends javax.swing.JPanel implements ColorProducer, PropertyChangeListener, PlotColors
 {
-  private PointViewGraph2D graph = new PointViewGraph2D();
-  private Axis    xaxis = null;
-  private Axis    yaxisLeft = null;
-  private Axis    yaxisRight = null;
+  protected PointViewGraph2D graph = new PointViewGraph2D();
+  protected Axis    xaxis = null;
+  protected Axis    yaxisLeft = null;
+  protected Axis    yaxisRight = null;
 
-  private double[] xMinMax = {0.0, 0.0};
-  private double[] yMinMax = {0.0, 0.0};
+  protected double[] xMinMax = {0.0, 0.0};
+  protected double[] yMinMax = {0.0, 0.0};
 
-  private CMThumbSliderRangeControl xRC = null;
-  private CMThumbSliderRangeControl yRC = null;
+  protected CMThumbSliderRangeControl xRC = null;
+  protected CMThumbSliderRangeControl yRC = null;
 
-  private boolean[] xRangeScrollLock = new boolean[] {false};
-  private double[] xScrollSize = new double[] {0.0};
+  protected boolean[] xRangeScrollLock = new boolean[] {false};
+  protected double[] xScrollSize = new double[] {0.0};
 
-  private boolean[] yRangeScrollLock = new boolean[] {false};
-  private double[] yScrollSize = new double[] {0.0};
+  protected boolean[] yRangeScrollLock = new boolean[] {false};
+  protected double[] yScrollSize = new double[] {0.0};
 
-  private int lastColor = 0;
-  private Color[] plotColors = null;
+  protected int lastColor = 0;
+  protected Color[] plotColors = null;
 
-  private boolean autoYRange = false;
+  protected boolean autoYRange = false;
 
-//  private final static Color[] defaultColors = {Color.red, Color.blue, Color.green, Color.yellow, Color.orange, Color.cyan, Color.magenta, Color.pink};
-//  private final static Color defaultGridColor = Color.red;
+//  protected final static Color[] defaultColors = {Color.red, Color.blue, Color.green, Color.yellow, Color.orange, Color.cyan, Color.magenta, Color.pink};
+//  protected final static Color defaultGridColor = Color.red;
 
-  private Color xDividerColor = Color.lightGray;
-  private final static Color defaultGridColor = Color.lightGray;
-  private final static Color[] defaultColors = {midnightBlue, darkGreen, darkYellow, rust, darkPurple, orange, red};
+  protected Color xDividerColor = Color.lightGray;
+  protected final static Color defaultGridColor = Color.lightGray;
+  protected final static Color[] defaultColors = {midnightBlue, darkGreen, darkYellow, rust, darkPurple, orange, red};
 
-//  private JLabel title = null;
-  private JPanel title = null;
-  private String name = null;
+//  protected JLabel title = null;
+  protected JPanel title = null;
+  protected String name = null;
+  protected double additionalSpace = 0.1;
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Constructs a chart with the spedified labels and, as an option, a X time axis.
+
+  <br>
+  @param chartTitle Title of the chart
+  @param xLabel X axis label
+  @param yLabel Y axis label
+  @param timeAxis True if the X axis of the chart should refer to date and time, false otherwise
+	*********************************************************************************************************************/
   public CChart(String chartTitle, String xLabel, String yLabel, boolean timeAxis)
   {
     this(chartTitle, new JPanel(new BorderLayout()), xLabel, yLabel, timeAxis);
     title.add(new JLabel(chartTitle, SwingConstants.CENTER), BorderLayout.CENTER);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Constructs a chart with the spedified labels, a panel that represents the chart title, and, as an
+                      option, a X time axis.
+
+  <br>
+  @param chartName Title of the chart
+  @param chartTitle Panel to display as the chart title
+  @param xLabel X axis label
+  @param yLabel Y axis label
+  @param timeAxis True if the X axis of the chart should refer to date and time, false otherwise
+	*********************************************************************************************************************/
   public CChart(String chartName, JPanel chartTitle, String xLabel, String yLabel, boolean timeAxis)
   {
     title = chartTitle;
@@ -127,26 +158,104 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     // Make sure that the UI L&F/Themes are set up
     doUIUpdate();
   }
+  
+  /*********************************************************************************************************************
+  <b>Description</b>: Constructs a chart with the spedified labels, a panel that represents the chart title, and, as an
+                      option, a X time axis.
 
+  <br>
+  @param chartName Title of the chart
+  @param chartTitle Panel to display as the chart title
+  @param xLabel X axis label
+  @param yLabel Y axis label
+  @param timeAxis True if the X axis of the chart should refer to date and time, false otherwise
+	*********************************************************************************************************************/
+  public CChart(String chartName, JPanel chartTitle, String xLabel, String yLabel, boolean timeAxis, double space)
+  {
+  	
+  	additionalSpace = space;
+    title = chartTitle;
+    name = chartName;
+
+    setUpXRangeScroller(timeAxis);
+    setUpYRangeScroller();
+
+
+    xaxis.setTitleText(xLabel);
+    xaxis.sigDigitDisplay = 1;
+    xaxis.exponentDisplayThreshold = 7;
+    xaxis.setManualRange(true);
+
+    yaxisLeft.setTitleText(yLabel);
+    yaxisLeft.sigDigitDisplay = 1;
+    yaxisLeft.exponentDisplayThreshold = 7;
+    yaxisLeft.setManualRange(true);
+
+    yaxisRight.setTitleText(yLabel);
+    yaxisRight.sigDigitDisplay = 1;
+    yaxisRight.exponentDisplayThreshold = 7;
+    yaxisRight.setManualRange(true);
+
+
+
+    // Set up the graph and x/y axis
+    graph.gridOnTop = false;
+    graph.attachAxis(xaxis);
+    graph.attachAxis(yaxisLeft);
+    graph.attachAxis(yaxisRight);
+//    graph.borderTop          = 10;
+//    graph.borderBottom       = 10;
+//    graph.borderLeft         = 10;
+//    graph.borderRight        = 10;
+
+
+
+    setLayout(new BorderLayout());
+    add(title, BorderLayout.NORTH);
+    add(graph, BorderLayout.CENTER);
+    add(yRC, BorderLayout.WEST);
+    add(xRC, BorderLayout.SOUTH);
+
+    // Make sure that the UI L&F/Themes are set up
+    doUIUpdate();
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the Y axis label.
+
+  <br>
+  @param label New Y axis label
+  *********************************************************************************************************************/
   public void setYAxisLabel(String label)
   {
     yaxisLeft.setTitleText(label);
     yaxisRight.setTitleText(label);
   }
 
-  private void setUpXRangeScroller(boolean timeAxis)
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the X axis label.
+
+  <br>
+  @param label New X axis label
+  *********************************************************************************************************************/
+  public void setXAxisLabel(String label)
+  {
+    xaxis.setTitleText(label);
+  }
+
+  protected void setUpXRangeScroller(boolean timeAxis)
   {
     if (timeAxis)
     {
       xaxis = new TimeAndDateAxis();
-      xRC = new CMThumbSliderDateAndTimeRangeControl((float)xMinMax[0], (float)(xMinMax[1]));
-      xRC.setRange(new RangeModel((float)xMinMax[0], (float)(xMinMax[1])));
+      xRC = new CMThumbSliderDateAndTimeRangeControl(xMinMax[0], xMinMax[1]);
+      xRC.setRange(new RangeModel(xMinMax[0], xMinMax[1]));
     }
     else
     {
-      xaxis = new Axis(Axis.BOTTOM);
-      xRC = new CMThumbSliderRangeControl((float)xMinMax[0], (float)xMinMax[1]);
-      xRC.setRange(new RangeModel((float)xMinMax[0], (float)xMinMax[1]));
+      xaxis = new Axis(Axis.BOTTOM, additionalSpace);
+      xRC = new CMThumbSliderRangeControl(xMinMax[0], xMinMax[1]);
+      xRC.setRange(new RangeModel(xMinMax[0], xMinMax[1]));
     }
     xRC.setDynamicLabelsVisible(false);
     xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, new Axis[] {xaxis}, xScrollSize, xRangeScrollLock));
@@ -154,13 +263,13 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     xRC.getSlider().setOrientation(CMThumbSlider.HORIZONTAL);
   }
 
-  private void setUpYRangeScroller()
+  protected void setUpYRangeScroller()
   {
-    yaxisLeft = new Axis(Axis.LEFT);
-    yaxisRight = new Axis(Axis.RIGHT);
+    yaxisLeft = new Axis(Axis.LEFT, additionalSpace);
+    yaxisRight = new Axis(Axis.RIGHT, additionalSpace);
 
-    yRC = new CMThumbSliderRangeControl((float)yMinMax[0], (float)yMinMax[1]);
-    yRC.setRange(new RangeModel((float)yMinMax[0], (float)yMinMax[1]));
+    yRC = new CMThumbSliderRangeControl(yMinMax[0], yMinMax[1]);
+    yRC.setRange(new RangeModel(yMinMax[0], yMinMax[1]));
 
     yRC.setDynamicLabelsVisible(false);
     yRC.addPropertyChangeListener("range", new RangeChangeListener(yRC, yMinMax, new Axis[] {yaxisLeft, yaxisRight}, yScrollSize, yRangeScrollLock));
@@ -168,13 +277,13 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     yRC.getSlider().setOrientation(CMThumbSlider.VERTICAL);
   }
 
-  private class RangeChangeListener implements PropertyChangeListener
+  protected class RangeChangeListener implements PropertyChangeListener
   {
-    private CMThumbSliderRangeControl rC = null;
-    private double[] minMax = null;
-    private Axis[] axisList = null;
-    private double[] scrollSize = null;
-    private boolean[] scrollLock = null;
+    protected CMThumbSliderRangeControl rC = null;
+    protected double[] minMax = null;
+    protected Axis[] axisList = null;
+    protected double[] scrollSize = null;
+    protected boolean[] scrollLock = null;
 
     public RangeChangeListener(CMThumbSliderRangeControl rC, double[] minMax, Axis[] axisList, double[] scrollSize, boolean[] scrollLock)
     {
@@ -197,7 +306,15 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
-  // Must be called when datasets are set visible/not visible (currently no automatic hook available)
+  // 
+	/*********************************************************************************************************************
+  <b>Description</b>: This method recalculates the Y axis range based on the currently visible data sets.  It is used
+                      internally when auto Y range is enabled.
+
+  <br><b>Notes</b>:<br>
+	                  - Must be called (if auto Y range is enabled) when datasets are set visible/not visible (currently
+	                    no automatic hook available)
+	*********************************************************************************************************************/
   public void recalculateAutoYRange()
   {
     if (autoYRange)
@@ -205,36 +322,82 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
       double yMax = graph.getYmaxInRange(xMinMax[0], xMinMax[1]);
       if (Double.isNaN(yMax))
       {
-        yRC.setRange(new RangeModel(0.0f, 1.0f));
+        yRC.setRange(new RangeModel(0.0, 1.0));
       }
       else
       {
-        yRC.setRange(new RangeModel(0.0f, (float)(yMax + yMax*0.10)));
+        //yRC.setRange(new RangeModel(0.0, yMax + yMax*0.10));
+        yRC.setRange(new RangeModel(0.0, yMax + yMax * additionalSpace));
       }
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the title of the chart as text.
+
+  <br>
+  @return Chart title
+	*********************************************************************************************************************/
   public String getName()
   {
     return(name);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/disables automatic Y axis ranging.  When enabled, the Y axis will automatcally reset
+                      its thumb sliders to be within the limits of the maximum Y value of all data sets that are
+                      visible.
+
+  <br><b>Notes</b>:<br>
+	                  - When this feature is turned on and a data set is made not visible, the
+	                    CChart.recalculateAutoYRange() method must be called
+
+  <br>
+  @param value True if auto Y axis ranging should be enabled, false otherwise
+	*********************************************************************************************************************/
   public void setAutoYRange(boolean value)
   {
     autoYRange = value;
     recalculateAutoYRange();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the label object to display data tips within.  By default, the data tip will display next
+                      to the mouse pointer.  Setting the data tip label will cause the data tip to be displayed on
+                      the specified label.
+
+  <br><b>Notes</b>:<br>
+	                  - The label is not added to the chart display, and, therefore, must be added to a layout manually
+
+  <br>
+  @param label Label object to display the data tip within
+	*********************************************************************************************************************/
   public void setDataTipLabel(JLabel label)
   {
     graph.setDataTipLabel(label);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the delay, in milliseconds, of how long the data tip should delay after no mouse movement to
+                      display a data tip.
+
+  <br>
+  @param delay Delay time in milliseconds
+	*********************************************************************************************************************/
   public void setToolTipDelay(int delay)
   {
     graph.setToolTipDelay(delay);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the location of X axis dividers.  Dividers are vertical lines that segment a chart into 3
+                      sections.  Typically, they are used to mark the current displayed range of a sub chart on a
+                      larger over-all chart.
+
+  <br>
+  @param x1 X location of first divider
+  @param x2 X location of second divider
+	*********************************************************************************************************************/
   public void setXDividers(double x1, double x2)
   {
     if (xaxis.dividers == null)
@@ -251,6 +414,12 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of the chart title.
+
+  <br>
+  @param show True if the title is to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowTitle(boolean show)
   {
     remove(title);
@@ -263,18 +432,36 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     validate();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of X axis dividers.
+
+  <br>
+  @param show True if the dividers are to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowXDividers(boolean value)
   {
     xaxis.showDividers = value;
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the number of X axis minior tic marks per major tic mark.
+
+  <br>
+  @param count Number of minior tic marks per major tic mark
+	*********************************************************************************************************************/
   public void setXMinorTicMarks(int count)
   {
     xaxis.minor_tic_count = count;
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the color of the X axis dividers.
+
+  <br>
+  @param color Color of X axis dividers
+	*********************************************************************************************************************/
   public void setXDividerColor(Color color)
   {
     xDividerColor = color;
@@ -288,45 +475,97 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the suggested maximum squared distance from a data point to trigger a data tip.  If a data
+                      point is further away from the mouse pointer than this squared distance, the data tip will not
+                      be displayed for that point.
+
+  <br>
+  @param value Maximum squared distance in pixels
+	*********************************************************************************************************************/
   public void setSuggestedMaxPointDist2(double value)
   {
     graph.suggestedMaxPointDist2 = value;
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the data set that has a point closest to the specifed (X,Y) pixel cooridinates.
+
+  <br>
+  @param x X pixel coordinate
+  @param y Y pixel coordinate
+  @return Data set closest to the specified location or null if there isn't one
+	*********************************************************************************************************************/
   public DataSet getClosestDataSet(int x, int y)
   {
     return((DataSet)graph.getClosestPoint(x, y)[1]);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of the chart grid.
+
+  <br>
+  @param value True if the grid is to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowGrid(boolean value)
   {
     graph.drawgrid = value;
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of the chart grid on top of the data set plots.
+
+  <br>
+  @param value True if the grid is to be displayed on top, false otherwise
+	*********************************************************************************************************************/
   public void setGridOnTop(boolean value)
   {
     graph.gridOnTop = value;
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of chart data tips.
+
+  <br>
+  @param value True if data tips are to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowDataTips(boolean value)
   {
     graph.setShowDataTips(value);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of chart's left Y axis.
+
+  <br>
+  @param value True if left Y axis is to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowLeftYAxis(boolean value)
   {
     yaxisLeft.visible = value;
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of chart's right Y axis.
+
+  <br>
+  @param value True if right Y axis is to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowRightYAxis(boolean value)
   {
     yaxisRight.visible = value;
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of chart's X range dual-thumb slider.
+
+  <br>
+  @param value True if the X range slider is to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowXRangeScroller(boolean value)
   {
     if (value)
@@ -341,21 +580,53 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of X range slider's tic labels.
+
+  <br>
+  @param value True if the X range slider's tic labels are to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowXRangeTickLabels(boolean value)
   {
     xRC.setDrawTickLabels(value);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of X axis tic marks and labels.
+
+  <br>
+  @param value True if the X axis tic marks and labels are to be displayed, false otherwise
+	*********************************************************************************************************************/
+  public void setShowXAxisTickLabels(boolean value)
+  {
+    xaxis.drawTicMarks = value;
+    graph.repaint();
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the X range slider's scroll lock.  When enabled, moving one of the thumb sliders
+                      of the X range slider results in the movement of the other thumb slider an equal distance in the
+                      same direction keeping the current range distance of the slider the same.
+
+  <br>
+  @param value True if the X range slider's scroll lock is to be enabled, false otherwise
+	*********************************************************************************************************************/
   public void setXRangeScrollLock(boolean value)
   {
     xRangeScrollLock[0] = value;
 
     if (xRangeScrollLock[0])
     {
-      xScrollSize[0] = xRC.getRange().getFMax() - xRC.getRange().getFMin();
+      xScrollSize[0] = xRC.getRange().getDMax() - xRC.getRange().getDMin();
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of chart's Y range dual-thumb slider.
+
+  <br>
+  @param value True if the Y range slider is to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowYRangeScroller(boolean value)
   {
     if (value)
@@ -370,11 +641,39 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of Y range slider's tic labels.
+
+  <br>
+  @param value True if the Y range slider's tic labels are to be displayed, false otherwise
+	*********************************************************************************************************************/
   public void setShowYRangeTickLabels(boolean value)
   {
     yRC.setDrawTickLabels(value);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of Y axis tic marks and labels.
+
+  <br>
+  @param value True if the Y axis tic marks and labels are to be displayed, false otherwise
+	*********************************************************************************************************************/
+  public void setShowYAxisTickLabels(boolean value)
+  {
+    yaxisLeft.drawTicMarks = value;
+    yaxisRight.drawTicMarks = value;
+    
+    graph.repaint();
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the Y range slider's scroll lock.  When enabled, moving one of the thumb sliders
+                      of the Y range slider results in the movement of the other thumb slider an equal distance in the
+                      same direction keeping the current range distance of the slider the same.
+
+  <br>
+  @param value True if the Y range slider's scroll lock is to be enabled, false otherwise
+	*********************************************************************************************************************/
   public void setYRangeScrollLock(boolean value)
   {
     yRangeScrollLock[0] = value;
@@ -385,6 +684,12 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Enables/Disables the display of C-Date values.
+
+  <br>
+  @param value True if the X axis should use C-Date values, false otherwise
+	*********************************************************************************************************************/
   public void setUseCDate(boolean value)
   {
     if (xaxis instanceof TimeAndDateAxis)
@@ -396,6 +701,17 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Attaches a data set to the chart.
+
+  <br><b>Notes</b>:<br>
+	                  - The CChart.resetTotalRange() method should be called after adding all data sets to the chart to
+	                    set the minimum and maximum limits of the X & Y range sliders according to the minimum and
+	                    maximum values of the data sets.
+
+  <br>
+  @param dataSet Data set to attach to the chart
+	*********************************************************************************************************************/
   public void attachDataSet(DataSet dataSet)
   {
     if (dataSet instanceof StackableBarDataSet)
@@ -423,6 +739,9 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     resetYRangeScroller();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Removes all data sets from the chart.
+	*********************************************************************************************************************/
   public void detachAllDataSets()
   {
     lastColor = 0;
@@ -433,28 +752,62 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     yaxisRight.detachAll();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the number of digits on the X axis major tic mark labels to display before resorting to an
+                      exponent display.
+
+  <br>
+  @param numDigits Maximum number of digits
+	*********************************************************************************************************************/
   public void setXAxisExponentDisplayThreshold(int numDigits)
   {
     xaxis.exponentDisplayThreshold = numDigits;
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the number of digits on the Y axis major tic mark labels to display before resorting to an
+                      exponent display.
+
+  <br>
+  @param numDigits Maximum number of digits
+	*********************************************************************************************************************/
   public void setYAxisExponentDisplayThreshold(int numDigits)
   {
     yaxisLeft.exponentDisplayThreshold = numDigits;
     yaxisRight.exponentDisplayThreshold = numDigits;
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the number of significant digits after the decimal on the X axis major tic mark labels to
+                      display before truncating.
+
+  <br>
+  @param numDigits Maximum number of digits
+	*********************************************************************************************************************/
   public void setXAxisSigDigitDisplay(int numDigits)
   {
     xaxis.sigDigitDisplay = numDigits;
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the number of significant digits after the decimal on the Y axis major tic mark labels to
+                      display before truncating.
+
+  <br>
+  @param numDigits Maximum number of digits
+	*********************************************************************************************************************/
   public void setYAxisSigDigitDisplay(int numDigits)
   {
     yaxisLeft.sigDigitDisplay = numDigits;
     yaxisRight.sigDigitDisplay = numDigits;
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns all of the data sets currently contained in the chart.
+
+  <br>
+  @return Array of all data sets contained in the chart
+	*********************************************************************************************************************/
   public DataSet[] getDataSets()
   {
     return(graph.getDataSetList());
@@ -465,77 +818,177 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     graph.repaint();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current range limits of the X axis range slider.
+
+  <br>
+  @return Range limits of X axis range slider
+	*********************************************************************************************************************/
+  public RangeModel getXScrollerRangeLimit()
+  {
+    return(new RangeModel(xRC.getMinDValue(), xRC.getMaxDValue()));
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current range limits of the Y axis range slider.
+
+  <br>
+  @return Range limits of Y axis range slider
+	*********************************************************************************************************************/
+  public RangeModel getYScrollerRangeLimit()
+  {
+    return(new RangeModel(yRC.getMinDValue(), yRC.getMaxDValue()));
+  }
+
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current range of the X axis range slider.
+
+  <br>
+  @return Range of X axis range slider
+	*********************************************************************************************************************/
   public RangeModel getXScrollerRange()
   {
     return(xRC.getRange());
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current range of the Y axis range slider.
+
+  <br>
+  @return Range of Y axis range slider
+	*********************************************************************************************************************/
   public RangeModel getYScrollerRange()
   {
     return(yRC.getRange());
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the range of the X axis range slider.
+
+  <br>
+  @param range New range of X axis range slider
+	*********************************************************************************************************************/
   public void setXScrollerRange(RangeModel range)
   {
     xRC.setRange(range);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the range of the Y axis range slider.
+
+  <br>
+  @param range New range of Y axis range slider
+	*********************************************************************************************************************/
   public void setYScrollerRange(RangeModel range)
   {
     yRC.setRange(range);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current minimum and maximum range limits of the X axis range slider.
+
+  <br>
+  @return Minimum and maximum range limits of X axis range slider
+	*********************************************************************************************************************/
   public RangeModel getTotalXRange()
   {
-    return(new RangeModel((float)graph.getXmin(), (float)graph.getXmax()));
+    return(new RangeModel(graph.getXmin(), graph.getXmax()));
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Returns the current minimum and maximum range limits of the Y axis range slider.
+
+  <br>
+  @return Minimum and maximum range limits of Y axis range slider
+	*********************************************************************************************************************/
   public RangeModel getTotalYRange()
   {
-    return(new RangeModel((float)graph.getYmin(), (float)graph.getYmax()));
+    return(new RangeModel(graph.getYmin(), graph.getYmax()));
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Resets minimum and maximum range limits of the X and Y axis range sliders based on the minimum
+                      and maximum values of all data sets contained in the chart.
+	*********************************************************************************************************************/
   public void resetTotalRange()
   {
-    xRC.setSliderRange((float)graph.getXmin(), (float)graph.getXmax());
+    xRC.setSliderRange(graph.getXmin(), graph.getXmax());
 //    yRC.setSliderRange((float)graph.getYmin(), (float)graph.getYmax());
-    yRC.setSliderRange(0.0f, (float)graph.getYmax() + (float)(graph.getYmax()*0.10));
+    //yRC.setSliderRange(0.0, graph.getYmax() + graph.getYmax()*0.10);
+    yRC.setSliderRange(0.0, graph.getYmax() + graph.getYmax()*additionalSpace);
+//    resetYRangeScroller();
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Resets minimum and maximum range limits of the Y axis range slider based on the minimum and
+                      maximum Y values of all data sets contained in the chart.
+	*********************************************************************************************************************/
   public void resetYRangeScroller()
   {
     double yMax = graph.getYmaxInRange(graph.getXmin(), graph.getXmax());
     if (Double.isNaN(yMax))
     {
-      yRC.setSliderRange(0.0f, 1.0f);
-      yRC.setRange(new RangeModel(0.0f, 1.0f));
+      yRC.setSliderRange(0.0, 1.0);
+      yRC.setRange(new RangeModel(0.0, 1.0));
     }
     else
     {
-      yRC.setSliderRange(0.0f, (float)(yMax + yMax*0.10));
-      yRC.setRange(new RangeModel(0.0f, (float)(yMax + yMax*0.10)));
+      //yRC.setSliderRange(0.0, yMax + yMax*0.10);
+      yRC.setSliderRange(0.0, yMax + yMax * additionalSpace);
+      //yRC.setRange(new RangeModel(0.0, yMax + yMax*0.10));
+      yRC.setRange(new RangeModel(0.0, yMax + yMax * additionalSpace));
     }
   }
 
-  public void resetTotalXRange(float min, float max)
+	/*********************************************************************************************************************
+  <b>Description</b>: Resets the minimum and maximum range value limits of the X axis range slider to the specified
+                      values.
+
+  <br>
+  @param min New minimum range limit of X axis range slider
+  @param max New maximum range limit of X axis range slider
+	*********************************************************************************************************************/
+  public void resetTotalXRange(double min, double max)
   {
     xRC.setSliderRange(min, max);
   }
 
-  public void resetTotalYRange(float min, float max)
+	/*********************************************************************************************************************
+  <b>Description</b>: Resets the minimum and maximum range value limits of the Y axis range slider to the specified
+                      values.
+
+  <br>
+  @param min New minimum range limit of Y axis range slider
+  @param max New maximum range limit of Y axis range slider
+	*********************************************************************************************************************/
+  public void resetTotalYRange(double min, double max)
   {
     yRC.setSliderRange(min, max);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Resets the current range of the X and Y axis range sliders to the current minumum and maximum
+                      range limit values.
+	*********************************************************************************************************************/
   public void resetRange()
   {
 //    xRC.setRange(new RangeModel((int)graph.getXmin(), (int)graph.getXmax()));
-    xRC.setRange(new RangeModel((float)xRC.getMinValue(), (float)xRC.getMaxValue()));
+    xRC.setRange(new RangeModel(xRC.getMinDValue(), xRC.getMaxDValue()));
 //    yRC.setRange(new RangeModel((int)graph.getYmin(), (int)graph.getYmax()));
 //    yRC.setRange(new RangeModel(0, (int)graph.getYmax()));
-    yRC.setRange(new RangeModel((float)yRC.getMinValue(), (float)yRC.getMaxValue()));
+    yRC.setRange(new RangeModel(yRC.getMinDValue(), yRC.getMaxDValue()));
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Creates a stackable bar data with the specified bar width.
+
+  <br><b>Notes</b>:<br>
+	                  - The data set is automatically attached to the chart
+
+  <br>
+  @param width Width of the bars of the data set
+  @return New stackable bar data set
+	*********************************************************************************************************************/
   public StackableBarDataSet createStackableBarDataSet(double width)
   {
     StackableBarDataSet dataSet = new StackableBarDataSet(graph, xaxis, yaxisLeft, yaxisRight, width, this);
@@ -543,12 +996,27 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     return(dataSet);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the title of the chart.
+
+  <br>
+  @param tileString New title
+	*********************************************************************************************************************/
   public void setTitle(String tileString)
   {
     title.removeAll();
     title.add(new JLabel(tileString, SwingConstants.CENTER), BorderLayout.CENTER);
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the base time the chart uses for the data set data.
+
+  <br><b>Notes</b>:<br>
+	                  - The chart needs to be created with a X time axis for this method to have any effect.
+
+  <br>
+  @param time Base time
+	*********************************************************************************************************************/
   public void setBaseTime(long time)
   {
     if (xaxis instanceof TimeAndDateAxis)
@@ -558,6 +1026,15 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the time scale the chart uses for the data set data.
+
+  <br><b>Notes</b>:<br>
+	                  - The chart needs to be created with a X time axis for this method to have any effect.
+
+  <br>
+  @param scale Time scale
+	*********************************************************************************************************************/
   public void setTimeScale(long scale)
   {
     if (xaxis instanceof TimeAndDateAxis)
@@ -567,6 +1044,16 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Sets the C-Date zero time the chart uses for the data set data.
+
+  <br><b>Notes</b>:<br>
+	                  - The chart needs to be created with a X time axis and have C-Date display enabled for this method
+	                    to have any effect.
+
+  <br>
+  @param date Zero time C-Date value
+	*********************************************************************************************************************/
   public void setCDate(long date)
   {
     if (xaxis instanceof TimeAndDateAxis)
@@ -649,7 +1136,7 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     yRC.getSlider().updateUI();
   }
 
-  private void resetDataSetColors()
+  protected void resetDataSetColors()
   {
     lastColor = 0;
 
@@ -673,6 +1160,18 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
   }
 
+	/*********************************************************************************************************************
+  <b>Description</b>: Implemented method of color producer to provide a color for data sets.  Called when a stackable
+                      bar data set is defining colors for stacked data sets.
+
+  <br><b>Notes</b>:<br>
+	                  - Any notes about the method goes here
+
+  <br>
+  @param currentColor Current color of the data set
+  @param colorNumber Current color number of the data set
+  @return Color to be used
+	*********************************************************************************************************************/
   public Color getColor(Color currentColor, int colorNumber)
   {
     if ((plotColors != null) && (colorNumber > -1) && (colorNumber < plotColors.length))
@@ -688,10 +1187,10 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     return(currentColor);
   }
 
-  private void rangeChanged(CMThumbSliderRangeControl rC, double[] minMax, Axis[] axisList, double scrollSize, boolean scrollLock, PropertyChangeListener listener)
+  protected void rangeChanged(CMThumbSliderRangeControl rC, double[] minMax, Axis[] axisList, double scrollSize, boolean scrollLock, PropertyChangeListener listener)
   {
-    double currentMin = rC.getRange().getFMin();
-    double currentMax = rC.getRange().getFMax();
+    double currentMin = rC.getRange().getDMin();
+    double currentMax = rC.getRange().getDMax();
 
     if ((currentMin == currentMax) || ((minMax[0] == currentMin) && (minMax[1] == currentMax)))
     {
@@ -703,21 +1202,21 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
       rC.removePropertyChangeListener("range", listener);
       if (minMax[0] != currentMin)
       {
-        rC.setRange(new RangeModel((float)currentMin, (float)(currentMin + scrollSize)));
+        rC.setRange(new RangeModel(currentMin, currentMin + scrollSize));
       }
       else if (minMax[1] != currentMax)
       {
-        rC.setRange(new RangeModel((float)(currentMax - scrollSize), (float)currentMax));
+        rC.setRange(new RangeModel(currentMax - scrollSize, currentMax));
       }
       else
       {
-        rC.setRange(new RangeModel((float)minMax[0], (float)minMax[1]));
+        rC.setRange(new RangeModel(minMax[0], minMax[1]));
       }
       rC.addPropertyChangeListener("range", listener);
     }
 
-    minMax[0] = rC.getRange().getFMin();
-    minMax[1] = rC.getRange().getFMax();
+    minMax[0] = rC.getRange().getDMin();
+    minMax[1] = rC.getRange().getDMax();
 
     // Must set min and max
     for (int i=0; i<axisList.length; i++)
@@ -729,17 +1228,13 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     graph.repaint();
   }
   
+	/*********************************************************************************************************************
+  <b>Description</b>: CChart test example.  Use "java org.cougaar.lib.uiframework.ui.components.CChart" to run.
+	*********************************************************************************************************************/
   public static void main(String[] args)
   {
     JFrame frame = new JFrame();
-    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    frame.addWindowListener(new WindowAdapter()
-    {
-      public void windowClosed(WindowEvent e)
-      {
-        System.exit(0);
-      }
-    });
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     frame.getContentPane().setLayout(new BorderLayout());
     CChart chart = new CChart("chartTitle", "xLabel", "yLabel", false);

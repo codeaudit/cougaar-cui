@@ -1,21 +1,10 @@
 /*
  * <copyright>
- *  Copyright 1997-2001 BBNT Solutions, LLC
- *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the Cougaar Open Source License as published by
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
- *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.
+ * Copyright 1997-2000 Defense Advanced Research Projects Agency (DARPA)
+ * and Clark Software Engineering (CSE) This software to be used in
+ * accordance with the COUGAAR license agreement.  The license agreement
+ * and other information on the Cognitive Agent Architecture (COUGAAR)
+ * Project can be found at http://www.cougaar.org or email: info@cougaar.org.
  * </copyright>
  */
 
@@ -36,40 +25,156 @@ import org.cougaar.domain.mlm.ui.data.UIQuantityScheduleElement;
 
 import org.cougaar.lib.uiframework.ui.components.graph.*;
 
-/**
- * .<pre>
- * Usage:
+/***********************************************************************************************************************
+<b>Description</b>: InventoryTableModel for Inventory Management
+
+<br><br><b>Notes</b>:<br> 
+
+Usage:
  *     JTable table = new JTable(new InventoryTableModel(UISimpleInventory)));
  *     JScrollPane scrollpane = new JScrollPane(table);
- * </pre>
- */
+									
 
+@author Frank Cooley, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
+@version 1.0
+***********************************************************************************************************************/
 public class InventoryTableModel extends AbstractTableModel
 {
+  
+  
+  /*********************
+  ** Public Variables
+  **********************/
+  
+  /********************************************************************************************
+  <b>Description</b>: long - Set the data time scale to seconds.
 
-  // Set the data time scale to seconds
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
   public static final long timeScale = 1000;
 
-  // Set the bar data width to be 4 hours (data time scale is in seconds, so 4*60*60 is 4 hours)
+  /********************************************************************************************
+  <b>Description</b>: double Set the bar data width to be 4 hours (data time scale is in seconds, so 4*60*60 is 4 hours).
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
   public static final double barWidth = 4.0*60.0*60.0;
+  /********************************************************************************************
+  <b>Description</b>: UISimpleInventory - the inventory data that we are working with.
 
-  UISimpleInventory inventory;
-  int rowCount;
-  Vector columns;
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public UISimpleInventory inventory;
+  /********************************************************************************************
+  <b>Description</b>: int  - number of rows in the table.
 
-  Hashtable dataSets = new Hashtable(1);
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public int rowCount;
+  /********************************************************************************************
+  <b>Description</b>: Vector - holds vectors of "rows" which contain ScheduleTableEntry objects
+                               which are quantity, start time, end time.
+  
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public Vector columns;
+  /********************************************************************************************
+  <b>Description</b>: Hashtable - keyed by inventory schedule name, contains Dataset elements.
 
-  DateFormat dateTimeFormater = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
-  NumberFormat qtyFormater = NumberFormat.getInstance();
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public Hashtable dataSets = new Hashtable(1);
+  /********************************************************************************************
+  <b>Description</b>: DateFormat -  date format.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public DateFormat dateTimeFormater = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+  /********************************************************************************************
+  <b>Description</b>: NumberFormat -  characteristics of display value.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public NumberFormat qtyFormater = NumberFormat.getInstance();
+  /********************************************************************************************
+  <b>Description</b>: RowObjectComparer - used to help sort arrays.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
   public static final RowObjectComparer rowObjectComparer = new RowObjectComparer();
-  Vector columnNames = null;
-  String[] finalColumnNames;
-  int originalRows;
-  int colCount;
-  int maxRows;
-  int allRows;
-  Object[][] data;
+  /********************************************************************************************
+  <b>Description</b>: Vector the actual column names.
 
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public Vector columnNames = null;
+  /********************************************************************************************
+  <b>Description</b>: String[]  final column names after massaging for display
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public String[] finalColumnNames;
+  /********************************************************************************************
+  <b>Description</b>: int number of rows coming in.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public int originalRows;
+  /********************************************************************************************
+  <b>Description</b>: int number of columns.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public int colCount;
+  /********************************************************************************************
+  <b>Description</b>: int - row max.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public int maxRows;
+  /********************************************************************************************
+  <b>Description</b>: int the number of rows calculated from incoming and calculated data.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public int allRows;
+  /********************************************************************************************
+  <b>Description</b>: Object[][] - the table data matrix.
+
+  <br><br><b>Notes</b>:<br>
+                    - 
+  *********************************************************************************************/
+  public Object[][] data;
+  // ---------------------------------------------------------------------------------------------------------------------
+  // Public Constructors
+  // ---------------------------------------------------------------------------------------------------------------------
+  /*********************************************************************************************************************
+  <b>Description</b>: main constructor
+
+  <br><b>Notes</b>:<br>
+	                  -takes the passed in UISimpleInventory object and creates the table info
+  <br>
+  
+  @param inventory UISimpleInventory the data object.
+  
+  
+
+	*********************************************************************************************************************/
   public InventoryTableModel(UISimpleInventory inventory)
   {
    if(inventory != null)
@@ -233,7 +338,15 @@ public class InventoryTableModel extends AbstractTableModel
     buildDataSets();
    }
   }
+  /*********************************************************************************************************************
+  <b>Description</b>: Default constructor
 
+  <br><b>Notes</b>:<br>
+	                  - Puts dummy data into the table
+
+  <br>
+
+	*********************************************************************************************************************/
   public InventoryTableModel()
   {
 
@@ -265,7 +378,21 @@ public class InventoryTableModel extends AbstractTableModel
     allRows = 4;
 
   }
+  // ---------------------------------------------------------------------------------------------------------------------
+  // Public Member Methods
+  // ---------------------------------------------------------------------------------------------------------------------
+  /**********************************************************************************************
+  <b>Description</b>: trimToOnhand
 
+  <br><b>Notes</b>:<br>
+	                  -Trim the passed in data to the "on hand" values
+
+  <br>
+  
+  @param dataVector Vector
+  @return Vector
+
+	**********************************************************************************************/
   public Vector trimToOnhand(Vector dataVector)
   {
   	
@@ -304,34 +431,20 @@ public class InventoryTableModel extends AbstractTableModel
     }
     return newData;
   }
+  
 
-  private void buildDataSets()
-  {
-    try
-    {
-      int cols = getColumnCount();
-      DataSet dataSet = null;
-      double[] data = null;
-      String name = null;
-      String group = null;
-      for (int i=1; i<cols; i++)
-      {
-        name = getColumnName(i);
-        group = InventoryScheduleNames.getGroup(name);
-        if (group != null)
-        {
-          dataSet = InventoryScheduleNames.buildDataSet(name, group, getColumnData(i));
-          dataSets.put(name, dataSet);
-        }
-      }
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
-  }
+  /**********************************************************************************************
+  <b>Description</b>: batchDataset
 
+  <br><b>Notes</b>:<br>
+	                  Make a new column from the passed in column by summing over days
 
+  <br>
+  
+  @param columnToSum String - the column to batch
+  @return DataSet
+
+	**********************************************************************************************/
   public DataSet batchDataset(String columnToSum)
   {
     // intervalType 0 = day or greater
@@ -419,78 +532,84 @@ public class InventoryTableModel extends AbstractTableModel
     return null;
   }
 
+  /**********************************************************************************************
+  <b>Description</b>: getDataSets
 
+  <br><b>Notes</b>:<br>
+	                  return the dataSets Hashtable
+
+  <br>
+  
+
+  @return Hashtable
+
+	**********************************************************************************************/
 
   public Hashtable getDataSets()
   {
     return(dataSets);
   }
+  /**********************************************************************************************
+  <b>Description</b>: getColumnName
 
-  private void setColumnNames(Vector names, int columnIndex, String shortInName, String shortOutName)
-  {
-    int newIndex = columnIndex;
+  <br><b>Notes</b>:<br>
+	                  
 
-    finalColumnNames = new String[names.size()];
-    for(int i = 0; i < names.size(); i++)
-    {
-      finalColumnNames[i] = (String)names.elementAt(i);
-      //System.out.println("set column " + finalColumnNames[i]);
-      colCount = i + 1;
-    }
+  <br>
+  
+  @param col int - the column to get
+  @return String
 
-  }
-  private Object[][] setColumnData(Vector columnData, int numberOfColumns, int numberOfRows)
-  {
-    Object[][] newData = new Object[numberOfRows ][numberOfColumns + 1];
-    //System.out.println("number of cols " + numberOfColumns + " number of rows " + numberOfRows);
-    int absRow = 0;
-    GregorianCalendar cal = new GregorianCalendar();
-    Date date = new Date();
-    for(int i = 0; i < columnData.size(); i++)
-    {
-
-      Vector nextRow = (Vector)columnData.elementAt(i);
-      for(int j = 0; j < nextRow.size(); j++)
-      {
-        ScheduleTableEntry s = (ScheduleTableEntry) nextRow.elementAt(j);
-        date.setTime(s.startTime);
-        cal.setTime(date);
-//        newData[absRow][0] = new Double(roundTimeToHours(cal));
-        newData[absRow][0] = new Double(truncateTimeToHours(cal));
-        newData[absRow++][i + 1] = new Double((double)s.quantity);
-      }
-
-    }
-    allRows = absRow;
-    return newData;
-  }
-
+	**********************************************************************************************/
   public String getColumnName(int col)
   {
      return finalColumnNames[col];
 
   }
+  /**********************************************************************************************
+  <b>Description</b>: getColumnCount(
 
-    private String shortDate(long time) {
-  if (time < 0) return "";
-  String sdate = dateTimeFormater.format(new Date(time));
-  // map '9/8/00 12:00 AM' to ' 9/8/00 12:00 AM'
-  while(sdate.length()<17){
-      sdate = " "+sdate;
-  }
-  return sdate;
-    }
+  <br><b>Notes</b>:<br>
+	                  
 
+  <br>
+  
+
+  @return int
+
+	**********************************************************************************************/
   public int getColumnCount()
   {
     //System.out.println("column count = " + colCount);
     return colCount;
   }
+  /**********************************************************************************************
+  <b>Description</b>: getRowCount
 
+  <br><b>Notes</b>:<br>
+	                  
+
+  <br>
+  
+
+  @return int
+
+	**********************************************************************************************/
   public int getRowCount() {
     return allRows;
   }
+  /**********************************************************************************************
+  <b>Description</b>: getColumnData
 
+  <br><b>Notes</b>:<br>
+	                  - get the data array for one column
+
+  <br>
+  
+  @param col int - column to get data for
+  @return double[]
+
+	**********************************************************************************************/
   public double[] getColumnData(int col)
   {
     Vector scheduleList = (Vector) columns.elementAt(col - 1);
@@ -506,37 +625,20 @@ public class InventoryTableModel extends AbstractTableModel
       myData[(i*2)+0] = (double)(sched.startTime/timeScale);
       myData[(i*2)+1] = sched.quantity;
     }
-
-
     return myData;
-
   }
+  /**********************************************************************************************
+  <b>Description</b>: getNSN
 
-  private long roundTimeToHours(GregorianCalendar cal)
-  {
-    if (cal.get(Calendar.MINUTE) > 29)
-    {
-      cal.add(Calendar.HOUR, 1);
-    }
+  <br><b>Notes</b>:<br>
+	                  get the NSN string for this inventory
 
-    cal.set(Calendar.MILLISECOND, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MINUTE, 0);
+  <br>
+  
 
-    return(cal.getTime().getTime());
-  }
+  @return String
 
-
-  private long truncateTimeToHours(GregorianCalendar cal)
-  {
-    cal.set(Calendar.MILLISECOND, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MINUTE, 0);
-
-    return(cal.getTime().getTime());
-  }
-
-
+	**********************************************************************************************/
   public String getNSN()
   {
     String nsn = null;
@@ -553,9 +655,18 @@ public class InventoryTableModel extends AbstractTableModel
 
     return(nsn);
   }
+  /**********************************************************************************************
+  <b>Description</b>: getAssetName
 
+  <br><b>Notes</b>:<br>
+	                  get the asset name for this inventory
 
+  <br>
+  
 
+  @return String
+
+	**********************************************************************************************/
   public String getAssetName()
   {
      if(inventory != null)
@@ -564,7 +675,20 @@ public class InventoryTableModel extends AbstractTableModel
        return  " ";
   }
 
+  /**********************************************************************************************
+  <b>Description</b>: sortTheRow
 
+  <br><b>Notes</b>:<br>
+	                  sort the table array
+
+  <br>
+  
+  @param timearray Object[][] - the array to sort
+  @param rows int
+  @param cols int
+  @return Object[][] 
+
+	**********************************************************************************************/
   public Object[][] sortTheRow(Object[][] timearray, int rows, int cols)
   {
     Object[][] newdata = new Object[rows][cols];
@@ -639,7 +763,21 @@ public class InventoryTableModel extends AbstractTableModel
     return newdata;
 
   }
+  /**********************************************************************************************
+  <b>Description</b>: buildOddData
 
+  <br><b>Notes</b>:<br>
+	                  build a new column, summing over days
+
+  <br>
+  
+  @param lookahead int - number of days to look ahead
+  @param columnToSum String
+  @param columnToMake String
+  @param sum boolean true = add false = subtract
+  @return void
+
+	**********************************************************************************************/
   public void buildOddData(int lookahead, String columnToSum, String columnToMake, boolean sum)
   {
     Vector dataVector = null;
@@ -690,7 +828,18 @@ public class InventoryTableModel extends AbstractTableModel
 
     }
   }
+  /**********************************************************************************************
+  <b>Description</b>: buildShortIn
 
+  <br><b>Notes</b>:<br>
+	                  combine columns to build shortfall-in column
+
+  <br>
+  
+
+  @return boolean
+
+	**********************************************************************************************/
   public boolean buildShortIn()
   {
 
@@ -764,7 +913,20 @@ public class InventoryTableModel extends AbstractTableModel
       return false;
 
   }
+  /**********************************************************************************************
+  <b>Description</b>: calcNewInRow
 
+  <br><b>Notes</b>:<br>
+	                  Combine input vector to make a new column
+
+  <br>
+  
+  @param rv Vector input data vector
+  @param dv Vector input data vector
+  @param uv Vector input data vector
+  @return Vector
+
+	**********************************************************************************************/
   public Vector calcNewInRow(Vector rv, Vector dv, Vector uv)
   {
     if(rv == null || dv == null || uv == null)
@@ -866,10 +1028,7 @@ System.out.println("k");
         newRow.quantity = thisValue;
       else
         newRow.quantity = 0;
-
-
-
-
+        
       //  we can make this row
 
       row.add(newRow);
@@ -894,7 +1053,20 @@ System.out.println("k");
     return row;
 
   }
+  /**********************************************************************************************
+  <b>Description</b>: betterTime
 
+  <br><b>Notes</b>:<br>
+	                  indicate if time 2 is greater than time 1
+
+  <br>
+  @param x ScheduleTableEntry
+  @param m ScheduleTableEntry
+  @param done boolean - forces return true
+
+  @return boolean
+
+	**********************************************************************************************/
   public boolean betterTime(ScheduleTableEntry x, ScheduleTableEntry m, boolean done)
   {
     if(x.startTime <= m.startTime || done)
@@ -902,7 +1074,18 @@ System.out.println("k");
     else
       return false;
   }
+  /**********************************************************************************************
+  <b>Description</b>: buildShortOut
 
+  <br><b>Notes</b>:<br>
+	                  combine columns to build a new column - shortfall out
+
+  <br>
+  
+
+  @return boolean
+
+	**********************************************************************************************/
   public boolean buildShortOut()
   {
     //  new column = requested due in - due in - unconfirmed due in + previous new column
@@ -987,7 +1170,23 @@ System.out.println("k");
         return false;
 
   }
+/**********************************************************************************************
+  <b>Description</b>: combineDataColumns
 
+  <br><b>Notes</b>:<br>
+	                  - get index of column names
+                      get index of data (getColumnData[i])
+                      compute using rows that are equal dates
+
+  <br>
+  
+  @param columnA String
+  @param columnB String
+  @param newColumn String
+  @param op boolean - add or subtract
+  @return String
+
+	**********************************************************************************************/
 public String combineDataColumns(String columnA, String columnB, String newColumn, boolean op)
 {
 
@@ -1036,9 +1235,21 @@ public String combineDataColumns(String columnA, String columnB, String newColum
 
 }
 
-/*******************************************************************************************
+/**********************************************************************************************
+  <b>Description</b>: calcNewOutRow
 
-********************************************************************************************/
+  <br><b>Notes</b>:<br>
+	                  add or subtract columns to get new data vector
+                    
+  <br>
+  
+  @param rv Vector
+  @param dv Vector
+  @param sum boolean - true = add false = subtract
+  @param previous boolean - make a running total
+  @return Vector
+
+	**********************************************************************************************/
 public Vector calcNewOutRow(Vector rv, Vector dv, boolean sum, boolean previous)
   {
     //System.out.println("calcNewRowOut ");
@@ -1186,9 +1397,20 @@ public Vector calcNewOutRow(Vector rv, Vector dv, boolean sum, boolean previous)
     return row;
   }
 
-/*******************************************************************************************
+/**********************************************************************************************
+  <b>Description</b>: multiplyRows
 
-********************************************************************************************/
+  <br><b>Notes</b>:<br>
+	                  multiply row by a given factor
+
+  <br>
+  
+  @param rv Vector - input data
+  @param factor double - factor to multiply by
+  @param filterZero boolean - filter out zero data
+  @return void
+
+	**********************************************************************************************/
 public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
   {
     Vector row = new Vector();
@@ -1230,7 +1452,18 @@ public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
 
     return row;
   }
+  /**********************************************************************************************
+  <b>Description</b>: columnExists
 
+  <br><b>Notes</b>:<br>
+	                  
+
+  <br>
+  
+
+  @return boolean
+
+	**********************************************************************************************/
   public boolean columnExists(String col)
   {
     boolean value = false;
@@ -1243,7 +1476,19 @@ public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
 
   }
 
+  /**********************************************************************************************
+  <b>Description</b>: getValueAt
 
+  <br><b>Notes</b>:<br>
+	                  get the data for a given point
+
+  <br>
+  
+  @param row int
+  @param col int
+  @return Object
+
+	**********************************************************************************************/
   public Object getValueAt(int row, int col)
   {
 
@@ -1270,28 +1515,237 @@ public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
       return null;
     }
 
+  }  // end of getValueAt
+  // ---------------------------------------------------------------------------------------------------------------------
+  // Private Member Methods
+  // ---------------------------------------------------------------------------------------------------------------------
+  /**********************************************************************************************
+  <b>Description</b>: buildDataSets
+
+  <br><b>Notes</b>:<br>
+	                  Build the DataSet Objects from the inventory data
+
+  <br>
+  
+
+  @return void
+
+	**********************************************************************************************/
+  private void buildDataSets()
+  {
+    try
+    {
+      int cols = getColumnCount();
+      DataSet dataSet = null;
+      double[] data = null;
+      String name = null;
+      String group = null;
+      for (int i=1; i<cols; i++)
+      {
+        name = getColumnName(i);
+        group = InventoryScheduleNames.getGroup(name);
+        if (group != null)
+        {
+          dataSet = InventoryScheduleNames.buildDataSet(name, group, getColumnData(i));
+          dataSets.put(name, dataSet);
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+  /**********************************************************************************************
+  <b>Description</b>: setColumnNames
+
+  <br><b>Notes</b>:<br>
+	                  - Set the display column names
+
+  <br>
+  
+
+  @return void
+
+	**********************************************************************************************/
+  private void setColumnNames(Vector names, int columnIndex, String shortInName, String shortOutName)
+  {
+    int newIndex = columnIndex;
+
+    finalColumnNames = new String[names.size()];
+    for(int i = 0; i < names.size(); i++)
+    {
+      finalColumnNames[i] = (String)names.elementAt(i);
+      //System.out.println("set column " + finalColumnNames[i]);
+      colCount = i + 1;
+    }
+
+}
+/**********************************************************************************************
+  <b>Description</b>: setColumnData
+
+  <br><b>Notes</b>:<br>
+	                  build the table data matrix from the Vector
+
+  <br>
+  
+  @param columnData Vector
+  @param numberOfColumns int
+  @param numberOfRows int
+  @return Object[][]
+
+	**********************************************************************************************/
+  private Object[][] setColumnData(Vector columnData, int numberOfColumns, int numberOfRows)
+  {
+    Object[][] newData = new Object[numberOfRows ][numberOfColumns + 1];
+    //System.out.println("number of cols " + numberOfColumns + " number of rows " + numberOfRows);
+    int absRow = 0;
+    GregorianCalendar cal = new GregorianCalendar();
+    Date date = new Date();
+    for(int i = 0; i < columnData.size(); i++)
+    {
+
+      Vector nextRow = (Vector)columnData.elementAt(i);
+      for(int j = 0; j < nextRow.size(); j++)
+      {
+        ScheduleTableEntry s = (ScheduleTableEntry) nextRow.elementAt(j);
+        date.setTime(s.startTime);
+        cal.setTime(date);
+//        newData[absRow][0] = new Double(roundTimeToHours(cal));
+        newData[absRow][0] = new Double(truncateTimeToHours(cal));
+        newData[absRow++][i + 1] = new Double((double)s.quantity);
+      }
+
+    }
+    allRows = absRow;
+    return newData;
   }
 
-        /*
-         * JTable uses this method to determine the default renderer/
-         * editor for each cell.  If we didn't implement this method,
-         * then the last column would contain text ("true"/"false"),
-         * rather than a check box.
-         */
-        public Class getColumnClass(int c)
-        {
-            return getValueAt(0, c).getClass();
-        }
+  
+  /**********************************************************************************************
+  <b>Description</b>: shortDate
 
-        public static class RowObjectComparer implements ArraySorter.Comparer
- {
-   public int compare(Object a, Object b)
-   {
-    return ((RowObject)a).compareTo((RowObject)b);
-   }
- }
-}
+  <br><b>Notes</b>:<br>
+	                  return the date as a string
 
+  <br>
+  
+
+  @return String
+
+	**********************************************************************************************/
+  private String shortDate(long time) 
+  {
+	  if (time < 0) return "";
+	  String sdate = dateTimeFormater.format(new Date(time));
+	  // map '9/8/00 12:00 AM' to ' 9/8/00 12:00 AM'
+	  while(sdate.length()<17)
+	  {
+	      sdate = " "+sdate;
+	  }
+	  return sdate;
+  }
+
+  /**********************************************************************************************
+  <b>Description</b>: roundTimeToHours
+
+  <br><b>Notes</b>:<br>
+	                  
+
+  <br>
+  
+  @param cal GregorianCalendar
+  @return long
+
+	**********************************************************************************************/
+
+  private long roundTimeToHours(GregorianCalendar cal)
+  {
+    if (cal.get(Calendar.MINUTE) > 29)
+    {
+      cal.add(Calendar.HOUR, 1);
+    }
+
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MINUTE, 0);
+
+    return(cal.getTime().getTime());
+  }
+  /**********************************************************************************************
+  <b>Description</b>: truncateTimeToHours
+
+  <br><b>Notes</b>:<br>
+	                  
+
+  <br>
+  
+
+  @return long
+
+	**********************************************************************************************/
+  private long truncateTimeToHours(GregorianCalendar cal)
+  {
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MINUTE, 0);
+
+    return(cal.getTime().getTime());
+  }
+  
+  /**********************************************************************************************
+  <b>Description</b>: getColumnClass
+
+  <br><b>Notes</b>:<br>
+	                  
+                      JTable uses this method to determine the default renderer/
+									    editor for each cell.  If we didn't implement this method,
+									    then the last column would contain text ("true"/"false"),
+									    rather than a check box.
+									   
+
+  <br>
+  
+
+  @return Class
+
+	**********************************************************************************************/
+  public Class getColumnClass(int c)
+  {
+      return getValueAt(0, c).getClass();
+  }
+  /**********************************************************************************************
+  <b>Description</b>: RowObjectComparer
+
+  <br><b>Notes</b>:<br>
+	                  supports array sorting
+
+  <br>
+  
+
+  @return static class
+
+	**********************************************************************************************/
+  public static class RowObjectComparer implements ArraySorter.Comparer
+  {
+	   public int compare(Object a, Object b)
+	   {
+	    return ((RowObject)a).compareTo((RowObject)b);
+	   }
+      }
+}  // end of tablemodel
+  /**********************************************************************************************
+  <b>Description</b>: ScheduleTableEntry
+
+  <br><b>Notes</b>:<br>
+	                  The data class
+
+  <br>
+  
+
+  
+
+	**********************************************************************************************/
   class ScheduleTableEntry {
     String name;
     String assetName;
@@ -1299,7 +1753,18 @@ public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
     long startTime;
     double quantity;
     long endTime;
+    /**********************************************************************************************
+  <b>Description</b>: Constructor
 
+  <br><b>Notes</b>:<br>
+	                  
+
+  <br>
+  
+
+  
+
+	**********************************************************************************************/
     public ScheduleTableEntry(String name, String assetName) {
       this.name = name;
       this.assetName = assetName;
@@ -1307,11 +1772,33 @@ public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
       startTime = -1;
       endTime = -1;
     }
+    /**********************************************************************************************
+  <b>Description</b>: Constructor
 
+  <br><b>Notes</b>:<br>
+	                  
+
+  <br>
+  
+
+  
+
+	**********************************************************************************************/
     public ScheduleTableEntry(String name) {
       this(name, null);
     }
+    /**********************************************************************************************
+  <b>Description</b>: Constructor
 
+  <br><b>Notes</b>:<br>
+	                  
+
+  <br>
+  
+
+  
+
+	**********************************************************************************************/
     public ScheduleTableEntry(double quantity, long startTime, long endTime) {
       name = null;
       assetName = null;

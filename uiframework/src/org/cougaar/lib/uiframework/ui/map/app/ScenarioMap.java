@@ -24,6 +24,7 @@ import java.awt.Color;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.Hashtable;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -43,29 +44,36 @@ import org.cougaar.util.ConfigFinder;
 
 public class ScenarioMap implements CougaarUI
 {
-
-    public static ScenarioMapBean mapBean;
+  
+    private static Hashtable mapBeans = new Hashtable(); // ScenarioMapBean mapBean;
+    private ScenarioMapBean localMapBean = null;
 
     public ScenarioMap ()
     {
-        PropertyHandler propertyHandler = new PropertyHandler();
-        new ScenarioMap(propertyHandler);
+      PropertyHandler propertyHandler = new PropertyHandler();
+      initialize ( propertyHandler);
     }
 
-    public ScenarioMap(PropertyHandler propertyHandler) {
+    public ScenarioMap(PropertyHandler propertyHandler)
+    {
+      initialize (propertyHandler);
+    }
 
-        mapBean = new ScenarioMapBean();
-        mapBean.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    private void initialize (PropertyHandler propertyHandler)
+    {
+        localMapBean = new ScenarioMapBean();
+
+        localMapBean.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         // Initialize the map projection, scale, center with user prefs or
         // defaults
-        String projName = Environment.get(Environment.Projection,
-                                          Mercator.MercatorName);
+        String projName = Environment.get ( Environment.Projection,
+                                            Mercator.MercatorName );
         int projType = ProjectionFactory.getProjType(projName);
-        mapBean.setProjectionType(projType);
-        mapBean.setScale(Environment.getFloat(Environment.Scale,
+        localMapBean.setProjectionType(projType);
+        localMapBean.setScale(Environment.getFloat(Environment.Scale,
                                               Float.POSITIVE_INFINITY));
-        mapBean.setCenter(new LatLonPoint(
+        localMapBean.setCenter(new LatLonPoint(
             Environment.getFloat(Environment.Latitude, 0f),
             Environment.getFloat(Environment.Longitude, 0f)
             ));
@@ -75,10 +83,15 @@ public class ScenarioMap implements CougaarUI
         try {
             beanHandler.add(propertyHandler);
             propertyHandler.createComponents(beanHandler);
-            beanHandler.add(mapBean);
+            beanHandler.add(localMapBean);
         } catch (MultipleSoloMapComponentException msmce) {
             Debug.error("OpenMapNG: tried to add multiple components of the same type when only one is allowed! - " + msmce);
         }
+
+//        System.out.println ("\nadding map bean with parent of: " + localMapBean.getParent().getParent().getParent().toString() );
+
+        addMapBean (localMapBean.getParent().getParent().getParent(), localMapBean);
+
     }
 
     /**
@@ -114,6 +127,9 @@ public class ScenarioMap implements CougaarUI
         mb.remove(5);
         mb.remove(5);
         f.setJMenuBar(mb);
+
+//        System.out.println ("\nroot pane: " + f.getRootPane().toString()  );
+        addMapBean (f.getRootPane(), localMapBean);
     }
 
 
@@ -127,6 +143,20 @@ public class ScenarioMap implements CougaarUI
     public boolean supportsPlaf()
     {
         return true;
+    }
+
+    public static void addMapBean (Object parentObj, ScenarioMapBean mapBean)
+    {
+      mapBeans.put( parentObj, mapBean);
+    }
+
+    public static ScenarioMapBean getMapBean (Object parentObj)
+    {
+      ScenarioMapBean smb = (ScenarioMapBean) mapBeans.get (parentObj);
+      if (smb == null)
+        System.out.println ("no map bean for parent object: " + parentObj.toString() );
+
+      return smb;
     }
 
     static public void main(String args[]) {
