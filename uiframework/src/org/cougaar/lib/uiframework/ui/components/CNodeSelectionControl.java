@@ -16,7 +16,7 @@ import javax.swing.tree.*;
 
 /**
  * Someday this will be a useful wrapper for a JTree.  Currently, it doesn't
- * really add much.  It is a JTree with single selection mode preset.
+ * really add much.
  */
 public class CNodeSelectionControl extends JTree
 {
@@ -43,6 +43,17 @@ public class CNodeSelectionControl extends JTree
 
         getSelectionModel().
             setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    }
+
+    /**
+     * In jdk1.3 this will override a method in JTree and make it so the
+     * selection will not change when the selected node's branch is collapsed.
+     * (fix for bug #380) This will have no effect under jdk1.2.
+     */
+    protected boolean removeDescendantSelectedPaths(TreePath path,
+                                                    boolean includePath)
+    {
+        return false;
     }
 
     /**
