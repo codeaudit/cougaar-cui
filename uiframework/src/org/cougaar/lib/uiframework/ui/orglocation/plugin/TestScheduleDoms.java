@@ -14,7 +14,8 @@ import java.util.*;
 import java.io.*;
 
 import org.w3c.dom.*;
-import com.ibm.xml.parser.*;
+import org.xml.sax.InputSource;
+import org.apache.xerces.parsers.DOMParser;
 
 import org.cougaar.util.ConfigFinder;
 import org.cougaar.core.plugin.SimplePlugIn;
@@ -61,8 +62,15 @@ public class TestScheduleDoms extends SimplePlugIn {
 
       StringReader in = new StringReader(
         formatter.randomDataForTest(orgId, dateBase, dateBase + dateRange));
+      
+      DOMParser parser = new DOMParser();
 
-      publishAdd(new PlanObject((new Parser(".")).readStream(in)));
+      try {
+	parser.parse(new InputSource(in));
+      } catch(Exception e) {
+	System.out.println("execute: Error creating XML Parser");
+      }
+      publishAdd(new PlanObject(parser.getDocument()));
     }
   }
 
