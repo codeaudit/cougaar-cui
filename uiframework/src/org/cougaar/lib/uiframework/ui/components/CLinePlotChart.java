@@ -292,7 +292,7 @@ public class CLinePlotChart extends Graph2D
                         ((Number)value).doubleValue():0;
                 }
                 plot(data, numberOfDataPoints, 1,
-                     (String)tm.getValueAt(row, 0));
+                     tm.getValueAt(row, 0).toString());
             }
         }
         revalidate();
