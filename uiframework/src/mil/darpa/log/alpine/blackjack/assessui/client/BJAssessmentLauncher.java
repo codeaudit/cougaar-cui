@@ -10,6 +10,7 @@
 package mil.darpa.log.alpine.blackjack.assessui.client;
 
 import org.cougaar.lib.uiframework.ui.components.CFrameLauncher;
+import org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI;
 import org.cougaar.lib.uiframework.ui.map.app.CMap;
 
 /**
@@ -45,6 +46,8 @@ public class BJAssessmentLauncher extends CFrameLauncher
         addTool(UIConstants.LINEPLOT_UI_NAME, 'L',
                 LinePlotPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
+        addTool(UIConstants.INVENTORY_UI_NAME, 'I',
+                InventoryChartUI.class, new Class[]{}, new Object[]{});
         //addTool(UIConstants.STOPLIGHT_UI_NAME +  " (PLAF)", 't',
         //        StoplightPanel.class,
         //        new Class[]{boolean.class}, new Object[]{new Boolean(true)});

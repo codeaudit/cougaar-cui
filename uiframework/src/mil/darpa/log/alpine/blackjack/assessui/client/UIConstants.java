@@ -13,4 +13,5 @@ public class UIConstants
 {
     public static final String STOPLIGHT_UI_NAME = "Table View";
     public static final String LINEPLOT_UI_NAME = "Line Plot View";
+    public static final String INVENTORY_UI_NAME = "Inventory View";
 }
