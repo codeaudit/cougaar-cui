@@ -40,7 +40,7 @@ import java.net.URL;
  * This class will load data (as a seperate thread) into a DataSet
  * given a URL.
  *
- * @version  $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
+ * @version  $Revision: 1.3 $, $Date: 2001-04-10 13:48:26 $
  * @author   Leigh Brookshaw
  */
 
@@ -124,7 +124,7 @@ public class LoadData extends Thread {
     public LoadData() {
            finished = false;
            started     = false;
-	 }
+   }
   /**
    * Instantiate the class
    *
@@ -135,7 +135,7 @@ public class LoadData extends Thread {
            ds = d;
            finished = false;
            started  = false;
-	 }
+   }
 
 /*
 *****************
@@ -347,7 +347,7 @@ public class LoadData extends Thread {
          try {  ds.append(data, size/2); }
          catch (Exception e) {
              printmessage("Failed to append data to DataSet!");
-	   }
+     }
       } else
       if(array != null) {
                double tmp[] = new double[array.length + size];

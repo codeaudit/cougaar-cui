@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.plaf.*;
 import javax.swing.plaf.basic.*;
+import javax.swing.plaf.metal.*;
 
 public class MThumbSliderAdditionalUI {
 
@@ -121,7 +122,7 @@ public class MThumbSliderAdditionalUI {
     public void stateChanged(ChangeEvent e) {
       if ( !isDragging ) {
         calculateThumbsLocation();
-      	mSlider.repaint();
+        mSlider.repaint();
       }
     }
   }
@@ -138,88 +139,183 @@ public class MThumbSliderAdditionalUI {
       this.slider = slider;
     }
 
-    public void mousePressed(MouseEvent e) {
-      if ( !slider.isEnabled() ) {
+    protected transient boolean lockScroll = false;
+    protected transient int offset2 = 0;
+
+    public void mousePressed(MouseEvent e)
+    {
+      if ( !slider.isEnabled() )
+      {
         return;
       }
       currentMouseX = e.getX();
       currentMouseY = e.getY();
       slider.requestFocus();
 
-      for (int i=0; i<thumbNum; i++) {
-        Rectangle rect = thumbRects[i];
-        if ( rect.contains(currentMouseX, currentMouseY) ) {
+      if ((adjustingThumbIndex = pointInsideThumbs(currentMouseX, currentMouseY)) > -1)
+      {
+        lockScroll = true;
+        isDragging = true;
+        slider.setValueIsAdjusting(true);
+        adjustingThumbRect = thumbRects[adjustingThumbIndex];
 
-          switch ( slider.getOrientation() ) {
-            case JSlider.VERTICAL:
-                 offset = currentMouseY - rect.y;
-                 break;
-            case JSlider.HORIZONTAL:
-                 offset = currentMouseX - rect.x;
-                 break;
+        switch (slider.getOrientation())
+        {
+          case JSlider.VERTICAL:
+               offset = currentMouseY - adjustingThumbRect.y;
+               offset2 = currentMouseY - thumbRects[adjustingThumbIndex+1].y;
+               break;
+          case JSlider.HORIZONTAL:
+               offset = currentMouseX - adjustingThumbRect.x;
+               offset2 = currentMouseX - thumbRects[adjustingThumbIndex+1].x;
+               break;
+        }
+      }
+      else
+      {
+        for (int i=0; i<thumbNum; i++)
+        {
+          Rectangle rect = thumbRects[i];
+          if (rect.contains(currentMouseX, currentMouseY))
+          {
+            switch (slider.getOrientation())
+            {
+              case JSlider.VERTICAL:
+                   offset = currentMouseY - rect.y;
+                   offset2 = 0;
+                   break;
+              case JSlider.HORIZONTAL:
+                   offset = currentMouseX - rect.x;
+                   offset2 = 0;
+                   break;
+            }
+
+            lockScroll = false;
+            isDragging = true;
+            slider.setValueIsAdjusting(true);
+            adjustingThumbRect = rect;
+            adjustingThumbIndex = i;
+
+            break;
           }
-          isDragging = true;
-          slider.setValueIsAdjusting(true);
-          adjustingThumbRect = rect;
-          adjustingThumbIndex = i;
-          return;
         }
       }
     }
 
-    public void mouseDragged( MouseEvent e ) {
-      if ( !slider.isEnabled()
-                 || !isDragging
-                 || !slider.getValueIsAdjusting()
-                 || adjustingThumbRect == null ) {
+    public void mouseMoved(MouseEvent e)
+    {
+      if (isDragging)
+      {
         return;
       }
-      int thumbMiddle = 0;
+
+      if (pointInsideThumbs(e.getX(), e.getY()) > -1)
+      {
+        slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      }
+      else
+      {
+        slider.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+      }
+    }
+
+    private int pointInsideThumbs(int x, int y)
+    {
+      if (((MetalMThumbSliderUI)ui).getTrackBounds().contains(x, y))
+      {
+        for (int i=0; i<thumbNum-1; i++)
+        {
+          switch (slider.getOrientation())
+          {
+            case JSlider.VERTICAL:
+              if ((thumbRects[i+1].y + thumbRects[i+1].height < y) && (y < thumbRects[i].y))
+              {
+                return(i);
+              }
+            break;
+
+            case JSlider.HORIZONTAL:
+              if ((thumbRects[i].x + thumbRects[i].width < x) && (x < thumbRects[i+1].x))
+              {
+                return(i);
+              }
+            break;
+          }
+        }
+      }
+
+      return(-1);
+    }
+
+    public void mouseDragged( MouseEvent e )
+    {
+      if (!slider.isEnabled() || !isDragging || !slider.getValueIsAdjusting() || adjustingThumbRect == null)
+      {
+        return;
+      }
+
       currentMouseX = e.getX();
       currentMouseY = e.getY();
-
-      Rectangle rect = thumbRects[adjustingThumbIndex];
       trackRect = getTrackRect();
-      switch ( slider.getOrientation() ) {
+
+      moveThumb(adjustingThumbIndex, offset);
+      if (lockScroll)
+      {
+        moveThumb(adjustingThumbIndex +1, offset2);
+      }
+    }
+
+    private void moveThumb(int thumbIndex, int dragOffset)
+    {
+      int thumbMiddle = 0;
+      Rectangle rect = thumbRects[thumbIndex];
+
+      switch (slider.getOrientation())
+      {
         case JSlider.VERTICAL:
           int halfThumbHeight = rect.height / 2;
-          int thumbTop    = e.getY() - offset;
+          int thumbTop    = currentMouseY - dragOffset;
           int trackTop    = trackRect.y;
           int trackBottom = trackRect.y + (trackRect.height - 1);
 
           thumbTop = Math.max( thumbTop, trackTop    - halfThumbHeight );
           thumbTop = Math.min( thumbTop, trackBottom - halfThumbHeight );
 
-          setThumbLocationAt(rect.x, thumbTop, adjustingThumbIndex);
+          setThumbLocationAt(rect.x, thumbTop, thumbIndex);
 
           thumbMiddle = thumbTop + halfThumbHeight;
-          mSlider.setValueAt( ui.valueForYPosition( thumbMiddle ) , adjustingThumbIndex);
+          mSlider.setValueAt( ui.valueForYPosition( thumbMiddle ) , thumbIndex);
           calculateThumbsLocation(); // PHF (so thumbs can push each other around)
           break;
 
         case JSlider.HORIZONTAL:
           int halfThumbWidth = rect.width / 2;
-          int thumbLeft  = e.getX() - offset;
+          int thumbLeft  = currentMouseX - dragOffset;
           int trackLeft  = trackRect.x;
           int trackRight = trackRect.x + (trackRect.width - 1);
 
           thumbLeft = Math.max( thumbLeft, trackLeft  - halfThumbWidth );
           thumbLeft = Math.min( thumbLeft, trackRight - halfThumbWidth );
 
-          setThumbLocationAt( thumbLeft, rect.y, adjustingThumbIndex);
+          setThumbLocationAt( thumbLeft, rect.y, thumbIndex);
 
           thumbMiddle = thumbLeft + halfThumbWidth;
-          mSlider.setValueAt( ui.valueForXPosition( thumbMiddle ), adjustingThumbIndex );
+          mSlider.setValueAt( ui.valueForXPosition( thumbMiddle ), thumbIndex );
           calculateThumbsLocation(); // PHF (so thumbs can push each other around)
           break;
       }
     }
 
-    public void mouseReleased(MouseEvent e) {
-      if ( !slider.isEnabled() ) {
+    public void mouseReleased(MouseEvent e)
+    {
+      if (!slider.isEnabled())
+      {
         return;
       }
+
+      lockScroll = false;
       offset = 0;
+      offset2 = 0;
       isDragging = false;
       mSlider.setValueIsAdjusting(false);
       mSlider.repaint();

@@ -41,7 +41,7 @@ import java.net.URL;
  * token of the StreamTokenizer is also modified so that scientific notation
  * is recognised.
  *
- * @version $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
+ * @version $Revision: 1.3 $, $Date: 2001-04-10 13:48:27 $
  * @author Leigh Brookshaw
  */
 
@@ -120,7 +120,7 @@ public class ScanWord extends StreamTokenizer {
 
           kwords.put(s.toLowerCase(), new Integer(i));
 
-	}
+  }
 /**
  *   return the matching token given the keyword
  * @param s Keyword.
@@ -133,13 +133,13 @@ public class ScanWord extends StreamTokenizer {
 
           if(i == null) return UNKNOWN;
           else          return i.intValue();
-	}
+  }
 /**
  *   Clear the internal table containing the keyword/token pairs
  */
      public void resetKeyWords () {
           kwords.clear();
-	}
+  }
 /**
  *  Read the input stream and return the next token found.
  */
@@ -148,10 +148,10 @@ public class ScanWord extends StreamTokenizer {
 
         try {
               ttype = nextToken();
-	    }
+      }
         catch (Exception e) {
               return ERROR;
-	    }
+      }
 
         if(ttype == StringChar ) {
               return STRING;
@@ -162,9 +162,9 @@ public class ScanWord extends StreamTokenizer {
                if( word == UNKNOWN ) return ttype;
                ttype = word;
                return word;
-	     } else {
-	             return ttype;
-	     }
+       } else {
+               return ttype;
+       }
      }
 
 /**
@@ -172,8 +172,8 @@ public class ScanWord extends StreamTokenizer {
  * @param c character to delimeter strings. Default is ".
  */
      public void setStringChar(char c)  {
-     	StringChar = c;
-     	quoteChar(StringChar);
+      StringChar = c;
+      quoteChar(StringChar);
      }
 
 
@@ -197,10 +197,10 @@ public class ScanWord extends StreamTokenizer {
          try {
                super.nval = Double.valueOf(s).doubleValue();
                return TT_NUMBER;
-	     }
+       }
          catch (Exception e) {
                return UNKNOWN;
-	     }
+       }
 
        }
 
@@ -228,14 +228,14 @@ public class ScanWord extends StreamTokenizer {
            lowerCaseMode(false);
 
            eolIsSignificant(true);
-	 }
+   }
 /**
  *  Close the input stream
  */
      protected void closeStream() {
          try {
               is.close();
-	    }
+      }
          catch (Exception e) {}
 
          is = null;

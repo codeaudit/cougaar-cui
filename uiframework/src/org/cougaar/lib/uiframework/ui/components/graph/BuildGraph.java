@@ -43,7 +43,7 @@ import java.applet.Applet;
  * The build Graph class, with attached Axes and DataSets can be accessed
  * though methods in the class
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:00 $
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:25 $
  * @author Leigh Brookshaw
  */
 
@@ -343,11 +343,11 @@ public class BuildGraph extends ScanWord {
 /*
 **                         End of Line - Increment the line counter
 */
-	         case TT_EOL:
+           case TT_EOL:
                            lineno++;
                            if( lineno == (lineno/10)*10 ) {
                             applet.showStatus("Reading input: Line "+lineno);
-			               }
+                     }
                            break;
 /*
 **  LEFT, RIGHT, BOTTOM and TOP perform different tasks based on Context.
@@ -398,10 +398,10 @@ public class BuildGraph extends ScanWord {
 **                         inside an AXIS group.
 */
              case ATTACH:
-	                       if( !isContext(AXIS) )  {
-	                       	   errorAtLine("ATTACH should only appear in AXIS context");
-	                       	   return;
-	                       }
+                         if( !isContext(AXIS) )  {
+                             errorAtLine("ATTACH should only appear in AXIS context");
+                             return;
+                         }
 
                            token = nextWord();
                            if( token == STRING ) {
@@ -416,11 +416,11 @@ public class BuildGraph extends ScanWord {
 **                         Marker style, or font style depending on context
 */
              case STYLE:
-	                       if( !isContext(MARKER) && !isContext(FONT))  {
-	                       	   errorAtLine(
-	                       	   "STYLE should only appear in MARKER or FONT context");
-	                       	   return;
-	                       }
+                         if( !isContext(MARKER) && !isContext(FONT))  {
+                             errorAtLine(
+                             "STYLE should only appear in MARKER or FONT context");
+                             return;
+                         }
                            token = nextWord();
                            if( token == PLAIN ) {
                                 nobj = new NamedObject(PLAIN);
@@ -444,11 +444,11 @@ public class BuildGraph extends ScanWord {
 **                         Size of font or marker. Size should be followed by an integer
 */
              case SIZE:
-	                       if( !isContext(MARKER) && !isContext(FONT))  {
-	                       	   errorAtLine(
-	                       	   "SIZE should only appear in MARKER or FONT context");
-	                       	   return;
-	                       }
+                         if( !isContext(MARKER) && !isContext(FONT))  {
+                             errorAtLine(
+                             "SIZE should only appear in MARKER or FONT context");
+                             return;
+                         }
                            token = nextWord();
                            if( token == TT_NUMBER ) {
                                 nobj = new NamedObject(new Integer((int)(nval+0.01)), SIZE);
@@ -462,11 +462,11 @@ public class BuildGraph extends ScanWord {
                            ** Which contour levels are to get labels.
                            */
              case LLEVELS:
-	                       if( !isContext(CONTOUR))  {
-	                       	   errorAtLine(
-	                       	   "LLEVELS should only appear in CONTOUR context");
-	                       	   return;
-	                       }
+                         if( !isContext(CONTOUR))  {
+                             errorAtLine(
+                             "LLEVELS should only appear in CONTOUR context");
+                             return;
+                         }
                            token = nextWord();
                            if( token == TT_NUMBER ) {
                                 nobj = new NamedObject(new Integer((int)(nval+0.01)), LLEVELS);
@@ -496,11 +496,11 @@ public class BuildGraph extends ScanWord {
                                 object.push(nobj);
                            } else {
                                 if( isContext(DATA) || isContext(CDATA) ) {
-                                	((Graph2D)graph).setDataBackground(
-                                	                  new Color(rgb[0], rgb[1], rgb[2]) );
+                                  ((Graph2D)graph).setDataBackground(
+                                                    new Color(rgb[0], rgb[1], rgb[2]) );
                                 } else {
-                                	((Graph2D)graph).setGraphBackground(
-                                	                  new Color(rgb[0], rgb[1], rgb[2]) );
+                                  ((Graph2D)graph).setGraphBackground(
+                                                    new Color(rgb[0], rgb[1], rgb[2]) );
                                 }
                            }
                            break;
@@ -552,15 +552,15 @@ public class BuildGraph extends ScanWord {
                                 min = nval;
                                 t = nextWord();
                                 if( t == TT_NUMBER ) {
-                           	        max = nval;
-                           	     } else {
-                           	    	error = true;
-                           	     }
-                           	  } else {
-                           	    error = true;
-                           	  }
+                                    max = nval;
+                                 } else {
+                                  error = true;
+                                 }
+                              } else {
+                                error = true;
+                              }
                            } else {
-                           	    error = true;
+                                error = true;
                            }
 
                            if(error) {
@@ -659,13 +659,13 @@ public class BuildGraph extends ScanWord {
 
           if( graph instanceof Graph2D ) {
                       ((Graph2D)graph).repaint();
-	  } else
+    } else
           if( graph instanceof G2Dint ) {
                       ((G2Dint)graph).repaint();
-	  } else
+    } else
           if( graph instanceof Contour ) {
                       ((Contour)graph).repaint();
-	  } else {
+    } else {
              System.out.println("Unknown graph type - totally confused!");
           }
 
@@ -686,14 +686,14 @@ public class BuildGraph extends ScanWord {
    * @return <i>true</i> if the token matches current object being built
    */
      protected boolean isContext(int token)  {
-     	int i;
+      int i;
 
-     	for(i=0; i<build.size(); i++)  {
-     		if( ((NamedObject)(build.elementAt(i))).id == token )
+      for(i=0; i<build.size(); i++)  {
+        if( ((NamedObject)(build.elementAt(i))).id == token )
                                                              return true;
-     	}
+      }
 
-     	return false;
+      return false;
      }
 
   /**
@@ -714,7 +714,7 @@ public class BuildGraph extends ScanWord {
            case GRID:       return buildGrid();
            case ZERO:       return buildZero();
            case G2DINT: case GRAPH2D: case CONTOUR:
-         	             return buildGraph(nobj.id);
+                       return buildGraph(nobj.id);
            default:
                           errorAtLine("Incorrect keyword followed by braces");
                           return false;
@@ -751,10 +751,10 @@ public class BuildGraph extends ScanWord {
               case AXIS:
                           axis = (Axis)(nobj.getObject());
                           if(type == GRAPH2D) {
-             	                 ((Graph2D)graph).attachAxis(axis);
-             	          } else {
-             	                 ((G2Dint)graph).attachAxis(axis);
-             	          }
+                               ((Graph2D)graph).attachAxis(axis);
+                        } else {
+                               ((G2Dint)graph).attachAxis(axis);
+                        }
                           break;
               case DATA:
                           ((Graph2D)graph).attachDataSet(
@@ -860,11 +860,11 @@ public class BuildGraph extends ScanWord {
                             ((Contour)graph).setLabelLevels(
                                           ((Integer)(nobj.getObject())).intValue() );
                             break;
-  	      case COLOR:
+          case COLOR:
                             ((Contour)graph).setContourColor(
                                           (Color)(nobj.getObject()));
                             break;
-  	      case LOGCONTOURS:
+          case LOGCONTOURS:
                             ((Contour)graph).logLevels = true;
                             break;
               default:
@@ -1029,7 +1029,7 @@ public class BuildGraph extends ScanWord {
                           }
                           break;
               case URL:
-		          try {
+              try {
                                m = new Markers( (URL)nobj.getObject() );
                           } catch(Exception e) {
                              errorAtLine("Failed to load markers: "+
@@ -1037,7 +1037,7 @@ public class BuildGraph extends ScanWord {
                           }
                           break;
               case BEGIN:
-		          if(m != null) {
+              if(m != null) {
                             nobj = new NamedObject(m,MARKER);
                             object.push(nobj);
                             built.addElement(m);
@@ -1104,7 +1104,7 @@ public class BuildGraph extends ScanWord {
                           data.linestyle = 1;
                           break;
               case COLOR:
-		          if(type == CDATA) {
+              if(type == CDATA) {
                               ((Contour)graph).setContourColor(
                                       (Color)(nobj.getObject()));
                           } else {
@@ -1118,8 +1118,8 @@ public class BuildGraph extends ScanWord {
               case FUNCTION:
                           parsef = new ParseFunction((String)(nobj.getObject()));
                           if(!parsef.parse())  {
-                          	errorAtLine("Error in function definition!");
-                          	return false;
+                            errorAtLine("Error in function definition!");
+                            return false;
                           }
                           break;
               case XNUMBER:
@@ -1141,42 +1141,42 @@ public class BuildGraph extends ScanWord {
                           ymax = ((Double)(nobj.getObject())).doubleValue();
                           break;
               case BEGIN:
-		          if( parsef != null && type == CDATA ) {
-		              if( !(graph instanceof Contour) )  {
-                          	errorAtLine("CDATA should only be used for Contours!");
-                          	return false;
-		              }
+              if( parsef != null && type == CDATA ) {
+                  if( !(graph instanceof Contour) )  {
+                            errorAtLine("CDATA should only be used for Contours!");
+                            return false;
+                  }
                       double array[] = arrayFromFunction(parsef,nx,xmin,xmax,
                                                                 ny,ymin,ymax);
                       if(array == null)  {
-                          	errorAtLine("Unable to build Data from Function");
-                          	return false;
-		              }
+                            errorAtLine("Unable to build Data from Function");
+                            return false;
+                  }
                       ((Contour)graph).setRange(xmin,xmax,ymin,ymax);
                       ((Contour)graph).setGrid(array,nx,ny);
 
                       return true;
 
-		          } else
-		          if( parsef != null ) {
+              } else
+              if( parsef != null ) {
                       double array[] = arrayFromFunction(parsef,nx,xmin,xmax);
                       if(array == null)  {
-                          	errorAtLine("Unable to build Data from Function");
-                          	return false;
+                            errorAtLine("Unable to build Data from Function");
+                            return false;
                       }
                       try  {
-   		          	         data.append(array,nx);
-   		          	         object.push(ndata);
-   		          	         datasets.addElement(ndata);
-   		          	         built.addElement(data);
-   		          	         return true;
+                           data.append(array,nx);
+                           object.push(ndata);
+                           datasets.addElement(ndata);
+                           built.addElement(data);
+                           return true;
                       } catch(Exception e)  {
-                      	    return false;
+                            return false;
                       }
-		          } else
+              } else
                   if( load == null )  {
-                          	errorAtLine("No URL has been defined for Data!");
-                          	return false;
+                            errorAtLine("No URL has been defined for Data!");
+                            return false;
                   }
 
                   object.push(ndata);
@@ -1203,11 +1203,11 @@ public class BuildGraph extends ScanWord {
 
 
                  for(int i=0; i<nx; i++) {
-                 	 x = xmin + i*xinc;
+                   x = xmin + i*xinc;
                      try {
-                     	y = f.getResult(x);
-                     	array[count++] = x;
-                     	array[count++] = y;
+                      y = f.getResult(x);
+                      array[count++] = x;
+                      array[count++] = y;
                      }
                      catch (Exception e) {
                      }
@@ -1231,11 +1231,11 @@ public class BuildGraph extends ScanWord {
                  int count = 0;
 
                  for(int j=0; j<ny; j++) {
-                 	 y = ymin + j*yinc;
+                   y = ymin + j*yinc;
                      for(int i=0; i<nx; i++) {
-                   	    x = xmin + i*xinc;
+                        x = xmin + i*xinc;
                         try {
-                     	   array[count++] = f.getResult(x,y);
+                         array[count++] = f.getResult(x,y);
                         }
                         catch (Exception e) {
                            array[count++] = 0.0;
@@ -1275,7 +1275,7 @@ public class BuildGraph extends ScanWord {
               case NAME:
                           naxis.setName((String)(nobj.getObject()));
                           break;
-	      case TITLE:
+        case TITLE:
                           axis.title = (RTextLine)(nobj.getObject());
                           break;
               case LABEL_FONT:
@@ -1336,12 +1336,12 @@ public class BuildGraph extends ScanWord {
               switch (nobj.id) {
 
               case OFF:
-             	          grid = nobj;
-             	          grid.setId(GRID_OFF);
+                        grid = nobj;
+                        grid.setId(GRID_OFF);
                           break;
               case ON:
-             	          grid = nobj;
-             	          grid.setId(GRID_ON);
+                        grid = nobj;
+                        grid.setId(GRID_ON);
                           break;
               case COLOR:
                           color = nobj;
@@ -1375,12 +1375,12 @@ public class BuildGraph extends ScanWord {
               switch (nobj.id) {
 
               case OFF:
-             	          zero = nobj;
-             	          zero.setId(ZERO_OFF);
+                        zero = nobj;
+                        zero.setId(ZERO_OFF);
                           break;
               case ON:
-             	          zero = nobj;
-             	          zero.setId(ZERO_ON);
+                        zero = nobj;
+                        zero.setId(ZERO_ON);
                           break;
               case COLOR:
                           color = nobj;
@@ -1407,7 +1407,7 @@ public class BuildGraph extends ScanWord {
         private void errorAtLine(String s) {
               System.out.println("Error at line "+lineno+": "+s);
               applet.showStatus("Error at line "+lineno+": "+s);
-	    }
+      }
   /**
    * output the parsed debug message, appending line number, and token string
    * @param s Message to ouput
@@ -1435,7 +1435,7 @@ public class BuildGraph extends ScanWord {
              case TT_EOF:
                            st = null;
                            break;
-	     case TT_EOL:
+       case TT_EOL:
                            st = null;
                            break;
              case URL:
@@ -1462,91 +1462,91 @@ public class BuildGraph extends ScanWord {
              case END:
                            st = "END";
                            break;
-	     case MARKER:
+       case MARKER:
                            st = "MARKER";
                            break;
-	     case AXIS:
+       case AXIS:
                            st = "AXIS";
                            break;
-	     case TITLE:
+       case TITLE:
                            st = "TITLE";
                            break;
-	     case DATA:
+       case DATA:
                            st = "DATA";
                            break;
-	     case LABEL:
+       case LABEL:
                            st = "LABEL";
                            break;
-	     case FONT:
+       case FONT:
                            st = "FONT";
                            break;
-	     case BOTTOM:
+       case BOTTOM:
                            st = "BOTTOM";
                            break;
-	     case TOP:
+       case TOP:
                            st = "TOP";
                            break;
-	     case LEFT:
+       case LEFT:
                            st = "LEFT";
                            break;
-	     case RIGHT:
+       case RIGHT:
                            st = "RIGHT";
                            break;
-	     case ON:
+       case ON:
                            st = "ON";
                            break;
-	     case OFF:
+       case OFF:
                            st = "OFF";
                            break;
-	     case PLAIN:
+       case PLAIN:
                            st = "PLAIN";
                            break;
-	     case BOLD:
+       case BOLD:
                            st = "BOLD";
                            break;
-	     case ITALIC:
+       case ITALIC:
                            st = "ITALIC";
                            break;
-	     case MARKER_STYLE:
+       case MARKER_STYLE:
                            st = "MARKER_STYLE";
                            break;
-	     case MARKER_COLOR:
+       case MARKER_COLOR:
                            st = "MARKER_COLOR";
                            break;
-	     case  MARKER_SIZE:
+       case  MARKER_SIZE:
                            st = "MARKER_SIZE";
                            break;
-	     case LABEL_COLOR:
+       case LABEL_COLOR:
                            st = "LABEL_COLOR";
                            break;
-	     case LABEL_FONT:
+       case LABEL_FONT:
                            st = "LABEL_FONT";
                            break;
-	     case GRID_COLOR:
+       case GRID_COLOR:
                            st = "GRID_COLOR";
                            break;
-	     case GRID:
+       case GRID:
                            st = "GRID";
                            break;
-	     case GRID_OFF:
+       case GRID_OFF:
                            st = "GRID_OFF";
                            break;
-	     case GRID_ON:
+       case GRID_ON:
                            st = "GRID_ON";
                            break;
-	     case ZERO_COLOR:
+       case ZERO_COLOR:
                            st = "ZERO_COLOR";
                            break;
-	     case ZERO:
+       case ZERO:
                            st = "ZERO";
                            break;
-	     case ZERO_OFF:
+       case ZERO_OFF:
                            st = "ZERO_OFF";
                            break;
-	     case ZERO_ON:
+       case ZERO_ON:
                            st = "ZERO_ON";
                            break;
-	     case MARKER_URL:
+       case MARKER_URL:
                            st = "MARKER_URL";
                            break;
              case FUNCTION:
@@ -1568,16 +1568,16 @@ public class BuildGraph extends ScanWord {
                            st = "BACKGROUND";
                            break;
 
-	     default:
+       default:
                            st = "UNKNOWN";
                            break;
-	     }
+       }
 
 
 
 
               if(st != null) System.out.println("("+lineno+") "+s+": "+st);
-	    }
+      }
 
 
 
@@ -1613,7 +1613,7 @@ class NamedObject extends Object {
               this.o = o;
               this.s = s;
               this.id = id;
-	    }
+      }
       public NamedObject(Object o, int id) {
               this.o = o;
               this.id = id;
@@ -1652,9 +1652,9 @@ class NamedObject extends Object {
                     nobj.id != this.id ||
                     !nobj.s.equals(s) ) return  false;
                 if( nobj.o.equals(o) ) return true;
-	      }
+        }
 
             return false;
-	 }
+   }
  }
 

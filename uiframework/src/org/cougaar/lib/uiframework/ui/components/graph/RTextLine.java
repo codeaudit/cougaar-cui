@@ -48,7 +48,7 @@ import java.awt.image.*;
  * unless the text is large the integer mapping will blur the text.
  * Also positioning of arbitrarily rotated text becomes problematic.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:27 $
  * @author  Leigh Brookshaw
  */
 
@@ -95,14 +95,14 @@ public class RTextLine extends TextLine {
    */
      public RTextLine(String s) {
             super(s);
-	  }
+    }
   /**
    * Instantiate the class.
    * @param c the Component the text will be drawn into.
    */
      public RTextLine(Component c) {
             setDrawingComponent(c);
-	  }
+    }
   /**
    * Instantiate the class
    * @param s String to parse.
@@ -111,7 +111,7 @@ public class RTextLine extends TextLine {
 
      public RTextLine(String s, Font f) {
             super(s,f);
-	  }
+    }
   /**
    * Instantiate the class
    * @param s String to parse.
@@ -122,7 +122,7 @@ public class RTextLine extends TextLine {
 
      public RTextLine(String s, Font f, Color c, int j) {
             super(s,f,c,j);
- 	  }
+    }
 
   /**
    * Instantiate the class
@@ -131,7 +131,7 @@ public class RTextLine extends TextLine {
    */
      public RTextLine(String s, Color c) {
             super(s,c);
-	  }
+    }
   /**
    * Instantiate the class
    * @param f Font to use.
@@ -143,7 +143,7 @@ public class RTextLine extends TextLine {
      public RTextLine(Font f, Color c, int j, int a) {
             super(f,c,j);
             setRotation(a);
- 	  }
+    }
   /**
    * Instantiate the class
    * @param f Font to use.
@@ -153,7 +153,7 @@ public class RTextLine extends TextLine {
 
      public RTextLine(Font f, Color c, int j) {
             super(f,c,j);
- 	  }
+    }
 
 /*
 *****************
@@ -305,20 +305,20 @@ public class RTextLine extends TextLine {
 
          switch (angle) {
 
-  	 case 90: case -270:
+     case 90: case -270:
                              return -ascent;
-	 case 180: case -180:
+   case 180: case -180:
                     if(j == CENTER ) return -width/2;
                     else
                     if(j == RIGHT )  return  0;
-	            else                         return -width;
-	 case 270: case -90:
+              else                         return -width;
+   case 270: case -90:
                     return -descent-leading;
          default:
                     if(j == CENTER ) return -width/2;
                     else
                     if(j == RIGHT )  return -width;
-	            else                         return 0;
+              else                         return 0;
 
          }
 
@@ -336,20 +336,20 @@ public class RTextLine extends TextLine {
 
          switch (angle) {
 
-  	 case 90: case -270:
+     case 90: case -270:
                              return descent+leading;
-	 case 180: case -180:
+   case 180: case -180:
                              if(j == CENTER ) return  width/2;
                              else
                              if(j == RIGHT )  return  width;
-	                     else                         return  0;
-	 case 270: case -90:
+                       else                         return  0;
+   case 270: case -90:
                              return ascent;
          default:
                              if(j == CENTER ) return width/2;
                              else
                              if(j == RIGHT )  return 0;
-	                     else                         return width;
+                       else                         return width;
 
          }
 
@@ -367,18 +367,18 @@ public class RTextLine extends TextLine {
 
          switch (angle) {
 
-  	   case 90: case -270:
+       case 90: case -270:
                                 if(j == CENTER ) return  width/2;
                                 else
                                 if(j == RIGHT )  return 0;
-	                        else                         return  width;
-	   case 180: case -180:
+                          else                         return  width;
+     case 180: case -180:
                                 return descent+leading;
-	   case 270: case -90:
+     case 270: case -90:
                                 if(j == CENTER ) return  width/2;
                                 else
                                 if(j == RIGHT )  return  width;
-	                        else                         return  0;
+                          else                         return  0;
            default:
                                 return ascent;
          }
@@ -395,18 +395,18 @@ public class RTextLine extends TextLine {
 
          switch (angle) {
 
-  	   case 90: case -270:
+       case 90: case -270:
                                 if(j == CENTER ) return  -width/2;
                                 else
                                 if(j == RIGHT )  return  -width;
-	                        else                         return  0;
-	   case 180: case -180:
+                          else                         return  0;
+     case 180: case -180:
                                 return -ascent;
-	   case 270: case -90:
+     case 270: case -90:
                                 if(j == CENTER ) return  -width/2;
                                 else
                                 if(j == RIGHT )  return  0;
-	                        else                         return  -width;
+                          else                         return  -width;
            default:
                                 return -descent-leading;
          }
@@ -468,48 +468,49 @@ public class RTextLine extends TextLine {
 
          maxHeight = maxAscent + maxDescent;
 
-	 /*
-	 ** Calculate the offset of the rotated image so that it
-	 ** will be positioned correctly. Remeber the image is calculated
+   /*
+   ** Calculate the offset of the rotated image so that it
+   ** will be positioned correctly. Remeber the image is calculated
          ** on the Maximum Ascent and descent so that no character
          ** is truncated
-	 */
+   */
          switch (angle) {
 
-  	   case 90: case -270:
+       case 90: case -270:
                     xoffset = -maxAscent;
                     if(justification == CENTER ) yoffset = - width/2;
                     else
                     if(justification == RIGHT )  yoffset = 0;
-	            else                         yoffset = - width;
+              else                         yoffset = - width;
                     break;
-	   case 180: case -180:
+     case 180: case -180:
                     yoffset = -maxDescent;
                     if(justification == CENTER ) xoffset = - width/2;
                     else
                     if(justification == RIGHT )  xoffset = 0;
-	            else                         xoffset = - width;
+              else                         xoffset = - width;
                     break;
-	   case 270: case -90:
+     case 270: case -90:
                     xoffset = -maxDescent;
                     if(justification == CENTER ) yoffset = - width/2;
                     else
                     if(justification == RIGHT )  yoffset = - width;
-	            else                         yoffset = 0;
+              else                         yoffset = 0;
                     break;
            default:
                     xoffset = 0;
                     yoffset = 0;
                     break;
          }
-	 /*
-	 ** Create the offscreen image that the text will be written into
-	 */
+   /*
+   ** Create the offscreen image that the text will be written into
+   */
          offsI = comp.createImage(width,maxHeight);
+         if (offsI == null) return;
          offsG = offsI.getGraphics();
-	 /*
-	 ** Color the image with the background color
-	 */
+   /*
+   ** Color the image with the background color
+   */
          if(background != null) {
                 offsG.setColor(background);
          } else {
@@ -517,38 +518,38 @@ public class RTextLine extends TextLine {
          }
 
          offsG.fillRect(0,0,width,maxHeight);
-	 /*
-	 ** Set the image font and color
-	 */
+   /*
+   ** Set the image font and color
+   */
          offsG.setFont(g.getFont());
          offsG.setColor(g.getColor());
 
          if(font  != null) offsG.setFont(font);
          if(color != null) offsG.setColor(color);
 
-	 /*
-	 ** Write to the offscreen image
-	 */
+   /*
+   ** Write to the offscreen image
+   */
          for(int i=0; i<list.size(); i++) {
               ts = ((TextState)(list.elementAt(i)));
               if(ts.f != null) offsG.setFont(ts.f);
               if(ts.s != null)
                  offsG.drawString(ts.toString(),ts.x,ts.y+maxAscent );
-	 }
+   }
          /*
-	 ** Rotate the Offscreen image
-	 */
+   ** Rotate the Offscreen image
+   */
 
          RotateTextFilter f = new RotateTextFilter(angle);
          ImageProducer producer = new FilteredImageSource(offsI.getSource(),f);
 
          rotatedImage = comp.createImage(producer);
-	 /*
-	 ** Draw the rotated image to the Component. Do not notify any
+   /*
+   ** Draw the rotated image to the Component. Do not notify any
          ** image consumer especially the component, otherwise we will get a
          ** feedback loop starting up,
          ** as this method is normally called from a paint method.
-	 */
+   */
          g.drawImage(rotatedImage,x+xoffset,y+yoffset,null);
 
 
@@ -683,9 +684,9 @@ class RotateTextFilter extends ImageFilter {
 
 
         /*
-	** If the byte array is null create it. Also remember the color
-	** model so that we can pass it onto the image consumer
-	*/
+  ** If the byte array is null create it. Also remember the color
+  ** model so that we can pass it onto the image consumer
+  */
 
         if(bpixels == null) {
                              colorModel = model;
@@ -694,8 +695,8 @@ class RotateTextFilter extends ImageFilter {
 
 
         /*
-	** place the rotated image into memory one pixel at a time
-	*/
+  ** place the rotated image into memory one pixel at a time
+  */
 
         j = y;
         for(int n=0; n<h; n++, j++) {
@@ -707,7 +708,7 @@ class RotateTextFilter extends ImageFilter {
 
              k = ir+jr*width;
              bpixels[k] = pixels[ (j-y)*scan+(i-x)+off ];
-	  }
+    }
         }
 
     }
@@ -737,17 +738,17 @@ class RotateTextFilter extends ImageFilter {
         int ir,jr;
 
         /*
-	** If the integer array is null create it. Also remember the color
-	** model so that we can pass it onto the image consumer
-	*/
+  ** If the integer array is null create it. Also remember the color
+  ** model so that we can pass it onto the image consumer
+  */
         if(ipixels == null) {
                               colorModel = model;
                               ipixels  = new int[width*height];
         }
 
         /*
-	** place the rotated image into memory one pixel at a time
-	*/
+  ** place the rotated image into memory one pixel at a time
+  */
 
         j = y;
         for(int n=0; n<h; n++, j++) {
@@ -759,7 +760,7 @@ class RotateTextFilter extends ImageFilter {
 
              k = ir+jr*width;
              ipixels[k] = pixels[ (j-y)*scan+(i-x)+off ];
-	  }
+    }
         }
 
     }
@@ -787,14 +788,14 @@ class RotateTextFilter extends ImageFilter {
        */
          if(bpixels != null) {
 
-  	      for(int j=0; j<height; j++) consumer.setPixels(0, j, width, 1,
+          for(int j=0; j<height; j++) consumer.setPixels(0, j, width, 1,
                                          colorModel, bpixels, j*width, width);
 
               consumer.imageComplete(status);
          } else
          if(ipixels != null) {
 
-  	      for(int j=0; j<height; j++) consumer.setPixels(0, j, width, 1,
+          for(int j=0; j<height; j++) consumer.setPixels(0, j, width, 1,
                                           colorModel, ipixels, j*width, width);
              consumer.imageComplete(status);
          } else

@@ -42,7 +42,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:02 $
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:27 $
  * @author Leigh Brookshaw
  */
 public class VectorSet extends DataSet {
@@ -303,13 +303,13 @@ public class VectorSet extends DataSet {
            xrange = xmax - xmin;
            yrange = ymax - ymin;
 
-	   /*
-	   ** draw the legend before we clip the data window
-	   */
+     /*
+     ** draw the legend before we clip the data window
+     */
            draw_legend(g,bounds);
-	   /*
-	   ** Clip the data window
-	   */
+     /*
+     ** Clip the data window
+     */
            if(clipping) g.clipRect(bounds.x, bounds.y,
                           bounds.width, bounds.height);
 
@@ -341,39 +341,39 @@ public class VectorSet extends DataSet {
 
 
           if(!drawlegend) return;
-	  /*
-	  ** Calculate the vector magnitude of a line legend_length
+    /*
+    ** Calculate the vector magnitude of a line legend_length
           ** pixels long. This will be our standard vector
-	  */
+    */
 
           dx = xrange*((double)legend_length)/((double)w.width)
                         /getScaleFactor();
 
           value.parseDouble(dx,3);
-	  /*
-	  ** Calculate the length of the legend
-	  */
+    /*
+    ** Calculate the length of the legend
+    */
           length = legend_length+value.getWidth(g)+value.charWidth(g,' ');
-	  /*
-	  ** Calculate the position of the legend if needed.
-	  */
+    /*
+    ** Calculate the position of the legend if needed.
+    */
 
           if( legend_ix == 0 && legend_iy == 0 ) {
              legend_ix = (int)(w.x + ((legend_dx-xmin)/xrange)*w.width);
              legend_iy = (int)(w.y + (1.0 - (legend_dy-ymin)/yrange)*w.height);
-	  } else if( legend_ix == -1 && legend_iy == -1 ) {
+    } else if( legend_ix == -1 && legend_iy == -1 ) {
              legend_ix = w.x + w.width/2 - length/2;
              legend_iy = w.y - value.getAscent(g)/2 ;
-	  }
+    }
 
-	  /*
-	  ** In what follows the vector tail is the zero point. It is on
-	  ** the right - the vector points to the left
-	  */
+    /*
+    ** In what follows the vector tail is the zero point. It is on
+    ** the right - the vector points to the left
+    */
           if ( linecolor != null) g.setColor(linecolor);
-	  /*
-	  ** Draw the standard vector
-	  */
+    /*
+    ** Draw the standard vector
+    */
 
           g.drawLine(legend_ix,legend_iy,legend_ix+legend_length,legend_iy);
 
@@ -386,15 +386,15 @@ public class VectorSet extends DataSet {
           iy = legend_iy + (int)(0.25*(double)legend_length+0.5);
 
           g.drawLine(legend_ix,legend_iy,ix,iy);
-	  /*
-	  ** Add the value of the standard vector. To the right of the vector
-	  */
+    /*
+    ** Add the value of the standard vector. To the right of the vector
+    */
           value.draw(g, legend_ix+legend_length+value.charWidth(g,' '),
                         iy, TextLine.LEFT);
-	  /*
-	  ** Add any legend text (above the vector) that might have been
-	  ** defined.
-	  */
+    /*
+    ** Add any legend text (above the vector) that might have been
+    ** defined.
+    */
 
           g.setColor(c);
 
@@ -453,7 +453,7 @@ public class VectorSet extends DataSet {
               g.drawLine(ix0,iy0,ix1,iy1);
 
               /*
-	      ** Now draw the head of the vector. To avoid scaling problems
+        ** Now draw the head of the vector. To avoid scaling problems
               ** the head is drawn using pixel units. This would not work
               ** if we had multiple output devices.
               */

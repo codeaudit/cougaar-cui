@@ -27,7 +27,56 @@ public class MetalMThumbSliderUI extends MetalSliderUI
 
   public MetalMThumbSliderUI()   {}
 
-  public MetalMThumbSliderUI(JSlider b)   {}
+  // Need to initialize parameters used for this L&F (Some are not defined by other L&Fs)
+//  public MetalMThumbSliderUI(JSlider b)   {}
+  public MetalMThumbSliderUI(JSlider b)
+  {
+    super();
+
+// Slider Defaults from Java Metal Look and Feel
+/*
+"Slider.border", null,
+"Slider.foreground", getPrimaryControlShadow(),
+"Slider.background", getControl(),
+"Slider.focus", getFocusColor(),
+"Slider.focusInsets", sliderFocusInsets,
+"Slider.trackWidth", new Integer( 7 ),
+"Slider.majorTickLength", new Integer( 6 ),
+"Slider.horizontalThumbIcon", MetalIconFactory.getHorizontalSliderThumbIcon(),
+"Slider.verticalThumbIcon", MetalIconFactory.getVerticalSliderThumbIcon(),
+*/
+
+    // These in particular are not defined by the Basic L&F (what most L&Fs extend)
+    UIManager.put("Slider.trackWidth", new Integer(7));
+    UIManager.put("Slider.majorTickLength", new Integer(6));
+
+    UIManager.put("Slider.horizontalThumbIcon", MetalIconFactory.getHorizontalSliderThumbIcon());
+    UIManager.put("Slider.verticalThumbIcon", MetalIconFactory.getVerticalSliderThumbIcon());
+  }
+
+
+  public Rectangle getTrackBounds()
+  {
+    int trackLeft = 0;
+    int trackTop = 0;
+    int trackRight = 0;
+    int trackBottom = 0;
+
+    if (slider.getOrientation() == JSlider.HORIZONTAL)
+    {
+      trackBottom = trackRect.height - getThumbOverhang();
+      trackTop = trackBottom - getTrackWidth();
+      trackRight = trackRect.width;
+    }
+    else
+    {
+      trackLeft = trackRect.width - getThumbOverhang() - getTrackWidth();
+      trackRight = trackRect.width - getThumbOverhang();
+      trackBottom = trackRect.height;
+    }
+
+    return(new Rectangle(trackLeft + trackRect.x, trackTop + trackRect.y, (trackRight - trackLeft) - 1, (trackBottom - trackTop) - 1));
+  }
 
   public void installUI(JComponent c)   {
     additonalUi = new MThumbSliderAdditionalUI(this);
@@ -112,16 +161,16 @@ public class MetalMThumbSliderUI extends MetalSliderUI
           t1.y = t2.y - (getTrackWidth() - 1);
           t2.x = trackRect.width - 1;
           int maxPosition = xPositionForValue(slider.getMaximum());
-	        thumbRect.x = maxPosition - (thumbRect.width / 2) -2;
-      	  thumbRect.y = trackRect.y;
+          thumbRect.x = maxPosition - (thumbRect.width / 2) -2;
+          thumbRect.y = trackRect.y;
         }
         else {
           t1.x = (trackRect.width - getThumbOverhang()) - getTrackWidth();
           t2.x = (trackRect.width - getThumbOverhang()) - 1;
           t2.y = trackRect.height - 1;
           int maxPosition = yPositionForValue(slider.getMaximum());
-      	  thumbRect.x = trackRect.x;
-      	  thumbRect.y = maxPosition - (thumbRect.height / 2) -2;
+          thumbRect.x = trackRect.x;
+          thumbRect.y = maxPosition - (thumbRect.height / 2) -2;
         }
 
         Color fillColor = ((CMThumbSlider)slider).getTrackFillColor();
@@ -182,18 +231,18 @@ public class MetalMThumbSliderUI extends MetalSliderUI
       if ( slider.isEnabled() ) {
         g.setColor(fillColor);
         g.fillRect( t1.x+2,
-		    t1.y+2,
-	            middleOfThumb - t1.x -1,
-		    t2.y - t1.y -3);
+        t1.y+2,
+              middleOfThumb - t1.x -1,
+        t2.y - t1.y -3);
         g.setColor(fillColor.brighter());
         g.drawLine( t1.x+1, t1.y+1, middleOfThumb, t1.y+1 );
         g.drawLine( t1.x+1, t1.y+1, t1.x+1,        t2.y-2 );
       } else {
         g.setColor(fillColor);
         g.fillRect( t1.x,
-		    t1.y,
-		    middleOfThumb - t1.x +2,
-		    t2.y - t1.y );
+        t1.y,
+        middleOfThumb - t1.x +2,
+        t2.y - t1.y );
       }
     }
     else {
@@ -201,18 +250,18 @@ public class MetalMThumbSliderUI extends MetalSliderUI
       if ( slider.isEnabled() ) {
         g.setColor( slider.getBackground() );
         g.drawLine( t1.x+1, middleOfThumb, t2.x-2, middleOfThumb );
-	      g.drawLine( t1.x+1, middleOfThumb, t1.x+1, t2.y - 2 );
-	      g.setColor( fillColor );
-	      g.fillRect( t1.x + 2,
-		    middleOfThumb + 1,
-		    t2.x - t1.x -3,
-		    t2.y-2 -  middleOfThumb);
+        g.drawLine( t1.x+1, middleOfThumb, t1.x+1, t2.y - 2 );
+        g.setColor( fillColor );
+        g.fillRect( t1.x + 2,
+        middleOfThumb + 1,
+        t2.x - t1.x -3,
+        t2.y-2 -  middleOfThumb);
       } else {
         g.setColor( fillColor );
-	      g.fillRect( t1.x,
-		    middleOfThumb +2,
-	            t2.x-1 - t1.x,
-		    t2.y - t1.y );
+        g.fillRect( t1.x,
+        middleOfThumb +2,
+              t2.x-1 - t1.x,
+        t2.y - t1.y );
       }
     }
   }

@@ -42,7 +42,7 @@ import java.lang.ArithmeticException;
  * <B>NOTE:</B> These special functions do not necessarily use the fastest
  * or most accurate algorithms.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:27 $
  * @author Leigh Brookshaw
  */
 
@@ -260,7 +260,7 @@ public final class SpecialFunction extends Object {
 
            return Math.sqrt(0.636619772/ax)*
                   (Math.cos(xx)*ans1-z*Math.sin(xx)*ans2);
-	}
+  }
     }
   /**
    * @param x a double value
@@ -507,53 +507,53 @@ public final class SpecialFunction extends Object {
      if( q > 33.0 ) {
        if( x < 0.0 ) {
             p = Math.floor(q);
-	    if( p == q ) throw new ArithmeticException("gamma: overflow");
-	    i = (int)p;
-	    z = q - p;
-	    if( z > 0.5 ) {
-			p += 1.0;
-			z = q - p;
-	    }
-	    z = q * Math.sin( Math.PI * z );
-	    if( z == 0.0 ) throw new ArithmeticException("gamma: overflow");
-	    z = Math.abs(z);
-	    z = Math.PI/(z * stirf(q) );
+      if( p == q ) throw new ArithmeticException("gamma: overflow");
+      i = (int)p;
+      z = q - p;
+      if( z > 0.5 ) {
+      p += 1.0;
+      z = q - p;
+      }
+      z = q * Math.sin( Math.PI * z );
+      if( z == 0.0 ) throw new ArithmeticException("gamma: overflow");
+      z = Math.abs(z);
+      z = Math.PI/(z * stirf(q) );
 
             return -z;
        } else {
-	    return stirf(x);
+      return stirf(x);
        }
      }
 
      z = 1.0;
        while( x >= 3.0 ) {
-  	     x -= 1.0;
-	     z *= x;
+         x -= 1.0;
+       z *= x;
        }
 
        while( x < 0.0 ) {
-	     if( x == 0.0 ) {
+       if( x == 0.0 ) {
                 throw new ArithmeticException("gamma: singular");
              } else
-	     if( x > -1.E-9 ) {
+       if( x > -1.E-9 ) {
                  return( z/((1.0 + 0.5772156649015329 * x) * x) );
              }
-	     z /= x;
-	     x += 1.0;
+       z /= x;
+       x += 1.0;
        }
 
        while( x < 2.0 ) {
-	     if( x == 0.0 ) {
+       if( x == 0.0 ) {
                 throw new ArithmeticException("gamma: singular");
              } else
-	     if( x < 1.e-9 ) {
-  	        return( z/((1.0 + 0.5772156649015329 * x) * x) );
+       if( x < 1.e-9 ) {
+            return( z/((1.0 + 0.5772156649015329 * x) * x) );
              }
-	     z /= x;
-	     x += 1.0;
-	}
+       z /= x;
+       x += 1.0;
+  }
 
-        if( (x == 2.0) || (x == 3.0) ) 	return z;
+        if( (x == 2.0) || (x == 3.0) )  return z;
 
         x -= 2.0;
         p = polevl( x, P, 6 );
@@ -585,12 +585,12 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
         w = 1.0 + w * polevl( w, STIR, 4 );
 
         if( x > MAXSTIR ) {
-	       /* Avoid overflow in Math.pow() */
-	       double v = Math.pow( x, 0.5 * x - 0.25 );
-	       y = v * (v / y);
-	} else {
+         /* Avoid overflow in Math.pow() */
+         double v = Math.pow( x, 0.5 * x - 0.25 );
+         y = v * (v / y);
+  } else {
                y = Math.pow( x, x - 0.5 ) / y;
-	}
+  }
         y = SQTPI * y * w;
         return y;
      }
@@ -634,30 +634,30 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
         ans = pkm1/qkm1;
 
         do {
-  	    c += 1.0;
-	    y += 1.0;
-	    z += 2.0;
-	    yc = y * c;
-	    pk = pkm1 * z  -  pkm2 * yc;
-	    qk = qkm1 * z  -  qkm2 * yc;
-	    if( qk != 0 ) {
-		r = pk/qk;
-		t = Math.abs( (ans - r)/r );
-		ans = r;
-	    } else
-		t = 1.0;
+        c += 1.0;
+      y += 1.0;
+      z += 2.0;
+      yc = y * c;
+      pk = pkm1 * z  -  pkm2 * yc;
+      qk = qkm1 * z  -  qkm2 * yc;
+      if( qk != 0 ) {
+    r = pk/qk;
+    t = Math.abs( (ans - r)/r );
+    ans = r;
+      } else
+    t = 1.0;
 
-	    pkm2 = pkm1;
-	    pkm1 = pk;
-	    qkm2 = qkm1;
-	    qkm1 = qk;
-	    if( Math.abs(pk) > big ) {
-		pkm2 *= biginv;
-		pkm1 *= biginv;
-		qkm2 *= biginv;
-		qkm1 *= biginv;
-	    }
-	} while( t > MACHEP );
+      pkm2 = pkm1;
+      pkm1 = pk;
+      qkm2 = qkm1;
+      qkm1 = qk;
+      if( Math.abs(pk) > big ) {
+    pkm2 *= biginv;
+    pkm1 *= biginv;
+    qkm2 *= biginv;
+    qkm1 *= biginv;
+      }
+  } while( t > MACHEP );
 
         return ans * ax;
      }
@@ -696,10 +696,10 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
         ans = 1.0;
 
         do {
-  	    r += 1.0;
-	    c *= x/r;
-	    ans += c;
-	}
+        r += 1.0;
+      c *= x/r;
+      ans += c;
+  }
         while( c/ans > MACHEP );
 
         return( ans * ax/a );
@@ -958,7 +958,7 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
      }
 /*
  *
- *	Natural logarithm of gamma function
+ *  Natural logarithm of gamma function
  *
  */
 /*
@@ -998,40 +998,40 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
                       };
 
          if( x < -34.0 ) {
-  	   q = -x;
-	   w = lgamma(q);
-	   p = Math.floor(q);
-	   if( p == q ) throw new ArithmeticException("lgam: Overflow");
-	   z = q - p;
-	   if( z > 0.5 ) {
-		p += 1.0;
-		z = p - q;
- 	   }
-	   z = q * Math.sin( Math.PI * z );
-	   if( z == 0.0 ) throw new
+       q = -x;
+     w = lgamma(q);
+     p = Math.floor(q);
+     if( p == q ) throw new ArithmeticException("lgam: Overflow");
+     z = q - p;
+     if( z > 0.5 ) {
+    p += 1.0;
+    z = p - q;
+     }
+     z = q * Math.sin( Math.PI * z );
+     if( z == 0.0 ) throw new
                                ArithmeticException("lgamma: Overflow");
-	   z = LOGPI - Math.log( z ) - w;
-	   return z;
-	 }
+     z = LOGPI - Math.log( z ) - w;
+     return z;
+   }
 
          if( x < 13.0 ) {
-  	   z = 1.0;
-	   while( x >= 3.0 ) {
-		x -= 1.0;
-		z *= x;
-	   }
-	   while( x < 2.0 ) {
-		if( x == 0.0 ) throw new
+       z = 1.0;
+     while( x >= 3.0 ) {
+    x -= 1.0;
+    z *= x;
+     }
+     while( x < 2.0 ) {
+    if( x == 0.0 ) throw new
                                 ArithmeticException("lgamma: Overflow");
-		z /= x;
-		x += 1.0;
-	   }
-	   if( z < 0.0 ) z = -z;
-	   if( x == 2.0 ) return Math.log(z);
-	   x -= 2.0;
-	   p = x * polevl( x, B, 5 ) / p1evl( x, C, 6);
- 	   return( Math.log(z) + p );
-	 }
+    z /= x;
+    x += 1.0;
+     }
+     if( z < 0.0 ) z = -z;
+     if( x == 2.0 ) return Math.log(z);
+     x -= 2.0;
+     p = x * polevl( x, B, 5 ) / p1evl( x, C, 6);
+     return( Math.log(z) + p );
+   }
 
          if( x > 2.556348e305 ) throw new
                           ArithmeticException("lgamma: Overflow");
@@ -1041,11 +1041,11 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
 
          p = 1.0/(x*x);
          if( x >= 1000.0 )
-	     q += ((   7.9365079365079365079365e-4 * p
-		      - 2.7777777777777777777778e-3) *p
-		     + 0.0833333333333333333333) / x;
+       q += ((   7.9365079365079365079365e-4 * p
+          - 2.7777777777777777777778e-3) *p
+         + 0.0833333333333333333333) / x;
          else
-	     q += polevl( p, A, 4 ) / x;
+       q += polevl( p, A, 4 ) / x;
          return q;
      }
 
@@ -1073,46 +1073,46 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
                           ArithmeticException("ibeta: Domain error!");
 
         if( (xx <= 0.0) || ( xx >= 1.0) ) {
-  	       if( xx == 0.0 ) return 0.0;
-   	       if( xx == 1.0 ) return 1.0;
+           if( xx == 0.0 ) return 0.0;
+           if( xx == 1.0 ) return 1.0;
            throw new ArithmeticException("ibeta: Domain error!");
-	    }
+      }
 
         flag = false;
         if( (bb * xx) <= 1.0 && xx <= 0.95) {
-	        t = pseries(aa, bb, xx);
-		    return t;
-	    }
+          t = pseries(aa, bb, xx);
+        return t;
+      }
 
         w = 1.0 - xx;
 
         /* Reverse a and b if x is greater than the mean. */
         if( xx > (aa/(aa+bb)) ) {
-	       flag = true;
-	       a = bb;
-	       b = aa;
-	       xc = xx;
-	       x = w;
-	    } else {
-  	       a = aa;
-	       b = bb;
-	       xc = w;
-	       x = xx;
-	    }
+         flag = true;
+         a = bb;
+         b = aa;
+         xc = xx;
+         x = w;
+      } else {
+           a = aa;
+         b = bb;
+         xc = w;
+         x = xx;
+      }
 
         if( flag  && (b * x) <= 1.0 && x <= 0.95) {
- 	       t = pseries(a, b, x);
-	       if( t <= MACHEP ) 	t = 1.0 - MACHEP;
-	       else  		        t = 1.0 - t;
+         t = pseries(a, b, x);
+         if( t <= MACHEP )  t = 1.0 - MACHEP;
+         else             t = 1.0 - t;
            return t;
-	    }
+      }
 
         /* Choose expansion for better convergence. */
         y = x * (a+b-2.0) - (a-1.0);
         if( y < 0.0 )
-	                  w = incbcf( a, b, x );
+                    w = incbcf( a, b, x );
         else
-	                  w = incbd( a, b, x ) / xc;
+                    w = incbd( a, b, x ) / xc;
 
         /* Multiply w by the factor
            a      b   _             _     _
@@ -1121,29 +1121,29 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
         y = a * Math.log(x);
         t = b * Math.log(xc);
         if( (a+b) < MAXGAM && Math.abs(y) < MAXLOG && Math.abs(t) < MAXLOG ) {
-	        t = Math.pow(xc,b);
-	        t *= Math.pow(x,a);
-	        t /= a;
-	        t *= w;
-	        t *= gamma(a+b) / (gamma(a) * gamma(b));
+          t = Math.pow(xc,b);
+          t *= Math.pow(x,a);
+          t /= a;
+          t *= w;
+          t *= gamma(a+b) / (gamma(a) * gamma(b));
             if( flag ) {
- 	           if( t <= MACHEP ) 	t = 1.0 - MACHEP;
-	           else  		        t = 1.0 - t;
-	        }
+             if( t <= MACHEP )  t = 1.0 - MACHEP;
+             else             t = 1.0 - t;
+          }
             return t;
-	    }
+      }
         /* Resort to logarithms.  */
         y += t + lgamma(a+b) - lgamma(a) - lgamma(b);
         y += Math.log(w/a);
         if( y < MINLOG )
-	                    t = 0.0;
+                      t = 0.0;
         else
-	                    t = Math.exp(y);
+                      t = Math.exp(y);
 
         if( flag ) {
- 	           if( t <= MACHEP ) 	t = 1.0 - MACHEP;
-	           else  		        t = 1.0 - t;
-	    }
+             if( t <= MACHEP )  t = 1.0 - MACHEP;
+             else             t = 1.0 - t;
+      }
         return t;
    }
 
@@ -1178,53 +1178,53 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
        n = 0;
        thresh = 3.0 * MACHEP;
        do {
-	      xk = -( x * k1 * k2 )/( k3 * k4 );
-	      pk = pkm1 +  pkm2 * xk;
-	      qk = qkm1 +  qkm2 * xk;
-	      pkm2 = pkm1;
-	      pkm1 = pk;
-	      qkm2 = qkm1;
-	      qkm1 = qk;
+        xk = -( x * k1 * k2 )/( k3 * k4 );
+        pk = pkm1 +  pkm2 * xk;
+        qk = qkm1 +  qkm2 * xk;
+        pkm2 = pkm1;
+        pkm1 = pk;
+        qkm2 = qkm1;
+        qkm1 = qk;
 
-	      xk = ( x * k5 * k6 )/( k7 * k8 );
-	      pk = pkm1 +  pkm2 * xk;
-	      qk = qkm1 +  qkm2 * xk;
-	      pkm2 = pkm1;
-	      pkm1 = pk;
-	      qkm2 = qkm1;
-	      qkm1 = qk;
+        xk = ( x * k5 * k6 )/( k7 * k8 );
+        pk = pkm1 +  pkm2 * xk;
+        qk = qkm1 +  qkm2 * xk;
+        pkm2 = pkm1;
+        pkm1 = pk;
+        qkm2 = qkm1;
+        qkm1 = qk;
 
-	      if( qk != 0 )		r = pk/qk;
-	      if( r != 0 ) {
-		       t = Math.abs( (ans - r)/r );
-		       ans = r;
-		  }	else
-		       t = 1.0;
+        if( qk != 0 )   r = pk/qk;
+        if( r != 0 ) {
+           t = Math.abs( (ans - r)/r );
+           ans = r;
+      } else
+           t = 1.0;
 
-	      if( t < thresh ) return ans;
+        if( t < thresh ) return ans;
 
-	      k1 += 1.0;
+        k1 += 1.0;
           k2 += 1.0;
-      	  k3 += 2.0;
-      	  k4 += 2.0;
-      	  k5 += 1.0;
-      	  k6 -= 1.0;
-      	  k7 += 2.0;
-      	  k8 += 2.0;
+          k3 += 2.0;
+          k4 += 2.0;
+          k5 += 1.0;
+          k6 -= 1.0;
+          k7 += 2.0;
+          k8 += 2.0;
 
-      	  if( (Math.abs(qk) + Math.abs(pk)) > big ) {
-      		pkm2 *= biginv;
-      		pkm1 *= biginv;
-      		qkm2 *= biginv;
-      		qkm1 *= biginv;
-		  }
-      	  if( (Math.abs(qk) < biginv) || (Math.abs(pk) < biginv) ) {
-      		pkm2 *= big;
-      		pkm1 *= big;
-      		qkm2 *= big;
-      		qkm1 *= big;
-		  }
-	   } while( ++n < 300 );
+          if( (Math.abs(qk) + Math.abs(pk)) > big ) {
+          pkm2 *= biginv;
+          pkm1 *= biginv;
+          qkm2 *= biginv;
+          qkm1 *= biginv;
+      }
+          if( (Math.abs(qk) < biginv) || (Math.abs(pk) < biginv) ) {
+          pkm2 *= big;
+          pkm1 *= big;
+          qkm2 *= big;
+          qkm1 *= big;
+      }
+     } while( ++n < 300 );
 
     return ans;
    }
@@ -1260,53 +1260,53 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
          n = 0;
          thresh = 3.0 * MACHEP;
          do {
-	         xk = -( z * k1 * k2 )/( k3 * k4 );
-	         pk = pkm1 +  pkm2 * xk;
-	         qk = qkm1 +  qkm2 * xk;
-	         pkm2 = pkm1;
-	         pkm1 = pk;
-	         qkm2 = qkm1;
-	         qkm1 = qk;
+           xk = -( z * k1 * k2 )/( k3 * k4 );
+           pk = pkm1 +  pkm2 * xk;
+           qk = qkm1 +  qkm2 * xk;
+           pkm2 = pkm1;
+           pkm1 = pk;
+           qkm2 = qkm1;
+           qkm1 = qk;
 
-	         xk = ( z * k5 * k6 )/( k7 * k8 );
-	         pk = pkm1 +  pkm2 * xk;
-	         qk = qkm1 +  qkm2 * xk;
-	         pkm2 = pkm1;
-	         pkm1 = pk;
-	         qkm2 = qkm1;
-	         qkm1 = qk;
+           xk = ( z * k5 * k6 )/( k7 * k8 );
+           pk = pkm1 +  pkm2 * xk;
+           qk = qkm1 +  qkm2 * xk;
+           pkm2 = pkm1;
+           pkm1 = pk;
+           qkm2 = qkm1;
+           qkm1 = qk;
 
-	         if( qk != 0 )  r = pk/qk;
-	         if( r != 0 ) {
-		         t = Math.abs( (ans - r)/r );
-		         ans = r;
-		     } else
-		         t = 1.0;
+           if( qk != 0 )  r = pk/qk;
+           if( r != 0 ) {
+             t = Math.abs( (ans - r)/r );
+             ans = r;
+         } else
+             t = 1.0;
 
-	         if( t < thresh ) return ans;
+           if( t < thresh ) return ans;
 
-	         k1 += 1.0;
-	         k2 -= 1.0;
-	         k3 += 2.0;
-	         k4 += 2.0;
-	         k5 += 1.0;
-	         k6 += 1.0;
-	         k7 += 2.0;
-	         k8 += 2.0;
+           k1 += 1.0;
+           k2 -= 1.0;
+           k3 += 2.0;
+           k4 += 2.0;
+           k5 += 1.0;
+           k6 += 1.0;
+           k7 += 2.0;
+           k8 += 2.0;
 
-	         if( (Math.abs(qk) + Math.abs(pk)) > big ) {
-		        pkm2 *= biginv;
-		        pkm1 *= biginv;
-		        qkm2 *= biginv;
-		        qkm1 *= biginv;
-		     }
-	         if( (Math.abs(qk) < biginv) || (Math.abs(pk) < biginv) ) {
-		        pkm2 *= big;
-		        pkm1 *= big;
-		        qkm2 *= big;
-		        qkm1 *= big;
-		     }
-	    } while( ++n < 300 );
+           if( (Math.abs(qk) + Math.abs(pk)) > big ) {
+            pkm2 *= biginv;
+            pkm1 *= biginv;
+            qkm2 *= biginv;
+            qkm1 *= biginv;
+         }
+           if( (Math.abs(qk) < biginv) || (Math.abs(pk) < biginv) ) {
+            pkm2 *= big;
+            pkm1 *= big;
+            qkm2 *= big;
+            qkm1 *= big;
+         }
+      } while( ++n < 300 );
 
         return ans;
      }
@@ -1326,24 +1326,24 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
         s = 0.0;
         z = MACHEP * ai;
         while( Math.abs(v) > z ) {
-	       u = (n - b) * x / n;
-	       t *= u;
-	       v = t / (a + n);
-	       s += v;
-	       n += 1.0;
-	    }
+         u = (n - b) * x / n;
+         t *= u;
+         v = t / (a + n);
+         s += v;
+         n += 1.0;
+      }
         s += t1;
         s += ai;
 
         u = a * Math.log(x);
         if( (a+b) < MAXGAM && Math.abs(u) < MAXLOG ) {
-	        t = gamma(a+b)/(gamma(a)*gamma(b));
-	        s = s * t * Math.pow(x,a);
-	    } else {
-	       t = lgamma(a+b) - lgamma(a) - lgamma(b) + u + Math.log(s);
-	       if( t < MINLOG ) 	s = 0.0;
-	       else  	            s = Math.exp(t);
-	    }
+          t = gamma(a+b)/(gamma(a)*gamma(b));
+          s = s * t * Math.pow(x,a);
+      } else {
+         t = lgamma(a+b) - lgamma(a) - lgamma(b) + u + Math.log(s);
+         if( t < MINLOG )   s = 0.0;
+         else               s = Math.exp(t);
+      }
         return s;
      }
 

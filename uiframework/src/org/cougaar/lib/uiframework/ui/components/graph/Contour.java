@@ -38,7 +38,7 @@ import java.io.InputStream;
  * This class extends the interactive graphics class G2Dint to incorporate
  * contouring.
  *
- * @version  $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $.
+ * @version  $Revision: 1.3 $, $Date: 2001-04-10 13:48:26 $.
  * @author   Leigh Brookshaw
  */
 
@@ -54,11 +54,11 @@ public class Contour extends G2Dint {
 /*
 **   The minimum length of a curve before it gets a label
 */
-	 static final int MINCELLS = 30;
+   static final int MINCELLS = 30;
 /*
 **   Default number of contour levels
 */
-	 static final int NLEVELS = 12;
+   static final int NLEVELS = 12;
 
 
 /**********************
@@ -327,7 +327,7 @@ public class Contour extends G2Dint {
         if(n < 1 ) {
            System.out.println("Failed to load Grid from file ");
            return false;
-	 }
+   }
 
         nx = (int)(data[0] + 0.5);
         ny = (int)(data[1] + 0.5);
@@ -340,7 +340,7 @@ public class Contour extends G2Dint {
 
             grid = new double[nx*ny];
             System.arraycopy(data, 6, grid, 0, nx*ny);
-	} else
+  } else
         if( n == nx*ny+2 ) {
             xmin = 1.0;
             xmax = (double)(nx);
@@ -349,11 +349,11 @@ public class Contour extends G2Dint {
 
             grid = new double[nx*ny];
             System.arraycopy(data, 2, grid, 0, nx*ny);
-	} else {
+  } else {
             System.out.println("Error loading grid, Wrong number of points ");
             grid = null;
             return false;
-	  }
+    }
 
         zrange();
         calcLevels();
@@ -542,7 +542,7 @@ public class Contour extends G2Dint {
      public void setLabelLevels(int i) {
           if(i<=0) labelLevels = 0;
           else     labelLevels = i;
-	}
+  }
 
   /**
    * If true contour levels are calculated on a log scale.
@@ -552,7 +552,7 @@ public class Contour extends G2Dint {
                logLevels = b;
 
                if( zmin <= 0.0 || zmax <= 0.0 ) logLevels = false;
-	     }
+       }
 
   /**
    * Set the number of contour levels.
@@ -575,14 +575,14 @@ public class Contour extends G2Dint {
    */
      public void setAutoLevels(boolean b) {
                autoLevels = b;
-	     }
+       }
   /**
    * If true contour levels are not labeled.
    * @param b boolean
    */
      public void setDrawLabels(boolean b) {
                drawlabels = b;
-	     }
+       }
 
   /**
    * Set the label style, either TextLine.SCIENTIFIC or
@@ -687,13 +687,13 @@ public class Contour extends G2Dint {
           try {
              for(i=0; i<levels.length; i++) levels[i] = zmin +
                           Math.pow(Math.E,(double)(i+1)*inc);
-	   } catch (Exception e) {
+     } catch (Exception e) {
              System.out.println("Error calculateing Log levels!");
              System.out.println("... calculating linear levels instead");
              logLevels = false;
              calcLevels();
            }
-	} else {
+  } else {
           double inc = (zmax-zmin)/(double)(levels.length+1);
           for(i=0; i<levels.length; i++) levels[i] = zmin + (double)(i+1)*inc;
         }
@@ -739,7 +739,7 @@ public class Contour extends G2Dint {
 
         if(zmin == zmax) {
            System.out.println("Cannot produce contours of a constant surface!");
-	 }
+   }
 
         if(zmin <= 0 || zmax <= 0) logLevels = false;
 
@@ -759,7 +759,7 @@ public class Contour extends G2Dint {
          if( curves == null && !noContours ) {
                                   calculateCurves();
                                   calcLabels();
-				}
+        }
 
          setContourColors();
 
@@ -767,23 +767,23 @@ public class Contour extends G2Dint {
            if( xaxis != null ) {
                 if(xaxis.minimum > xmin ) xaxis.minimum = xmin;
                 if(xaxis.maximum < xmax ) xaxis.maximum = xmax;
-	      }
+        }
 
            if( yaxis != null ) {
                 if(yaxis.minimum > ymin ) yaxis.minimum = ymin;
                 if(yaxis.maximum < ymax ) yaxis.maximum = ymax;
-	      }
+        }
          } else
          if( dataset.isEmpty() ) {
            if( xaxis != null ) {
                 xaxis.minimum = xmin;
                 xaxis.maximum = xmax;
-	      }
+        }
 
            if( yaxis != null ) {
                 yaxis.minimum = ymin;
                 yaxis.maximum = ymax;
-	      }
+        }
          }
 
 
@@ -800,18 +800,18 @@ public class Contour extends G2Dint {
         if(curves == null ||
            (contourColor==null && labelledColor==null) ) return;
 
-	for(i=0; i<curves.length; i++) {
+  for(i=0; i<curves.length; i++) {
             setContourColors(curves[i],null);
         }
 
         if(contourColor != null) {
-	   for(i=0; i<curves.length; i++) {
+     for(i=0; i<curves.length; i++) {
                setContourColors(curves[i],contourColor);
            }
         }
 
         if(labelledColor != null) {
-	   for(i=0; i<curves.length; i++) {
+     for(i=0; i<curves.length; i++) {
                if(i%labelLevels == 0) {
                   setContourColors(curves[i],labelledColor);
                }
@@ -831,7 +831,7 @@ public class Contour extends G2Dint {
 
         if(v == null) return;
 
-	for(i=0; i<v.size(); i++) {
+  for(i=0; i<v.size(); i++) {
             d = (DataSet)(v.elementAt(i));
             if(d != null) d.linecolor = c;
         }
@@ -862,7 +862,7 @@ public class Contour extends G2Dint {
                         xaxis.attachDataSet((DataSet)(v.elementAt(j)));
                if(yaxis != null)
                         yaxis.attachDataSet((DataSet)(v.elementAt(j)));
-	     }
+       }
       }
 /*
 **    detachCurves()
@@ -888,7 +888,7 @@ public class Contour extends G2Dint {
                         xaxis.detachDataSet((DataSet)(v.elementAt(j)));
                if(yaxis != null)
                         yaxis.detachDataSet((DataSet)(v.elementAt(j)));
-	     }
+       }
       }
 
 /*
@@ -912,7 +912,7 @@ public class Contour extends G2Dint {
                   labelLevels == 0 || !drawlabels || curves == null ) {
                          super.paintLast(g,rect);
                          return;
-	      }
+        }
 
 
               for(i=0; i<levels.length; i++) {
@@ -946,14 +946,14 @@ public class Contour extends G2Dint {
                              points -= MINCELLS;
                              index += MINCELLS;
                         }
-		      }
-		  }
-	      }
+          }
+      }
+        }
 
               super.paintLast(g,rect);
 
 
-	    }
+      }
 /*
 **   calculateCurves()
 **        Calculate the contours and attach them to the graph and axes.
@@ -975,7 +975,7 @@ public class Contour extends G2Dint {
           if( curves != null) {
                                detachCurves();
                                curves = null;
-			     }
+           }
           if( zmin == zmax ) return;
 
           curves = new Vector[levels.length];
@@ -993,7 +993,7 @@ public class Contour extends G2Dint {
                    j++;
                    data[j] = ymin + data[j]*yscale;
                    j++;
-		 }
+     }
 
                 try {
                   curves[i].addElement(new DataSet(data, data.length/2));

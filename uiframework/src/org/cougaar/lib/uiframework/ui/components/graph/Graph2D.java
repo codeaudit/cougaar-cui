@@ -51,11 +51,14 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.3 $, $Date: 2001-02-08 20:20:11 $
+ * @version  $Revision: 1.4 $, $Date: 2001-04-10 13:48:26 $
  * @author   Leigh Brookshaw
  */
 
 public class Graph2D extends JPanel { // PHF
+
+  public boolean gridOnTop = true;
+
 
 
 /*
@@ -166,7 +169,7 @@ public class Graph2D extends JPanel { // PHF
  *  across the data window
  *  at the zeros of the innermost axes.
  */
-    public boolean drawzero     = true;
+    public boolean drawzero     = false;
 /**
  *  The color of the zero grid lines.
  */
@@ -208,6 +211,15 @@ public class Graph2D extends JPanel { // PHF
 **
 *******************/
 
+  public Axis[] getAxisList()
+  {
+    return((Axis[])axis.toArray(new Axis[axis.size()]));
+  }
+
+  public DataSet[] getDataSetList()
+  {
+    return((DataSet[])dataset.toArray(new DataSet[dataset.size()]));
+  }
 
 /**
  *  Load and Attach a DataSet from a File.
@@ -443,7 +455,7 @@ public class Graph2D extends JPanel { // PHF
              d = ((DataSet)dataset.elementAt(i));
              if(i==0) max = d.getXmax();
              else     max = Math.max(max,d.getXmax());
-	 }
+   }
 
          return max;
      }
@@ -460,7 +472,7 @@ public class Graph2D extends JPanel { // PHF
              d = ((DataSet)dataset.elementAt(i));
              if(i==0) max = d.getYmax();
              else     max = Math.max(max,d.getYmax());
-	 }
+   }
 
          return max;
      }
@@ -479,7 +491,7 @@ public class Graph2D extends JPanel { // PHF
              d = ((DataSet)dataset.elementAt(i));
              if(i==0) min = d.getXmin();
              else     min = Math.min(min,d.getXmin());
-	 }
+   }
 
          return min;
      }
@@ -498,7 +510,7 @@ public class Graph2D extends JPanel { // PHF
              d = ((DataSet)dataset.elementAt(i));
              if(i==0) min = d.getYmin();
              else     min = Math.min(min,d.getYmin());
-	 }
+   }
 
          return min;
      }
@@ -555,16 +567,16 @@ public class Graph2D extends JPanel { // PHF
  *  The order of drawing is - Axis first, data legends next, data last.
  *  @params g Graphics state.
  */
-    public void paintComponent(Graphics g) {  // PHF
-        super.paintComponent(g);               // PHF
+    public void paintComponent(Graphics lg) {  // PHF
+        super.paintComponent(lg);               // PHF
 
         int i;
-        Graphics lg  = g.create();
+//        Graphics lg  = g.create();
         Rectangle r = getBounds();  //PHF - removed use of deprecated method
 
 
         /* The r.x and r.y returned from bounds is relative to the
-	** parents space so set them equal to zero.
+  ** parents space so set them equal to zero.
         */
         r.x = 0;
         r.y = 0;
@@ -582,18 +594,38 @@ public class Graph2D extends JPanel { // PHF
         r.height -= borderBottom+borderTop;
 
 
+        Rectangle r2 = new Rectangle(r.x, r.y, r.width, r.height);
+
         paintFirst(lg,r);
 
-        if( !axis.isEmpty() ) r = drawAxis(lg, r);
-        else  {
-               if(clearAll ) {
-                 Color c = g.getColor();
-	         g.setColor(DataBackground);
-                 g.fillRect(r.x,r.y,r.width,r.height);
-                 g.setColor(c);
+        if( !axis.isEmpty() )
+        {
+          // If there is a grid to draw and it is to be on-top, don't bother drawing it before the data
+          boolean drawTheGrid = drawgrid;
+          if (gridOnTop && drawgrid)
+          {
+            drawgrid = false;
+          }
+
+          r = drawAxis(lg, r);
+
+          drawgrid = drawTheGrid;
+        }
+        else
+        {
+          if(clearAll )
+          {
+            Color c = lg.getColor();
+            lg.setColor(DataBackground);
+            lg.fillRect(r.x,r.y,r.width,r.height);
+            lg.setColor(c);
                }
                drawFrame(lg,r.x,r.y,r.width,r.height);
         }
+
+        lg.setColor(Color.white);
+//        lg.setColor(DataBackground);
+//        g.setColor(DataBackground);
 
         paintBeforeData(lg,r);
 
@@ -604,16 +636,96 @@ public class Graph2D extends JPanel { // PHF
            datarect.width  = r.width;
            datarect.height = r.height;
 
-           for (i=0; i<dataset.size(); i++) {
+/*           for (i=0; i<dataset.size(); i++)
+           {
              ((DataSet)dataset.elementAt(i)).draw_data(lg,r);
+           }*/
+
+          DataSet dataSet = null;
+          boolean filled = false;
+
+          // Draw Step/Line filled
+          for (i=0; i<dataset.size(); i++)
+          {
+            dataSet = (DataSet)dataset.elementAt(i);
+            filled = ((dataSet instanceof PolygonFillableDataSet) && (((PolygonFillableDataSet)dataSet).polygonFill));
+
+            if (filled && !(dataSet instanceof BarDataSet) && (dataSet.getClass().equals(PolygonFillableDataSet.class) || dataSet.getClass().equals(StepDataSet.class)))
+            {
+              dataSet.draw_data(lg,r);
+            }
+          }
+
+          // Draw Bar filled
+          for (i=0; i<dataset.size(); i++)
+          {
+            dataSet = (DataSet)dataset.elementAt(i);
+            filled = ((dataSet instanceof PolygonFillableDataSet) && (((PolygonFillableDataSet)dataSet).polygonFill));
+
+            if (filled && dataSet.getClass().equals(BarDataSet.class))
+            {
+              dataSet.draw_data(lg,r);
+            }
+          }
+
+          // Draw Bar hollow
+          for (i=0; i<dataset.size(); i++)
+          {
+            dataSet = (DataSet)dataset.elementAt(i);
+            filled = ((dataSet instanceof PolygonFillableDataSet) && (((PolygonFillableDataSet)dataSet).polygonFill));
+
+            if (!filled && dataSet.getClass().equals(BarDataSet.class))
+            {
+              dataSet.draw_data(lg,r);
+            }
+          }
+
+          // Draw Step/Line hollow (also do orginal DataSet class
+          for (i=0; i<dataset.size(); i++)
+          {
+            dataSet = (DataSet)dataset.elementAt(i);
+            filled = ((dataSet instanceof PolygonFillableDataSet) && (((PolygonFillableDataSet)dataSet).polygonFill));
+
+            if (!filled && (dataSet.getClass().equals(PolygonFillableDataSet.class) || dataSet.getClass().equals(StepDataSet.class) || dataSet.getClass().equals(DataSet.class)))
+            {
+              dataSet.draw_data(lg,r);
+            }
            }
-	}
+  }
 
         paintLast(lg,r);
 
-        lg.dispose();
+        // Redraw the grid and axis
+        if(!axis.isEmpty())
+        {
+          copyRect(r2, r);
+          boolean clear = clearAll;
+          clearAll = false;
 
+          // Draw the grid
+          if(gridOnTop)
+          {
+            drawAxis(lg, r);
+            copyRect(r2, r);
+          }
 
+          boolean drawTheGrid = drawgrid;
+          drawgrid = false;
+          drawAxis(lg, r);
+          drawgrid = drawTheGrid;
+
+          clearAll = clear;
+        }
+
+//        lg.dispose();
+    }
+
+    private void copyRect(Rectangle src, Rectangle dest)
+    {
+      dest.x = src.x;
+      dest.y = src.y;
+      dest.width = src.width;
+      dest.height = src.height;
     }
 
 /**
@@ -661,8 +773,8 @@ public class Graph2D extends JPanel { // PHF
 //          System.out.println("Graph2d update method called");
         if( clearAll ) {
             Color c = g.getColor();
-	    /* The r.x and r.y returned from bounds is relative to the
-	    ** parents space so set them equal to zero
+      /* The r.x and r.y returned from bounds is relative to the
+      ** parents space so set them equal to zero
             */
             Rectangle r = getBounds();  //PHF -removed use of deprecated method
 
@@ -788,7 +900,7 @@ public class Graph2D extends JPanel { // PHF
                range = a.maximum - a.minimum;
                if(a.isVertical()) {
                                     yrange = Math.max(range, yrange);
-	       } else {
+         } else {
                                     xrange = Math.max(range, xrange);
                }
             }
@@ -810,7 +922,7 @@ public class Graph2D extends JPanel { // PHF
 /*
 **          Modify the data rectangle so that it is square.
 */
-	    if(dr.width > dr.height) {
+      if(dr.width > dr.height) {
                     x += (dr.width-dr.height)/2.0;
                     width -= dr.width-dr.height;
             } else {
@@ -822,7 +934,7 @@ public class Graph2D extends JPanel { // PHF
             return new Rectangle(x,y,width,height);
 
 
-	}
+  }
 /**
  *  Calculate the rectangle occupied by the data
  */
@@ -837,6 +949,13 @@ public class Graph2D extends JPanel { // PHF
 
             for (int i=0; i<axis.size(); i++) {
                a = ((Axis)axis.elementAt(i));
+
+                if (a.minimum == a.maximum)
+                {
+                  a.resetRange();
+                }
+
+                if (!a.visible) continue;
 
                waxis = a.getAxisWidth(g);
 
@@ -886,15 +1005,16 @@ public class Graph2D extends JPanel { // PHF
             width  = dr.width;
             height = dr.height;
 
-            if(clearAll ) {
+/*            if(clearAll)
+            {
                Color c = g.getColor();
-	       g.setColor(DataBackground);
+         g.setColor(DataBackground);
                g.fillRect(x,y,width,height);
                g.setColor(c);
-            }
+            }*/
 
 // Draw a frame around the data area (If requested)
-            if(frame) drawFrame(g,x,y,width,height);
+//            if(frame) drawFrame(g,x,y,width,height);
 
 // Now draw the axis in the order specified aligning them with the final
 // data area.
@@ -913,12 +1033,7 @@ public class Graph2D extends JPanel { // PHF
                              a.drawgrid  = drawgrid;
                              a.zerocolor = zerocolor;
                              a.drawzero  = drawzero;
-			   }
-
-                           a.drawAxis(g);
-
-                           a.drawgrid  = false;
-                           a.drawzero  = false;
+         }
 
                           break;
                case Axis.RIGHT:
@@ -930,11 +1045,6 @@ public class Graph2D extends JPanel { // PHF
                              a.zerocolor = zerocolor;
                              a.drawzero  = drawzero;
                           }
-
-                          a.drawAxis(g);
-
-                          a.drawgrid  = false;
-                          a.drawzero  = false;
 
                            break;
                case Axis.TOP:
@@ -948,12 +1058,6 @@ public class Graph2D extends JPanel { // PHF
                              a.drawzero  = drawzero;
                           }
 
-                          a.drawAxis(g);
-
-                          a.drawgrid  = false;
-                          a.drawzero  = false;
-
-
                           break;
                case Axis.BOTTOM:
                           r.height -= a.width;
@@ -965,15 +1069,22 @@ public class Graph2D extends JPanel { // PHF
                              a.drawzero  = drawzero;
                           }
 
+                          break;
+               }
+
+                if (a.visible)
+                {
+                          // Need to calculate gridlabels after we have set the axis position
+                          a.calculateGridLabels(g);
                           a.drawAxis(g);
+                }
 
                           a.drawgrid  = false;
                           a.drawzero  = false;
-
-
-                          break;
-               }
             }
+
+// Draw a frame around the data area (If requested)
+            if(frame) drawFrame(g,x,y,width,height);
 
            return r;
       }
@@ -992,8 +1103,26 @@ public class Graph2D extends JPanel { // PHF
 
      }
 
+  public double getYmaxInRange(double xMin, double xMax)
+  {
+    DataSet dataSet = null;
+    double yMax = Double.NaN;
+    double y = 0.0;
 
+    for (int i=0; i<dataset.size(); i++)
+    {
+      dataSet = (DataSet)dataset.elementAt(i);
+      if (dataSet.visible == false)
+      {
+        continue;
+      }
 
+      y = dataSet.getYmaxInRange(xMin, xMax);
+      yMax = (((yMax < y) && (!Double.isNaN(y))) || Double.isNaN(yMax)) ? y : yMax;
+    }
+
+    return(yMax);
+  }
 }
 
 /**
@@ -1070,7 +1199,7 @@ class LoadMessage extends Thread {
 
             super.start();
 
-	  }
+    }
 /**
  *   end displaying message and force a graph repaint
  */
@@ -1086,7 +1215,7 @@ class LoadMessage extends Thread {
 
             g2d.repaint();
 
-	  }
+    }
 /**
  *   The method to call when the thread starts
  */
@@ -1107,21 +1236,21 @@ class LoadMessage extends Thread {
                 if( newmessage != null && draw) {
                     message = newmessage;
                     newmessage = null;
-		}
+    }
 
                 if(lg == null) {
                   lg = g2d.getGraphics();
                   if(lg != null) lg = lg.create();
-	        }
+          }
 
                 if( lg != null) {
                    if(f != null) lg.setFont(f);
                    fm = lg.getFontMetrics(lg.getFont());
                    sw = fm.stringWidth(message);
                    sa = fm.getAscent();
-		} else {
+    } else {
                    draw = false;
-		 }
+     }
 
                 if( draw ) {
                       lg.setColor(foreground);
@@ -1137,23 +1266,23 @@ class LoadMessage extends Thread {
 
                       try { sleep(visible); }
                       catch(Exception e) { }
-	        } else {
+          } else {
                       if(lg != null) {
                          lg.setColor(g2d.getBackground());
                          lg.drawString(message, x, y);
 
                          g2d.repaint();
-		       }
+           }
 
                        try { sleep(invisible); }
                        catch(Exception e) { }
 
-		 }
+     }
 
                 draw = !draw;
 
-	      }
-	 }
+        }
+   }
 
   /**
    * Set the font the message will be displayed in

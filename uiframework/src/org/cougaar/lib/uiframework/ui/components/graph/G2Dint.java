@@ -74,7 +74,7 @@ import java.util.*;
  *    windowing system the mouse button might have to be pressed in the
  *    popup window to ensure it has the keyboard focus.
  *
- * @version $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $.
+ * @version $Revision: 1.3 $, $Date: 2001-04-10 13:48:26 $.
  * @author Leigh Brookshaw
  */
 
@@ -167,8 +167,8 @@ public class G2Dint extends Graph2D {
           Rectangle r = getBounds(); //PHF - removed use of deprecated method
           Color c = g.getColor();
 
-	  /* The r.x and r.y returned from bounds is relative to the
-	  ** parents space so set them equal to zero
+    /* The r.x and r.y returned from bounds is relative to the
+    ** parents space so set them equal to zero
           */
           r.x = 0;
           r.y = 0;
@@ -176,11 +176,11 @@ public class G2Dint extends Graph2D {
 
 
           if(drag) {
-	    /**
-	     * Set the dragColor. Do it everytime just incase someone
+      /**
+       * Set the dragColor. Do it everytime just incase someone
              * is playing silly buggers with the background color.
-	     */
-  	     g.setColor(DataBackground);
+       */
+         g.setColor(DataBackground);
 
              float hsb[] = Color.RGBtoHSB(
                            DataBackground.getRed(),
@@ -198,25 +198,25 @@ public class G2Dint extends Graph2D {
 **         can't handle it!
 */
 
-	   /*
-	   ** Draw over old box to erase it. This works because XORMode
-	   ** has been set. If from one call to the next the background
+     /*
+     ** Draw over old box to erase it. This works because XORMode
+     ** has been set. If from one call to the next the background
            ** color changes going to get some odd results.
-	   */
+     */
            g.drawLine(x0, y0, x1old, y0);
            g.drawLine(x1old, y0, x1old, y1old);
            g.drawLine(x1old, y1old, x0, y1old);
            g.drawLine(x0, y1old, x0, y0);
-	   /*
-	   ** draw out new box
-	   */
+     /*
+     ** draw out new box
+     */
            g.drawLine(x0, y0, x1, y0);
            g.drawLine(x1, y0, x1, y1);
            g.drawLine(x1, y1, x0, y1);
            g.drawLine(x0, y1, x0, y0);
-	   /*
-	   ** Set color back to default color
-	   */
+     /*
+     ** Set color back to default color
+     */
            g.setColor(c);
 
            x1old = x1;
@@ -253,18 +253,18 @@ public class G2Dint extends Graph2D {
                case 'r':
                               repaint();
                               return true;
- 	       case 'c':
+         case 'c':
                              if( cpgin == null) cpgin = new Gin("Position");
                              if( cpgin.isVisible() ) {
                                      cpgin.hide();
-  		             } else {
+                   } else {
                                     cpgin.show();
-		             }
+                 }
                              return true;
- 	       case 'D':
+         case 'D':
                             if(dpgin != null) dpgin.hide();
                             return true;
- 	       case 'd':
+         case 'd':
                             if(dpgin == null) dpgin = new Gin("Data Point");
                             dpgin.show();
                             double d[] = getClosestPoint(e.x, e.y);
@@ -278,21 +278,21 @@ public class G2Dint extends Graph2D {
                                 iy <= datarect.y +datarect.height ) {
                                 Graphics g = getGraphics();
                                 g.fillOval(ix-4, iy-4, 8, 8);
- 			    }
+          }
                             return true;
-		case 'm':
+    case 'm':
                             if(range == null) range = new Range(this);
 
                             range.show();
                             range.requestFocus();
                             userlimits = true;
                             return true;
-	       default:
+         default:
 //                             System.out.println("KeyPress "+e.key);
                              return false;
                }
 
-	     }
+       }
 
 /**
  * Handle the Mouse Down events
@@ -300,10 +300,10 @@ public class G2Dint extends Graph2D {
     public boolean mouseDown(Event e, int x, int y) {
 
                 if(xaxis==null || yaxis==null) return false;
-		/*
-		** Soon as the mouse button is pressed request the Focus
-		** otherwise we will miss key events
-		*/
+    /*
+    ** Soon as the mouse button is pressed request the Focus
+    ** otherwise we will miss key events
+    */
                 requestFocus();
 
                 x0 = x;
@@ -373,7 +373,7 @@ public class G2Dint extends Graph2D {
                    repaint();
                  }
                 return true;
-	      }
+        }
 /**
  * Handle the Mouse Drag events
  */
@@ -462,7 +462,7 @@ public class G2Dint extends Graph2D {
                  xaxis.maximum = txmax;
                  yaxis.minimum = tymin;
                  yaxis.maximum = tymax;
-	    }
+      }
 
 
 
@@ -499,8 +499,8 @@ public class G2Dint extends Graph2D {
                                     data[0] = a[0];
                                     data[1] = a[1];
                                     distsq  = a[2];
-	        }
-	}
+          }
+  }
         return data;
 
       }
@@ -609,7 +609,7 @@ class Gin extends Frame {
              if( key == 'h' ) {
                                   this.hide();
                                   return true;
-				}
+        }
 
              return false;
 
@@ -680,7 +680,7 @@ class Range extends Frame {
              }
          catch (Exception ex) {
                return null;
-	     }
+       }
      }
 
      public Double getXmax() {
@@ -689,7 +689,7 @@ class Range extends Frame {
              }
          catch (Exception ex) {
                return null;
-	     }
+       }
      }
 
      public Double getYmin() {
@@ -698,7 +698,7 @@ class Range extends Frame {
              }
          catch (Exception ex) {
                return null;
-	     }
+       }
      }
 
      public Double getYmax() {
@@ -707,7 +707,7 @@ class Range extends Frame {
              }
          catch (Exception ex) {
                return null;
-	     }
+       }
      }
 
 
@@ -742,13 +742,13 @@ class Range extends Frame {
                         if(ymaxText.equals(e.target)) {
                           xminText.requestFocus();
                           return true;
-		        }
+            }
 
 
                         return true;
             }
 
-	 }
+   }
 
          return false;
 
@@ -770,7 +770,7 @@ class Range extends Frame {
              if( cancel.equals(e.target) ) {
                   this.hide();
                   return true;
-	     }
+       }
          }
 
 

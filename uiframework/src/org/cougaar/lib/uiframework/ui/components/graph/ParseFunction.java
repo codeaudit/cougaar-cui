@@ -58,7 +58,7 @@ import java.lang.*;
  *   <li> Scientific notation using "e", "E", "d", "D".
  * </ul>
  *
- * @version $Revision: 1.2 $, $Date: 2001-02-08 20:20:12 $
+ * @version $Revision: 1.3 $, $Date: 2001-04-10 13:48:26 $
  * @author Leigh Brookshaw
  */
 
@@ -325,11 +325,11 @@ public class ParseFunction extends ScanString {
         public double getResult(double x, double y, double z)
                                                     throws Exception {
 
-        	this.x = x;
-        	this.y = y;
-        	this.z = z;
+          this.x = x;
+          this.y = y;
+          this.z = z;
 
-        	return evaluate(root);
+          return evaluate(root);
         }
 
   /**
@@ -341,10 +341,10 @@ public class ParseFunction extends ScanString {
         public double getResult(double x, double y)
                                                     throws Exception {
 
-        	this.x = x;
-        	this.y = y;
+          this.x = x;
+          this.y = y;
 
-        	return evaluate(root);
+          return evaluate(root);
         }
   /**
    * Return the solution of the function given the independent values
@@ -353,9 +353,9 @@ public class ParseFunction extends ScanString {
    */
         public double getResult(double x) throws Exception {
 
-        	this.x = x;
+          this.x = x;
 
-        	return evaluate(root);
+          return evaluate(root);
         }
 
   /**
@@ -368,7 +368,7 @@ public class ParseFunction extends ScanString {
    */
         public double getResult() throws Exception {
 
-        	return evaluate(root);
+          return evaluate(root);
         }
 
 
@@ -456,11 +456,11 @@ public class ParseFunction extends ScanString {
    */
 
         public boolean[] getVariables()  {
-        	boolean b[] =  new boolean[3];
+          boolean b[] =  new boolean[3];
 
-        	b[0] = independent_x;
-        	b[1] = independent_y;
-        	b[2] = independent_z;
+          b[0] = independent_x;
+          b[1] = independent_y;
+          b[2] = independent_z;
 
             return b;
         }
@@ -528,101 +528,101 @@ public class ParseFunction extends ScanString {
 
         switch(token) {
 
-	  /*
-	  ** Number token or constant tokens.
+    /*
+    ** Number token or constant tokens.
           ** Place the value in the node and recurse on this
           ** terminal node. It will be used by an operator.
           */
         case NUMBER:
-       	       node.type  = Node.VALUE;
-       	       node.value = nval;
+               node.type  = Node.VALUE;
+               node.value = nval;
                return parseString(node);
 
         case PI:
-      	       node.type = Node.VALUE;
-      	       node.value = Math.PI;
+               node.type = Node.VALUE;
+               node.value = Math.PI;
                return parseString(node);
 
         case E:
-      	       node.type = Node.VALUE;
-      	       node.value = Math.E;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value = Math.E;
+               return parseString(node);
         case BOLTZMAN:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.BOLTZMAN;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.BOLTZMAN;
+               return parseString(node);
         case ECHARGE:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.ECHARGE;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.ECHARGE;
+               return parseString(node);
         case EMASS:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.EMASS;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.EMASS;
+               return parseString(node);
         case PMASS:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.PMASS;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.PMASS;
+               return parseString(node);
         case GRAV:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.GRAV;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.GRAV;
+               return parseString(node);
         case PLANCK:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.PLANCK;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.PLANCK;
+               return parseString(node);
         case LIGHTSPEED:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.LIGHTSPEED;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.LIGHTSPEED;
+               return parseString(node);
         case STEFANBOLTZ:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.STEFANBOLTZ;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.STEFANBOLTZ;
+               return parseString(node);
         case AVOGADRO:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.AVOGADRO;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.AVOGADRO;
+               return parseString(node);
         case GASCONSTANT:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.GASCONSTANT;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.GASCONSTANT;
+               return parseString(node);
         case GRAVACC:
-      	       node.type = Node.VALUE;
-      	       node.value =             SpecialFunction.GRAVACC;
-      	       return parseString(node);
-      	case RAD:
-      	       node.type = Node.VALUE;
-      	       node.value = Math.PI/180.0;
-      	       return parseString(node);
+               node.type = Node.VALUE;
+               node.value =             SpecialFunction.GRAVACC;
+               return parseString(node);
+        case RAD:
+               node.type = Node.VALUE;
+               node.value = Math.PI/180.0;
+               return parseString(node);
 
-	case RANDOM:
-      	       node.type = Node.VALUE;
-      	       node.value = Math.random();
-      	       return parseString(node);
+  case RANDOM:
+               node.type = Node.VALUE;
+               node.value = Math.random();
+               return parseString(node);
 
-	 /*
-	 ** Independent variables behave like constant nodes except
+   /*
+   ** Independent variables behave like constant nodes except
          ** they are flagged as INDEPENDENT nodes. Then we recurse using this
          **  this node as it has to be used by an operator
          */
         case X: case Y: case Z:
-      	       node.op   = token;
-      	       node.type = Node.INDEPENDENT;
+               node.op   = token;
+               node.type = Node.INDEPENDENT;
 
 
-      	       if(token == X) independent_x = true;
-      	       else
-      	       if(token == Y) independent_y = true;
-      	       else
-      	       if(token == Z) independent_z = true;
+               if(token == X) independent_x = true;
+               else
+               if(token == Y) independent_y = true;
+               else
+               if(token == Z) independent_z = true;
 
-      	       return parseString(node);
+               return parseString(node);
 
-	/*
-	** Terminal tokens
+  /*
+  ** Terminal tokens
         */
-	case ENDGROUP: case EOS: case COMMA:
+  case ENDGROUP: case EOS: case COMMA:
                break;
 
        /*
@@ -645,21 +645,21 @@ public class ParseFunction extends ScanString {
                 }
                 break;
 
-	/*
-	** Binary and Unary Operators.
+  /*
+  ** Binary and Unary Operators.
         ** The existing node goes to the left and everything
         ** on the right gets attached to the right node.
         **
         ** A unary operator is recognised by the empty
         ** node parsed ie nothing exists on the left.
         */
-	case ADD: case SUBTRACT: case MULTIPLY: case DIVIDE: case POWER:
+  case ADD: case SUBTRACT: case MULTIPLY: case DIVIDE: case POWER:
                right = new Node();
                t = parseString(right);
 
 
                if(t != ERROR) {
- 		   if( (token == SUBTRACT || token == ADD )
+       if( (token == SUBTRACT || token == ADD )
                                        && node.type == Node.NULL ) {
 
                       //System.out.println("...Unary Operator");
@@ -668,7 +668,7 @@ public class ParseFunction extends ScanString {
                       node.precedence = Node.P4;
                       node.op = token;
                       node.type = Node.OP;
-		   } else {
+       } else {
 
                       //System.out.println("...Binary Operator");
 
@@ -678,7 +678,7 @@ public class ParseFunction extends ScanString {
                       node.op = token;
                       node.type = Node.OP;
                       switch (token) {
-		         case ADD: case SUBTRACT:
+             case ADD: case SUBTRACT:
                             node.precedence = Node.P1;
                             break;
                          case MULTIPLY: case DIVIDE:
@@ -689,12 +689,12 @@ public class ParseFunction extends ScanString {
                             break;
                        }
                    }
-	       }
+         }
                token = t;
 
                break;
-	/*
-	** Single parameter intrinsic functions behave excacty like
+  /*
+  ** Single parameter intrinsic functions behave excacty like
         ** parenthesis.
         */
         case SIN:   case COS:   case TAN:
@@ -727,12 +727,12 @@ public class ParseFunction extends ScanString {
                    }
                 }
                 break;
-	/*
-	** 2 parameter intrinsic functions
+  /*
+  ** 2 parameter intrinsic functions
         ** First parameter on attached to the left node,
         **  second parameter attached to the right.
         */
-	case ATAN2: case JN: case YN: case IGAM: case IGAMC:
+  case ATAN2: case JN: case YN: case IGAM: case IGAMC:
         case CHISQ: case CHISQC: case POISSON: case POISSONC:
                 node.op = token;
                 node.type = Node.INTRINSIC;
@@ -761,7 +761,7 @@ public class ParseFunction extends ScanString {
                           System.out.println(
                           "Parse Failed: intrinsic function is missing \",\"");
                           token = ERROR;
-		   }
+       }
                 }
                 break;
 
@@ -781,42 +781,42 @@ public class ParseFunction extends ScanString {
   ** Starting at the passed node evaluate everything below this node
   */
         private double evaluate(Node node) throws Exception {
-        	double value = 0.0;
+          double value = 0.0;
 
 
-        	if( node == null)  {
-        		throw new
+          if( node == null)  {
+            throw new
                         Exception("evaluate: Failed because of null node!");
-        	}
+          }
 
-        	switch (node.type)  {
+          switch (node.type)  {
 
-		    case Node.GROUP:
+        case Node.GROUP:
                                     value = evaluate(node.left);
                                     break;
-        	    case Node.OP:
-        	                    value = evaluateOp(node);
-        	                    break;
+              case Node.OP:
+                              value = evaluateOp(node);
+                              break;
 
-        	    case Node.INTRINSIC:
-        	                    value = evaluateIntrinsic(node);
-        	                    break;
-        	    case Node.VALUE:
-        	                  	value = node.value;
-        	                  	break;
-        	    case Node.INDEPENDENT:
-        	                    if(node.op == X) value = x;
-        	                    else
-        	                    if(node.op == Y) value = y;
-        	                    else
-        	                    if(node.op == Z) value = z;
-        	                    break;
-        	    default:
-        	              throw new Exception("evaluate: Unknown type!");
+              case Node.INTRINSIC:
+                              value = evaluateIntrinsic(node);
+                              break;
+              case Node.VALUE:
+                              value = node.value;
+                              break;
+              case Node.INDEPENDENT:
+                              if(node.op == X) value = x;
+                              else
+                              if(node.op == Y) value = y;
+                              else
+                              if(node.op == Z) value = z;
+                              break;
+              default:
+                        throw new Exception("evaluate: Unknown type!");
 
-        	}
+          }
 
-        	return value;
+          return value;
 
 
         }
@@ -825,35 +825,35 @@ public class ParseFunction extends ScanString {
   ** nodes and then excecute the operator on the values.
   */
         private double evaluateOp(Node node) throws Exception {
-        	  double value = 0.0;
+            double value = 0.0;
 
 
-        	  switch (node.op)  {
+            switch (node.op)  {
 
-        	  	case ADD:
-        	 	           if(node.left != null) value = evaluate(node.left);
-        	 	           value += evaluate(node.right);
-        	 	           break;
-        	  	case SUBTRACT:
-        	 	           if(node.left != null) value = evaluate(node.left);
-        	 	           value -= evaluate(node.right);
-        	 	           break;
-        	  	case DIVIDE:
-        	 	           value = evaluate(node.left);
-        	 	           value /= evaluate(node.right);
-        	 	           break;
-        	  	case MULTIPLY:
-        	 	           value = evaluate(node.left);
-        	 	           value *= evaluate(node.right);
-        	 	           break;
-        	  	case POWER:
-        	 	           value = Math.pow(evaluate(node.left),
-        	 	                            evaluate(node.right));
-        	 	           break;
-        	 	default:
-        	              throw new Exception(
+              case ADD:
+                       if(node.left != null) value = evaluate(node.left);
+                       value += evaluate(node.right);
+                       break;
+              case SUBTRACT:
+                       if(node.left != null) value = evaluate(node.left);
+                       value -= evaluate(node.right);
+                       break;
+              case DIVIDE:
+                       value = evaluate(node.left);
+                       value /= evaluate(node.right);
+                       break;
+              case MULTIPLY:
+                       value = evaluate(node.left);
+                       value *= evaluate(node.right);
+                       break;
+              case POWER:
+                       value = Math.pow(evaluate(node.left),
+                                        evaluate(node.right));
+                       break;
+            default:
+                        throw new Exception(
                            "evaluate: Failed because of Unknown operator!");
-        	  }
+            }
 
               return value;
 
@@ -863,158 +863,158 @@ public class ParseFunction extends ScanString {
   ** then call the intrinsic and return the result
   */
         private double evaluateIntrinsic(Node node) throws Exception {
-        	  double value = 0.0;
+            double value = 0.0;
 
 
-        	  switch (node.op)  {
+            switch (node.op)  {
 
-        	  	case SIN:
-        	 	           value = Math.sin(evaluate(node.left));
-        	 	           break;
-        	  	case COS:
-        	 	           value = Math.cos(evaluate(node.left));
-        	 	           break;
-        	  	case TAN:
-        	 	           value = Math.tan(evaluate(node.left));
-        	 	           break;
-        	  	case ASIN:
-        	 	           value = Math.asin(evaluate(node.left));
-        	 	           break;
-        	  	case ACOS:
-        	 	           value = Math.acos(evaluate(node.left));
-        	 	           break;
-        	  	case ATAN:
-        	 	           value = Math.atan(evaluate(node.left));
-        	 	           break;
-        	  	case LOG:
-        	 	           value = Math.log(evaluate(node.left));
-        	 	           break;
-			case SQRT:
+              case SIN:
+                       value = Math.sin(evaluate(node.left));
+                       break;
+              case COS:
+                       value = Math.cos(evaluate(node.left));
+                       break;
+              case TAN:
+                       value = Math.tan(evaluate(node.left));
+                       break;
+              case ASIN:
+                       value = Math.asin(evaluate(node.left));
+                       break;
+              case ACOS:
+                       value = Math.acos(evaluate(node.left));
+                       break;
+              case ATAN:
+                       value = Math.atan(evaluate(node.left));
+                       break;
+              case LOG:
+                       value = Math.log(evaluate(node.left));
+                       break;
+      case SQRT:
                                    value = Math.sqrt(evaluate(node.left));
                                    break;
 
-			case LOG10:
+      case LOG10:
                                    value = Math.log(evaluate(node.left))/
                                            Math.E;
                         case EXP:
                                    value = Math.exp(evaluate(node.left));
                                    break;
-		        case J0:
+            case J0:
                                    value = SpecialFunction.j0(
                                                        evaluate(node.left));
                                    break;
-		        case J1:
+            case J1:
                                    value = SpecialFunction.j1(
                                                        evaluate(node.left));
                                    break;
-		        case Y0:
+            case Y0:
                                    value = SpecialFunction.y0(
                                                        evaluate(node.left));
                                    break;
-		        case Y1:
+            case Y1:
                                    value = SpecialFunction.y1(
                                                        evaluate(node.left));
                                    break;
-		        case FAC:
+            case FAC:
                                    value = SpecialFunction.fac(
                                                        evaluate(node.left));
                                    break;
-		        case GAMMA:
+            case GAMMA:
                                    value = SpecialFunction.gamma(
                                                        evaluate(node.left));
                                    break;
-		        case SINH:
+            case SINH:
                                    value = SpecialFunction.sinh(
                                                        evaluate(node.left));
                                    break;
-		        case COSH:
+            case COSH:
                                    value = SpecialFunction.cosh(
                                                        evaluate(node.left));
                                    break;
-		        case TANH:
+            case TANH:
                                    value = SpecialFunction.tanh(
                                                        evaluate(node.left));
                                    break;
-		        case ASINH:
+            case ASINH:
                                    value = SpecialFunction.asinh(
                                                        evaluate(node.left));
                                    break;
-		        case ACOSH:
+            case ACOSH:
                                    value = SpecialFunction.acosh(
                                                        evaluate(node.left));
                                    break;
-		        case ATANH:
+            case ATANH:
                                    value = SpecialFunction.atanh(
                                                        evaluate(node.left));
                                    break;
 
-		        case ERF:
+            case ERF:
                                    value = SpecialFunction.erf(
                                                        evaluate(node.left));
                                    break;
 
-		        case ERFC:
+            case ERFC:
                                    value = SpecialFunction.erfc(
                                                        evaluate(node.left));
                                    break;
-		        case NORMAL:
+            case NORMAL:
                                    value = SpecialFunction.normal(
                                                        evaluate(node.left));
                                    break;
 
-		        case POISSON:
+            case POISSON:
                                    value = SpecialFunction.poisson(
                                                (int)(evaluate(node.left)+0.01),
                                                        evaluate(node.right));
                                    break;
-		        case POISSONC:
+            case POISSONC:
                                    value = SpecialFunction.poissonc(
                                                (int)(evaluate(node.left)+0.01),
                                                        evaluate(node.right));
                                    break;
 
-	  	        case CHISQ:
+              case CHISQ:
                                    value = SpecialFunction.chisq(
                                                       evaluate(node.left),
                                                       evaluate(node.right));
                                    break;
-	  	        case CHISQC:
+              case CHISQC:
                                    value = SpecialFunction.chisqc(
                                                       evaluate(node.left),
                                                       evaluate(node.right));
                                    break;
-	  	        case IGAM:
+              case IGAM:
                                    value = SpecialFunction.igam(
                                                       evaluate(node.left),
                                                       evaluate(node.right));
                                    break;
-	  	        case IGAMC:
+              case IGAMC:
                                    value = SpecialFunction.igamc(
                                                       evaluate(node.left),
                                                       evaluate(node.right));
                                    break;
 
-	  	        case ATAN2:
+              case ATAN2:
                                    value = Math.atan2(evaluate(node.left),
                                                       evaluate(node.right));
                                    break;
 
-	  	        case JN:
+              case JN:
                                    value = SpecialFunction.jn(
                                               (int)(evaluate(node.left)+0.01),
                                                       evaluate(node.right));
                                    break;
 
-	  	        case YN:
+              case YN:
                                    value = SpecialFunction.yn(
                                                (int)(evaluate(node.left)+0.01),
                                                       evaluate(node.right));
                                    break;
 
-        	    default:
-        	              throw new Exception(
+              default:
+                        throw new Exception(
                      "evaluate: Failed because of an unknown intrinsic!");
-        	  }
+            }
 
               return value;
 
@@ -1047,15 +1047,15 @@ public class ParseFunction extends ScanString {
 
              if(right != null && right.type == Node.GROUP) {
                       reOrderNodes(right);
-	     } else
+       } else
              if(left != null && left.type == Node.GROUP) {
                       reOrderNodes(left);
-	     }
+       }
              if( node.type == Node.GROUP ) {
                      reOrderNodes(left);
              } else
              if( node.type == Node.OP && right.type == Node.OP ) {
-	       if(node.precedence >= right.precedence) {
+         if(node.precedence >= right.precedence) {
 
                   Node newnode = new Node(node);
 
@@ -1069,9 +1069,9 @@ public class ParseFunction extends ScanString {
 
                   reOrderNodes(node);
                }
-	     }
+       }
 
-	}
+  }
 
 }
 

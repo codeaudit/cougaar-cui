@@ -40,7 +40,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.3 $, $Date: 2001-02-08 20:20:11 $
+ * @version $Revision: 1.4 $, $Date: 2001-04-10 13:48:26 $
  * @author Leigh Brookshaw
  */
 public class DataSet extends Object {
@@ -73,6 +73,37 @@ public class DataSet extends Object {
    * @see Graph2D
    */
       public Graph2D g2d;
+
+      public boolean visible = true;
+
+      public boolean automaticallySetColor = true;
+
+      public int colorNumber = -1;
+
+      public String dataGroup = null;
+      public String dataName = null;
+
+      public float lineThickness = 3.0f;
+
+  /*********************************************************************************************************************
+  <b>Description</b>: Indicates the amount to offset each X value of this data set.
+
+  <br><br><b>Notes</b>:<br>
+                    - 0 by default
+  *********************************************************************************************************************/
+  public double xValueOffset = 0.0;
+
+  /*********************************************************************************************************************
+  <b>Description</b>: Indicates the amount to offset each Y value of this data set.
+
+  <br><br><b>Notes</b>:<br>
+                    - 0 by default
+  *********************************************************************************************************************/
+  public double yValueOffset = 0.0;
+
+
+
+
 
   /**
    *    The linestyle to employ when joining the data points with
@@ -327,6 +358,12 @@ public class DataSet extends Object {
 ** Public Methods
 ******************/
 
+  public double[] getData()
+  {
+    return(data);
+  }
+
+
   /**
    * Append data to the data set.
    * @param d Array containing (x,y) pairs to append
@@ -353,7 +390,7 @@ public class DataSet extends Object {
            if( ln+length < data.length ) {
                System.arraycopy(d, 0, data, length, ln);
                length += ln;
-	   } else {
+     } else {
                tmp = new double[ln+length+increment];
 
                if( length != 0 ) {
@@ -363,7 +400,7 @@ public class DataSet extends Object {
 
                length += ln;
                data = tmp;
-	     }
+       }
 
 //     Calculate the data range.
 
@@ -394,7 +431,7 @@ public class DataSet extends Object {
            if( End < length-stride) {
                System.arraycopy(data, End+stride,
                                 data, Start, length - End - stride);
-	     }
+       }
 
            length -= End+stride-Start;
 
@@ -426,6 +463,8 @@ public class DataSet extends Object {
       public void draw_data(Graphics g, Rectangle bounds) {
            Color c;
 
+      if (!visible) return;
+
            if ( xaxis != null ) {
                 xmax = xaxis.maximum;
                 xmin = xaxis.minimum;
@@ -440,13 +479,13 @@ public class DataSet extends Object {
            xrange = xmax - xmin;
            yrange = ymax - ymin;
 
-	   /*
-	   ** draw the legend before we clip the data window
-	   */
+     /*
+     ** draw the legend before we clip the data window
+     */
            draw_legend(g,bounds);
-	   /*
-	   ** Clip the data window
-	   */
+     /*
+     ** Clip the data window
+     */
            if(clipping) g.clipRect(bounds.x, bounds.y,
                                    bounds.width, bounds.height);
 
@@ -564,7 +603,22 @@ public class DataSet extends Object {
             for(int j=0; j<stride; j++) point[j] = data[i+j];
 
             return point;
-	  }
+    }
+
+  public double getYmaxInRange(double xMin, double xMax)
+  {
+    // Go through each data point in the range, comparing them to find the largest Y value
+    double yMax = Double.NaN;
+    for (int i=0; i<length; i+=stride)
+    {
+      if ((xMin <= data[i]) && (data[i] <= xMax))
+      {
+        yMax = ((yMax < data[i+1]) || (Double.isNaN(yMax))) ? data[i+1] : yMax;
+      }
+    }
+
+    return(yMax);
+  }
 
   /**
    * Return the data point that is closest to the parsed (x,y) position
@@ -572,25 +626,41 @@ public class DataSet extends Object {
    * @param y (x,y) position in data space.
    * @return array containing the closest data point.
    */
-      public double[] getClosestPoint(double x, double y) {
-            double point[] = {0.0, 0.0, 0.0};
-            int i;
+      public double[] getClosestPoint(double x, double y)
+      {
+        return(getClosestPoint(x, y, false));
+      }
+
+      public double[] getClosestPoint(double x, double y, boolean useOffset)
+      {
+        double xOffset = 0.0;
+        double yOffset = 0.0;
+        if (useOffset)
+        {
+          xOffset = xValueOffset;
+          yOffset = yValueOffset;
+        }
+
+        double point[] = {0.0, 0.0, -1.0};
             double xdiff, ydiff, dist2;
 
-            xdiff = data[0] - x;
-            ydiff = data[1] - y;
+        if (length == 0) return(point);
+
+        xdiff = data[0] + xOffset - x;
+        ydiff = data[1] + yOffset - y;
+//        xdiff = xaxis.getInteger(data[0] + xOffset) - xaxis.getInteger(x);
+//        ydiff = yaxis.getInteger(data[1] + yOffset) - yaxis.getInteger(y);
 
             point[0] = data[0];
             point[1] = data[1];
             point[2] = xdiff*xdiff + ydiff*ydiff;
 
-
-
-            for(i=stride; i<length-1; i+=stride) {
-
-                xdiff = data[i  ] - x;
-                ydiff = data[i+1] - y;
-
+        for(int i=stride; i<length-1; i+=stride)
+        {
+            xdiff = data[i  ] + xOffset - x;
+            ydiff = data[i+1] + yOffset - y;
+//            xdiff = xaxis.getInteger(data[i  ] + xOffset) - xaxis.getInteger(x);
+//            ydiff = yaxis.getInteger(data[i+1] + yOffset) - yaxis.getInteger(y);
 
                 dist2 = xdiff*xdiff + ydiff*ydiff;
 
@@ -598,15 +668,43 @@ public class DataSet extends Object {
                     point[0] = data[i  ];
                     point[1] = data[i+1];
                     point[2] = dist2;
-		  }
+      }
 
            }
 
            //System.out.println("DataSet: closestpoint "+point[0]+", "+point[1]+", "+point[2]);
 
            return point;
+    }
 
-	  }
+  public double[] getClosestPoint(double x, double y, double maxDist2, boolean useOffset)
+  {
+    double point[] = getClosestPoint(x, y, useOffset);
+
+    if (0 > point[2])
+    {
+      return(null);
+    }
+
+    double xOffset = 0.0;
+    double yOffset = 0.0;
+    if (useOffset)
+    {
+      xOffset = xValueOffset;
+      yOffset = yValueOffset;
+    }
+
+    double xdiff = xaxis.getInteger(point[0] + xOffset) - xaxis.getInteger(x);
+    double ydiff = yaxis.getInteger(point[1] + yOffset) - yaxis.getInteger(y);
+    double dist2 = xdiff*xdiff + ydiff*ydiff;
+
+    if (maxDist2 < dist2)
+    {
+      return(null);
+    }
+
+    return(point);
+    }
 
 
 /*
@@ -649,10 +747,10 @@ public class DataSet extends Object {
 
 
 //    Is the first point inside the drawing region ?
-          if( (inside0 = inside(data[0], data[1])) ) {
+          if( (inside0 = inside(data[0] + xValueOffset, data[1] + yValueOffset)) ) {
 
-              x0 = (int)(w.x + ((data[0]-xmin)/xrange)*w.width);
-              y0 = (int)(w.y + (1.0 - (data[1]-ymin)/yrange)*w.height);
+              x0 = (int)(w.x + ((data[0] + xValueOffset - xmin)/xrange)*w.width);
+              y0 = (int)(w.y + (1.0 - (data[1] + yValueOffset - ymin)/yrange)*w.height);
 
               if( x0 < xcmin || x0 > xcmax ||
                   y0 < ycmin || y0 > ycmax)  inside0 = false;
@@ -664,13 +762,24 @@ public class DataSet extends Object {
 
 //        Is this point inside the drawing region?
 
-              inside1 = inside( data[i], data[i+1]);
+              inside1 = inside( data[i] + xValueOffset, data[i+1] + yValueOffset);
+
+
+// #CSE# 02/15/2001 Fix line through rectangle whose points are ouside rectangle
+              if (!inside0 && !inside1 && insideRect(data[i-stride] + xValueOffset, data[i-stride+1] + yValueOffset, data[i] + xValueOffset, data[i+1] + yValueOffset))
+              {
+                inside0 = true;
+
+                x0 = (int)(w.x + ((data[i-stride] + xValueOffset - xmin)/xrange)*w.width);
+                y0 = (int)(w.y + (1.0 - (data[i-stride+1]  + yValueOffset - ymin)/yrange)*w.height);
+              }
+
 
 //        If one point is inside the drawing region calculate the second point
               if ( inside1 || inside0 ) {
 
-               x1 = (int)(w.x + ((data[i]-xmin)/xrange)*w.width);
-               y1 = (int)(w.y + (1.0 - (data[i+1]-ymin)/yrange)*w.height);
+               x1 = (int)(w.x + ((data[i] + xValueOffset - xmin)/xrange)*w.width);
+               y1 = (int)(w.y + (1.0 - (data[i+1] + yValueOffset - ymin)/yrange)*w.height);
 
                if( x1 < xcmin || x1 > xcmax ||
                    y1 < ycmin || y1 > ycmax)  inside1 = false;
@@ -680,13 +789,26 @@ public class DataSet extends Object {
 //        was outside
               if ( !inside0 && inside1 ) {
 
-                x0 = (int)(w.x + ((data[i-stride]-xmin)/xrange)*w.width);
-                y0 = (int)(w.y + (1.0 - (data[i-stride+1]-ymin)/yrange)*w.height);
+                x0 = (int)(w.x + ((data[i-stride]  + xValueOffset - xmin)/xrange)*w.width);
+                y0 = (int)(w.y + (1.0 - (data[i-stride+1] + xValueOffset - ymin)/yrange)*w.height);
 
               }
 //        If either point is inside draw the segment
-              if ( inside0 || inside1 )  {
+              if ( inside0 || inside1 )
+              {
+                if (g instanceof Graphics2D)
+                {
+                  Graphics2D graphics2D = (Graphics2D)g;
+                  Stroke stroke = graphics2D.getStroke();
+                  BasicStroke newStroke = new BasicStroke(lineThickness);
+                  graphics2D.setStroke(newStroke);
+                  g.drawLine(x0,y0,x1,y1);
+                  graphics2D.setStroke(stroke);
+                }
+                else
+                {
                       g.drawLine(x0,y0,x1,y1);
+              }
               }
 
 /*
@@ -701,6 +823,19 @@ public class DataSet extends Object {
           }
 
       }
+
+
+// #CSE# 02/15/2001 Fix line through rectangle whose points are ouside rectangle
+  protected boolean insideRect(double x1, double y1, double x2, double y2)
+  {
+    Rectangle rect = new Rectangle((int)(xmin-1.0), (int)(ymin-1.0), (int)(xmax-xmin+1.0), (int)(ymax-ymin+1.0));
+    if (rect.intersectsLine(x1, y1, x2, y2))
+    {
+      return(true);
+    }
+
+    return(false);
+  }
 
 
   /**
@@ -777,7 +912,7 @@ public class DataSet extends Object {
           if( legend_ix == 0 && legend_iy == 0 ) {
                 legend_ix = (int)(w.x + ((legend_dx-xmin)/xrange)*w.width);
                 legend_iy = (int)(w.y + (1.0 - (legend_dy-ymin)/yrange)*w.height);
-	  }
+    }
 
 
 

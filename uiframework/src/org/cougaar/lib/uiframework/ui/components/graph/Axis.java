@@ -35,6 +35,11 @@ import java.lang.*;
 **
 *************************************************************************/
 
+/*
+  Modified on 10/09/2000 by Clark Software Engineering, Ltd.
+
+  Modification tag: #CSE# 10/09/2000
+*/
 
 
 /**
@@ -54,7 +59,7 @@ import java.lang.*;
  * but in this mode nothing is automated, the user must code everything
  * manually
  *
- * @version  $Revision: 1.2 $, $Date: 2001-02-08 20:20:11 $.
+ * @version  $Revision: 1.3 $, $Date: 2001-04-10 13:48:25 $.
  * @author   Leigh Brookshaw
  */
 
@@ -103,6 +108,12 @@ public class Axis extends Object {
 ** Public Variables
 **********************/
 
+      public boolean visible = true;
+
+      // 2D array of Double/Color pairs for divider locations and colors
+      public Object[][] dividers = null;
+      public boolean showDividers = false;
+      public float dividerThickness = 3.0f;
   /**
    *    If <i>true</i> draw a grid positioned on major ticks over the graph
    */
@@ -170,7 +181,15 @@ public class Axis extends Object {
    */
       public Graph2D g2d = null;
 
+      // #CSE# 10/09/2000
+      // Point to begin displaying decimals in exponential format
+      // for the axis label
+      public int exponentDisplayThreshold = 5;
 
+      // #CSE# 10/09/2000
+      // How may digits to the right of the decimal point to display
+      // for the axis label
+      public int sigDigitDisplay = 0;
 
 /*
 ***********************
@@ -232,7 +251,7 @@ public class Axis extends Object {
   /**
    * The actual values of the axis labels
    */
-      protected float  label_value[]      = null;
+      protected double  label_value[]      = null;
   /**
    * The starting value of the labels
    */
@@ -398,8 +417,11 @@ public class Axis extends Object {
 
             dataset.removeAllElements();
 
+            if (!manualRange)
+            {
             minimum = 0.0;
             maximum = 0.0;
+      }
       }
   /**
    * Return the minimum value of All datasets attached to the axis.
@@ -481,6 +503,9 @@ public class Axis extends Object {
       public int getInteger(double v) {
           double scale;
 
+          if (amax == null) return(0);
+          if (amin == null) return(0);
+
           if( orientation == HORIZONTAL ) {
                scale  = (double)(amax.x - amin.x)/(maximum - minimum);
                return amin.x + (int)( ( v - minimum ) * scale);
@@ -516,7 +541,20 @@ public class Axis extends Object {
    * Reset the range of the axis (the minimum and maximum values) to the
    * default data values.
    */
-     public void resetRange() {
+     public void resetRange()
+     {
+      if (manualRange) return;
+
+       minimum = getDataMin();
+       maximum = getDataMax();
+     }
+
+  /**
+   * Reset the range of the axis (the minimum and maximum values) to the
+   * default data values.
+   */
+     public void manualResetRange()
+     {
              minimum = getDataMin();
              maximum = getDataMax();
      }
@@ -541,11 +579,12 @@ public class Axis extends Object {
           int i;
           width = 0;
 
-          if( minimum == maximum )    return 0;
-          if( dataset.size() == 0 )   return 0;
+//          if( minimum == maximum )    return 0;
+//          if( dataset.size() == 0 )   return 0;
 
 
-          calculateGridLabels();
+//          calculateGridLabels(g);
+        label_exponent = getLabelExponent();
 
 
           exponent.setText(null);
@@ -559,13 +598,16 @@ public class Axis extends Object {
 
                width = label.getRHeight(g) + label.getLeading(g);
                width += Math.max(title.getRHeight(g),exponent.getRHeight(g));
-
-           } else {
-               for(i=0; i<label_string.length; i++) {
+          }
+          else
+          {
+/*               for(i=0; i<label_string.length; i++) {
                   label.setText(" "+label_string[i]);
                   width = Math.max(label.getRWidth(g),width);
                }
-               max_label_width = width;
+               max_label_width = width;*/
+               label.setText(roundAndTruncate(maximum));
+               max_label_width = label.getRWidth(g);
                width = 0;
 
                if(!title.isNull() ) {
@@ -612,32 +654,38 @@ public class Axis extends Object {
    * Draw the axis using the passed Graphics context.
    * @param g Graphics context for drawing
    */
-      public void drawAxis(Graphics g) {
-          Graphics lg;
+      public void drawAxis(Graphics lg)
+      {
+//          Graphics lg;
 
           if( !redraw            ) return;
-          if( minimum == maximum ) {
-                 System.out.println(
-                      "Axis: data minimum==maximum Trying to reset range!");
+//          if( minimum == maximum )
+          if ((minimum == maximum) && (!manualRange))
+          {
+//            if (manualRange) return;
+
+//            System.out.println("Axis: data minimum==maximum Trying to reset range!");
                  resetRange();
                  if( minimum == maximum ) {
                     System.out.println(
                       "Axis: Reseting Range failed!  Axis not drawn!");
                     return;
-		  }
-	  }
+      }
+    }
           if( amin.equals(amax) ) return;
-          if( width == 0 ) width = getAxisWidth(g);
 
-          lg = g.create();
+//          if( width == 0 ) width = getAxisWidth(g);
+          if( width == 0 ) width = getAxisWidth(lg);
+
+//          lg = g.create();
 
           if( force_end_labels ) {
               minimum = label_start;
               maximum = minimum + (label_count-1)*label_step;
           }
 
-	  /*
-	  ** For rotated text set the Component that is being drawn into
+    /*
+    ** For rotated text set the Component that is being drawn into
           */
           title.setDrawingComponent(g2d);
           label.setDrawingComponent(g2d);
@@ -792,6 +840,36 @@ public class Axis extends Object {
           }
 
 
+          if (showDividers && (dividers != null))
+          {
+            for (i=0; i<dividers.length; i++)
+            {
+              val = ((Double)dividers[i][0]).doubleValue();
+              if( val >= vmin && val <= vmax )
+              {
+                y0 = amin.y;
+                x0 = amin.x + (int)( ( val - minimum ) * scale);
+                c = g.getColor();
+                if(dividers[i][1] != null) g.setColor((Color)dividers[i][1]);
+                if (g instanceof Graphics2D)
+                {
+                  Graphics2D graphics2D = (Graphics2D)g;
+                  Stroke stroke = graphics2D.getStroke();
+                  BasicStroke newStroke = new BasicStroke(dividerThickness);
+                  graphics2D.setStroke(newStroke);
+                  g.drawLine(x0,y0,x0,y0+data_window.height*direction);
+                  graphics2D.setStroke(stroke);
+                }
+                else
+                {
+                  g.drawLine(x0,y0,x0,y0+data_window.height*direction);
+                }
+                g.setColor(c);
+              }
+            }
+          }
+
+
           if(position == TOP ) {
              offset = - label.getLeading(g) - label.getDescent(g);
           } else {
@@ -931,6 +1009,36 @@ public class Axis extends Object {
           }
 
 
+          if (showDividers && (dividers != null))
+          {
+            for (i=0; i<dividers.length; i++)
+            {
+              val = ((Double)dividers[i][0]).doubleValue();
+              if( val >= vmin && val <= vmax )
+              {
+                x0 = amin.x;
+                y0 = amax.y - (int)( ( val - minimum ) * scale);
+                c = g.getColor();
+                if(dividers[i][1] != null) g.setColor((Color)dividers[i][1]);
+                if (g instanceof Graphics2D)
+                {
+                  Graphics2D graphics2D = (Graphics2D)g;
+                  Stroke stroke = graphics2D.getStroke();
+                  BasicStroke newStroke = new BasicStroke(dividerThickness);
+                  graphics2D.setStroke(newStroke);
+                  g.drawLine(x0,y0,x0+ data_window.width*direction,y0);
+                  graphics2D.setStroke(stroke);
+                }
+                else
+                {
+                  g.drawLine(x0,y0,x0+ data_window.width*direction,y0);
+                }
+                g.setColor(c);
+              }
+            }
+          }
+
+
           val = label_start;
           for(i=0; i<label_count; i++) {
               if( val >= vmin && val <= vmax ) {
@@ -944,7 +1052,7 @@ public class Axis extends Object {
                  } else {
                     label.setText(label_string[i]+" ");
                     label.draw(g,x0,y0,TextLine.RIGHT);
-		  }
+      }
               }
               val += label_step;
           }
@@ -1008,14 +1116,17 @@ public class Axis extends Object {
             dataset.addElement(d);
             d.xaxis = this;
 
-            if( dataset.size() == 1 ) {
+    if (!manualRange)
+    {
+      if( dataset.size() == 1 )
+      {
                   minimum = d.dxmin;
                   maximum = d.dxmax;
             } else {
                if(minimum > d.dxmin) minimum = d.dxmin;
                if(maximum < d.dxmax) maximum = d.dxmax;
             }
-
+    }
       }
 
   /**
@@ -1027,32 +1138,39 @@ public class Axis extends Object {
             dataset.addElement(d);
             d.yaxis = this;
 
-            if( dataset.size() == 1 ) {
+    if (!manualRange)
+    {
+      if( dataset.size() == 1 )
+      {
                   minimum = d.dymin;
                   maximum = d.dymax;
             } else {
                if(minimum > d.dymin) minimum = d.dymin;
                if(maximum < d.dymax) maximum = d.dymax;
             }
-
+    }
       }
 
 
   /**
    * calculate the labels
    */
-      protected void calculateGridLabels() {
+      public void calculateGridLabels(Graphics g) {
         double val;
         int i;
         int j;
 
-
+        // #CSE# 10/09/2000
+        // Replaced (moved and modified) with new getLabelExponent() method
+/*
         if (Math.abs(minimum) > Math.abs(maximum) )
          label_exponent = ((int)Math.floor(
                        SpecialFunction.log10(Math.abs(minimum))/3.0) )*3;
         else
          label_exponent = ((int)Math.floor(
                        SpecialFunction.log10(Math.abs(maximum))/3.0) )*3;
+*/
+//        label_exponent = getLabelExponent();
 
         label_step = RoundUp( (maximum-minimum)/guess_label_number );
         label_start = Math.floor( minimum/label_step )*label_step;
@@ -1062,7 +1180,7 @@ public class Axis extends Object {
         while(val < maximum) { val += label_step; label_count++; }
 
         label_string = new String[label_count];
-        label_value  = new float[label_count];
+        label_value  = new double[label_count];
 
 
 //      System.out.println("label_step="+label_step);
@@ -1080,26 +1198,95 @@ public class Axis extends Object {
                   for(j=0; j<label_exponent;j++) { val /= 10; }
             }
 
-            label_string[i] = String.valueOf(val);
-            label_value[i] = (float)val;
+            // #CSE# 10/09/2000
+            // Used new roundAndTruncate() method to create string
+//            label_string[i] = String.valueOf(val);
+            label_string[i] = roundAndTruncate(val);
+            label_value[i] = val;
+        }
         }
 
+
+  // #CSE# 10/09/2000
+  // Method to create a string with truncated floating point math errors ("1.00" instead of "0.999999997", etc.)
+  protected String roundAndTruncate(double number)
+  {
+    // Multiply the number by the number of digits to the right of the decimal point to display
+    String string = "" + Math.round(number*(Math.pow(10.0, (double)sigDigitDisplay)));
+
+    // If we do not want to display any signifigant digits, just return the string as is
+    if (sigDigitDisplay == 0)
+    {
+      return(string);
+    }
+
+    // Handle case where number is "0"
+    while (string.length() < sigDigitDisplay)
+    {
+      string = "0" + string;
+    }
+
+    String value = "." + string.substring(string.length()-sigDigitDisplay);
+
+
+    if ((string.length() - sigDigitDisplay) == 0)
+    {
+      value = "0" + value;
+    }
+    else
+    {
+      value = string.substring(0, string.length()-sigDigitDisplay) + value;
+    }
+
+    return(value);
+  }
+
+  // #CSE# 10/09/2000
+  // Method make the label exponent based on user settable options
+  protected int getLabelExponent()
+  {
+    int exponent  = 0;
+
+    if ((minimum == 0.0) && (maximum == 0.0))
+    {
+      return(0);
+    }
+
+    if (Math.abs(minimum) > Math.abs(maximum))
+    {
+//        exponent = ((int)Math.floor(SpecialFunction.log10(Math.abs(minimum))/3.0) )*3;
+      exponent = ((int)Math.floor(SpecialFunction.log10(Math.abs(minimum))/(double)exponentDisplayThreshold))*exponentDisplayThreshold;
+    }
+    else
+    {
+//        exponent= ((int)Math.floor(SpecialFunction.log10(Math.abs(maximum))/3.0) )*3;
+      exponent= ((int)Math.floor(SpecialFunction.log10(Math.abs(maximum))/(double)exponentDisplayThreshold))*exponentDisplayThreshold;
+    }
+
+    return(exponent);
       }
 
-/*
-*******************
-** Private Methods
-******************/
 
   /**
    * Round up the passed value to a NICE value.
    */
 
-      private double RoundUp( double val ) {
+      protected double RoundUp( double val ) {
           int exponent;
           int i;
 
+          if (val == 0.0)
+          {
+            return(0.0);
+          }
+
+try
+{
           exponent = (int)(Math.floor( SpecialFunction.log10(val) ) );
+}catch (Exception e)
+{
+  exponent = 0;
+}
 
           if( exponent < 0 ) {
              for(i=exponent; i<0; i++) { val *= 10.0; }
@@ -1125,6 +1312,10 @@ public class Axis extends Object {
 
       }
 
+  public String getPointAsString(double value)
+  {
+    return(roundAndTruncate(value));
+  }
 }
 
 

@@ -37,7 +37,7 @@ import java.awt.image.*;
  * This class is designed to bundle together all the information required
  * to draw short Strings with subscripts and superscripts
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:27 $
  * @author  Leigh Brookshaw
  */
 
@@ -187,7 +187,7 @@ public class TextLine extends Object {
    */
      public TextLine(String s) {
             this.text = s;
-	  }
+    }
   /**
    * Instantiate the class
    * @param s String to parse.
@@ -201,7 +201,7 @@ public class TextLine extends Object {
             fontname  = f.getName();
             fontstyle = f.getStyle();
             fontsize  = f.getSize();
-	  }
+    }
   /**
    * Instantiate the class
    * @param s String to parse.
@@ -214,7 +214,7 @@ public class TextLine extends Object {
             this(s,f);
             color  = c;
             justification = j;
- 	  }
+    }
 
   /**
    * Instantiate the class
@@ -224,7 +224,7 @@ public class TextLine extends Object {
      public TextLine(String s, Color c) {
             this(s);
             color = c;
-	  }
+    }
   /**
    * Instantiate the class
    * @param f Font to use.
@@ -241,7 +241,7 @@ public class TextLine extends Object {
             fontname  = f.getName();
             fontstyle = f.getStyle();
             fontsize  = f.getSize();
- 	  }
+    }
 
 /*
 *****************
@@ -333,7 +333,7 @@ public class TextLine extends Object {
                     justification = RIGHT;
                     break;
           }
-	}
+  }
 
 
   /**
@@ -535,12 +535,12 @@ public class TextLine extends Object {
 **                    Push the current state onto the state stack
 **                    and start a new storage string
 */
-	     case '{':
+       case '{':
                       w = current.getWidth(g);
                       if(!current.isEmpty()) {
                            current = current.copyState();
                            list.addElement(current);
-		      }
+          }
 
                       state.push(current);
                       current.x += w;
@@ -549,29 +549,29 @@ public class TextLine extends Object {
 **                    Pop the state off the state stack and set the current
 **                    state to the top of the state stack
 */
-	     case '}':
+       case '}':
                       w = current.x + current.getWidth(g);
                       state.pop();
                       current = ((TextState)state.peek()).copyState();
                       list.addElement(current);
                       current.x = w;
                       break;
-	     case '^':
+       case '^':
                       w = current.getWidth(g);
                       if(!current.isEmpty()) {
                            current = current.copyState();
                            list.addElement(current);
-		      }
+          }
                       current.f = getScriptFont(current.f);
                       current.x += w;
                       current.y -= (int)((double)(current.getAscent(g))*sup_offset+0.5);
                       break;
- 	     case '_':
+       case '_':
                       w = current.getWidth(g);
                       if(!current.isEmpty()) {
                            current = current.copyState();
                            list.addElement(current);
-		      }
+          }
                       current.f = getScriptFont(current.f);
                       current.x += w;
                       current.y += (int)((double)(current.getDescent(g))*sub_offset+0.5);
@@ -580,8 +580,8 @@ public class TextLine extends Object {
              default:
                       current.s.append(ch);
                       break;
-	     }
-	   }
+       }
+     }
 
 
 
@@ -600,7 +600,7 @@ public class TextLine extends Object {
                                           current.getMaxDescent(g));
                maxAscent  = Math.max(maxAscent, Math.abs(current.y) +
                                           current.getMaxAscent(g));
-	     }
+       }
          }
 
          height = ascent+descent+leading;
@@ -654,7 +654,7 @@ public class TextLine extends Object {
          } else
          if(justification == RIGHT ) {
                xoffset = x-width;
-	 }
+   }
 
          if(background != null) {
             lg.setColor(background);
@@ -670,7 +670,7 @@ public class TextLine extends Object {
               if(ts.f != null) lg.setFont(ts.f);
               if(ts.s != null)
                    lg.drawString(ts.toString(),ts.x+xoffset,ts.y+yoffset);
-	 }
+   }
 
          lg.dispose();
 
@@ -715,10 +715,10 @@ public class TextLine extends Object {
 
          if( fontsize <= 0 || fontname == null   ) {
               font = null;
-	    } else {
+      } else {
 
               font = new Font(fontname, fontstyle, fontsize);
-	    }
+      }
        }
 
   /**
@@ -740,7 +740,7 @@ public class TextLine extends Object {
              if(size <= MINIMUM_SIZE) return f;
 
              return new Font(f.getName(), f.getStyle(), size);
-	   }
+     }
   /**
    * Parse a double value. Precision is 6 figures, with 7 significant
    * figures.
@@ -828,8 +828,8 @@ public class TextLine extends Object {
                  if(i==p-1) right += 0.5;
                  s.append((int)(right));
                  right -= (int)right;
-	   }
-	 }
+     }
+   }
 
          //System.out.println("parseDouble: right = "+right);
 
@@ -850,8 +850,8 @@ public class TextLine extends Object {
                               s.append("x10{^");
                               s.append(power);
                               s.append("}");
-	      }
-	 }
+        }
+   }
 
          setText( s.toString() );
 

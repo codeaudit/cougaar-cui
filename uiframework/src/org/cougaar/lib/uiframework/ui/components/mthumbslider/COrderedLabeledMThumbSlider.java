@@ -27,15 +27,15 @@ import org.cougaar.lib.uiframework.ui.util.SliderControl;
 public class COrderedLabeledMThumbSlider
     extends JPanel implements SliderControl
 {
-    private static int FIDELITY = 1000;
-    private static final int MAJOR_TICK_SPACING = FIDELITY/10;
-    private int numThumbs = 0;
-    private float minValue = 0f;
-    private float maxValue = 0f;
-    private float unit =  0f;
+    protected static int FIDELITY = 1000;
+    protected static final int MAJOR_TICK_SPACING = FIDELITY/5;
+    protected int numThumbs = 0;
+    protected float minValue = 0f;
+    protected float maxValue = 0f;
+    protected float unit =  0f;
 
     protected CMThumbSlider slider;
-    private DecimalFormat labelFormat;
+    protected DecimalFormat labelFormat;
 
     /**
      * Default constructor.  Create a new mulitple thumbed slider with 5
@@ -90,7 +90,7 @@ public class COrderedLabeledMThumbSlider
      * @param minValue the minimum value for this slider
      * @param maxValue the maximum value for this slider
      */
-    private void initialize(float minValue, float maxValue)
+    protected void initialize(float minValue, float maxValue)
     {
         slider = new CMThumbSlider(numThumbs);
         slider.setMaximum(FIDELITY);
@@ -273,13 +273,40 @@ public class COrderedLabeledMThumbSlider
         adjustValueLabelHeight();
     }
 
-    private void adjustValueLabelHeight()
+    protected void adjustValueLabelHeight()
     {
-        // Create space for value labels in north quad. of component
-        int fontHeight =
-            getFontMetrics(MetalLookAndFeel.getSystemTextFont()).getHeight();
+      if (dynamicLabelsVisible)
+      {
+        if (dynamicLabelStrut != null)
+        {
+          remove(dynamicLabelStrut);
+        }
 
-        add(Box.createVerticalStrut(fontHeight), BorderLayout.NORTH);
+        // Create space for value labels in north quad. of component
+        int fontHeight = getFontMetrics(MetalLookAndFeel.getSystemTextFont()).getHeight();
+        dynamicLabelStrut = Box.createVerticalStrut(fontHeight);
+        add(dynamicLabelStrut, BorderLayout.NORTH);
+      }
+      else if (dynamicLabelStrut != null)
+      {
+        remove(dynamicLabelStrut);
+      }
+    }
+
+    protected Component dynamicLabelStrut = null;
+
+    protected boolean dynamicLabelsVisible = true;
+
+    public void setDynamicLabelsVisible(boolean visible)
+    {
+      dynamicLabelsVisible = visible;
+      adjustValueLabelHeight();
+    }
+
+    public void setDrawTickLabels(boolean draw)
+    {
+      slider.setPaintLabels(draw);
+      slider.setPaintTicks(draw);
     }
 
     /**
@@ -296,6 +323,8 @@ public class COrderedLabeledMThumbSlider
         g.setFont(MetalLookAndFeel.getSystemTextFont());
         FontMetrics fm = getFontMetrics(g.getFont());
 
+        if (dynamicLabelsVisible)
+        {
         // paint dynamic value labels on component
         for (int i = 0; i < numThumbs; i++)
         {
@@ -307,6 +336,7 @@ public class COrderedLabeledMThumbSlider
             g.drawString(label, thumbXLoc - (labelWidth / 2),
                          (int)slider.getLocation().getY()-5);
         }
+        }
 
         // Swing bug workaround
         if (updateUIAfterPaint)
@@ -315,7 +345,7 @@ public class COrderedLabeledMThumbSlider
             updateUIAfterPaint = false;
         }
     }
-    private boolean updateUIAfterPaint = true;
+    protected boolean updateUIAfterPaint = true;
 
     /**
      * get value of thumb at given index.

@@ -37,7 +37,7 @@ import java.lang.*;
  * This class will calculate the constant curve of a given value passing
  * through a grid of values.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:00 $.
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:26 $.
  * @author Leigh Brookshaw
  */
 
@@ -147,7 +147,7 @@ public class IsoCurve extends Object {
    */
      public IsoCurve(double grid[], int nx, int ny) {
         this();
-     	setGrid(grid,nx,ny);
+      setGrid(grid,nx,ny);
      }
 
 /*
@@ -192,7 +192,7 @@ public class IsoCurve extends Object {
            if( size == 0 || curve == null ) {
                     //System.out.println("getCurve: Nothing found");
                     return null;
-		  }
+      }
 
            double tmp[] = new double[size];
 
@@ -308,7 +308,7 @@ public class IsoCurve extends Object {
                                 System.out.println("          i="+i+", j="+j);
                                 System.out.println("          tl="+tl+", tr="+tr);
                                 System.out.println("          bl="+bl+", br="+br);
-		            } else {
+                } else {
                                 count = 0;
                                 if( bottom ) { cell.face[count] = BOTTOM; count++; }
                                 if( top    ) { cell.face[count] = TOP;    count++; }
@@ -321,7 +321,7 @@ public class IsoCurve extends Object {
 
                  }
             }
-	  }
+    }
 
   /**
    * Traverse the cells and find One connect countour.
@@ -368,7 +368,7 @@ public class IsoCurve extends Object {
             if( search(icell-1,jcell) == null &&
                 ( current.face[0] == LEFT || current.face[1] == LEFT ) ) {
 
-                	 addDataPoint(LEFT,icell,jcell);
+                   addDataPoint(LEFT,icell,jcell);
                      face = LEFT;
 
             } else
@@ -473,7 +473,7 @@ public class IsoCurve extends Object {
    */
 
      protected double[] getPoint(int wall, int icell, int jcell)  {
-     	double d[] = new double[2];
+      double d[] = new double[2];
         double bl, br, tl, tr;
         int index = icell + jcell*nx;
 
@@ -512,11 +512,11 @@ public class IsoCurve extends Object {
    * @param jcell The y index of the cell position.
    */
      protected void addDataPoint(int wall, int icell, int jcell)  {
-     	  double d[];
+        double d[];
 
-     	  d = getPoint(wall,icell,jcell);
+        d = getPoint(wall,icell,jcell);
 
-     	  addDataPoint(d[0], d[1]);
+        addDataPoint(d[0], d[1]);
      }
 
 
@@ -530,7 +530,7 @@ public class IsoCurve extends Object {
             if(size >= MAXARRAYSIZE-2) return;
 
             if( curve == null)  {
-            	curve = new double[ARRAYSIZE];
+              curve = new double[ARRAYSIZE];
             } else
             if(size == curve.length-2 ) {
                double tmp[] = new double[2*size];
@@ -583,6 +583,6 @@ class Cell extends Object {
                        j = -1;
                        face[0] = IsoCurve.TERMINAL;
                        face[1] = IsoCurve.TERMINAL;
-		     }
+         }
 
 }

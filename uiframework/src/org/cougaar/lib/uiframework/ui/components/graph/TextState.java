@@ -43,7 +43,7 @@ import java.awt.image.*;
  *    This class is designed to bundle together all the information required
  *    to draw short Strings
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:27 $
  * @author  Leigh Brookshaw
  */
 public class TextState extends Object {
@@ -55,7 +55,7 @@ public class TextState extends Object {
 
       public TextState() {
               s = new StringBuffer();
-	    }
+      }
 
 
       public TextState copyAll() {
@@ -63,7 +63,7 @@ public class TextState extends Object {
              if(s.length()==0) return tmp;
              for(int i=0; i<s.length(); i++) { tmp.s.append(s.charAt(i)); }
              return tmp;
-	   }
+     }
 
 
       public TextState copyState() {
@@ -72,17 +72,17 @@ public class TextState extends Object {
              tmp.x = x;
              tmp.y = y;
              return tmp;
-	   }
+     }
 
 
       public String toString() {
              return s.toString();
-	   }
+     }
 
 
       public boolean isEmpty() {
            return (s.length() == 0);
-	 }
+   }
 
       public int getWidth(Graphics g) {
 
@@ -95,30 +95,30 @@ public class TextState extends Object {
            if(g == null || f == null ) return 0;
 
            return g.getFontMetrics(f).getHeight();
-	 }
+   }
       public int getAscent(Graphics g) {
            if(g == null || f == null ) return 0;
 
            return g.getFontMetrics(f).getAscent();
-	 }
+   }
       public int getDescent(Graphics g) {
            if(g == null || f == null ) return 0;
 
            return g.getFontMetrics(f).getDescent();
-	 }
+   }
       public int getMaxAscent(Graphics g) {
            if(g == null || f == null ) return 0;
 
            return g.getFontMetrics(f).getMaxAscent();
-	 }
+   }
       public int getMaxDescent(Graphics g) {
            if(g == null || f == null ) return 0;
 
            return g.getFontMetrics(f).getMaxDescent();
-	 }
+   }
       public int getLeading(Graphics g) {
            if(g == null || f == null ) return 0;
 
            return g.getFontMetrics(f).getLeading();
-	 }
+   }
 }

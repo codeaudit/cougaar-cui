@@ -31,7 +31,7 @@ import java.lang.*;
  * This class is similar to the ScanWord class, except it scans a string
  * for keywords rather than an input stream.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:27 $
  * @author Leigh Brookshaw
  */
 
@@ -136,7 +136,7 @@ public class ScanString extends Object {
 
           //System.out.println("addKeyWord: key="+s.toLowerCase()+" value="+i);
 
-	}
+  }
   /**
    * @param s keyword string
    * @return the token corresponding to the keyword
@@ -153,21 +153,21 @@ public class ScanString extends Object {
 
           if(i == null) return UNKNOWN;
           else          return i.intValue();
-	}
+  }
   /**
    *   Clear the table containing the keyword/token pairs
    */
      public void resetKeyWords () {
           kwords.clear();
           kwlength = 0;
-	}
+  }
   /**
    *  Process the string and return the next token found.
    * @return token found
    */
      public int nextWord() {
         int i;
-     	char c;
+      char c;
         int word;
         int count = 0;
         char buffer[] = new char[string.length()];
@@ -185,7 +185,7 @@ public class ScanString extends Object {
                 position++;
                 if( position >= string.length() ) return EOS;
                 c = string.charAt(position);
-	}
+  }
 /*
 **      Is this the start of a number ?
 */
@@ -213,7 +213,7 @@ public class ScanString extends Object {
                    if( point && c == '.' ) {
                                    break;
                    } else
-	           if( c == '.' ) {
+             if( c == '.' ) {
                                    point = true;
                                    buffer[count++] = c;
                    } else
@@ -222,7 +222,7 @@ public class ScanString extends Object {
                    } else {
                                   buffer[count++] = c;
                    }
-	       }
+         }
 
 
               try {
@@ -230,10 +230,10 @@ public class ScanString extends Object {
                nval = Double.valueOf(sval).doubleValue();
                position += count;
                return NUMBER;
-	       }
+         }
                catch (Exception e) {
                return ERROR;
-	       }
+         }
 
         } else {
 /*
@@ -248,7 +248,7 @@ public class ScanString extends Object {
 
            while (pos < string.length() )  {
 
-        	buffer[count++] = string.charAt(pos++);
+          buffer[count++] = string.charAt(pos++);
 
                 word = getKeyValue(new String(buffer,0,count));
 
@@ -258,7 +258,7 @@ public class ScanString extends Object {
                     //System.out.println("ScanString: Found KeyWord - "+
                     //       new String(buffer,0,count));
                 } else
-	        if( nchar == 0 && count >= kwlength ) {
+          if( nchar == 0 && count >= kwlength ) {
                       return ERROR;
                 } else
                 if( count >= kwlength ) {
@@ -267,7 +267,7 @@ public class ScanString extends Object {
                      //System.out.println("ScanString: Returning KeyWord - "+
                      //         sval);
                        return last;
-	        }
+          }
            }
 
            if( nchar != 0 ) {
@@ -276,10 +276,10 @@ public class ScanString extends Object {
              //System.out.println("ScanString: Returning KeyWord - "+
              //                 sval);
                return last;
-	   }
+     }
 
 
-	}
+  }
         return ERROR;
 
 
