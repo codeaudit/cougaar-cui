@@ -25,7 +25,7 @@ import org.cougaar.lib.uiframework.ui.orglocation.psp.xmlservice.LocationSchedul
 public class TestScheduleDoms extends SimplePlugIn {
   private LocationScheduleToXml formatter = new LocationScheduleToXml();
   // names of the organizations
-  private String[] orgnames = new String[] {"3ID", "3-69-ARBN", "3-FSB"};
+  private String[] orgnames = new String[] {"3ID", "1BDE", "3-69-ARBN", "3-FSB"};
 
   // parameters for choosing the time interval
   private long dateBase = DayBaseModel.baseTimeMillis = (new Date()).getTime();
