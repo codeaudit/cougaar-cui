@@ -60,7 +60,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private VariableInterfaceManager variableManager;
     private JLabel title = new JLabel("", JLabel.CENTER);
     private CStoplightTable stoplightChart;
-    private JPanel thresholdsPanel = null;
+    private CMThumbSliderThresholdControl thresholdsPanel = null;
     private CComboSelector metricSelector = null;
     private CViewFeatureSelectionControl viewPanel = null;
     private QueryGenerator queryGenerator = null;
@@ -206,75 +206,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         viewPanel = new CViewFeatureSelectionControl(BoxLayout.Y_AXIS);
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
 
-        // item view panel
-        /* moved to menubar
-        JPanel itemPanel = new JPanel(new GridBagLayout());
-        //itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
-        itemPanel.setBorder(BorderFactory.createTitledBorder("Items"));
-        final String descriptionString =  "Description";
-        final String nsnString = "NSN";
-        CRadioButtonSelectionControl itemDisplayPanel =
-            new CRadioButtonSelectionControl(new String[]{descriptionString,
-                                                          nsnString},
-                                           BoxLayout.Y_AXIS);
-        itemDisplayPanel.setSelectedItem(descriptionString);
-        itemDisplayPanel.addPropertyChangeListener("selectedItem",
-                                                new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent e)
-                {
-                    String newValue = e.getNewValue().toString();
-                    String newShowProperty =
-                        newValue.equals(descriptionString) ? "UID" : "ITEM_ID";
-                    DBInterface.setNewShowProperty(DBInterface.itemTree,
-                                                   newShowProperty);
-                    updateView();
-                    //stoplightTableModel.fireTableChangedEvent(
-                    //    new TableModelEvent(stoplightTableModel,
-                    //                        TableModelEvent.HEADER_ROW));
-                }
-            });
-        itemPanel.add(itemDisplayPanel);
-        final JCheckBox aggregateItems = new JCheckBox("Aggregate");
-        //aggregateItems.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        aggregateItems.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent e)
-                {
-                    boolean newSelection = aggregateItems.isSelected();
-                    if (newSelection != queryGenerator.getAggregateItems())
-                    {
-                        queryGenerator.setAggregateItems(newSelection);
-                        updateView();
-                    }
-                }
-            });
-        itemPanel.add(aggregateItems);
-        aggregateItems.setEnabled(
-            stoplightMetrics.contains(metricSelector.getSelectedItem()));
-        metricSelector.addPropertyChangeListener("selectedItem",
-                                                 new PropertyChangeListener(){
-                public void propertyChange(PropertyChangeEvent e)
-                {
-                    String newSelectedMetric = e.getNewValue().toString();
-                    if (stoplightMetrics.contains(newSelectedMetric))
-                    {
-                        aggregateItems.setEnabled(true);
-                    }
-                    else
-                    {
-                        aggregateItems.setSelected(false);
-                        aggregateItems.setEnabled(false);
-                    }
-                }
-            });
-        */
-        if (plaf)
-        {
-            thresholdsPanel = new CSliderThresholdControl(0f, 2f);
-        }
-        else
-        {
-            thresholdsPanel = new CMThumbSliderThresholdControl(0f, 2f);
-        }
+        thresholdsPanel = new CMThumbSliderThresholdControl(0f, 2f);
         thresholdsPanel.setBorder(
             BorderFactory.createTitledBorder("Color Thresholds"));
 
@@ -332,16 +264,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         viewPanel.setMode(CViewFeatureSelectionControl.VALUE);
 
         // associate threshold control with stoplight chart
-        if (plaf)
-        {
-            stoplightChart.setThresholds((
-                (CSliderThresholdControl)thresholdsPanel).getThresholds());
-        }
-        else
-        {
-            stoplightChart.setThresholds((
-               (CMThumbSliderThresholdControl)thresholdsPanel).getThresholds());
-        }
+        stoplightChart.setThresholds(thresholdsPanel.getThresholds());
+
         thresholdsPanel.addPropertyChangeListener("thresholds",
                                                   new PropertyChangeListener(){
                 public void propertyChange(PropertyChangeEvent e)
@@ -503,6 +427,20 @@ public class StoplightPanel extends JPanel implements CougaarUI
         //
         JMenu viewMenu = viewPanel.convertToMenu("View");
         viewMenu.setMnemonic('V');
+
+        // upper thresholds
+        viewMenu.add(new JSeparator());
+        final JCheckBoxMenuItem upperThresholds =
+            new JCheckBoxMenuItem("Upper Thresholds", true);
+        upperThresholds.setMnemonic('U');
+        viewMenu.add(upperThresholds);
+        upperThresholds.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e)
+                {
+                    thresholdsPanel.
+                        setUpperThresholds(upperThresholds.isSelected());
+                }
+            });
 
         // refresh view
         viewMenu.add(new JSeparator());

@@ -34,6 +34,7 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
     private StoplightThresholdModel thresholds = new StoplightThresholdModel();
 
     private static final int NUMBER_OF_THUMBS = 4;
+    private boolean upperThresholds = true;
 
     /**
      * Default constructor.  Creates a new threshold slider with a minimum
@@ -122,10 +123,60 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
      */
     public StoplightThresholdModel getThresholds()
     {
-        return new StoplightThresholdModel(fromSlider(slider.getValueAt(0)),
-                                           fromSlider(slider.getValueAt(1)),
-                                           fromSlider(slider.getValueAt(2)),
-                                           fromSlider(slider.getValueAt(3)));
+        StoplightThresholdModel th = null;
+
+        if (upperThresholds)
+        {
+            th = new StoplightThresholdModel(fromSlider(slider.getValueAt(0)),
+                                             fromSlider(slider.getValueAt(1)),
+                                             fromSlider(slider.getValueAt(2)),
+                                             fromSlider(slider.getValueAt(3)));
+        }
+        else
+        {
+            th = new StoplightThresholdModel(fromSlider(slider.getValueAt(0)),
+                                             fromSlider(slider.getValueAt(1)),
+                                             Integer.MAX_VALUE,
+                                             Integer.MAX_VALUE);
+        }
+
+        return th;
+    }
+
+    /**
+     * Set whether or not to impose upper thresholds
+     *
+     * @param upperThresholds if false, no upper threholds will be imposed
+     *                          i.e. the top two thumbs will be deactivated
+     *                          and will disappear.
+     */
+    public void setUpperThresholds(boolean upperThresholds)
+    {
+        this.upperThresholds = upperThresholds;
+
+        if (upperThresholds)
+        {
+            showThumbAt(2);
+            showThumbAt(3);
+        }
+        else
+        {
+            hideThumbAt(2);
+            hideThumbAt(3);
+        }
+
+        setThresholds(getThresholds());
+    }
+
+    /**
+     * Get whether or not control is imposing upper thresholds
+     *
+     * @return if true, no upper threholds are being imposed
+     *         i.e. the top two thumbs are deactivated and not visible
+     */
+    public boolean getUpperThresholds()
+    {
+        return upperThresholds;
     }
 
     /**
