@@ -1,0 +1,6 @@
+<object type="java.util.Vector">
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.lib.aggagent.psp.PSP_GenericReaderWriter</Classname>
+    <PSPName>generic.psp</PSPName>
+  </element>
+</object>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+<!-- this is for the organization hierarchy test data -->
+<!--
+  <glquery>
+    <keyname>ORG_RELS</keyname>
+    <predicate>
+      <instanceof>org.cougaar.domain.glm.ldm.asset.Organization</instanceof>
+    </predicate>
+    <adapter>org.cougaar.lib.uiframework.ui.orgui.TestAdapter</adapter>
+  </glquery>
+-->
+
+<!--
+  this is for the real society org hierarchy data; copy this element into the
+  society's society_glprimitives.xml file
+-->
+<!--
+  <glquery>
+    <keyname>ORG_RELS</keyname>
+    <predicate>
+      <instanceof>org.cougaar.domain.glm.ldm.asset.Organization</instanceof>
+    </predicate>
+    <adapter>org.cougaar.lib.uiframework.ui.orgui.OrgSubAdapter</adapter>
+  </glquery>
+-->
+</xml>
+

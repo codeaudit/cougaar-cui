@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+
+<!-- Clusters included in the hierarchy polling -->
+  <source ignore="false">
+    <name>3ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-BDE-2ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>1-BDE-3ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>2-BDE-3ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>3-69-ARBN</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>3-DISCOM-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>3-FSB</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>3ID-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>4-64-ARBN</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>703-MSB</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>CENTCOM-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>DFSP</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DLAHQ</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>HNS</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>HOST-NATION-REFINERY</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>IOC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>JTF-HHC</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>TRANSCOM</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+  <source ignore="true">
+    <name>FUTURE</name>
+    <pollInterval>10000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_RELS</pspquery>
+  </source>
+
+</xml>
