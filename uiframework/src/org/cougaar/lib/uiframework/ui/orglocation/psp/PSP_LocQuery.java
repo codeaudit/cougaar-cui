@@ -49,51 +49,26 @@ public class PSP_LocQuery extends PSP_QueryBase {
    *  reference becomes available.
    */
   protected void initQueryInterpreter (PlanServiceContext psc) {
-    ConfigFinder cf = psc.getServerPlugInSupport().getDirectDelegate().
-      getCluster().getConfigFinder();
     responder = new GenericInterpreter();
-    responder.addAttribute(new LocAttribute(this, LocAttribute.LATITUDE));
-    responder.addAttribute(new LocAttribute(this, LocAttribute.LONGITUDE));
-    responder.addDimension(createOrgDimension(cf));
-    responder.addDimension(createTimeDimension());
+
+    // add the attributes
+    responder.addAttribute(new TPLocAttribute(TPLocAttribute.START_TIME));
+    responder.addAttribute(new TPLocAttribute(TPLocAttribute.END_TIME));
+    responder.addAttribute(new TPLocAttribute(TPLocAttribute.LATITUDE));
+    responder.addAttribute(new TPLocAttribute(TPLocAttribute.LONGITUDE));
+
+    // Add the dimension
+    responder.addDimension(createDimension(psc));
 
     // Debug mode:
     // echo_queries = true;
     // echo_results = true;
   }
 
-  private QueryDimension createOrgDimension (ConfigFinder cf) {
-    OrderlessDimension dim = new OrderlessDimension();
-    dim.setName("Org");
-    ListDimNode root = new ListDimNode("All Orgs");
-    dim.setRoot(root);
-
-    try {
-      Document doc = cf.parseXMLConfigFile("OrgList.xml");
-      Element elt = doc.getDocumentElement();
-      NodeList nl = elt.getChildNodes();
-      for (int i = 0; i < nl.getLength(); i++) {
-        Node child = nl.item(i);
-        if (child.getNodeType() == Node.ELEMENT_NODE) {
-          String org = ((Element) child).getAttribute("name");
-          if (org != null)
-            root.addMember(org);
-        }
-      }
-    }
-    catch (Exception oh_no) {
-      System.out.println(
-        "PSP_LocQuery::createOrgDimension:  no OrgList.xml--use default orgs");
-      root.addMembers(new String[] {"3ID", "1BDE", "3-69-ARBN", "3-FSB"});
-    }
-
-    return dim;
-  }
-
-  private QueryDimension createTimeDimension () {
-    IntegerDimension dim = new IntegerDimension();
-    dim.setName("Time");
-    dim.setRoot(new IntDimNode(-100, 1000));
-    return dim;
+  private QueryDimension createDimension (PlanServiceContext psc) {
+    TPLocDimension ret = new TPLocDimension();
+    ret.setName("OrgLocations");
+    ret.setPlugIn(psc.getServerPlugInSupport().getDirectDelegate());
+    return ret;
   }
 }

@@ -19,67 +19,13 @@ public class TestClient {
     "http://localhost:5555/$Stuff/locations/query.psp";
 
   public static void main (String[] argv) {
-    if (argv.length == 0) {
-      printUsage();
-      return;
-    }
-    String day = null;
-    String org = null;
-    boolean got_all = false;
-    boolean got_single = false;
-
-    for (int i = 0; i < argv.length; i++) {
-      String arg = argv[i];
-      if (arg.equals("all")) {
-        if (day != null || org != null) {
-          printUsage();
-          return;
-        }
-        else
-          got_all = true;
-      }
-      else if (arg.equals("single")) {
-        got_single = true;
-      }
-      else if (arg.startsWith("org=")) {
-        if (org != null || got_all) {
-          printUsage();
-          return;
-        }
-        else
-          org = arg.substring(4);
-      }
-      else if (arg.startsWith("day=")) {
-        if (day != null || got_all) {
-          printUsage();
-          return;
-        }
-        else
-          day = arg.substring(4);
-      }
-    }
-
     QueryTemplate qt = new QueryTemplate();
+    qt.setDefaults();
 
-    if (org != null)
-      qt.setOrg(org);
-    else
-      qt.setDefaultOrg();
+    // send the request to the screen
+    // echoQuery(qt.getQuery());
 
-    if (got_single) {
-      if (day == null) {
-        printUsage();
-        return;
-      }
-      qt.setTimes(Integer.parseInt(day), true);
-    }
-    else {
-      if (day != null)
-        qt.setTimes(Integer.parseInt(day));
-      else
-        qt.setDefaultTimes();
-    }
-
+    // send the request to the server
     sendQuery(qt.getQuery());
   }
 
@@ -106,11 +52,12 @@ public class TestClient {
     return new URL(DEFAULT_URL);
   }
 
-  private static void printUsage () {
-    System.out.println("Usage (at least one argument must be supplied):");
-    System.out.println("  single [org=<org>] [day=<day>] :  treat day as a singleton");
-    System.out.println("  [org=<org>] [day=<day>] :  specify the org and/or day");
-    System.out.println("  all : get data for all orgs and all days");
+  private static void echoQuery (Structure query) {
+    System.out.println("Query is:");
+    PrettyPrinter pp = new PrettyPrinter(System.out);
+    query.generateXml(pp);
+    pp.flush();
+    System.out.println();
   }
 
   private static void sendQuery (Structure query) {
@@ -120,14 +67,7 @@ public class TestClient {
       conn.setDoInput(true);
       conn.setDoOutput(true);
 
-      // send the request to the screen
-      PrettyPrinter pp = new PrettyPrinter(System.out);
-      System.out.println("Query is:");
-      query.generateXml(pp);
-      pp.flush();
-      System.out.println();
-      // send the request to the server
-      pp = new PrettyPrinter(conn.getOutputStream());
+      PrettyPrinter pp = new PrettyPrinter(conn.getOutputStream());
       query.generateXml(pp);
       pp.flush();
       pp.close();
@@ -140,16 +80,6 @@ public class TestClient {
       while ((n = in.read(b)) != -1)
         System.out.write(b, 0, n);
       System.out.println();
-
-      // parse the response
-      /*
-      XmlInterpreter xin = new XmlInterpreter();
-      Structure response = xin.readXml(conn.getInputStream());
-      pp = new PrettyPrinter(System.out);
-      response.generateXml(pp);
-      pp.flush();
-      pp.close();
-      */
     }
     catch (Exception eek) {
       System.out.println("Bad connection:  " + eek);
@@ -164,37 +94,10 @@ public class TestClient {
     private Structure query = new Structure();
     private ValElement orgMode = new ValElement();
     private ValElement orgName = new ValElement();
-    private ValElement timeMode = new ValElement("all leaves");
-    private ValElement timeRange = new ValElement();
-    private ListElement timeNode = new ListElement();
-    private Attribute singletonMode = new Attribute("mode", "singleton");
 
-    public void setOrg (String s) {
-      orgName.setValue(s);
-      orgMode.setValue("inherit");
-    }
-
-    public void setDefaultOrg () {
+    public void setDefaults () {
       orgName.setValue("All Orgs");
       orgMode.setValue("all leaves");
-    }
-
-    public void setTimes (int d0, int d1) {
-      timeRange.setValue(d0 + " " + d1);
-    }
-
-    public void setTimes (int d) {
-      setTimes(d, d);
-    }
-
-    public void setTimes (int d, boolean single) {
-      setTimes(d, d);
-      if (single)
-        timeNode.addAttribute(singletonMode);
-    }
-
-    public void setDefaultTimes () {
-      setTimes(0, 9);
     }
 
     public Structure getQuery () {
@@ -210,6 +113,8 @@ public class TestClient {
       // install the fields
       Attribute att = new Attribute("fields");
       root.addAttribute(att);
+      att.addAttribute(new Attribute("startTime"));
+      att.addAttribute(new Attribute("endTime"));
       att.addAttribute(new Attribute("latitude"));
       att.addAttribute(new Attribute("longitude"));
 
@@ -217,12 +122,8 @@ public class TestClient {
       att = new Attribute("dimensions");
       root.addAttribute(att);
 
-      // create a stub org dimension
-      att.addChild(createDimStub("Org", orgName, orgMode, null));
-
-      // create a stub time dimension
-      att.addChild(
-        createDimStub("Time", timeRange, timeMode, timeNode));
+      // create the dimension tags
+      att.addChild(createDimStub("OrgLocations", orgName, orgMode, null));
     }
 
     private static ListElement createDimStub (
