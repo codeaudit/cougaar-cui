@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Attic/XmlLayerBase.java,v $
- * $Revision: 1.2 $
- * $Date: 2001-02-23 21:56:55 $
+ * $Revision: 1.3 $
+ * $Date: 2001-02-26 23:08:00 $
  * $Author: krotherm $
  *
  * **********************************************************************
@@ -41,6 +41,8 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
+import org.cougaar.lib.uiframework.ui.components.*;
+import mil.darpa.log.alpine.blackjack.assessui.client.StoplightPanel;
 
 /**
  * Layer objects are components which can be added to the MapBean to
@@ -179,24 +181,27 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	}
 	
 
-    // SwingSetFrame ssframe;
+    // SwingSetFrame swsframe;
+    CFrame cframe;
 
     private void displayStoplight(String org) {
-	fireRequestMessage("Double Click caught which had caused a stoplight chart to display, but the Stoplight is temporarily out of service.");
-	/*
+	// fireRequestMessage("Double Click caught which had caused a stoplight chart to display, but the Stoplight is temporarily out of service.");
+	///*
 	  // the if was placed here because these were the only orgs that the 
 	  // stoplight code could handle.  when stoplight is upgraded the
 	  // if can be removed.
 	if (!(org.equals("23INBN")||org.equals("30INBN")||org.equals("31INBN"))) {
 	    org="31INBN";
 	}
-        ssframe = new SwingSetFrame("Stoplight Chart");
-        StoplightPanel slp = new StoplightPanel(ssframe);
+        // swsframe = new SwingSetFrame("Stoplight Chart");
+        cframe = new CFrame();
+        // StoplightPanel slp = new StoplightPanel(cframe);
+        StoplightPanel slp = new StoplightPanel(false);
         slp.getVariableInterfaceManager().getDescriptor("Org").
             setValue(org);
-        ssframe.getContentPane().add(slp);
-        ssframe.setVisible(true);
-	*/
+        cframe.getContentPane().add(slp);
+        cframe.setVisible(true);
+	//*/
     }
 
   OMGraphic findClosest(int x, int y, float limit) {
