@@ -82,6 +82,7 @@ public class OrgSubPlugIn extends SimplePlugIn {
       for (Enumeration e = relSubs.getAddedList(); e.hasMoreElements(); ) {
         PlanObject po = (PlanObject) e.nextElement();
         visitOrgRels(po.getDocument().getDocumentElement());
+        publishRemove(po);
       }
     }
   }
