@@ -45,46 +45,54 @@ public class NamedLocationTime extends ScheduleElementImpl  {
     Exception exception=null;
     Unit unit=null;
 
-    public Unit getUnit() { return unit; }
-    public void setUnit(Unit lunit) { unit=lunit; }
-    
-    public String getTitle() { return title; }
-    public NamedLocationTime (String name, String lat, String lon,
-                          String startTime, String endTime,
-                          MetricTable metrics) {
-    long start, end;
-    this.name=name;
-    this.latstr=lat;
-    this.lonstr=lon;
-    this.metrics=metrics;
-    if (metrics==null) {
-	this.metrics=new MetricTable();
+    public Unit getUnit () {
+      return unit;
     }
-    try {
+
+    public void setUnit (Unit lunit) {
+      unit=lunit;
+    }
+
+    public String getTitle () {
+      return title;
+    }
+
+    public NamedLocationTime (String name, String lat, String lon,
+        String startTime, String endTime, MetricTable metrics)
+    {
+      long start, end;
+      this.name=name;
+      this.latstr=lat;
+      this.lonstr=lon;
+      this.metrics=metrics;
+      if (metrics==null) {
+        this.metrics=new MetricTable();
+      }
+      try {
         this.lat = Float.parseFloat(latstr);
         this.lon = Float.parseFloat(lonstr);
 
-        if (startTime!=null&&!startTime.equals("")) {
+        if (startTime != null && !startTime.equals("")) {
           start=Long.parseLong(startTime);
         } else {
-	    // start=Long.MIN_VALUE;
           start=MIN_VALUE;
         }
 
         if (endTime!=null&&!endTime.equals("")) {
           end=Long.parseLong(endTime);
         } else {
-	    // end=Long.MAX_VALUE;
           end=MAX_VALUE;
         }
-      setEndTime(end);
-      setStartTime(start);
 
-    } catch (Exception ex) {
-       this.exception=ex;
-       // ex.printStackTrace();
+        setStartTime(Long.MIN_VALUE);
+        setEndTime(end);
+        setStartTime(start);
+      }
+      catch (Exception ex) {
+        this.exception=ex;
+        ex.printStackTrace();
+      }
     }
-  }
 
     public Float getMetric(String metName) { return metrics.get(metName); }
     public Hashtable getMetrics() { return metrics.asHashtable(); }
@@ -94,9 +102,10 @@ public class NamedLocationTime extends ScheduleElementImpl  {
     public long getEndTime() { return super.getEndTime(); }
     public String  getName() { return name; }
     public String toString() {
-      return "\n { NamedLocationTime "+name+" (lat, lon) ("+lat+", "+lon+") "
-              +" (stTime, eTime) ("+getStartTime()+", "+getEndTime()
-              +") metrics: "+metrics+" }";
+      return
+        "\n { NamedLocationTime "+name+" (lat, lon) ("+lat+", "+lon+") "
+               +" (stTime, eTime) ("+getStartTime()+", "+getEndTime()
+               +") metrics: "+metrics+" }";
     }
 
     public boolean isValid() { return exception==null;}
@@ -252,8 +261,8 @@ public class NamedLocationTime extends ScheduleElementImpl  {
       TreeSet transitionTimes = null;
     //if (transitionTimes==null) {
         transitionTimes = new TreeSet();
-        for (Iterator it=sched.iterator(); it.hasNext(); ) {
-          NamedLocationTime nltm=(NamedLocationTime)it.next();
+        for (Enumeration e = sched.getAllScheduleElements(); e.hasMoreElements(); ) {
+          NamedLocationTime nltm = (NamedLocationTime) e.nextElement();
           transitionTimes.add(new Long(nltm.getStartTime()));
           transitionTimes.add(new Long(nltm.getEndTime()));
         }

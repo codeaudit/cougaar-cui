@@ -16,9 +16,9 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.9 $
- * $Date: 2001-03-22 17:05:46 $
- * $Author: krotherm $
+ * $Revision: 1.10 $
+ * $Date: 2001-04-20 15:28:13 $
+ * $Author: gdonovan $
  *
  * ***********************************************************************/
 
@@ -941,7 +941,8 @@ public class CMap implements Serializable, CougaarUI {
     timePanel.add(stepUpButton);
     timePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Time"));
     updateTimeRange(ls);
-    updateTime(0);
+    ls.setValue(ls.getMinValue());
+    updateTime((long) ls.getMinValue());
 
     stepDownButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
@@ -971,78 +972,6 @@ public class CMap implements Serializable, CougaarUI {
     XmlLayerBase xlb = findXMLLayerBase();
     xlb.setTimeSlider(ls);
 
-    //	================================
-
-   /*  End of times control */
-
-    //* ================================
-
-    /*  Currently not planning on color coding orgs based on metrics
-    final JTIButtonAction jtibaction = new JTIButtonAction() {
-	    public void act(String sel) {
-		System.err.println("jtibaction for selection: "+sel);
-		String metricString;
-    try {
-      metricString="metric"+sel.substring(0,1);
-    } catch (Exception e) {
-      metricString="metric1";
-    }
-		System.err.println("jtibaction metricString: "+metricString);
-
-		// get layer of interest (atestlayer)
-		LayerHandler layerHandler = getLayerHandler();
-		Layer[] layers=layerHandler.getLayers();
-		//		ATestLayer myLayer=null;
-		XmlLayer myxLayer=null;
-		XmlLayerBase myxbLayer=null;
-		int idx;
-		for(idx=0; idx<layers.length; idx++) {
-// 		    if (layers[idx] instanceof ATestLayer) {
-// 			myLayer=(ATestLayer)layers[idx];
-// 		    }
-		    if (layers[idx] instanceof XmlLayer) {
-			myxLayer=(XmlLayer)layers[idx];
-		    }
-		    if (layers[idx] instanceof XmlLayerBase) {
-			myxbLayer=(XmlLayerBase)layers[idx];
-		    }
-		}
-//		if (myLayer!=null||myxLayer!=null||myxbLayer!=null) {
-		if (myxLayer!=null||myxbLayer!=null) {
-// 		    if (myLayer!=null) {
-// 			System.err.println("color coding on myLayer: "+myLayer);
-// 			myLayer.colorCodeUnits(metricString);
-// 		    }
-		    if (myxLayer!=null) {
-			System.err.println("color coding on myxLayer: "+myxLayer);
-			myxLayer.colorCodeUnits(metricString);
-		    }
-		    if (myxbLayer!=null) {
-			System.err.println("color coding on myxLayer: "+myxLayer);
-			myxbLayer.colorCodeUnits(metricString);
-		    }
-		    MapBean mymap = getMapBean();
-		    mymap.setScale(mymap.getScale());
-
-		} else {
-		    System.err.println("cannot colorcode -- myLayer is null");
-		}
-		System.out.println("jbit colorcode ");
-	    }
-	};
-    String bfile=Environment.get("xml.metrics.menu.file", "\\dev\\ui\\menus\\jtmetrics.xml");
-    System.out.println("bfile: "+bfile);
-    JTIButton jtib=new JTIButton(bfile,
-				 jtibaction);
-    jtib.setText("Select A Metric");
-    // jtib.setSize(400, jtib.getHeight()); // not having any effect
-    JFrame jf = jtib.getMenuFrame();
-    jf.setSize(400,200);
-    jf.setLocation(610,120);
-    jf.setTitle("Color Code for Metric");
-    omts.add(jtib);
-    */
-
     tp.add(omts);
     tp.setFloatable(false);// cannot detach
     setToolPanel(tp);
@@ -1058,8 +987,6 @@ public class CMap implements Serializable, CougaarUI {
             for (Iterator it=transitionTimes.iterator(); it !=null && it.hasNext(); ) {
                 Long ttime=(Long)it.next();
                 String timeStr=""+ttime;
-//                 if ((ttime.longValue()!=Long.MIN_VALUE) &&
-//                     (ttime.longValue()!=Long.MAX_VALUE)) {
                 if ((ttime.longValue()!=NamedLocationTime.MIN_VALUE) &&
                     (ttime.longValue()!=NamedLocationTime.MAX_VALUE)) {
                     minTime = Math.min(minTime, ttime.longValue());
@@ -1077,15 +1004,16 @@ public class CMap implements Serializable, CougaarUI {
             maxTime = 300;
 	}
 
-        ls.roundAndSetSliderRange((float)minTime, (float)maxTime);
+        float minFloat = (float) (10.0 * Math.floor((double) minTime / 10.0));
+        float maxFloat = minFloat +
+          (float) (20.0 * Math.ceil((double) (maxTime - minTime) / 20.0));
+        ls.setSliderRange(minFloat, maxFloat);
         ls.setFidelity(Math.round(ls.getMaxValue() - ls.getMinValue()));
     }
 
     private void updateTime(long newValue) {
         TimedXmlLayer myLayer=findTimeLayer();
         if (myLayer!=null) {
-            System.err.println("setting time on layer: " + myLayer);
-            System.err.println("new time: " + newValue);
             myLayer.setTime(String.valueOf(newValue));
             MapBean mymap = getMapBean();
             mymap.setScale(mymap.getScale());

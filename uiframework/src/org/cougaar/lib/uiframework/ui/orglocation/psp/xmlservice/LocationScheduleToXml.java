@@ -79,7 +79,7 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
             if (needsHomeLocation) {
               // insert entry for home location
               LocationScheduleElement lse = (LocationScheduleElement)e.nextElement();
-              long start = lse.getStartTime() - TimeUtils.MSEC_PER_DAY;
+              long start = lse.getStartTime() - 10L * TimeUtils.MSEC_PER_DAY;
               addHomeLocationToLocSchedule(org, start, lse.getStartTime());
               needsHomeLocation = false;
 
