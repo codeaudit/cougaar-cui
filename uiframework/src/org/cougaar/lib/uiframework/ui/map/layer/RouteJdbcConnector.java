@@ -15,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.*;
 
-import org.gjt.mm.mysql.*;
-
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Projection;
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
@@ -97,7 +95,8 @@ public class RouteJdbcConnector
 
     try
     {
-       DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
+       Driver myDriver = (Driver) Class.forName("org.gjt.mm.mysql.Driver()").newInstance();
+       DriverManager.registerDriver(myDriver);
 
        System.out.println("Connecting to the datasource : " );
        conn = DriverManager.getConnection("jdbc:mysql://localhost/RouteDB");
