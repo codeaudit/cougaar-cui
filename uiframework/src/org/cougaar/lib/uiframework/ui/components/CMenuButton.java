@@ -23,8 +23,6 @@ public class CMenuButton extends JButton implements Selector
     private JMenu selectedMenu;
     private Selector selectedSelector;
 
-    private boolean enableNonselectedSelectorListening = true;
-
     /**
      * Default constructor.  Creates a new CMenuButton with no selectors.
      */
@@ -88,7 +86,6 @@ public class CMenuButton extends JButton implements Selector
      */
     public void setSelectorMenu(final CComponentMenu selectorMenu)
     {
-        enableNonselectedSelectorListening = (this.selectorMenu == null);
         this.selectorMenu = selectorMenu;
 
         selectorMenu.addPropertyChangeListener(
@@ -151,10 +148,10 @@ public class CMenuButton extends JButton implements Selector
         public void propertyChange(PropertyChangeEvent e)
         {
             Object invoker = selectorMenu.getInvoker();
-            if ((invoker == CMenuButton.this) &&
-                (enableNonselectedSelectorListening ||
-                (e.getSource() instanceof CComponentMenu)))
+            if (invoker == CMenuButton.this)
             {
+                // The user has created this event using my control.
+                selectorMenu.setInvoker(null);
                 if (s != null)
                 {
                     selectorMenu.setSelectedItem(s);
@@ -164,7 +161,8 @@ public class CMenuButton extends JButton implements Selector
             else if (e.getSource() == selectedSelector)
             {
                 // My selector is being updated via setValue call
-               updateSelection();
+                selectorMenu.setSelectedItem(selectedSelector, false);
+                updateSelection();
             }
         }
     }
@@ -194,7 +192,6 @@ public class CMenuButton extends JButton implements Selector
 
             selectedMenu.getPopupMenu().setVisible(false);
             selectorMenu.setVisible(false);
-            selectorMenu.setInvoker(null);
 
             if (oldSelectedSelector != selectedSelector)
             {

@@ -81,6 +81,7 @@ public class CComponentMenu extends JPopupMenu implements Selector
                 (item.toString().equalsIgnoreCase(menu.getText())))
             {
                 updateSelection(menu, firePropChange);
+                break;
             }
         }
     }
