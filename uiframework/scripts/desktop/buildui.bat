@@ -34,6 +34,8 @@ set JF=%JF% %SRCR%\ui\map\util\*.java
 set JF=%JF% %SRCR%\ui\map\layer\*.java
 set JF=%JF% %SRCR%\ui\map\app\*.java
 set JF=%JF% %SRBJ%\assessui\client\*.java
+set JF=%JF% %SRBJ%\assessui\util\BlackjackTableCreator.java
+set JF=%JF% %SRBJ%\assessui\util\OrgXMLGenerator.java
 
 if NOT EXIST ..\..\classes mkdir ..\..\classes
 
