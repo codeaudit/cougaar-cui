@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -119,8 +119,11 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
     {
         slider.setValueAt(toSlider(tr.getYellowMin()), 0);
         slider.setValueAt(toSlider(tr.getGreenMin()), 1);
-        slider.setValueAt(toSlider(tr.getGreenMax()), 2);
-        slider.setValueAt(toSlider(tr.getYellowMax()), 3);
+        if (upperThresholds)
+        {
+          slider.setValueAt(toSlider(tr.getGreenMax()), 2);
+          slider.setValueAt(toSlider(tr.getYellowMax()), 3);
+        }
 
         StoplightThresholdModel newThresholds = getThresholds();
         firePropertyChange("thresholds", thresholds, newThresholds);
@@ -147,8 +150,8 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
         {
             th = new StoplightThresholdModel(fromSlider(slider.getValueAt(0)),
                                              fromSlider(slider.getValueAt(1)),
-                                             Integer.MAX_VALUE,
-                                             Integer.MAX_VALUE);
+                                             Float.POSITIVE_INFINITY,
+                                             Float.POSITIVE_INFINITY);
         }
 
         return th;
