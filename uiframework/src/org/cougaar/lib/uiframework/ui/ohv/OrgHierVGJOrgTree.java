@@ -19,25 +19,6 @@ import java.util.Stack;
 import java.net.URL;
 import java.awt.Color;
 
-/*
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import java.io.IOException;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-*/
-
-/*
-import ui.SupKeeper;
-import ui.TreeBuilder;
-*/
-//import dom.DOMParserWrapper;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,64 +36,64 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
  Graphical Tree viewer for an Organization Hierarchy.
  **/
 
-  public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
+public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
     private OrgHierModel ohm; 
     private String textTree; 
     private String delim="\n"; 
     private Stack branchStack = new Stack(); 
     private PrintStream out=System.out; 
     private int DEBUG=40; 
- 	    VGJ vgj;
-      GraphWindow gw;
-	    Graph mygraph;
-      private String name;
-
+    private VGJ vgj;
+    private GraphWindow gw;
+    private Graph mygraph;
+    private String name;
+    
     public OrgHierVGJOrgTree(Collection col, String name) { init(new OrgHierModel(col), name);}
     //public OrgHierVGJOrgTree(OrgHierModel ohm) {init(ohm);}
     public OrgHierVGJOrgTree(OrgHierModel ohm, String name) {init(ohm, name);}
     private void init(OrgHierModel ohm, String name) {
-      String rootId;
-      this.ohm=ohm;
-      this.name=name;
-      Set roots=ohm.generateRoots(); 
-      textTree="Top Level"+delim;
-      for (Iterator riter=roots.iterator(); riter.hasNext(); ) { 
-        rootId=(String)riter.next(); 
-        textTree+=getBranchDFS(rootId, 1); 
-      } 
+	String rootId;
+	this.ohm=ohm;
+	this.name=name;
+	Set roots=ohm.generateRoots(); 
+	textTree="Top Level"+delim;
+	for (Iterator riter=roots.iterator(); riter.hasNext(); ) { 
+	    rootId=(String)riter.next(); 
+	    textTree+=getBranchDFS(rootId, 1); 
+	} 
     } 
- 
+    
     public void showRelationshipsAtTime(long time) { 
-        OrgHierRelationship ohr; 
-        //out.println("Here are the relationships at time: "+model.getRelationshipsAtTime(time));
-
-      Collection rels=ohm.getRelationshipsAtTime(time);
-      String timeStr=""+time;
-      if (time==Long.MAX_VALUE) { timeStr="[The end of time]";
-      } else if  (time==Long.MIN_VALUE) { timeStr="Epoch";
-      }
-      out.println("Relationships at time "+timeStr+": ");
-      OrgHierVGJOrgTree ohtt=new OrgHierVGJOrgTree(rels, name); 
-      ohtt.show(); 
+	OrgHierRelationship ohr; 
+	//out.println("Here are the relationships at time: "+model.getRelationshipsAtTime(time));
+	
+	Collection rels=ohm.getRelationshipsAtTime(time);
+	String timeStr=""+time;
+	if (time==Long.MAX_VALUE) { timeStr="[The end of time]";
+	} else if	 (time==Long.MIN_VALUE) { timeStr="Epoch";
+	}
+	out.println("Relationships at time "+timeStr+": ");
+	OrgHierVGJOrgTree ohtt=new OrgHierVGJOrgTree(rels, name); 
+	ohtt.show(); 
     } 
- 
+    
     public void show_dynamic() { 
-      out.println("Here is the DYNAMIC OrgHierVGJOrgTree: "); 
-      out.println(textTree); 
- 
-      // from supkpr 
+	out.println("Here is the DYNAMIC OrgHierVGJOrgTree: "); 
+	out.println(textTree); 
+	
+	// from supkpr 
 	    String rootString="Command Hierarchy"; 
 	    VGJ vgj=VGJ.create();
 	    Graph mygraph=new Graph(true);
 
-    	//	int noneID = vgj.getNodeID(mygraph, "NONE");
-    	int noneID = vgj.getNodeID(mygraph, rootString);
-    	System.out.println("noneID is "+noneID);
+	//	int noneID = vgj.getNodeID(mygraph, "NONE");
+	int noneID = vgj.getNodeID(mygraph, rootString);
+	System.out.println("noneID is "+noneID);
 
-    	Node aNode = mygraph.getNodeFromId(noneID);
-    	System.out.println("getId "+aNode.getId());
-    	System.out.println("getLabel "+aNode.getLabel());
-    	System.out.println("getSelected "+aNode.getSelected());
+	Node aNode = mygraph.getNodeFromId(noneID);
+	System.out.println("getId "+aNode.getId());
+	System.out.println("getLabel "+aNode.getLabel());
+	System.out.println("getSelected "+aNode.getSelected());
 
       showSuperiorRelationships(vgj, mygraph);
 
@@ -122,23 +103,22 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
       Set roots=ohm.generateRoots();
       String sub;
       for (Iterator riter=roots.iterator(); riter.hasNext(); ) { 
-        sub=(String)riter.next(); 
+	sub=(String)riter.next(); 
 	      if (DEBUG > 30) {
-		      System.out.println("getTreeVGJ vgj.addSuperior(mygraph, sup, sub); sup: "+rootString+" sub: "+sub);
-  	    }
+		  System.out.println("getTreeVGJ vgj.addSuperior(mygraph, sup, sub); sup: "+rootString+" sub: "+sub);
+	    }
 	      vgj.addSuperior(mygraph, rootString, sub);
 	    }
 
       aNode.setSelected(true);
-	    System.out.println("getId "+aNode.getId());
-	    System.out.println("getLabel "+aNode.getLabel());
-	    System.out.println("getSelected "+aNode.getSelected());
-
-	    vgj.setGraph(mygraph);
-	    vgj.showGraph();
-	    System.out.println("Leaving vgj tree.");
- 
-      // end from supkpr 
+      System.out.println("getId "+aNode.getId());
+      System.out.println("getLabel "+aNode.getLabel());
+      System.out.println("getSelected "+aNode.getSelected());
+      
+      vgj.setGraph(mygraph);
+      vgj.showGraph();
+      System.out.println("Leaving vgj tree.");
+      
       out.println("Finished showing the OrgHierVGJOrgTree."); 
 
     } 
@@ -152,14 +132,14 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
       //String init_filename="C:\\dev\\ui\\kr\\sfp\\stg\\data\\dbjadsup_init.gml"; 
       // String init_filename="C:\\dev\\ui\\kr\\sfp\\stg\\data\\"+name+"_init.gml";
       String loadClusterInitPath=RuntimeParameters
-              .getLoudSystemProperty("org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJOrgTree.LoadClusterInitPath",
-                                      "C:\\data\\default\\ohv\\init");
+	      .getLoudSystemProperty("org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJOrgTree.LoadClusterInitPath",
+				      "C:\\data\\default\\ohv\\init");
       String loadClusterInitSuffix=RuntimeParameters
-              .getLoudSystemProperty("org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJOrgTree.LoadClusterInitSuffix",
-                                      "_init.gml");
-      // String init_filename="C:\\dev\\ui\\kr\\sfp\\stg\\data\\"+selOrg+"_init.gml";
-      String init_filename=loadClusterInitPath+"\\"+name+loadClusterInitSuffix;
-      // from supkpr
+	      .getLoudSystemProperty("org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJOrgTree.LoadClusterInitSuffix",
+				      "_init.gml");
+      String fileSeparator=System.getProperty("file.separator"); // "\\";
+      String init_filename=loadClusterInitPath+fileSeparator+name+loadClusterInitSuffix;
+      System.out.println("initFilename is ["+init_filename+"]");
       vgj=VGJ.create();
       gw=new GraphWindow(true);
 
@@ -171,29 +151,29 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
  
       vgj.syncWith(mygraph);
 
-      // showSuperiorRelationships(vgj, mygraph);
-      // out.println(idx++);
-
-	    vgj.setGraph(mygraph);
+      vgj.setGraph(mygraph);
       vgj.setCanvasTitle(name+" Community");
 
       out.println(idx++);
       showNewGraph(vgj);
+	    updateSuperiorRelationships();
       out.println(idx++);
- 	    System.out.println("Leaving vgj tree.");
+	    System.out.println("Leaving vgj tree.");
 
       // end from supkpr
       out.println("Finished showing the OrgHierVGJOrgTree.");
     }
 
-       OrgTreeAction ota = new OrgTreeAction() {
-          public void execute()
-          {
-            System.out.println("in OrgTreeAction.execute updsuprel");
-            updateSuperiorRelationships();
-            System.out.println("out OrgTreeAction.execute");
-          }
-          public String getId() { return "Show"; }
+
+	// ota from communityTree .. needs showOrgGraph
+    private   OrgTreeAction ota = new OrgTreeAction() {
+	  public void execute()
+	  {
+	    System.out.println("in community OrgTreeAction.execute -- show org graph");
+//	      showOrgGraph();
+	    System.out.println("out OrgTreeAction.execute");
+	  }
+	  public String getId() { return "Show Community"; }
       };
     private void showGraph(VGJ vgj) {
 	    vgj.showGraph(false, false, false, ota, false);
@@ -203,58 +183,56 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
     }
       void updateSuperiorRelationships() {
       int idx=100;
-        showSuperiorRelationships(vgj, mygraph);
-        out.println(idx++);
-        showLiveClusters(vgj, mygraph);
+	showSuperiorRelationships(vgj, mygraph);
+	out.println(idx++);
+	showLiveClusters(vgj, mygraph);
 
 	      vgj.setGraph(mygraph);
-        out.println(idx++);
+	out.println(idx++);
 	      showGraph(vgj);
-        out.println(idx++);
+	out.println(idx++);
 
       // end from supkpr
-        out.println("Finished updateSuperiorRelationships.");
+	out.println("Finished updateSuperiorRelationships.");
 
       }
     public void show() { 
       //show_dynamic(); 
      show_initialized(); 
     } 
-    public void showSuperiorRelationships(VGJ vgj, Graph mygraph) {
 
-      /*
+
+    public void showSuperiorRelationships(VGJ vgj, Graph mygraph) {
+	/*
       Set roots=ohm.generateRoots();
       for (Iterator riter=roots.iterator(); riter.hasNext(); ) { 
-        rootId=(String)riter.next();
-        textTree+=getBranchDFS(rootId, 1); 
+	rootId=(String)riter.next();
+	textTree+=getBranchDFS(rootId, 1); 
       }
       */ 
  
-    	//Enumeration keys=keys();
       Set sups=ohm.getSuperiors();
 
-    	HashSet hs;
-    	String sub, sup;
+      HashSet hs;
+      String sub, sup;
       for (Iterator supit=sups.iterator(); supit.hasNext(); ) {
-//    	while (keys.hasMoreElements()) {
-//	      sup = (String)keys.nextElement();
-	      sup = (String)supit.next();
-  	    hs = ohm.getSubordinates(sup);
-  	    if (hs != null) {
-      		for (Iterator it=hs.iterator(); it.hasNext();) {
-    		    sub = (String)it.next();
-    		    if (DEBUG > 30) {
-		        	System.out.println("getTreeVGJ vgj.addSuperior(mygraph, sup, sub); sup: "+sup
-                  +" sub: "+sub);
-    		    }
-    		    // vgj.addSuperior(mygraph, sup, sub);
-    		    vgj.addSuperiorLink(mygraph, sup, sub);
-      		}
+	  sup = (String)supit.next();
+	  hs = ohm.getSubordinates(sup);
+	  if (hs != null) {
+	      for (Iterator it=hs.iterator(); it.hasNext();) {
+		  sub = (String)it.next();
+		  if (DEBUG > 30) {
+		      System.out.println("getTreeVGJ vgj.addSuperior(mygraph, sup, sub); sup: "+sup
+					 +" sub: "+sub);
+		  }
+		  // vgj.addSuperior(mygraph, sup, sub);
+		  vgj.addSuperiorLink(mygraph, sup, sub);
 	      }
-	    }
-
-
+	  }
+      }
     }
+
+
     public void showLiveClusters(VGJ vgj, Graph mygraph) {
 
       Collection orgs=ohm.getOrgs();
@@ -262,7 +240,7 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
       String liveOrg;
       for (Iterator supit=orgs.iterator(); supit.hasNext(); ) {
 	      liveOrg = (String)supit.next();
-        vgj.colorNode(mygraph, liveOrg, Color.green);
+	vgj.colorNode(mygraph, liveOrg, Color.green);
 	    }
 
 
@@ -279,7 +257,7 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
     private String getBranchDFS(String rootId, int depth) {
       String rcString=indent(depth)+rootId+delim;
- 	    HashSet kids;
+	    HashSet kids;
 	    String sub;
 
       // System.out.println("in getBranchDFS("+rootId+","+depth+") rcS: "+rcString);
@@ -287,16 +265,16 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
 	      rcString=indent(depth)+rootId+" [stopping here due to cycle] "+delim;
 	      System.out.println("Number of BranchStack elements: "+branchStack.size()
 			       +" branchStr: "+rcString);
-  	  } else {
-  	    branchStack.push(rootId);
+	  } else {
+	    branchStack.push(rootId);
 
-  	    kids = ohm.getSubordinates(rootId);
-        if (kids!=null) {
-          for (Iterator kiter=kids.iterator(); kiter.hasNext(); ) {
-            sub=(String)kiter.next();
-	          rcString += getBranchDFS(sub,depth+1);
-          }
-        }
+	    kids = ohm.getSubordinates(rootId);
+	if (kids!=null) {
+	  for (Iterator kiter=kids.iterator(); kiter.hasNext(); ) {
+	    sub=(String)kiter.next();
+		  rcString += getBranchDFS(sub,depth+1);
+	  }
+	}
 
 	      String str = (String)branchStack.pop();
 	      if (! str.equals(rootId)) { System.err.println("branchStack.pop()!=root"); }
