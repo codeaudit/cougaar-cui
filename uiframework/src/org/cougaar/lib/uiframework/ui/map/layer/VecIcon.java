@@ -12,8 +12,8 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/VecIcon.java,v $
- * $Revision: 1.2 $
- * $Date: 2001-02-23 21:56:55 $
+ * $Revision: 1.3 $
+ * $Date: 2001-03-22 16:59:12 $
  * $Author: krotherm $
  * 
  * **********************************************************************
@@ -38,7 +38,7 @@ import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.event.ProjectionEvent;
 
 import com.bbn.openmap.event.*;
-//import com.bbn.openmap.layer.location.*;
+import com.bbn.openmap.layer.location.*;
 
 public class VecIcon extends OMGraphic {
     float basepixyf=.2f;
@@ -96,8 +96,8 @@ public class VecIcon extends OMGraphic {
 	initLabel(defaultLabel);
     }
     protected void initLabel(String str) {
-	label=new OMText(lat1+(pixxf/2), lon2, 3, 1, str, 
-				OMText.JUSTIFY_LEFT);
+	label=new OMText(lat1+(pixxf/2), lon1, 3, 1, str, 
+				OMText.JUSTIFY_RIGHT);
 	ogl.add(label);
     }
 
@@ -126,13 +126,13 @@ public class VecIcon extends OMGraphic {
 			  OMGraphic.LINETYPE_STRAIGHT);
 	bbox.setFillColor(bgc);
 	bbox.setLineColor(fgc);
-	bbox.setLineWidth(lw);
+//	bbox.setLineWidth(lw);
  	ogl.add(bbox);
    }
 
     // default;  override for other symbols
     protected void initSymbol() {
-	float[] symbolPoints=new float [] {lat1, lon1, lat2, lon2};
+	float[] symbolPoints=new float [] {lat1, lon1, lat1, lon2};
 	initSymbol(symbolPoints);
    }
 
@@ -142,7 +142,7 @@ public class VecIcon extends OMGraphic {
 				 OMGraphic.LINETYPE_STRAIGHT
 				 );
 	poly.setLineColor(fgc);
-	poly.setLineWidth(lw2);
+//	poly.setLineWidth(lw2);
 	ogl.add(poly);
    }
 
