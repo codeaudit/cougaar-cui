@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.ErrorHandler;
@@ -60,6 +61,36 @@ public class DomUtil {
     public static String printValues(Node cel, String tag) {
       return printValues(cel, tag, 0);
     }
+
+    // added to make this work with the older xerces.jar file
+    public static void normalize(Node node) {
+
+    	Node kid, next;
+    	for (kid = node.getFirstChild(); kid != null; kid = next) {
+    		next = kid.getNextSibling();
+
+    		// If kid and next are both Text nodes (but _not_ CDATASection,
+    		// which is a subclass of Text), they can be merged.
+    		if (next != null
+			 && kid.getNodeType() == Node.TEXT_NODE
+			 && next.getNodeType() == Node.TEXT_NODE)
+    	    {
+    			((Text)kid).appendData(next.getNodeValue());
+    			node.removeChild(next);
+    			next = kid; // Don't advance; there might be another.
+    		}
+
+    		// Otherwise it might be an Element, which is handled recursively
+    		else if (kid.getNodeType() ==  Node.ELEMENT_NODE) {
+		    normalize((Element)kid);
+            }
+        }
+
+    	// changed() will have occurred when the removeChild() was done,
+    	// so does not have to be reissued.
+
+    } // normalize()
+
     public static String printValues(Node cel, String tag, int indentlevel) {
       String retstr=null;
       NodeList children;
@@ -81,7 +112,10 @@ public class DomUtil {
             ){
               System.out.println("TAG-MATCH");
             }
-            child.normalize();
+
+	    // changed to work with the older xerces.jar file
+            // child.normalize();
+	    normalize(child);
             String nodeval=child.getNodeValue();
             System.out.println("child: nodeType="+child.getNodeType()
               +" nodeval=["+nodeval+"]");
@@ -107,7 +141,10 @@ public class DomUtil {
   }
   public static String getTextNodeValue(Element cel) {
     String retstr=null;
-      cel.normalize();
+
+    // changed to make this work with the older xerces.jar file
+    // cel.normalize();
+    normalize(cel);
       NodeList children = cel.getChildNodes();
       Node child;
       int len=children.getLength();
