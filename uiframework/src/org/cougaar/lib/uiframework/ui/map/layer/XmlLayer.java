@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Attic/XmlLayer.java,v $
- * $Revision: 1.2 $
- * $Date: 2001-02-23 21:56:55 $
+ * $Revision: 1.3 $
+ * $Date: 2001-03-02 17:43:47 $
  * $Author: krotherm $
  *
  * **********************************************************************
@@ -162,60 +162,31 @@ public class XmlLayer extends XmlLayerBase implements MapMouseListener {
 	String[] services = {"Gestures" };
 	return services;
 	}
-	
-    // SwingSetFrame ssframe;
-
-    private void displayStoplight(String org) {
-	fireRequestMessage("Double Click caught which had caused a chart to display, but the stoplight is temporarily out of service.");
-	/*
-	  // the if was placed here because these were the only orgs that the 
-	  // stoplight code could handle.  when stoplight is upgraded the
-	  // if can be removed.
-	if (!(org.equals("23INBN")||org.equals("30INBN")||org.equals("31INBN"))) {
-	    org="31INBN";
-	}
-        ssframe = new SwingSetFrame("Stoplight Chart");
-        StoplightPanel slp = new StoplightPanel(ssframe);
-        slp.getVariableInterfaceManager().getDescriptor("Org").
-            setValue(org);
-        ssframe.getContentPane().add(slp);
-        ssframe.setVisible(true);
-	*/
-    }
 
   OMGraphic findClosest(int x, int y, float limit) {
     return myState.findClosest(x,y,limit);
   }
 
-	/**
-	 * Invoked when the mouse has been clicked on a component.
-	 * @param e MouseEvent
-	 * @return false
-	 */
-	public boolean mouseClicked(MouseEvent e){ 
-	    // OMGraphic omgr = (OMGraphic)omList.findClosest(e.getX(),e.getY(),4);
-      //OMGraphic omgr = (OMGraphic)myState.findClosest(e.getX(),e.getY(),4);
-      OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
-	    System.out.println("mouseClicked event: "+e);
-	    if(omgr != null){
-		System.out.println("mouseClicked omgr: "+omgr);
-		if(e.getClickCount() >= 2){	         
-		    // fireRequestMessage("Double Click caught.");
-		    // slf = new StoplightFrame();
-		    displayStoplight(getOrgName(omgr));
-
-		    //fireRequestMessage("Clicking more than once would bring up this URL http://openmap.bbn.com");
-		    //fireRequestURL("http://www.gte.com/AboutGTE/gto/bbnt/ssystech/index.html");
-		} else {
-		    //		fireRequestMessage("Clicking more than once would bring up this URL http://openmap.bbn.com");
-		}
-	    } else {
-		return false;
-	    }
-	    
-	    return true; 	
-	}
-
+// 	/**
+// 	 * Invoked when the mouse has been clicked on a component.
+// 	 * @param e MouseEvent
+// 	 * @return false
+// 	 */
+//     public boolean mouseClicked(MouseEvent e){ 
+// 	OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
+// 	System.out.println("mouseClicked event: "+e);
+// 	if(omgr != null){
+// 	    System.out.println("mouseClicked omgr: "+omgr);
+// 	    if(e.getClickCount() >= 2){	         
+// 		displayStoplight(getOrgName(omgr));
+// 	    }
+// 	} else {
+// 	    return false;
+// 	}
+	
+// 	return true; 	
+//     }
+    
   Unit getUnit(OMGraphic omgr) {
     return myState.getUnit(omgr);
   }
