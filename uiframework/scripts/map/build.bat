@@ -18,6 +18,9 @@ set LIB_PATH=%CUR_BIN_DIR%
 set LIB_PATH=%LIB_PATH%;%LIB_HOME%\xml4j_2_0_11.jar
 set LIB_PATH=%LIB_PATH%;%LIB_HOME%\core.jar
 set LIB_PATH=%LIB_PATH%;%LIB_HOME%\openmap.jar
+set LIBPATH=%LIBPATH%;%LIB_HOME%\glm.jar
+set LIBPATH=%LIBPATH%;%LIB_HOME%\aggagent.jar
+set LIBPATH=%LIBPATH%;%LIB_HOME%\planserver.jar
 
 if not exist %LIB_HOME%\xml4j_2_0_11.jar goto err1
 if not exist %LIB_HOME%\core.jar goto err1
@@ -25,15 +28,16 @@ if not exist %LIB_HOME%\openmap.jar goto err1
 
 set SRC_FILES=%MAP_SRC_HOME%\util\*.java
 set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\layer\*.java
+set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\query\*.java
 set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\app\*.java
 
 
 @rem Here's where the compiler lives and the flags we like to give it
-set JAVAC=c:\jdk1.2.2\bin\javac
+@rem set JAVAC=c:\jdk1.2.2\bin\javac
+set JAVAC=javac
 set JAVAFLAGS= -g  %deprec% -classpath %LIB_PATH% -d %CUR_BIN_DIR%
 
-if not exist %JAVAC% echo This should be compiled with Javac version 1.2.2 
-if not exist %JAVAC% set JAVAC=javac
+echo This should be compiled with Javac version 1.2.2 
 %JAVAC% %JAVAFLAGS% %SRC_FILES%
 
 goto ok
