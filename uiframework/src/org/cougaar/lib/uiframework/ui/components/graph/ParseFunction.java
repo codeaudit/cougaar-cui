@@ -58,7 +58,7 @@ import java.lang.*;
  *   <li> Scientific notation using "e", "E", "d", "D".
  * </ul>
  *
- * @version $Revision: 1.3 $, $Date: 2001-04-10 13:48:26 $
+ *
  * @author Leigh Brookshaw
  */
 

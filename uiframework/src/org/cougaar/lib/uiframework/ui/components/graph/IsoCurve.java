@@ -37,7 +37,7 @@ import java.lang.*;
  * This class will calculate the constant curve of a given value passing
  * through a grid of values.
  *
- * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:26 $.
+ *
  * @author Leigh Brookshaw
  */
 

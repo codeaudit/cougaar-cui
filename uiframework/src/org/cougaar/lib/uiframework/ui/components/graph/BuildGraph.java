@@ -43,7 +43,7 @@ import java.applet.Applet;
  * The build Graph class, with attached Axes and DataSets can be accessed
  * though methods in the class
  *
- * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:25 $
+ *
  * @author Leigh Brookshaw
  */
 

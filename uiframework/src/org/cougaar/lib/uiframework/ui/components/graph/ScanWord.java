@@ -41,7 +41,7 @@ import java.net.URL;
  * token of the StreamTokenizer is also modified so that scientific notation
  * is recognised.
  *
- * @version $Revision: 1.3 $, $Date: 2001-04-10 13:48:27 $
+ *
  * @author Leigh Brookshaw
  */
 

@@ -51,7 +51,7 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.5 $, $Date: 2001-06-06 21:24:03 $
+ *
  * @author   Leigh Brookshaw
  */
 

@@ -74,7 +74,7 @@ import java.util.*;
  *    windowing system the mouse button might have to be pressed in the
  *    popup window to ensure it has the keyboard focus.
  *
- * @version $Revision: 1.3 $, $Date: 2001-04-10 13:48:26 $.
+ *
  * @author Leigh Brookshaw
  */
 
