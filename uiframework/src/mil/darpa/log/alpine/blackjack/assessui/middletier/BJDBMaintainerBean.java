@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -119,6 +120,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
         try {
             stmt = connection.createStatement();
+            createPreparedStatements(connection);
 
             int metric_id = getMetricID (metric_string);
 
@@ -146,16 +148,12 @@ if (index == 0) {
                     end_time_in_days = start_time_in_days + 1;
 
 //              System.out.println ("time in days is " + time_in_days);
-
-//                    putValueInTable (org_id, item_id, time_in_days, metric_id, value_float);
                 }
                 else {
                     rate_float = Float.parseFloat (myStruct.getRate());
 
                     start_time_in_days = convertTimeToDays (myStruct.getStartTime());
                     end_time_in_days = convertTimeToDays (myStruct.getEndTime());
-
-//                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
                 }
 
                 putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
@@ -170,7 +168,6 @@ if (index == 0) {
             } /* end of while */
 
             System.out.println ("Done, processed " + index + " records");
-
 
 //            aggregateItems (item_list);
 
@@ -189,6 +186,44 @@ if (index == 0) {
                 if (stmt != null) stmt.close();
             }
             catch(SQLException e) {}
+        }
+    }
+
+    private PreparedStatement updateAssessmentData;
+    private PreparedStatement updateAssessmentAggregation;
+    private PreparedStatement sumAssessmentAggregation;
+    private PreparedStatement selectItemId;
+    private PreparedStatement selectOrgId;
+
+    private void createPreparedStatements (Connection conn) {
+        try {
+            updateAssessmentData =
+                conn.prepareStatement("UPDATE assessmentData " +
+                    "SET assessmentValue = ? WHERE org = ? AND item = ? " +
+                    "AND metric = ? AND unitsOfTime >= ? AND unitsOfTime < ?");
+
+            updateAssessmentAggregation =
+                conn.prepareStatement("UPDATE assessmentData " +
+                    "SET assessmentValue = ? WHERE org = ? AND item = ? " +
+                    "AND metric = ? AND unitsOfTime = ?");
+
+            sumAssessmentAggregation =
+                conn.prepareStatement("SELECT sum(assessmentvalue) FROM assessmentData WHERE item = ? and metric = ? and unitsoftime = ? and org in (select id from assessmentorgs where parent = ?)");
+
+//            selectItemId =
+                conn.prepareStatement("SELECT id FROM itemWeights WHERE item_id = '?'");
+//            selectOrgId =
+                conn.prepareStatement("SELECT id FROM assessmentOrgs WHERE name = '?'");
+        }
+        catch(SQLException e)
+        {
+            System.out.println ("SQL error code " + e.getErrorCode());
+            System.out.println (e.getMessage());
+            throw new EJBException(e);
+        }
+        catch(Exception e)
+        {
+            throw new EJBException(e);
         }
     }
 
@@ -239,8 +274,9 @@ if (index == 0) {
 
         try
         {
-            // See if the item_field_name is in the table already
-            ResultSet rs = stmt.executeQuery("SELECT id FROM itemWeights WHERE item_id = '" + item_field_name + "'");
+            // The effective query is
+            // SELECT id FROM itemWeights WHERE item_id = item_field_name
+            ResultSet rs = stmt.executeQuery ("SELECT id FROM itemWeights WHERE item_id = '" + item_field_name + "'");
 
             if (rs.next()) { // get the id value
                 item_id = rs.getInt ("ID");
@@ -298,8 +334,10 @@ if (index == 0) {
 
         try
         {
-            // See if the org_field_name is in the table already
-            ResultSet rs = stmt.executeQuery("SELECT id FROM assessmentOrgs WHERE name = '" + org_field_name + "'");
+            // The effective query is
+            // SELECT id FROM assessmentOrgs WHERE name = org_field_name
+
+            ResultSet rs = stmt.executeQuery ("SELECT id FROM assessmentOrgs WHERE name = '" + org_field_name + "'");
 
             if (rs.next()) { // get the id value
                 org_id = rs.getInt ("ID");
@@ -338,41 +376,11 @@ if (index == 0) {
         }
     }
 
-    private void putValueInTable (int org,
-                                 int item,
-                                 int time,
-                                 int metric,
-                                 float value) {
-        int rc;
-
-        try
-        {
-            rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + value + " WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time + " AND metric = " + metric);
-
-            // If the update was not successful, do an insert
-            // (rc will contain the number of rows updated by the
-            // executeUpdate command.)
-            if (rc == 0) {
-                stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org + ", " + item + ", " + time + ", " + metric + ", " + value + ")");
-            }
-        }
-        catch(SQLException e)
-        {
-            System.out.println ("SQL error code " + e.getErrorCode());
-            System.out.println (e.getMessage());
-            throw new EJBException(e);
-        }
-        catch(Exception e)
-        {
-            throw new EJBException(e);
-        }
-    }
-
-    private void putValuesInTable (int org,
-                                  int item,
+    private void putValuesInTable (int org_id,
+                                  int item_id,
                                   int start_time,
                                   int end_time,
-                                  int metric,
+                                  int metric_id,
                                   float rate) {
         int rc;
         int rows_to_update = end_time - start_time;
@@ -380,7 +388,18 @@ if (index == 0) {
         try
         {
 System.out.print (" update(" + start_time + " to " + end_time + ")");
-            rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + rate + " WHERE org = " + org + " AND item = " + item + " AND metric = " + metric + " AND unitsOfTime >= " + start_time + " AND unitsOfTime < " + end_time);
+            // The effective update is
+            // UPDATE assessmentData SET assessmentValue = rate
+            // WHERE org = org_id AND item = item_id AND metric = metric_id
+            // AND unitsOfTime >= start_time AND unitsOfTime < end_time
+
+            updateAssessmentData.setFloat(1,rate);
+            updateAssessmentData.setInt(2,org_id);
+            updateAssessmentData.setInt(3,item_id);
+            updateAssessmentData.setInt(4,metric_id);
+            updateAssessmentData.setInt(5,start_time);
+            updateAssessmentData.setInt(6,end_time);
+            rc = updateAssessmentData.executeUpdate();
 
             // If all the updates were not successful, do an insert
             // (rc will contain the number of rows updated by the
@@ -390,7 +409,7 @@ System.out.print (" update(" + start_time + " to " + end_time + ")");
 System.out.print ("insert"+time_index);
                     try
                     {
-                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org + ", " + item + ", " + time_index + ", " + metric + ", " + rate + ")");
+                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + rate + ")");
                     }
                     catch (SQLException e)
                     {
@@ -467,7 +486,18 @@ System.out.print ("insert"+time_index);
             // Aggregate for this parent and item
 
             for (time_index = start_time; time_index < end_time; time_index++) {
-                rs = stmt.executeQuery("SELECT sum(assessmentvalue) FROM assessmentData WHERE item = " + item_id + " and metric = " + metric_id + " and unitsoftime = " + time_index + " and org in (select id from assessmentorgs where parent =  " + parent_org_id + ")");
+
+                // The effective query is
+                // SELECT sum(assessmentvalue) FROM assessmentData
+                // WHERE item = item_id and metric = metric_id
+                // and unitsoftime = time_index and org in
+                // (select id from assessmentorgs where parent = parent_org_id)
+
+                sumAssessmentAggregation.setFloat(1,item_id);
+                sumAssessmentAggregation.setInt(2,metric_id);
+                sumAssessmentAggregation.setInt(3,time_index);
+                sumAssessmentAggregation.setInt(4,parent_org_id);
+                rs = sumAssessmentAggregation.executeQuery();
 
                 if (rs.next()) { // get the sum
                     float sum = rs.getFloat ("sum(assessmentvalue)");
@@ -477,9 +507,19 @@ System.out.print ("insert"+time_index);
                                         ", item " + item_id +
                                         ", time " + time_index + ", sum is " + sum);
 
-                    rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + sum + " WHERE org = " + parent_org_id + " AND item = " + item_id + " AND metric = " + metric_id + " AND unitsOfTime = " + time_index);
+                    // The effective update is
+                    // UPDATE assessmentData SET assessmentValue = sum
+                    // WHERE org = parent_org_id AND item = item_id
+                    // AND metric = metric_id AND unitsOfTime = time_index
 
-                    // If all the update was not successful, do an insert
+                    updateAssessmentAggregation.setFloat(1,sum);
+                    updateAssessmentAggregation.setInt(2,parent_org_id);
+                    updateAssessmentAggregation.setInt(3,item_id);
+                    updateAssessmentAggregation.setInt(4,metric_id);
+                    updateAssessmentAggregation.setInt(5,time_index);
+                    rc = updateAssessmentAggregation.executeUpdate();
+
+                    // If the update was not successful, do an insert
                     if (rc != 1) {
                         stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + parent_org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + sum + ")");
                     }
@@ -499,93 +539,6 @@ System.out.print ("insert"+time_index);
 
         aggregateByOrg (parent_org_id, item_id, metric_id, start_time, end_time);
     } /* end of aggregateByOrg */
-
-    private void aggregateByOrganizations (Vector org_list,
-                                           Vector item_list,
-                                           int metric_id,
-                                           int start_time,
-                                           int end_time) {
-
-        int org_index, item_index, time_index;
-        Vector parent_org_list = new Vector();
-        int parent_org_id;
-        int item_id;
-
-        try
-        {
-            System.out.print ("Looking for parents of:");
-
-            // Loop through all the organizations, and make a list of
-            // all of the parents
-
-            for (org_index = 0; org_index < org_list.size(); org_index++) {
-                System.out.print ((String) org_list.elementAt(org_index) + " ");
-
-                // See if the current org_list id is in the table already
-                ResultSet rs = stmt.executeQuery("SELECT parent FROM assessmentOrgs WHERE id = " + org_list.elementAt(org_index));
-
-                if (rs.next()) { // get the parent id value
-                    parent_org_id = rs.getInt ("parent");
-
-                    // See if the parent_org_id is actually in the table.
-                    // If it isn't in the table, skip this entry, since it means we reached the top of the tree
-                    ResultSet rs2 = stmt.executeQuery("SELECT parent FROM assessmentOrgs WHERE id = " + parent_org_id);
-
-                    if (rs2.next() && (parent_org_list.contains ("" + parent_org_id) == false)) {
-                        parent_org_list.add ("" + parent_org_id);
-                    }
-                }
-            } /* end of for */
-
-            System.out.println ("");
-
-            // Aggregate for this group of parents
-
-            for (org_index = 0; org_index < parent_org_list.size(); org_index++) {
-                parent_org_id = Integer.parseInt ((String) parent_org_list.elementAt(org_index));
-
-                for (item_index = 0; item_index < item_list.size(); item_index++) {
-                    item_id = Integer.parseInt ((String) item_list.elementAt(item_index));
-
-                    for (time_index = start_time; time_index < end_time; time_index++) {
-                        ResultSet rs = stmt.executeQuery("SELECT sum(assessmentvalue) FROM assessmentData WHERE item = " + item_id + " and metric = " + metric_id + " and unitsoftime = " + time_index + " and org in (select id from assessmentorgs where parent =  " + parent_org_id + ")");
-
-                        if (rs.next()) { // get the sum
-                            float sum = rs.getFloat ("sum(assessmentvalue)");
-                            int rc;
-
-                            System.out.println ("org " + parent_org_id +
-                                                ", item " + item_id +
-                                                ", time " + time_index + ", sum is " + sum);
-
-                            rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + sum + " WHERE org = " + parent_org_id + " AND item = " + item_id + " AND metric = " + metric_id + " AND unitsOfTime = " + time_index);
-
-                            // If all the update was not successful, do an insert
-                            if (rc != 1) {
-                                stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + parent_org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + sum + ")");
-                            }
-                        }
-                    } /* end of for time_index */
-                } /* end of for item_index */
-            } /* end of for org_index */
-        } /* end of try */
-        catch(SQLException e)
-        {
-            System.out.println ("SQL error code " + e.getErrorCode());
-            System.out.println (e.getMessage());
-            throw new EJBException(e);
-        }
-        catch(Exception e)
-        {
-            throw new EJBException(e);
-        }
-
-        if (parent_org_list.size() > 0) {
-            aggregateByOrganizations (parent_org_list, item_list, metric_id, start_time, end_time);
-        }
-        else
-            System.out.println ("no parents");
-    } /* end of aggregateByOrganizations */
 
     private void aggregateItems (Vector org_list) {
 
