@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -84,12 +84,13 @@ public class CDesktopFrame extends CFrame
      * @param constParamClasses array of classes that describe constructor
      *                          parameters that will be used for creating new
      *                          instances of the CougaarUI.
-     * @param constParams       array of objects that will be passed into
-     *                          constructor when creating new instances of the
-     *                          CougaarUI.
+     * @param constParams       creates array of objects that will be passed
+     *                          into constructor when creating new instances
+     *                          of the CougaarUI.
      */
      public void addTool(String name, char mnemonic, Class cougaarUIClass,
-                         Class[] constParamClasses, Object[] constParams)
+                         Class[] constParamClasses,
+                         ParameterCreator constParams)
      {
         createMenuItem(viewMenu, name, mnemonic, "",
                        new CreateViewAction(name, cougaarUIClass,
@@ -300,10 +301,10 @@ public class CDesktopFrame extends CFrame
         private String title;
         private Class viewClass;
         private Class[] constParamClasses;
-        private Object[] constParams;
+        private ParameterCreator constParams;
         protected CreateViewAction(String title, Class viewClass,
                                    Class[] constParamClasses,
-                                   Object[] constParams)
+                                   ParameterCreator constParams)
         {
             super("CreateViewAction");
             this.viewClass = viewClass;
@@ -324,8 +325,10 @@ public class CDesktopFrame extends CFrame
                         {
                             Constructor c =
                                 viewClass.getConstructor(constParamClasses);
-                            CougaarUI cougaarUI =
-                                (CougaarUI)c.newInstance(constParams);
+                            CougaarUI cougaarUI = (CougaarUI)
+                                c.newInstance((constParams !=  null) ?
+                                              constParams.createParameters() :
+                                              null);
                             createInnerFrame(title, cougaarUI);
                         }
                         catch (Exception ex)
@@ -392,5 +395,10 @@ public class CDesktopFrame extends CFrame
             }
         }
         return selectedFrame;
+    }
+
+    protected interface ParameterCreator
+    {
+        public Object[] createParameters();
     }
 }
