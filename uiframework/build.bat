@@ -13,17 +13,12 @@ set LIB=..\..\lib
 
 set CP=
 set CP=%CP%;%LIB%\xerces.jar
-set CP=%CP%;%LIB%\vgj.jar
 set CP=%CP%;%LIB%\aggagent.jar
 set CP=%CP%;%LIB%\core.jar
 set CP=%CP%;%LIB%\glm.jar
 set CP=%CP%;%LIB%\planserver.jar
 set CP=%CP%;%LIB%\xml4j_2_0_11.jar
 set CP=%CP%;%LIB%\j2ee.jar
-set CP=%CP%;%LIB%\xerces.jar
-set CP=%CP%;%LIB%\vgj.jar
-set CP=%CP%;%LIB%\xerces.jar
-set CP=%CP%;%LIB%\vgj.jar
 set CP=%CP%;%LIB%\cuimap.jar
 
 set CP0=%OP%
