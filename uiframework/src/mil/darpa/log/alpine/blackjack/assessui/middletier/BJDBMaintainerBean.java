@@ -63,7 +63,10 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 //        System.out.println("XML: " + updateXML);
 
         AggInfoDecoder myDecoder = new AggInfoDecoder ();
-        myDecoder.startXMLDecoding (updateXML);
+
+        String metric_string;
+        metric_string = myDecoder.startXMLDecoding (updateXML);
+
         int index = 0;
         Vector org_list = new Vector();
         Vector item_list = new Vector();
@@ -71,13 +74,16 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         try {
             stmt = connection.createStatement();
 
+            int metric_id = getMetricID (metric_string);
+            System.out.println ("metric string is " + metric_string);
+            System.out.println ("metric id is " + metric_id);
+
             while (!myDecoder.doneXMLDecoding ()) {
 
                 AggInfoStructure myStruct = myDecoder.getNextDataAtom();
 
 if (index == 0) {
                 System.out.print ("Org " + myStruct.getOrg());
-                System.out.println (", Fieldname " + myStruct.getFieldname());
 }
 /*
                 System.out.println ("Time is " + myStruct.getTime());
@@ -85,9 +91,6 @@ if (index == 0) {
 */
                 System.out.print ("Item " + myStruct.getItem());
                 System.out.print (", Rate " + myStruct.getRate());
-
-                int metric_id = getMetricID (myStruct.getFieldname());
-//            System.out.println ("metric id is " + metric_id);
 
                 int item_id = getItemID (myStruct.getItem());
 //            System.out.println ("item id is " + item_id);

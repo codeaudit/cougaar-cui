@@ -12,10 +12,11 @@ public class AggInfoDecoder {
   NodeList element_list;
   int current_element = -1;
 
-  public void startXMLDecoding (String new_xml_string) {
+  public String startXMLDecoding (String new_xml_string) {
 
 //    System.out.println ("In startXMLDecoding");
 
+    String metric;
     StringReader sr = new StringReader (new_xml_string);
     InputSource is = new InputSource (sr);
     Parser p = new Parser (".");
@@ -28,10 +29,27 @@ public class AggInfoDecoder {
       System.out.println ("Could not parse XML string");
     }
 
+    NodeList metric_list = dom.getElementsByTagName (AggInfoEncoder.getMetricXMLString());
+
+    // Grab the first element
+    Node current_node = metric_list.item (0);
+
+    if (current_node == null)
+    {
+      System.out.println ("It's null");
+      return null;
+    }
+
+    metric = current_node.getFirstChild().getNodeValue();
+
+    System.out.println ("metric is " + metric);
+
     // Set up the list of <data-atom> nodes
 
     element_list = dom.getElementsByTagName (AggInfoEncoder.getDataAtomXMLString());
     current_element = 0;
+
+    return metric;
   }
 
   public boolean doneXMLDecoding () {
@@ -63,7 +81,6 @@ public class AggInfoDecoder {
     String time = null;
     String start_time = null;
     String end_time = null;
-    String fieldname = null;
     String value = null;
     String rate = null;
 
@@ -85,9 +102,6 @@ public class AggInfoDecoder {
       else if (this_node.getNodeName().compareTo(AggInfoStructure.getEndTimeXMLString()) == 0) {
         end_time = this_node.getFirstChild().getNodeValue();
       }
-      else if (this_node.getNodeName().compareTo(AggInfoStructure.getFieldnameXMLString()) == 0) {
-        fieldname = this_node.getFirstChild().getNodeValue();
-      }
       else if (this_node.getNodeName().compareTo(AggInfoStructure.getValueXMLString()) == 0) {
         value = this_node.getFirstChild().getNodeValue();
       }
@@ -99,9 +113,9 @@ public class AggInfoDecoder {
     AggInfoStructure ret;
 
     if (time != null)
-      ret = new AggInfoStructure(org, item, time, fieldname, value);
+      ret = new AggInfoStructure(org, item, time, value);
     else
-      ret = new AggInfoStructure(org, item, start_time, end_time, fieldname, rate);
+      ret = new AggInfoStructure(org, item, start_time, end_time, rate);
 
     current_element++;
 
@@ -111,12 +125,12 @@ public class AggInfoDecoder {
   public static void main (String args[]) {
     AggInfoDecoder myDecoder = new AggInfoDecoder();
     AggInfoEncoder myEncoder = new AggInfoEncoder ();
-    AggInfoStructure myStruct = new AggInfoStructure ("DEPT8H", "PEOPLE", "1", "SUM", "65");
-    AggInfoStructure myStruct2 = new AggInfoStructure ("DEPT8H", "COMPUTERS", "1", "AVERAGE PER PERSON", "1.5");
-    AggInfoStructure myStruct3 = new AggInfoStructure ("DEPT4B", "LAMPS", "2", "TOTAL PER OFFICE", "5");
-    AggInfoStructure myStruct4 = new AggInfoStructure ("DEPT4B", "LAMPS", "1", "5", "DEMAND", "2");
+    AggInfoStructure myStruct = new AggInfoStructure ("DEPT8H", "PEOPLE", "1", "65");
+    AggInfoStructure myStruct2 = new AggInfoStructure ("DEPT8H", "COMPUTERS", "1", "1.5");
+    AggInfoStructure myStruct3 = new AggInfoStructure ("DEPT4B", "LAMPS", "2", "5");
+    AggInfoStructure myStruct4 = new AggInfoStructure ("DEPT4B", "LAMPS", "1", "5", "2");
 
-    String line1 = myEncoder.encodeStartOfXML();
+    String line1 = myEncoder.encodeStartOfXML("DEMAND");
     String line2 = myEncoder.encodeDataAtom(myStruct);
     String line3 = myEncoder.encodeDataAtom(myStruct2);
     String line4 = myEncoder.encodeDataAtom(myStruct3);
@@ -130,12 +144,17 @@ public class AggInfoDecoder {
     System.out.print (line5);
     System.out.print (line6);
 
-    myDecoder.startXMLDecoding (line1 + line2 + line3 + line4 + line5 + line6);
+    String metric = null;
+
+    metric = myDecoder.startXMLDecoding (line1 + line2 + line3 + line4 + line5 + line6);
+
 //    myDecoder.startXMLDecoding ("<?XML bull?>\n<data-set>\n</data-set>");
 //    myDecoder.startXMLDecoding ("/ata-set>");
-//    String text = "<?xml version=1.0 encoding=UTF-8?><data-set><data-atom><org>MyOrg </org><item>MyItem </item><time>MyTime </time><fieldname>MyFieldName </fieldname><value>MyValue </value></data-atom></data-set>";
+//    String text = "<?xml version=1.0 encoding=UTF-8?><metric>DEMAND</metric><data-set><data-atom><org>MyOrg </org><item>MyItem </item><time>MyTime </time><value>MyValue </value></data-atom></data-set>";
 
 //    myDecoder.startXMLDecoding (text);
+
+    System.out.println ("Metric is " + metric);
 
     while (!myDecoder.doneXMLDecoding())
     {
@@ -152,8 +171,6 @@ public class AggInfoDecoder {
         System.out.println ("Start Time is " + mystruct.getStartTime());
         System.out.println ("End Time is " + mystruct.getEndTime());
       }
-
-      System.out.println ("Fieldname is " + mystruct.getFieldname());
 
       if (mystruct.getValue() != null) {
         System.out.println ("Value is " + mystruct.getValue());

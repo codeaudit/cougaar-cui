@@ -27,7 +27,7 @@ import org.cougaar.domain.planning.ldm.asset.TypeIdentificationPG;
 
 public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
-  private static final String metric = "Inventory";
+  private static final String METRIC = "Inventory";
 
   private String output_xml;
   private boolean send_xml = false;
@@ -44,7 +44,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
     index = 0;
     xml_count = 0;
 
-    output_xml = myEncoder.encodeStartOfXML();
+    output_xml = myEncoder.encodeStartOfXML(METRIC);
 
     while (iter.hasNext()) {
 
@@ -132,7 +132,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
           // If the structure is null, create one
           if (nextStructure == null) {
-            nextStructure = new AggInfoStructure (org, item, start_time, end_time, metric, rate);
+            nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
           }
           // If the rates are the same, and the start time of the new record
           // is the same as the end time of the old record, then combine
@@ -144,7 +144,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
           // Output the record and start a new one
           else {
             writeStructureToXML (nextStructure);
-            nextStructure = new AggInfoStructure (org, item, start_time, end_time, metric, rate);
+            nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
           }
         } /* end of while */
 

@@ -23,7 +23,7 @@ import org.cougaar.domain.planning.ldm.plan.Task;
 
 public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
-  private static final String metric = "Demand";
+  private static final String METRIC = "Demand";
 
   private String output_xml;
   private boolean send_xml = false;
@@ -38,7 +38,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
     index = 0;
 
-    output_xml = myEncoder.encodeStartOfXML();
+    output_xml = myEncoder.encodeStartOfXML(METRIC);
 
     while (iter.hasNext()) {
 
@@ -129,12 +129,11 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             System.out.println ("end_time is " + end_time);
             System.out.println ("org is: " + org);
             System.out.println ("item is: " + item);
-            System.out.println ("metric is: " + metric);
             System.out.println ("rate is: " + rate);
           }
 */
 
-          myStructure = new AggInfoStructure (org, item, start_time, end_time, metric, rate);
+          myStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
 
           String output_string = myEncoder.encodeDataAtom(myStructure);
 

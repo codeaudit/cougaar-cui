@@ -7,7 +7,6 @@ public class AggInfoStructure {
   private String time;
   private String start_time;
   private String end_time;
-  private String fieldname;
   private String value;
   private String rate;
 
@@ -16,19 +15,16 @@ public class AggInfoStructure {
   static private final String time_xml_string = "time";
   static private final String start_time_xml_string = "start_time";
   static private final String end_time_xml_string = "end_time";
-  static private final String fieldname_xml_string = "fieldname";
   static private final String value_xml_string = "value";
   static private final String rate_xml_string = "rate";
 
   public AggInfoStructure (String new_org,
 			 String new_item,
 			 String new_time,
-			 String new_fieldname,
 			 String new_value) {
     org = new_org;
     item = new_item;
     time = new_time;
-    fieldname = new_fieldname;
     value = new_value;
     start_time = null;
     end_time = null;
@@ -39,13 +35,11 @@ public class AggInfoStructure {
 			 String new_item,
 			 String new_start_time,
 			 String new_end_time,
-			 String new_fieldname,
 			 String new_rate) {
     org = new_org;
     item = new_item;
     start_time = new_start_time;
     end_time = new_end_time;
-    fieldname = new_fieldname;
     rate = new_rate;
     time = null;
     value = null;
@@ -133,22 +127,6 @@ public class AggInfoStructure {
 
   static public String getEndTimeEndXMLString () {
     return "</" + end_time_xml_string + ">";
-  }
-
-  public String getFieldname () {
-    return fieldname;
-  }
-
-  static public String getFieldnameXMLString () {
-    return fieldname_xml_string;
-  }
-
-  static public String getFieldnameStartXMLString () {
-    return "<" + fieldname_xml_string + ">";
-  }
-
-  static public String getFieldnameEndXMLString () {
-    return "</" + fieldname_xml_string + ">";
   }
 
   public String getValue () {
