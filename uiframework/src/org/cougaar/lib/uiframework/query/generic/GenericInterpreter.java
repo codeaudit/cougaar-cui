@@ -18,156 +18,271 @@ public class GenericInterpreter implements QueryInterpreter {
   private Hashtable dimensions = new Hashtable();
   private Hashtable attributes = new Hashtable();
 
+  // This inner class represents the parameter space over which a query is to
+  // be evaluated.  It has iterator methods that allow the handler to traverse
+  // the space and induce calculation of the requisite fields.  Each instance
+  // of DimSet can be used once and then must be thrown away.
+  private class DimenSet {
+    private EvaluationLocus locus = null;
+    private DimPath[] paths = null;
+    private int majorPath = -1;
+
+    private Structure result = new Structure();
+    // Initially, the currentNode is the result set Structure.  Whatever results
+    // are generated should be inserted
+    private ListElement currentNode = result;
+    private boolean still_valid = true;
+
+    /**
+     *  Retrieve the Structure built by iterating through the parameter space
+     *  and calculating values for the Fields supplied by the handler.
+     *  @return the result set Structure
+     */
+    public Structure getResult () {
+      return result;
+    }
+
+    /**
+     *  Construct an instance of DimenSet by parsing the dimensions clause in
+     *  the query.  Once created, it can be made ready for iterating through
+     *  its parameter space by calling the init() method.
+     *  @param att the part of the query containing the dimension specs
+     *  @throws QueryException if the dimension specs are invalid
+     */
+    public DimenSet (Attribute att) throws QueryException {
+      result.addAttribute(new Attribute("result set"));
+      paths = new DimPath[att.getChildCount()];
+      locus = new EvaluationLocus(paths.length);
+
+      Enumeration e = att.getChildren();
+      for (int i = 0; e.hasMoreElements(); i++) {
+        ListElement dimSpec = ((Element) e.nextElement()).getAsList();
+        String name = null;
+        ListElement specElement = null;
+        QueryDimension dimen = null;
+        if (dimSpec != null) {
+          name = Utilities.findNameAttribute(dimSpec);
+          specElement = Utilities.getFirstListChild(dimSpec);
+        }
+        if (name != null)
+          dimen = (QueryDimension) dimensions.get(name);
+        if (dimen != null && specElement != null)
+          paths[i] = dimen.visitNodes(specElement);
+        else
+          throw new QueryException(
+            "unrecognized or badly specified dimension \"" + name + "\"");
+      }
+    }
+
+    /**
+     *  Retrieve the number of dimensions held by this DimenSet
+     *  @return the number of dimensions
+     */
+    public int size () {
+      return paths.length;
+    }
+
+    /**
+     *  Initialize this DimenSet so that it is ready to begin iterating through
+     *  the parameter space it represents.  If the operation fails, then it is
+     *  because one of the dimensions is empty, and a QueryException is thrown.
+     *  @throws QueryException if the parameter space contains no valid points
+     */
+    public void init () throws QueryException {
+      boolean foundMajor = false;
+      for (int index = 0; index < paths.length; index++) {
+        DimPath path = paths[index];
+        path.copyPrototypes();
+        if (!path.getEvaluationSeq().hasCurrent())
+          throw new QueryException("Scope empty for dimension " +
+            path.getDimension().getName());
+
+        VisitLocus vl = path.getEvaluationSeq().getCurrentLocus();
+        locus.setCoordinate(index, vl);
+        if (!path.isSingleton()) {
+          if (!foundMajor) {
+            foundMajor = true;
+            addMajorDimension(path.getResultSet());
+          }
+          else {
+            addMinorDimension(path.getResultSet());
+          }
+          currentNode = vl.record;
+        }
+      }
+    }
+
+    /**
+     *  Report to the caller whether or not the current configuration of this
+     *  DimenSet is valid.  If it is, then field values can be calculated by
+     *  calling eval().
+     */
+    public boolean isValidLeaf () {
+      return still_valid;
+    }
+
+    /**
+     *  Find the next point in the parameter space where the fields should be
+     *  evaluated.  Before requesting evaluation, the handler must check to make
+     *  sure that the operation succeeded by calling isValidLeaf().
+     */
+    public void nextLeaf () {
+      int index;
+      for (index = paths.length - 1; index >= 0; index--) {
+        paths[index].getEvaluationSeq().next();
+        if (paths[index].getEvaluationSeq().hasCurrent())
+          break;
+      }
+
+      if (index < 0) {
+        // If no such dimension is found, then we have traversed the entire
+        // parameter space.  No more valid points are available.
+        still_valid = false;
+      }
+      else if (index < paths.length - 1) {
+        // Otherwise, move forward by creating fresh copies of the minor
+        // dimensions, if any.  When the operation terminates, currentNode
+        // should hold a reference to the ListElement into which values should
+        // be inserted next, and locus should be the point in the parameter
+        // space at which those values should be calculated.
+        VisitLocus vl = paths[index].getEvaluationSeq().getCurrentLocus();
+        currentNode = vl.record;
+        locus.setCoordinate(index, vl);
+        for (index++; index < paths.length; index++) {
+          paths[index].copyPrototypes();
+          vl = paths[index].getEvaluationSeq().getCurrentLocus();
+          locus.setCoordinate(index, vl);
+          if (!paths[index].isSingleton()) {
+            addMinorDimension(paths[index].getResultSet());
+            currentNode = vl.record;
+          }
+        }
+      }
+      else {
+        VisitLocus vl = paths[index].getEvaluationSeq().getCurrentLocus();
+        currentNode = vl.record;
+        locus.setCoordinate(index, vl);
+      }
+    }
+
+    // Insert a "minor" dimension into the result set, using the syntax
+    // prescribed by the GenericInterpreter language.  It is inserted into its
+    // container as the child of an Attribute named "minor".
+    private void addMinorDimension (ListElement elt) {
+      Attribute minors = new Attribute("minor");
+      currentNode.addAttribute(minors);
+      minors.addChild(elt);
+    }
+
+    // Insert a "major" dimension into the result set.  In each result, there
+    // should be at most one of these, it's parent must be the result set
+    // Structure, and it is inserted as a child ListElement.
+    private void addMajorDimension (ListElement elt) {
+      currentNode.addChild(elt);
+    }
+
+    /**
+     *  Retrieve a set of values for the fields specified and install them
+     *  within the burgeoning result set Structure.  The syntax is part of the
+     *  GenericInterpreter language.
+     *  @param f a set of fields to be evaluated
+     */
+    public void eval (FieldSet f) throws QueryException {
+      Attribute vals = new Attribute("values");
+      for (Enumeration e = f.getFields(); e.hasMoreElements(); ) {
+        FieldRec rec = (FieldRec) e.nextElement();
+        vals.addAttribute(new Attribute(rec.returnName, rec.field.eval(locus)));
+      }
+      currentNode.addAttribute(vals);
+    }
+  }
+
+  // A record containing the QueryAttribute and the name by which it should be
+  // called in the result set.  This class serves as the medium of communication
+  // between a FieldSet and a DimenSet.
+  private static class FieldRec {
+    public QueryAttribute field = null;
+    public String returnName = null;
+
+    public FieldRec (QueryAttribute f, String n) {
+      field = f;
+      returnName = n;
+    }
+  }
+
+  // This inner class represents a set of fields to be computed at various
+  // points in a specified parameter space.  An instance creates itself from the
+  // "fields" specification found in the query
+  private class FieldSet {
+    private Vector fields = new Vector();
+
+    /**
+     *  Create a new FieldSet instance by parsing the fields clause in the
+     *  query.
+     *  @param att the part of the query containing the field specs
+     *  @throws QueryException if the query specs are invalid
+     */
+    public FieldSet (Attribute att) throws QueryException {
+      for (Enumeration e = att.getAttributes(); e.hasMoreElements(); ) {
+        Attribute spec = (Attribute) e.nextElement();
+        String key = spec.getName();
+        String attName = key;
+        Enumeration children = spec.getChildren();
+        ValElement val = null;
+        if (children.hasMoreElements())
+          val = ((Element) children.nextElement()).getAsValue();
+        if (val != null)
+          attName = val.getValue();
+        QueryAttribute field = (QueryAttribute) attributes.get(attName);
+        if (field == null)
+          throw new QueryException("Invalid Query--attribute " + attName +
+            " is not defined");
+
+        fields.add(new FieldRec(field, key));
+      }
+    }
+
+    /**
+     *  Tell whether any fields were gathered during the parsing phase.  If
+     *  not, then there is no point in using this FieldSet to answer a query.
+     *  @return true iff there are no fields in this FieldSet
+     */
+    public boolean isEmpty () {
+      return fields.size() == 0;
+    }
+
+    /**
+     *  Produce an Enumeration of the fields contained in this FieldSet
+     *  @return the fields
+     */
+    public Enumeration getFields () {
+      return fields.elements();
+    }
+  }
+   
+
   /**
    *  Respond to an incoming query using the local dimensions and attributes
+   *  @param q the query
+   *  @return the result set
+   *  @throws QueryException if the query is invalid or cannot be answered
    */
   public Structure query (Structure q) throws QueryException {
     if (q.getAttribute("query") == null)
       throw new QueryException("Invalid Structure--not identified as a query");
 
     ListElement body = q.getContentList();
-    Hashtable fields = parseFields(body.getAttribute("fields"));
-    if (fields.size() == 0)
+    FieldSet fields = new FieldSet(body.getAttribute("fields"));
+    if (fields.isEmpty())
       throw new QueryException("Invalid Query--no recognized return fields");
-    Vector singles = new Vector();
-    Vector dimens = new Vector();
-    parseDimens(body.getAttribute("dimensions"), singles, dimens);
-    if (dimens.size() + singles.size() == 0)
+    DimenSet dimens = new DimenSet(body.getAttribute("dimensions"));
+    if (dimens.size() == 0)
       throw new QueryException("Invalid Query--scope is empty");
 
-    // the structure to be returned
-    Structure ret = new Structure();
-    ret.addAttribute(new Attribute("result set"));
-    // vector of current VisitSeq instances
-    Vector params = new Vector();
-    // a container for the current VisitLocus instances
-    EvaluationLocus locus = new EvaluationLocus();
+    for (dimens.init(); dimens.isValidLeaf(); dimens.nextLeaf())
+      dimens.eval(fields);
 
-    // first install the singleton coordinates in the locus
-    for (Enumeration e = singles.elements(); e.hasMoreElements(); ) {
-      DimPath dp = (DimPath) e.nextElement();
-      dp.copyPrototypes();
-      VisitSeq seq = dp.getEvaluationSeq();
-      if (seq.hasCurrent())
-        locus.addCoordinate(seq.getCurrentLocus());
-      else
-        throw new QueryException("Invalid dimension \"" +
-          dp.getDimension().getName() + "\"--singleton must not be empty");
-    }
-
-    // If all the dimensions are singletons, then get the attribute values and
-    // quit.  Otherwise, traverse the explicit dimensions.
-    if (dimens.size() == 0) {
-      ret.addAttribute(getFieldValues(fields, locus));
-      return ret;
-    }
-
-    // Start by creating a copy of the outermost dimension.  This will be the
-    // the root member within the return structure.
-    DimPath dim = (DimPath) dimens.elementAt(0);
-    dim.copyPrototypes();
-    ret.addChild(dim.getResultSet());
-    params.add(dim.getEvaluationSeq());
-
-    // when the outermost dimension is removed from the stack, we are done
-    while (params.size() > 0) {
-      // Start by checking for the current position in the top dimension on the
-      // stack.  If it does not exist, pop the dimension off the stack.  If it
-      // does, process that position.
-      VisitSeq seq = (VisitSeq) params.get(params.size() - 1);
-      if (!seq.hasCurrent()) {
-        params.removeElementAt(params.size() - 1);
-        if (locus.size() > 0)
-          locus.pop();
-      }
-      else {
-        VisitLocus site = seq.getCurrentLocus();
-        locus.addCoordinate(site);
-        seq.next();
-        // if this is the innermost dimension, calculate attribute values and
-        // go on to the next site
-        if (params.size() == dimens.size()) {
-          site.record.addAttribute(getFieldValues(fields, locus));
-          locus.pop();
-        }
-        // If this is not the innermost dimension, create a spot for the minor
-        // dimensions and initialize the outermost one.
-        else {
-          Attribute minors = new Attribute("minor");
-          site.record.addAttribute(minors);
-          dim = (DimPath) dimens.elementAt(params.size());
-          dim.copyPrototypes();
-          minors.addChild(dim.getResultSet());
-          params.add(dim.getEvaluationSeq());
-        }
-      }
-    }
-
-    return ret;
-  }
-
-  // evaluate the attributes for a given locus
-  private Attribute getFieldValues (Hashtable fields, EvaluationLocus locus)
-      throws QueryException
-  {
-    Attribute vals = new Attribute("values");
-    for (Enumeration e = fields.keys(); e.hasMoreElements(); ) {
-      String key = (String) e.nextElement();
-      QueryAttribute a = (QueryAttribute) fields.get(key);
-      vals.addAttribute(new Attribute(key, a.eval(locus)));
-    }
-    return vals;
-  }
-
-  // read the "fields" clause of the query and assemble a table of Attributes
-  // to be calculated for each expressed point in the query's parameter space
-  private Hashtable parseFields (ListElement le) throws QueryException {
-    Hashtable ret = new Hashtable();
-    for (Enumeration e = le.getAttributes(); e.hasMoreElements(); ) {
-      Attribute spec = (Attribute) e.nextElement();
-      String key = spec.getName();
-      String attName = key;
-      Enumeration children = spec.getChildren();
-      ValElement val = null;
-      if (children.hasMoreElements())
-        val = ((Element) children.nextElement()).getAsValue();
-      if (val != null)
-        attName = val.getValue();
-      QueryAttribute field = (QueryAttribute) attributes.get(attName);
-      if (field == null)
-        throw new QueryException("Invalid Query--attribute " + attName +
-          " is not defined");
-      else
-        ret.put(key, field);
-    }
-
-    return ret;
-  }
-
-  // read the "dimensions" clause of the query and assemble an ordered list of
-  // the dimensions (and scopes therein) that define the query's parameter space
-  private void parseDimens (ListElement le, Vector singles, Vector dimens)
-      throws QueryException
-  {
-    for (Enumeration e = le.getChildren(); e.hasMoreElements(); ) {
-      ListElement dimSpec = ((Element) e.nextElement()).getAsList();
-      String name = null;
-      ListElement specElement = null;
-      QueryDimension dimen = null;
-      if (dimSpec != null) {
-        name = Utilities.findNameAttribute(dimSpec);
-        specElement = Utilities.getFirstListChild(dimSpec);
-      }
-      if (name != null)
-        dimen = (QueryDimension) dimensions.get(name);
-      if (dimen != null && specElement != null) {
-        DimPath path = dimen.visitNodes(specElement);
-        if (path.isSingleton())
-          singles.add(path);
-        else
-          dimens.add(path);
-      }
-    }
+    return dimens.getResult();
   }
 
   /**

@@ -4,9 +4,20 @@ package org.cougaar.lib.uiframework.query.generic;
 import org.cougaar.lib.uiframework.query.*;
 import org.cougaar.lib.uiframework.transducer.elements.ListElement;
 
+/**
+ *  An OrderlessDimension is a QueryDimension with no particular structure,
+ *  though it can still be treated as a hierarchy.  By default, it is assumed
+ *  that any String may be the name of a valid node and that any node may be
+ *  treated as a child of any other node.  Specialized DimNode subclasses may
+ *  provide some restrictions on the name space or parent-child relationships.
+ */
 public class OrderlessDimension extends QueryDimension {
   private OrderlessDimNode root = null;
 
+  /**
+   *  Set the provided OrderlessDimNode as the root of this OrderlessDimension's
+   *  membership hierarchy.
+   */
   public void setRoot (OrderlessDimNode node) {
     root = node;
     root.setDimension(this);

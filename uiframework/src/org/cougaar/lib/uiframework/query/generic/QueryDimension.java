@@ -159,15 +159,12 @@ public abstract class QueryDimension {
   protected void visitAllNodes (
       DimNode d_node, VisitSeq seq, String mode, ListElement ret)
   {
-    System.out.println("QueryDimension::visitAllNodes:");
     // process child nodes
     for (Enumeration e = d_node.getChildren(); e.hasMoreElements(); ) {
       Object o = e.nextElement();
-      System.out.println("  -> found instance of " + o.getClass().getName());
       DimNode d_child = (DimNode) o; // e.nextElement();
       ret.addChild(absoluteVisit(d_child, seq, mode));
     }
-    System.out.println("QueryDimension::visitAllNodes:  leaving");
   }
 
   /**

@@ -75,10 +75,18 @@ public class IntDimNode extends DimNode {
         "\" to \"" + n2 + "\"");
   }
 
+  /**
+   *  Retrieve the losest member of the range represented by this node.
+   *  @return the left endpoint
+   */
   public int getStart () {
     return start;
   }
 
+  /**
+   *  Retrieve the greatest member of the ragne represented by this node.
+   *  @return the right endpoint
+   */
   public int getEnd () {
     return end;
   }
