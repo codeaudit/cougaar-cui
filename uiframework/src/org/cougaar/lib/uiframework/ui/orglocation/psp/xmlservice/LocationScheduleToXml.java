@@ -17,9 +17,8 @@ import org.cougaar.lib.aggagent.dictionary.glquery.samples.*;
  *  Organization asset on the logplan and converts its location schedule to an
  *  XML format for transmission across a network connection.  For present
  *  purposes, the only Organization of interest is the one represented by the
- *  host Cluster.  The implementation of this class attempts to filter out those
- *  that are not of interest by comparing the name of the owner with the name of
- *  the Asset and keeping only those for which the names match.
+ *  host Cluster.  The others probably don't have a LocationSchedulePG, and are
+ *  ignored in any event.
  */
 public class LocationScheduleToXml extends CustomQueryBaseAdapter {
   // Collect the schedule information in an OrgTimeLocSchedule.  There should
@@ -86,7 +85,10 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
   }
 
   /**
-   *  Support for testing
+   *  Support for testing.  Given an fictitious org name and an interval of
+   *  time, this method randomly generates a schedule for the length of the
+   *  interval.  The schedule is then formatted as if it were real data and
+   *  returned as a String of XML.
    */
   public String randomDataForTest (String orgName, long t0, long t1) {
     int i;
