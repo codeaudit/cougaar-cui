@@ -92,7 +92,10 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             rate = new String ("" + cr.getEachesPerDay());
           }
           else
-            System.out.println ("No rate");
+          {
+            System.out.println ("WARNING: No rate");
+            continue;
+          }
 
           // Find the organization in the "For" preposition
 
