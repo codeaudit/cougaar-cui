@@ -83,6 +83,10 @@ public class CFrameLauncher extends CFrame
         launcher.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {
+                    Cursor wait =
+                            Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+                    CFrameLauncher.this.setCursor(wait);
+
                     try
                     {
 	                Constructor c =
@@ -103,6 +107,11 @@ public class CFrameLauncher extends CFrame
                     catch (Exception ex)
                     {
                         ex.printStackTrace();
+                    }
+                    finally
+                    {
+                        CFrameLauncher.this.setCursor(
+                            Cursor.getDefaultCursor());
                     }
                 }
             });

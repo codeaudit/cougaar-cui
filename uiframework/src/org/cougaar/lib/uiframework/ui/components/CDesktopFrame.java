@@ -298,16 +298,30 @@ public class CDesktopFrame extends CFrame
 
         public void actionPerformed(ActionEvent e)
         {
-            try
-            {
-	        Constructor c = viewClass.getConstructor(constParamClasses);
-                CougaarUI cougaarUI = (CougaarUI)c.newInstance(constParams);
-                createInnerFrame(title, cougaarUI);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
+            desktopPane.
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            (new Thread() {
+                    public void run()
+                    {
+                        try
+                        {
+                            Constructor c =
+                                viewClass.getConstructor(constParamClasses);
+                            CougaarUI cougaarUI =
+                                (CougaarUI)c.newInstance(constParams);
+                            createInnerFrame(title, cougaarUI);
+                        }
+                        catch (Exception ex)
+                        {
+                            ex.printStackTrace();
+                        }
+                        finally
+                        {
+                            desktopPane.setCursor(Cursor.getDefaultCursor());
+                        }
+                    }
+                }).start();
         }
     }
 
