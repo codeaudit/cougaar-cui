@@ -1,6 +1,7 @@
 package mil.darpa.log.alpine.blackjack.assessui.middletier;
 
 import java.io.*;
+import java.lang.Integer;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,11 +22,11 @@ public class BJDBMaintainerBean implements SessionBean
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
     private static final String DB_PASSWORD = "java:comp/env/DBPassword";
+    private static final String C_TIME_SEC = "java:comp/env/CTime";
     private Connection connection = null;
     private Statement stmt = null;
 
-
-    private static final int C_TIME_SEC = 994204800;
+    private static int c_time_sec_int;
 
     public void ejbCreate() throws CreateException
     {
@@ -35,6 +36,9 @@ public class BJDBMaintainerBean implements SessionBean
             DataSource ds = (DataSource)ic.lookup(DB_NAME);
             String username = (String)ic.lookup(DB_USER);
             String password = (String)ic.lookup(DB_PASSWORD);
+            String c_time_sec_string = (String)ic.lookup(C_TIME_SEC);
+            c_time_sec_int = Integer.parseInt (c_time_sec_string);
+System.out.println ("c_time_sec_int is " + c_time_sec_int);
             connection = ds.getConnection(username, password);
         }
         catch(Exception e)
@@ -346,7 +350,7 @@ System.out.print ("insert"+time_index);
         int time_sec_int = (int) (time_msec_long / 1000);
 
         // Normalize the times
-        time_sec_int = time_sec_int - C_TIME_SEC;
+        time_sec_int = time_sec_int - c_time_sec_int;
 
         // 24 hours * 60 minutes * 60 seconds = 86400 seconds in a day, and
         // then truncate to the whole day after adding a small fudge factor
