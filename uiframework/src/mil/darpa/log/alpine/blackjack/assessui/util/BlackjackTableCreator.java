@@ -143,7 +143,8 @@ public class BlackjackTableCreator
             stmt.executeUpdate("CREATE TABLE assessmentOrgs " +
                                 "(id     INTEGER      NOT NULL," +
                                  "parent INTEGER      NOT NULL," +
-                                 "name   CHAR(50)     NOT NULL," +
+                                 "name   CHAR(40)     NOT NULL," +
+                                 "safety_level FLOAT  NOT NULL," +
                                  "primary key (id)            )");
 
             stmt.executeUpdate ("create index assessmentOrgs_name_index on assessmentOrgs (name)");
@@ -204,6 +205,7 @@ public class BlackjackTableCreator
         config.setIdKey("id");
         config.setParentKey("parent");
         config.addContentKey("UID", "name");
+        config.addContentKey("SAFETY_LEVEL", "safety_level");
         //config.addContentKey("annotation", "note");
         config.setPrimaryKeys(new String[] {"keynum"});
 
