@@ -99,12 +99,13 @@ public class CMThumbSliderDateAndTimeRangeControl extends CMThumbSliderRangeCont
 
   public void setSliderRange(float minValue, float maxValue)
   {
-/*    // Try to maintain the same values if possible
-    Vector currentValues = new Vector();
+    // Try to maintain the same values if possible
+/*    Vector currentValues = new Vector();
     for (int i = 0; i < numThumbs; i++)
     {
         currentValues.add(new Float(fromSlider(slider.getValueAt(i))));
     }*/
+    RangeModel oldRange = getRange();
 
     this.minValue = minValue;
     this.maxValue = maxValue;
@@ -144,14 +145,14 @@ public class CMThumbSliderDateAndTimeRangeControl extends CMThumbSliderRangeCont
 
     slider.setLabelTable(valueLabels);
 
-    slider.setValueAt(toSlider(minValue), 0);
-    slider.setValueAt(toSlider(maxValue), 1);
-    /*// Set sliders to old current values
-    for (int i = 0; i < currentValues.size(); i++)
+    // Set sliders to old current values
+    /*for (int i = 0; i < currentValues.size(); i++)
     {
       Number currentValue = (Number)currentValues.elementAt(i);
       slider.setValueAt(toSlider(currentValue.floatValue()), i);
     }*/
+
+    setRange(oldRange);
 
     SwingUtilities.updateComponentTreeUI(this);
   }

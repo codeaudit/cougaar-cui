@@ -7,6 +7,7 @@
  * COUGAAR licence agreement.
  * </copyright>
  */
+
 package org.cougaar.lib.uiframework.ui.components.mthumbslider;
 
 import java.awt.*;
@@ -139,8 +140,29 @@ public class MetalMThumbSliderUI extends MetalSliderUI
   public void paint( Graphics g, JComponent c ) {
     Rectangle clip = g.getClipBounds();
     Rectangle[] thumbRects = additonalUi.getThumbRects();
-    thumbRect = thumbRects[0];
+
+
     int thumbNum = additonalUi.getThumbNum();
+
+    // Somewhere the additonalUi.calculateThumbsLocation() is not called when the total range is changed and the the
+    // range of the thumb slider is set, so we recalculate thumbRects here every time we paint
+    for (int i=0; i<thumbNum; i++) {
+      if ( slider.getOrientation() == JSlider.HORIZONTAL ) {
+        int value = ((CMThumbSlider)slider).getValueAt(i);
+        int valuePosition = xPositionForValue(value);
+        thumbRects[i].x = valuePosition - (thumbRects[i].width / 2);
+        thumbRects[i].y = trackRect.y;
+      }
+      else {
+        int valuePosition = yPositionForValue(((CMThumbSlider)slider).getValueAt(i));
+        thumbRects[i].x = trackRect.x;
+        thumbRects[i].y = valuePosition - (thumbRects[i].height / 2);
+      }
+    }
+
+
+    thumbRect = thumbRects[0];
+//    int thumbNum = additonalUi.getThumbNum();
 
     if ( slider.getPaintTrack() && clip.intersects( trackRect ) ) {
       boolean filledSlider_tmp = filledSlider;

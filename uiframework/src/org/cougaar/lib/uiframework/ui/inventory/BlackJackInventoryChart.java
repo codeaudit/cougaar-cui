@@ -431,8 +431,8 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
     dataSet.visible = visible;
     for (int i=0; i<chartList.length; i++)
     {
-      chartList[i].recalculateAutoYRange();
       chartList[i].resetYRangeScroller();
+      chartList[i].recalculateAutoYRange();
     }
     repaint();
   }
@@ -476,6 +476,14 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
     }
   }
 
+  public void setYAxisLabel(String label)
+  {
+    for (int i=0; i<chartList.length; i++)
+    {
+      chartList[i].setYAxisLabel(label);
+    }
+  }
+
   public void setXScrollerRange(RangeModel range)
   {
     if (viewMode == SHOW_INVENTORY_CHART)
@@ -501,6 +509,11 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
     minorChart2.resetTotalXRange(range.getMin(), range.getMax());
     xRC.setSliderRange(range.getMin(), range.getMax());
   }
+
+  public void setInitialRange(long timeRange)
+  {
+    xRC.setRange(new RangeModel((int)xRC.getMinValue(), (int)(xRC.getMinValue() + (timeRange/xRC.getTimeScale()))));
+  }  
 
   public void resetRange()
   {

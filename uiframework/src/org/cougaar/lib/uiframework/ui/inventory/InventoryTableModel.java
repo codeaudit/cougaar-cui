@@ -413,6 +413,20 @@ public class InventoryTableModel extends AbstractTableModel
   }
 
 
+  public String getNSN()
+  {
+    String nsn = null;
+    if (inventory != null)
+    {
+      nsn = inventory.getAssetName();
+      nsn = nsn.substring(nsn.indexOf("NSN/")).trim();
+    }
+
+    return(nsn);
+  }
+
+
+
   public String getAssetName()
   {
      if(inventory != null)

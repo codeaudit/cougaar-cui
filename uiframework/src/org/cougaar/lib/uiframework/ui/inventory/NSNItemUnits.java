@@ -1,119 +1,52 @@
 package org.cougaar.lib.uiframework.ui.inventory;
 
-import java.sql.*;
 import java.util.*;
+import java.io.*;
 
-public class NSNItemUnits extends Thread
+public class NSNItemUnits
 {
+  private Hashtable itemTable = new Hashtable(1);
 
-  private Connection conn;
-  private Statement stmt;
-  private String baseSelect = "select units from unitsbynsn where nsn = ";
-
-  private boolean initDone = false;
-  private Boolean synchObj = new Boolean (false);
-
-  public NSNItemUnits()
+  public NSNItemUnits(String file)
   {
-
-    start();
-
-
-  }
-
-  public String getUnit (String nsn)
-  {
-
-    while (true)    // wait for it
-    {
-      synchronized (synchObj)
-      {
-        if (initDone) // if true
-          break;
-      }
-
-      try
-      {
-        Thread.sleep (100); // give it a tenth of a second
-      }
-      catch (InterruptedException iexc)
-      {
-        // who cares?
-      }
-
-    }
-
-    String queryString = baseSelect + "'" + nsn + "'";
-    //System.out.println ("query string is: " + queryString);
-    ResultSet rs;
-    String unit;
+    long time = System.currentTimeMillis();
     try
     {
-      rs = stmt.executeQuery(queryString);
-      rs.next();
-      unit = rs.getString(1);
-      rs.close();
-
-    }
-
-    catch ( SQLException sqexc)
-    {
-      System.err.println ("Exception: No unit found for NSN item number " + nsn);
-      System.err.println (sqexc.toString());
-
-      return new String();
-    }
-
-     if (unit != null)
-      return unit;
-    else
-    {
-      System.err.println ("No unit found for NSN item number " + nsn);
-      return new String();
-    }
-
-  }
-
-  public void run ()
-  {
-     try
-    {
-
-      DriverManager.registerDriver(new org.hsql.jdbcDriver());
-
-//      System.out.println("Connecting to the NSN Item Units DB datasource : " );
-
-      conn = DriverManager.getConnection("jdbc:HypersonicSQL:ItemUnitsDB","sa","");
-
-      stmt = conn.createStatement();
-
-      synchronized (synchObj)
+      BufferedReader br = new BufferedReader ( new InputStreamReader (new FileInputStream (file)));
+      
+      String line = null;
+      StringTokenizer stok = null;
+      while ((line = br.readLine()) != null)
       {
-        initDone = true;
+        stok = new StringTokenizer (line, ",");
+        itemTable.put(stok.nextToken(), stok.nextToken());
       }
-
     }
-
-    catch (SQLException e)
-    {
-      System.err.println ("SQLException = "+e);
-      e.printStackTrace();
-    }
-
     catch (Exception e)
     {
-      System.err.println("Non SQL error while loading." );
-      e.printStackTrace();
+      System.out.println(e);
     }
+    
+    System.out.println(System.currentTimeMillis() - time + "ms");
   }
 
-
-  public static void main (String[] args)
+  public String getUnit(String nsn)
   {
+    String unit = (String)itemTable.get(nsn);
 
-    NSNItemUnits nsnUnits = new NSNItemUnits();
+    if (unit == null)
+    {
+      throw(new RuntimeException("No unit type found for " + nsn));
+    }
 
+    return(unit);
+  }
+
+  public static void main(String[] args)
+  {
     System.out.println ("testing..");
+
+    NSNItemUnits nsnUnits = new NSNItemUnits("ItemUnits.txt");
 
     System.out.println ("NSN/8970014728983 unit is: " + nsnUnits.getUnit("NSN/8970014728983") );
     System.out.println ("NSN/9150000825636 unit is: " + nsnUnits.getUnit("NSN/9150000825636") );

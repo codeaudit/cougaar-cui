@@ -108,6 +108,12 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     doUIUpdate();
   }
 
+  public void setYAxisLabel(String label)
+  {
+    yaxisLeft.setTitleText(label);
+    yaxisRight.setTitleText(label);
+  }
+
   private void setUpXRangeScroller(boolean timeAxis)
   {
     if (timeAxis)

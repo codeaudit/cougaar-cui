@@ -218,6 +218,21 @@ public class InventoryQuery implements Query, PropertyChangeListener
       // Set the chart Y-axis to display the same number of digits past the decimal as the table displays
       chart.setYAxisSigDigitDisplay(2);
 
+      try
+      {
+        String units = InventoryChartUI.itemUnits.getUnit(model.getNSN());
+        System.out.println("Units: " + units);
+
+        chart.setYAxisLabel(units);
+      }
+      catch (Exception e)
+      {
+        chart.setYAxisLabel("Quantity");
+        System.out.println("No Units Found");
+      }
+
+      System.out.println(model.getNSN());
+
       // Graphs should be attached in a order that prevents one chart from being hidden by another
       Hashtable dataSets = model.getDataSets();
       DataSet dataSet = null;
@@ -234,7 +249,11 @@ public class InventoryQuery implements Query, PropertyChangeListener
 
       // Must set the total range of the slider
       chart.resetTotalRange();
-      chart.resetRange();
+//      chart.resetRange();
+      // Set the slider to be in a two month rang from the start of the data
+      long msADay = 1000L*60L*60L*24L;
+      long msInTwoMonths = msADay*30L*2L;
+      chart.setInitialRange(msInTwoMonths);
       //System.out.println("st " + start);
       if(start != 0)
       {

@@ -10,10 +10,7 @@
 package org.cougaar.lib.uiframework.ui.components.graph;
 
 import java.awt.*;
-import java.awt.image.*;
-import java.applet.*;
-import java.util.*;
-import java.lang.*;
+import java.text.*;
 
 /***********************************************************************************************************************
 <b>Description</b>: Polygon fillable chart data set.  Extension of the DataSet to render a line chart based on a given
@@ -32,9 +29,22 @@ public class PolygonFillableDataSet extends DataSet
                     - polygonFill is false by default
   *********************************************************************************************************************/
   public boolean polygonFill = false;
+
   public boolean useFillPattern = false;
 
+  public Color fillPatternColor = Color.white;
+  public int distanceBetweenStripes = 8;
+  public int stripeThickness = 4;
+
   public boolean adjustLineWidthInsets = false;
+
+  private int[] xPoints = new int[0];
+  private int[] yPoints = new int[0];
+
+  public int patternArrayIncrement = 512;
+  private int[] xPatternPoints = new int[patternArrayIncrement];
+  private int[] yPatternPoints = new int[patternArrayIncrement];
+  private int patternPointsCount = 0;
 
   /*********************************************************************************************************************
   <b>Description</b>: Default constructor.
@@ -103,7 +113,6 @@ public class PolygonFillableDataSet extends DataSet
     draw_lines(g, w, data, length, 0.0);
   }
 
-
   protected void draw_lines(Graphics g, Rectangle w, double[] pointData, int dataLength, double height)
   {
     int i;
@@ -128,6 +137,15 @@ public class PolygonFillableDataSet extends DataSet
       return;
     }
 
+    int pointCount = 0;
+    patternPointsCount = 0;
+    
+    if (xPoints.length < pointData.length*2)
+    {
+      xPoints = new int[pointData.length*2];
+      yPoints = new int[pointData.length*2];
+    }
+
     //    Is the first point inside the drawing region ?
     if ( (inside0 = inside(pointData[0] + xValueOffset, pointData[1] + yValueOffset)) )
     {
@@ -136,8 +154,8 @@ public class PolygonFillableDataSet extends DataSet
 
       if (polygonFill)
       {
-//        if (x0 < xcmin || x0 > xcmax || y0 < ycmin)
-        if (x0 < xcmin || x0 > xcmax)
+        // (y0 < ycmin) can be true but the total filled polygon can still be inside
+        if (x0 < xcmin || x0 > xcmax || y0 > ycmax)
         {
           inside0 = false;
         }
@@ -176,8 +194,8 @@ public class PolygonFillableDataSet extends DataSet
 
         if (polygonFill)
         {
-//          if ( x1 < xcmin || x1 > xcmax || y1 < ycmin)
-          if ( x1 < xcmin || x1 > xcmax)
+          // (y1 < ycmin) can be true but the total filled polygon can still be inside
+          if (x1 < xcmin || x1 > xcmax || y1 > ycmax)
           {
             inside1 = false;
           }
@@ -204,76 +222,82 @@ public class PolygonFillableDataSet extends DataSet
       {
         if (polygonFill)
         {
+          // Since we're poloygon filling vertical point pairs are "lost in the fill" and not needed so we can
+          // reduce the total number of points by half if we don't include these extra pixel point pairs
           if (x0 != x1)
           {
-            g.fillPolygon(new int[] {x0, x0, x1, x1}, new int[] {ycmax, y0, y1, ycmax}, 4);
+            xPoints[pointCount] = x0;
+            yPoints[pointCount] = ycmax;
+            pointCount++;
 
-            if ((g instanceof Graphics2D) && useFillPattern)
-            {
-              Graphics2D g2D = (Graphics2D)g;
-              Color c = g2D.getColor();
-              g2D.setColor(Color.white);
+            xPoints[pointCount] = x0;
+            yPoints[pointCount] = y0;
+            pointCount++;
 
-              int numStripes = 8;
-              int stripeThickness = 4;
+            xPoints[pointCount] = x1;
+            yPoints[pointCount] = y1;
+            pointCount++;
 
-              int y0pixel = y0;
-              int y1pixel = y1;
-              int yMAX = yaxis.getInteger(0.0 + yValueOffset);
-              int yStep = (yMAX-(y0<y1 ? y0 : y1))/numStripes;
-              yStep = (yStep == 0) ? (1 + stripeThickness) : (yStep + stripeThickness);
-
-              do
-              {
-                y0pixel += yStep;
-                g2D.fillPolygon(new int[] {x0, x0, x1, x1}, new int[] {y0pixel, y0pixel-stripeThickness, y1pixel, y1pixel+stripeThickness}, 4);
-                y1pixel += yStep;
-              }
-              while ((y0pixel < ycmax) && (y0pixel < yMAX));
-
-              g2D.setColor(c);
-            }
+            xPoints[pointCount] = x1;
+            yPoints[pointCount] = ycmax;
+            pointCount++;
           }
         }
         else
         {
-          if (g instanceof Graphics2D)
+          // A quick hack EBM
+          if (adjustLineWidthInsets)
           {
-            Graphics2D graphics2D = (Graphics2D)g;
-            Stroke stroke = graphics2D.getStroke();
-            BasicStroke newStroke = new BasicStroke(lineThickness);
-            graphics2D.setStroke(newStroke);
-
-            // A quick hack EBM
-            if (adjustLineWidthInsets)
+            if (y0>y1)
             {
-              if (y0>y1)
-              {
-                g.drawLine(x0+(int)((lineThickness)/2),y0,x1+(int)((lineThickness)/2),y1);
-              }
-              else if (y0<y1)
-              {
-                g.drawLine(x0-(int)((lineThickness+1)/2),y0,x1-(int)((lineThickness+1)/2),y1);
-              }
-              else if (x0<x1)
-              {
-                g.drawLine(x0+(int)((lineThickness)/2),y0,x1-(int)((lineThickness+1)/2),y1);
-              }
-              else if (x0>x1)
-              {
-                g.drawLine(x0-(int)((lineThickness+1)/2),y0,x1+(int)((lineThickness)/2),y1);
-              }
-            }
-            else
-            {
-              g.drawLine(x0,y0,x1,y1);
-            }
+              xPoints[pointCount] = x0+(int)((lineThickness)/2);
+              yPoints[pointCount] = y0;
+              pointCount++;
 
-            graphics2D.setStroke(stroke);
+              xPoints[pointCount] = x1+(int)((lineThickness)/2);
+              yPoints[pointCount] = y1;
+              pointCount++;
+            }
+            else if (y0<y1)
+            {
+              xPoints[pointCount] = x0-(int)((lineThickness+1)/2);
+              yPoints[pointCount] = y0;
+              pointCount++;
+
+              xPoints[pointCount] = x1-(int)((lineThickness+1)/2);
+              yPoints[pointCount] = y1;
+              pointCount++;
+            }
+            else if (x0<x1)
+            {
+              xPoints[pointCount] = x0+(int)((lineThickness)/2);
+              yPoints[pointCount] = y0;
+              pointCount++;
+
+              xPoints[pointCount] = x1-(int)((lineThickness+1)/2);
+              yPoints[pointCount] = y1;
+              pointCount++;
+            }
+            else if (x0>x1)
+            {
+              xPoints[pointCount] = x0-(int)((lineThickness+1)/2);
+              yPoints[pointCount] = y0;
+              pointCount++;
+
+              xPoints[pointCount] = x1+(int)((lineThickness)/2);
+              yPoints[pointCount] = y1;
+              pointCount++;
+            }
           }
           else
           {
-            g.drawLine(x0,y0,x1,y1);
+            xPoints[pointCount] = x0;
+            yPoints[pointCount] = y0;
+            pointCount++;
+
+            xPoints[pointCount] = x1;
+            yPoints[pointCount] = y1;
+            pointCount++;
           }
         }
       }
@@ -287,13 +311,163 @@ public class PolygonFillableDataSet extends DataSet
       x0 = x1;
       y0 = y1;
     }
+
+    if (polygonFill)
+    {
+      g.fillPolygon(xPoints, yPoints, pointCount);
+
+      // If we're using a fill pattern, apply the pattern
+      if (useFillPattern)
+      {
+        Color c = g.getColor();
+        g.setColor(fillPatternColor);
+
+        for (int ii=0; ii<pointCount; ii+=4)
+        {
+          drawPattern(g, xPoints[ii+0], yPoints[ii+0], xPoints[ii+1], yPoints[ii+1], xPoints[ii+2], yPoints[ii+2], xPoints[ii+3], yPoints[ii+3], ycmax, ycmin);
+        }
+
+        g.setColor(c);
+      }
+    }
+    else
+    {
+      drawLine(xPoints, yPoints, pointCount, g);
+    }
   }
 
+// EBM: Break glass in case of emergency
+/*
+  // This methods will mutate the values of the int arrays passed in
+  private void drawPattern(int[] x, int[] y, int ycmax, int ycmin, Graphics g)
+  {
+    int y0pixel = y[2] + 10;
+    int y1pixel = y[2];
+    
+    // Move this to outside loop, or pass in as values
+    stripeThickness = (int)((yaxis.amax.y - yaxis.amin.y)*0.18);
+    distanceBetweenStripes = (int)((yaxis.amax.y - yaxis.amin.y)*0.36);
+
+    if (distanceBetweenStripes == 0)
+    {
+      return;
+    }
+
+    do
+    {
+      y[0] = y0pixel + stripeThickness;
+      y[1] = y0pixel;
+      y[2] = y1pixel;
+      y[3] = y1pixel + stripeThickness;
+      if (y0pixel >= ycmin)
+      {
+        g.fillPolygon(x, y, 4);
+      }
+      y0pixel += distanceBetweenStripes;
+      y1pixel += distanceBetweenStripes;
+    }
+    while (y1pixel < ycmax);
+  }*/
+
+  // This method will mutate the values of the int arrays passed in
+/*  private void drawPattern(int[] x, int[] y, int ycmax, int ycmin, Graphics g)
+  {
+    int y0pixel = y[1];
+    int y1pixel = y[2];
+    
+    int yStep = (distanceBetweenStripes + stripeThickness);
+    do
+    {
+      y0pixel += yStep;
+      y[0] = y0pixel;
+      y[1] = y0pixel-stripeThickness;
+      y[2] = y1pixel;
+      y[3] = y1pixel+stripeThickness;
+      if (y0pixel >= ycmin)
+      {
+        g.fillPolygon(x, y, 4);
+      }
+      y1pixel += yStep;
+    }
+    while (y0pixel < ycmax);
+  }*/
+
+  // That's not natural ... but Oak Express is
+  private void drawPattern(Graphics g, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, int ycmax, int ycmin)
+  {
+    int y0pixel = y1;
+    int y1pixel = y2;
+
+    int yStep = (distanceBetweenStripes + stripeThickness);
+    patternPointsCount = 0;
+    do
+    {
+      y0pixel += yStep;
+      if (y0pixel >= ycmin)
+      {
+        if (xPatternPoints.length < (patternPointsCount + 6))
+        {
+          int[] temp = xPatternPoints;
+          xPatternPoints = new int[temp.length + patternArrayIncrement];
+          System.arraycopy(temp, 0, xPatternPoints, 0, patternPointsCount);
+
+          temp = yPatternPoints;
+          yPatternPoints = new int[temp.length + patternArrayIncrement];
+          System.arraycopy(temp, 0, yPatternPoints, 0, patternPointsCount);
+        }
+
+        xPatternPoints[patternPointsCount] = x0;
+        yPatternPoints[patternPointsCount] = y0pixel;
+        patternPointsCount++;
+
+        xPatternPoints[patternPointsCount] = x1;
+        yPatternPoints[patternPointsCount] = y0pixel-stripeThickness;
+        patternPointsCount++;
+
+        xPatternPoints[patternPointsCount] = x2;
+        yPatternPoints[patternPointsCount] = y1pixel;
+        patternPointsCount++;
+
+        xPatternPoints[patternPointsCount] = x3;
+        yPatternPoints[patternPointsCount] = y1pixel+stripeThickness;
+        patternPointsCount++;
+
+        xPatternPoints[patternPointsCount] = x0;
+        yPatternPoints[patternPointsCount] = y0pixel;
+        patternPointsCount++;
+      }
+
+      y1pixel += yStep;
+    }
+    while (y0pixel < ycmax);
+    
+    g.fillPolygon(xPatternPoints, yPatternPoints, patternPointsCount);
+  }
+
+  private void drawLine(int[] x, int[] y, int pointCount, Graphics g)
+  {
+    if (g instanceof Graphics2D)
+    {
+      Graphics2D graphics2D = (Graphics2D)g;
+      Stroke stroke = graphics2D.getStroke();
+      BasicStroke newStroke = new BasicStroke(lineThickness);
+      graphics2D.setStroke(newStroke);
+
+      g.drawPolyline(x, y, pointCount);
+
+      graphics2D.setStroke(stroke);
+    }
+    else
+    {
+      g.drawPolyline(x, y, pointCount);
+    }
+  }
 
   protected boolean inside(double x, double y)
   {
     if (polygonFill)
     {
+      // (y <= ymax) can be false but the total filled polygon can still be inside
       if ((x >= xmin) && (x <= xmax) && (y >= ymin))
       {
         return true;
