@@ -5,7 +5,7 @@ import javax.swing.*;
 
 import java.util.*;
 
-import org.cougaar.domain.mlm.ui.data.UISimpleNamedScheduleNames;
+import org.cougaar.mlm.ui.data.UISimpleNamedScheduleNames;
 import org.cougaar.lib.uiframework.ui.components.graph.*;
 import org.cougaar.lib.uiframework.ui.components.*;
 

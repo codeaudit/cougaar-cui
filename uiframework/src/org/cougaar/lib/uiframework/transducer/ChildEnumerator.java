@@ -18,7 +18,8 @@
  *  PERFORMANCE OF THE COUGAAR SOFTWARE.
  * </copyright>
  */
-package org.cougaar.lib.uiframework.transducer;
+
+package org.cougaar.lib.uiframework.transducer;
 import org.w3c.dom.*;
 
 /**
@@ -138,4 +139,4 @@ public class ChildEnumerator {
     java.util.StringTokenizer tok = new java.util.StringTokenizer(s, " \t\n\r");
     return !tok.hasMoreTokens();
   }
-}
+}

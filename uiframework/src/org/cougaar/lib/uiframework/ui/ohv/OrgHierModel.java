@@ -48,8 +48,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
-import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
+import org.cougaar.planning.ldm.plan.ScheduleImpl;
+import org.cougaar.planning.ldm.plan.ScheduleElementImpl;
 
 import java.util.ArrayList;
 import java.util.List;

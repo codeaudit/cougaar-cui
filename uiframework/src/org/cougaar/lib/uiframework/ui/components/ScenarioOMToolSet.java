@@ -32,7 +32,8 @@ public class ScenarioOMToolSet extends OMToolSet
 	  face.add(scaleField);
   }
 
-   public void addMouseModes(MouseDelegator md)
+
+   public void addMouseModes(MouseDelegator md)
    {
      if (md != null)
      {

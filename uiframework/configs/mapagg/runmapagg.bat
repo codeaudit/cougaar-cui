@@ -24,7 +24,7 @@ setlocal
 
 set NODE=MapAggNode
 
-set EXECLASS=org.cougaar.core.society.Node
+set EXECLASS=org.cougaar.core.node.Node
 set NODEARGS=-c -n %NODE%
 
 set BASELIB=s:\alp0312\alp\lib

@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
-import org.cougaar.domain.mlm.ui.data.UISimpleNamedSchedule;
+import org.cougaar.mlm.ui.data.UISimpleNamedSchedule;
 
 import org.cougaar.lib.uiframework.ui.components.*;
 import org.cougaar.lib.uiframework.ui.components.mthumbslider.*;

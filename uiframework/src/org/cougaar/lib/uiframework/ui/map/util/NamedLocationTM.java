@@ -34,8 +34,8 @@ import java.awt.event.*;
 import org.cougaar.lib.uiframework.ui.map.layer.Unit;
 //import alp.ldm.plan.ScheduleImpl;
 //import alp.ldm.plan.ScheduleElementImpl;
-import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
-import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
+import org.cougaar.planning.ldm.plan.ScheduleImpl;
+import org.cougaar.planning.ldm.plan.ScheduleElementImpl;
 /*
 class MetricTable {
     Hashtable col=new Hashtable();

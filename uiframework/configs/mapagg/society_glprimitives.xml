@@ -8,7 +8,7 @@
   <glquery>
     <keyname>ORG_LOC</keyname>
     <predicate>
-      <instanceof>org.cougaar.domain.glm.ldm.asset.Organization</instanceof>
+      <instanceof>org.cougaar.glm.ldm.asset.Organization</instanceof>
     </predicate>
     <adapter>org.cougaar.lib.uiframework.ui.orglocation.psp.xmlservice.LocationScheduleToXml</adapter>
   </glquery>

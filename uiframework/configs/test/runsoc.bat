@@ -24,7 +24,7 @@ setlocal
 
 set NODE=MyNode
 
-set EXECLASS=org.cougaar.core.society.Node
+set EXECLASS=org.cougaar.core.node.Node
 set NODEARGS=-c -n %NODE%
 
 set BASELIB=d:\home\alpine\lib

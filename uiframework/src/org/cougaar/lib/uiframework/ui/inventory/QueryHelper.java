@@ -23,14 +23,14 @@ import javax.swing.border.BevelBorder;
 
 import org.cougaar.lib.uiframework.ui.components.CChartLegend;
 
-import org.cougaar.domain.mlm.ui.data.UISimpleInventory;
-import org.cougaar.domain.mlm.ui.data.UISimpleSchedule;
-import org.cougaar.domain.mlm.ui.planviewer.ConnectionHelper;
-import org.cougaar.domain.mlm.ui.planviewer.XMLClientConfiguration;
+import org.cougaar.mlm.ui.data.UISimpleInventory;
+import org.cougaar.mlm.ui.data.UISimpleSchedule;
+import org.cougaar.mlm.ui.planviewer.ConnectionHelper;
+import org.cougaar.mlm.ui.planviewer.XMLClientConfiguration;
 
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryDayRolloverListener;
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionListener;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryDayRolloverListener;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
 
 import org.cougaar.util.ThemeFactory;
 

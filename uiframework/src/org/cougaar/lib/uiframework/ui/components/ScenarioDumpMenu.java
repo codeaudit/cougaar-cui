@@ -15,11 +15,11 @@ import com.bbn.openmap.gui.*;
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
 import org.cougaar.lib.uiframework.ui.map.layer.PspIconLayer;
 
-import org.cougaar.domain.glm.map.MapLocationInfo;
-import org.cougaar.domain.planning.ldm.plan.LocationScheduleElement;
-import org.cougaar.domain.glm.ldm.plan.GeolocLocationImpl;
-import org.cougaar.domain.planning.ldm.measure.Latitude;
-import org.cougaar.domain.planning.ldm.measure.Longitude;
+import org.cougaar.glm.map.MapLocationInfo;
+import org.cougaar.planning.ldm.plan.LocationScheduleElement;
+import org.cougaar.glm.ldm.plan.GeolocLocationImpl;
+import org.cougaar.planning.ldm.measure.Latitude;
+import org.cougaar.planning.ldm.measure.Longitude;
 
 public class ScenarioDumpMenu extends AbstractOpenMapMenu
     implements MenuBarMenu {

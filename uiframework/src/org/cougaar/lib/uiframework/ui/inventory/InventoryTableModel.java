@@ -19,9 +19,9 @@ import java.util.*;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.cougaar.domain.mlm.ui.data.UISimpleNamedSchedule;
-import org.cougaar.domain.mlm.ui.data.UISimpleInventory;
-import org.cougaar.domain.mlm.ui.data.UIQuantityScheduleElement;
+import org.cougaar.mlm.ui.data.UISimpleNamedSchedule;
+import org.cougaar.mlm.ui.data.UISimpleInventory;
+import org.cougaar.mlm.ui.data.UIQuantityScheduleElement;
 
 import org.cougaar.lib.uiframework.ui.components.graph.*;
 

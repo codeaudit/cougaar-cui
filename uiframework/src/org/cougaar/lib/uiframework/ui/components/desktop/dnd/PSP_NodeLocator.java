@@ -39,24 +39,24 @@ import javax.swing.tree.*;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import org.cougaar.core.cluster.ClusterIdentifier;
-import org.cougaar.core.cluster.CollectionSubscription;
-import org.cougaar.core.cluster.Subscription;
-import org.cougaar.domain.planning.ldm.asset.Asset;
-import org.cougaar.domain.planning.ldm.asset.TypeIdentificationPG;
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.core.agent.ClusterIdentifier;
+import org.cougaar.core.blackboard.CollectionSubscription;
+import org.cougaar.core.blackboard.Subscription;
+import org.cougaar.planning.ldm.asset.Asset;
+import org.cougaar.planning.ldm.asset.TypeIdentificationPG;
+import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.lib.planserver.*;
 import org.cougaar.core.util.*;
 import org.cougaar.util.*;
 import org.cougaar.lib.uiframework.ui.components.desktop.FileNode;
 
-import org.cougaar.domain.glm.ldm.*;
-import org.cougaar.domain.glm.ldm.*;
-import org.cougaar.domain.glm.*;
-import org.cougaar.domain.glm.ldm.asset.*;
-import org.cougaar.domain.glm.ldm.oplan.*;
-import org.cougaar.domain.glm.ldm.plan.*;
-import org.cougaar.domain.glm.ldm.policy.*;
+import org.cougaar.glm.ldm.*;
+import org.cougaar.glm.ldm.*;
+import org.cougaar.glm.*;
+import org.cougaar.glm.ldm.asset.*;
+import org.cougaar.glm.ldm.oplan.*;
+import org.cougaar.glm.ldm.plan.*;
+import org.cougaar.glm.ldm.policy.*;
 
 
 public class PSP_NodeLocator

@@ -31,8 +31,8 @@ import com.bbn.openmap.proj.Projection;
 
 import org.cougaar.lib.uiframework.ui.map.ScenarioMapBean;
 
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.mlm.ui.grabber.connect.DGPSPConstants;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
 import org.cougaar.lib.uiframework.ui.map.util.*;
 import org.cougaar.lib.uiframework.ui.map.app.*;
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.CGMVecIcon;

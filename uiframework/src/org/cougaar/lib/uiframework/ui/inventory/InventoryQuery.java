@@ -50,15 +50,15 @@ import org.cougaar.lib.uiframework.ui.models.*;
 
 
 
-import org.cougaar.domain.mlm.ui.data.UISimpleNamedSchedule;
-import org.cougaar.domain.mlm.ui.data.UISimpleInventory;
+import org.cougaar.mlm.ui.data.UISimpleNamedSchedule;
+import org.cougaar.mlm.ui.data.UISimpleInventory;
 
 
 
 
 
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionListener;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
 
 public class InventoryQuery implements Query, PropertyChangeListener
 {

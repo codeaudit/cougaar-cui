@@ -30,7 +30,7 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Projection;
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
 
-import org.cougaar.domain.mlm.ui.grabber.connect.DGPSPConstants;
+import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
 
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMWideLine;
 

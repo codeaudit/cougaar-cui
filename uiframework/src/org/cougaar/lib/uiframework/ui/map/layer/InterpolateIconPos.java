@@ -7,7 +7,7 @@ import java.util.Vector;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 
-import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
+import org.cougaar.planning.ldm.plan.ScheduleImpl;
 
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.*;
 

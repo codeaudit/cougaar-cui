@@ -21,8 +21,8 @@ import org.cougaar.lib.uiframework.transducer.elements.*;
 import java.awt.event.*;
 
 import org.cougaar.lib.uiframework.ui.map.layer.Unit;
-import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
-import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
+import org.cougaar.planning.ldm.plan.ScheduleImpl;
+import org.cougaar.planning.ldm.plan.ScheduleElementImpl;
 
 // for getNamedLocationsAtTimeInterpolate (...)
 import com.bbn.openmap.omGraphics.OMGraphic;

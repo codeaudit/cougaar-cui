@@ -12,7 +12,7 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Projection;
 
-import org.cougaar.domain.planning.ldm.plan.*;
+import org.cougaar.planning.ldm.plan.*;
 import org.cougaar.lib.uiframework.ui.map.util.*;
 
 import javax.swing.*;

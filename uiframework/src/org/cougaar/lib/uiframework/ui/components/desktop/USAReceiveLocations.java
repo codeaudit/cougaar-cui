@@ -13,7 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.ConnectException;
 
-import org.cougaar.domain.glm.map.MapLocationInfo;
+import org.cougaar.glm.map.MapLocationInfo;
 
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
 

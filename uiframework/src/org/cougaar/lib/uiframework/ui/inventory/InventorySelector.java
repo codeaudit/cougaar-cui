@@ -44,13 +44,13 @@ import org.cougaar.lib.uiframework.ui.components.*;
 import org.cougaar.lib.uiframework.ui.models.*;
 import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 
-import org.cougaar.domain.mlm.ui.data.UISimpleInventory;
-import org.cougaar.domain.mlm.ui.planviewer.ConnectionHelper;
-import org.cougaar.domain.mlm.ui.planviewer.XMLClientConfiguration;
-import org.cougaar.domain.glm.execution.eg.ClusterInfo;
+import org.cougaar.mlm.ui.data.UISimpleInventory;
+import org.cougaar.mlm.ui.planviewer.ConnectionHelper;
+import org.cougaar.mlm.ui.planviewer.XMLClientConfiguration;
+import org.cougaar.glm.execution.eg.ClusterInfo;
 
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionListener;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
 
 
 public class InventorySelector implements CougaarUI, InventoryDataProvider

@@ -9,20 +9,20 @@
  */
 package org.cougaar.lib.uiframework.ui.components.desktop;
 
-import org.cougaar.core.cluster.IncrementalSubscription;
-import org.cougaar.domain.planning.ldm.plan.*;
-import org.cougaar.domain.planning.ldm.asset.Asset;
-import org.cougaar.domain.planning.ldm.asset.AggregateAsset;
-import org.cougaar.domain.planning.ldm.asset.AssetGroup;
-import org.cougaar.domain.planning.ldm.asset.NewItemIdentificationPG;
-//import org.cougaar.domain.glm.ldm.asset.LocationSchedulePG;
-import org.cougaar.domain.glm.ldm.asset.MilitaryOrgPG;
-import org.cougaar.domain.glm.ldm.plan.GeolocLocation;
+import org.cougaar.core.blackboard.IncrementalSubscription;
+import org.cougaar.planning.ldm.plan.*;
+import org.cougaar.planning.ldm.asset.Asset;
+import org.cougaar.planning.ldm.asset.AggregateAsset;
+import org.cougaar.planning.ldm.asset.AssetGroup;
+import org.cougaar.planning.ldm.asset.NewItemIdentificationPG;
+//import org.cougaar.glm.ldm.asset.LocationSchedulePG;
+import org.cougaar.glm.ldm.asset.MilitaryOrgPG;
+import org.cougaar.glm.ldm.plan.GeolocLocation;
 
-import org.cougaar.domain.glm.ldm.asset.Organization;
-//import org.cougaar.domain.glm.plugins.TaskUtils;
+import org.cougaar.glm.ldm.asset.Organization;
+//import org.cougaar.glm.plugins.TaskUtils;
 
-import org.cougaar.domain.planning.ldm.trigger.*;
+import org.cougaar.planning.ldm.trigger.*;
 import org.cougaar.core.plugin.PlugInDelegate;
 
 import org.cougaar.util.UnaryPredicate;

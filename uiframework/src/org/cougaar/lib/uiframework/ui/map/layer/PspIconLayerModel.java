@@ -24,22 +24,22 @@ import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
 
-import org.cougaar.domain.mlm.ui.grabber.connect.DGPSPConstants;
-import org.cougaar.domain.planning.ldm.plan.LocationScheduleElement;
-import org.cougaar.domain.planning.ldm.plan.Location;
-import org.cougaar.domain.glm.ldm.plan.GeolocLocationImpl;
-import org.cougaar.domain.planning.ldm.measure.Latitude;
-import org.cougaar.domain.planning.ldm.measure.Longitude;
+import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
+import org.cougaar.planning.ldm.plan.LocationScheduleElement;
+import org.cougaar.planning.ldm.plan.Location;
+import org.cougaar.glm.ldm.plan.GeolocLocationImpl;
+import org.cougaar.planning.ldm.measure.Latitude;
+import org.cougaar.planning.ldm.measure.Longitude;
 
 import org.cougaar.lib.uiframework.ui.map.ScenarioMapBean;
 import org.cougaar.lib.uiframework.ui.map.util.NamedLocationTime;
-import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
+import org.cougaar.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.*;
 
 import org.cougaar.lib.uiframework.ui.map.app.*;
 import org.cougaar.lib.uiframework.ui.components.RangeSliderPanel;
 
-import org.cougaar.domain.glm.map.MapLocationInfo;
+import org.cougaar.glm.map.MapLocationInfo;
 
 public class PspIconLayerModel extends PspIconLayerModelBase
 {

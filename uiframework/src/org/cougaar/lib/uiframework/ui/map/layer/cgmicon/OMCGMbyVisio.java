@@ -92,9 +92,11 @@ public class OMCGMbyVisio extends OMCGM
 
     return true;
 
-  }
 
-   public void updateScale ()
+  }
+
+
+   public void updateScale ()
    {
 
      // set our new origin so that as we scale we don't appear to move

@@ -22,8 +22,8 @@ import javax.swing.JSplitPane;
 
 import org.cougaar.lib.uiframework.ui.components.CChartLegend;
 
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionListener;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
+import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
 
 /**
  * Define an interface that must be implemented to add a query

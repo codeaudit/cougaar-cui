@@ -5,7 +5,7 @@
   <glquery>
     <keyname>ORG_RELS</keyname>
     <predicate>
-      <instanceof>org.cougaar.domain.glm.ldm.asset.Organization</instanceof>
+      <instanceof>org.cougaar.glm.ldm.asset.Organization</instanceof>
     </predicate>
     <adapter>org.cougaar.lib.uiframework.ui.orgui.TestAdapter</adapter>
   </glquery>
@@ -19,7 +19,7 @@
   <glquery>
     <keyname>ORG_RELS</keyname>
     <predicate>
-      <instanceof>org.cougaar.domain.glm.ldm.asset.Organization</instanceof>
+      <instanceof>org.cougaar.glm.ldm.asset.Organization</instanceof>
     </predicate>
     <adapter>org.cougaar.lib.uiframework.ui.orgui.OrgSubAdapter</adapter>
   </glquery>

@@ -40,8 +40,8 @@ import java.net.URL;
 
 import java.io.IOException;
 
-import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
-import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
+import org.cougaar.planning.ldm.plan.ScheduleImpl;
+import org.cougaar.planning.ldm.plan.ScheduleElementImpl;
 
 import java.util.ArrayList;
 import java.util.List;
