@@ -24,9 +24,20 @@ import javax.swing.*;
 import javax.swing.plaf.*;
 
 public class AssistantUIManager {
-
+  
+  /*
+  ** changed so that CMThumbSlider can be subclassed from
+  ** a different package. If the subclass overrides getUIClassID
+  ** it must also provide the UI classes in its very package.
+  */
+  private static String guessComponentName(JComponent c) {
+    if (c.getUIClassID().equals(CMThumbSlider.uiClassID))
+      return CMThumbSlider.class.getName();
+    return c.getClass().getName();
+  }
+  
   public static ComponentUI createUI(JComponent c)  {
-    String componentName   = c.getClass().getName();
+    String componentName = guessComponentName(c);
 
     int index = componentName.lastIndexOf(".") +1;
     StringBuffer sb = new StringBuffer();
@@ -74,7 +85,7 @@ public class AssistantUIManager {
     String uiClassName = (String)UIManager.get(key);
 
     if (uiClassName == null) {
-      String componentName   = c.getClass().getName();
+      String componentName = guessComponentName(c);
       int index = componentName.lastIndexOf(".") +1;
       StringBuffer sb = new StringBuffer();
       sb.append( componentName.substring(0, index) );

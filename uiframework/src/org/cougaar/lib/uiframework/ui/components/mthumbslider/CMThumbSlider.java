@@ -21,7 +21,6 @@
 package org.cougaar.lib.uiframework.ui.components.mthumbslider;
 
 import java.awt.*;
-import javax.swing.event.*;
 import javax.swing.*;
 
 public class CMThumbSlider extends JSlider /*implements ChangeListener*/ {
@@ -31,7 +30,7 @@ public class CMThumbSlider extends JSlider /*implements ChangeListener*/ {
   protected Color[] fillColors;
   protected Color trackFillColor;
 
-  private static final String uiClassID = "MThumbSliderUI";
+  static final String uiClassID = "MThumbSliderUI";
 
   public CMThumbSlider(int n) {
     createThumbs(n);
