@@ -377,8 +377,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         if (yDescName.equals("Time"))
         {
             int selectedTime = Integer.parseInt(selectedYValue.toString());
-            lpDesc.setValue(new RangeModel(Math.max(0, selectedTime - 10),
-                                           selectedTime + 10));
+            lpDesc.setValue(
+                new RangeModel(selectedTime - 10, selectedTime + 10));
         }
         else
         {
