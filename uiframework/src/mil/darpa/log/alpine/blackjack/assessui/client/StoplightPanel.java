@@ -264,6 +264,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         stoplightChart.addMouseListener(doubleClickTableListener);
         stoplightChart.getTableHeader().
             addMouseListener(doubleClickTableListener);
+        stoplightChart.getRowHeader().
+            addMouseListener(doubleClickTableListener);
 
         // high level layout
         gbl = new GridBagLayout();
@@ -289,7 +291,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private void doubleClickTableHandler(MouseEvent e)
     {
         int row = stoplightChart.getSelectedRow();
-        int column = stoplightChart.getSelectedColumn();
+        int column = stoplightChart.
+            convertColumnIndexToModel(stoplightChart.getSelectedColumn());
 
         if (e.getSource().equals(stoplightChart.getTableHeader()))
         {
@@ -304,8 +307,9 @@ public class StoplightPanel extends JPanel implements CougaarUI
             return;
         }
 
-        if (column == 0)
+        if (e.getSource().equals(stoplightChart.getRowHeader()))
         {
+            row = stoplightChart.getRowHeader().getSelectedRow();
             Object value = stoplightTableModel.getValueAt(row, 0);
             ((VariableModel)variableManager.
                 getDescriptors(VariableModel.Y_AXIS).nextElement()).
