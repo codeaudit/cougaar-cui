@@ -16,8 +16,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.8 $
- * $Date: 2001-03-19 17:10:30 $
+ * $Revision: 1.9 $
+ * $Date: 2001-03-22 17:05:46 $
  * $Author: krotherm $
  *
  * ***********************************************************************/
@@ -1069,11 +1069,11 @@ public class CMap implements Serializable, CougaarUI {
         } else {
             System.out.println("cannot set slider range based on time layer" +
                               " -- using default range 0 to 300");
-            minTime = 0;
+            minTime = -10;
             maxTime = 300;
         }
 	if (minTime >= maxTime) {
-            minTime = 0;
+            minTime = -10;
             maxTime = 300;
 	}
 

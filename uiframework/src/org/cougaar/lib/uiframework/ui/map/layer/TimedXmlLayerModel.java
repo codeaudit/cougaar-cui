@@ -30,11 +30,23 @@ import org.cougaar.lib.uiframework.transducer.elements.Structure;
 import org.cougaar.lib.uiframework.ui.map.util.NamedLocationTime;
 import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.lib.uiframework.ui.map.query.TimedLocationQuery;
+import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.*;
+
 
 class TimedXmlLayerModel extends XmlLayerModel {
     OMGraphicList curTimeMarkers;
     ScheduleImpl allNLUnits;
     Collection transitionTimes;
+    OMCGMIcons cgmicons;
+
+    TimedXmlLayerModel()   {
+	try {
+	    System.out.println("loading cgm txt");
+	    cgmicons = new OMCGMIcons ("data/cgmload.txt");
+	} catch (java.io.IOException ioex) {
+	    ioex.printStackTrace();
+	}
+    }
 
   OMGraphic findClosest(int x, int y, float limit) {
     return curTimeMarkers.findClosest(x, y, limit);
@@ -85,11 +97,23 @@ class TimedXmlLayerModel extends XmlLayerModel {
 					  String type) 
 	{
 	    OMGraphic ret=null;
+
+        
+	    if (type!=null && !type.equals("")) {
+		System.out.println("Creating cgmicon of type "+type);
+		try {
+		    ret = new CGMVecIcon ( (OMCGM) cgmicons.get (type), lat, lon );
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
+	    }
 	    if (type.equalsIgnoreCase("Armored")) {
-		ret=new ArmoredVecIcon(lat, lon, color);
+		// ret=new ArmoredVecIcon(lat, lon, color);
+		ret = new CGMVecIcon ( (OMCGM) cgmicons.get ("armor"), lat, lon );
 	    }
 	    if (type.equalsIgnoreCase("Infantry")) {
-		ret=new InfantryVecIcon(lat, lon, color);
+		// ret=new InfantryVecIcon(lat, lon, color);
+		ret = new CGMVecIcon ( (OMCGM) cgmicons.get ("infantry"), lat, lon );
 	    }
 	    if (ret==null) {
 		ret=new VecIcon(lat, lon, color);
@@ -124,6 +148,12 @@ class TimedXmlLayerModel extends XmlLayerModel {
 
     void load(Structure s) {
         System.err.println("TimedXmlLayerModel.load(str)");
+	try {
+	    System.out.println("load is loading cgm txt");
+	    cgmicons = new OMCGMIcons ("data/cgmload.txt");
+	} catch (java.io.IOException ioex) {
+	    ioex.printStackTrace();
+	}
 	allNLUnits=new ScheduleImpl();
 	curTimeMarkers=new OMGraphicList();
 	
