@@ -54,16 +54,6 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
         Inventory in = (Inventory) o;
 
-        UID inventory_object_name = in.getUID();
-
-        if (inventory_object_name == null) {
-          System.out.println ("WARNING: no UID for inventory asset");
-          continue;
-        }
-
-        System.out.println ("inventory asset is " +
-                            inventory_object_name.getOwner());
-
         String org = null;
         String item = null;
         String start_time = null;
@@ -72,6 +62,15 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
         long end_time_long = 0;
         Double time_double = new Double(0.0);
         String rate = null;
+
+        UID inventory_object_name = in.getUID();
+
+        if (inventory_object_name == null) {
+          System.out.println ("WARNING: no UID for inventory asset");
+          continue;
+        }
+
+        org = inventory_object_name.getOwner();
 
         ScheduledContentPG scheduled_content =
                                     in.getScheduledContentPG();
@@ -100,15 +99,6 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
         }
 
         item = type_id_pg.getTypeIdentification();
-
-        UID object_name = a1.getUID();
-
-        if (object_name == null) {
-          System.out.println ("WARNING: no UID for asset");
-          continue;
-        }
-
-        org = object_name.getOwner();
 
         Enumeration schedule_list = s1.getAllScheduleElements();
 
