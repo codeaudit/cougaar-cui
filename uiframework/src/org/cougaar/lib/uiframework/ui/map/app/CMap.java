@@ -16,9 +16,9 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.7 $
- * $Date: 2001-03-11 20:03:17 $
- * $Author: pfischer $
+ * $Revision: 1.8 $
+ * $Date: 2001-03-19 17:10:30 $
+ * $Author: krotherm $
  *
  * ***********************************************************************/
 
@@ -1049,27 +1049,33 @@ public class CMap implements Serializable, CougaarUI {
     }
 
     private void updateTimeRange(CLabeledSlider ls) {
-        long minTime = Long.MAX_VALUE;
-        long maxTime = 0;
+        long minTime = 900;
+        long maxTime = -100;
         TimedXmlLayer myLayer=findTimeLayer();
 
         if (myLayer != null) {
             Collection transitionTimes=myLayer.getTransitionTimes();
-            for (Iterator it=transitionTimes.iterator(); it.hasNext(); ) {
+            for (Iterator it=transitionTimes.iterator(); it !=null && it.hasNext(); ) {
                 Long ttime=(Long)it.next();
                 String timeStr=""+ttime;
-                if ((ttime.longValue()!=Long.MIN_VALUE) &&
-                    (ttime.longValue()!=Long.MAX_VALUE)) {
+//                 if ((ttime.longValue()!=Long.MIN_VALUE) &&
+//                     (ttime.longValue()!=Long.MAX_VALUE)) {
+                if ((ttime.longValue()!=NamedLocationTime.MIN_VALUE) &&
+                    (ttime.longValue()!=NamedLocationTime.MAX_VALUE)) {
                     minTime = Math.min(minTime, ttime.longValue());
                     maxTime = Math.max(maxTime, ttime.longValue());
                 }
             }
         } else {
             System.out.println("cannot set slider range based on time layer" +
-                              " -- using default range 0 to 500");
+                              " -- using default range 0 to 300");
             minTime = 0;
-            maxTime = 500;
+            maxTime = 300;
         }
+	if (minTime >= maxTime) {
+            minTime = 0;
+            maxTime = 300;
+	}
 
         ls.roundAndSetSliderRange((float)minTime, (float)maxTime);
         ls.setFidelity(Math.round(ls.getMaxValue() - ls.getMinValue()));

@@ -123,10 +123,10 @@ class TimedXmlLayerModel extends XmlLayerModel {
 	}
 
     void load(Structure s) {
+        System.err.println("TimedXmlLayerModel.load(str)");
 	allNLUnits=new ScheduleImpl();
 	curTimeMarkers=new OMGraphicList();
 	
-        System.out.println("TimedXmlLayerModel.load()");
 	// Vector vec=NamedLocationTM.generate(s);
 	Vector vec=NamedLocationTime.generate(s);
 	

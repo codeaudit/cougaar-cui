@@ -16,6 +16,15 @@ import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
 
 public class NamedLocationTime extends ScheduleElementImpl  {
+    private static String NAME = "name";
+    private static String VALUES = "values";
+    private static String START_TIME = "startTime";
+    private static String END_TIME = "endTime";
+    private static String LATITUDE = "latitude";
+    private static String LONGITUDE = "longitude";
+
+    static public final long MIN_VALUE=-200;
+    static public final long MAX_VALUE=500;
 
     String title="";
     String name="";
@@ -49,19 +58,22 @@ public class NamedLocationTime extends ScheduleElementImpl  {
         if (startTime!=null&&!startTime.equals("")) {
           start=Long.parseLong(startTime);
         } else {
-          start=Long.MIN_VALUE;
+	    // start=Long.MIN_VALUE;
+          start=MIN_VALUE;
         }
 
         if (endTime!=null&&!endTime.equals("")) {
           end=Long.parseLong(endTime);
         } else {
-          end=Long.MAX_VALUE;
+	    // end=Long.MAX_VALUE;
+          end=MAX_VALUE;
         }
-      setStartTime(start);
       setEndTime(end);
+      setStartTime(start);
 
     } catch (Exception ex) {
        this.exception=ex;
+       // ex.printStackTrace();
     }
   }
 
@@ -78,74 +90,54 @@ public class NamedLocationTime extends ScheduleElementImpl  {
               +") metrics: "+metrics+" }";
     }
 
-public boolean isValid() { return exception==null;}
+    public boolean isValid() { return exception==null;}
     static  void handleInvalid(NamedLocationTime ne) {
         System.err.println("Invalid NamedLocationTime: "+ne+" Strings of (lat, lon) ("+ne.latstr+", "+ne.lonstr+") }");
     }
-    static public Vector generate(Structure str) {
-	Vector vec=null;
-    String title;
-    NamedLocationTime nlm;
-    
-    // Attribute atr=str.getAttribute("NamedLocationList");
-    // title= getFirstValForAttribute(atr);
+   
 
-	// get first list in structure
-	ListElement me = str.getContentList();
-	if (me != null) {
-	    System.out.println("me!=null : "+me);
-	    vec = new Vector();
+    static private void printStructure(Structure str) {
+	    System.err.println("NamedLocationTime.printStructure(str) Structure: ");
+	 	    XmlInterpreter xint = new XmlInterpreter();
+	    xint.writeXml(str, System.err);
+	    System.err.println("leaving NamedLocationTime.printStructure(str) ");
 
-	    for (Enumeration en=me.getChildren(); en.hasMoreElements(); ) {
-		    // for each child of le that is a list 
-		    ListElement child=((Element)en.nextElement()).getAsList();
-		    if (child != null) {
-			System.out.println("child!=null : "+child);
+    }
 
-		        String name = getNode(child, "name");
-			System.out.println("name: "+name);
-
-			/* new */			
-			String attrName="values";
-			Hashtable hs=new Hashtable();
-			getChildAttributes(child, attrName,hs);
-
-		        String lat =  (String)hs.get("latitude");
-			System.out.println("lat: "+lat);
-
-		        String lon =  (String)hs.get("longitude");
-			System.out.println("lon: "+lon);
-
-		        String start =  (String)hs.get("startDate");
-			System.out.println("start: "+start);
-
-		        String end = (String)hs.get("thruDate");
-			System.out.println("thru: "+end);
-
-		        nlm=new NamedLocationTime(name, lat, lon, start, end, null);
-			/* end new */
-
-			/* old ==========================================
-		        String lat = getNode(child, "latitude");
-		        String lon = getNode(child, "longitude");
-		        String start = getNode(child, "startDate");
-		        String end = getNode(child, "thruDate");
-
-			MetricTable hs=new MetricTable();
-			getChildAttributes(child, "Metrics",hs);
-			System.out.println("Name: "+name+" has metrics: "+hs);
-		        nlm=new NamedLocationTime(name, lat, lon, start, end, hs);
-			============== end old ============================ */
-
-		        if (nlm.isValid()) {
-		            vec.add(nlm);
-		        } else {
-		            handleInvalid(nlm);
-		        }
-		    }
-	    }
-	}
-	return vec;
+    public static Vector generate (Structure str) {
+      Vector vec = null;
+      ListElement top = str.getContentList();
+      if (top != null) {
+        vec = new Vector(); 
+        // each top-level child represents the location data for one
+        // organization; visit each one...
+        for (Enumeration i = top.getChildren(); i.hasMoreElements(); ) {
+          ListElement orgNode = ((Element) i.nextElement()).getAsList();
+          if (orgNode == null)
+            continue;
+          // snag the name of each org
+          String orgName = getNode(orgNode, NAME);
+          // now visit the location schedule elements
+          for (Enumeration j = orgNode.getChildren(); j.hasMoreElements(); ) {
+            ListElement le = ((Element) j.nextElement()).getAsList();
+            Attribute att = null;
+            if (le == null || (att = le.getAttribute(VALUES)) == null)
+              continue;
+            // snag the time and location values
+            String s_time = getNode(att, START_TIME);
+            String e_time = getNode(att, END_TIME);
+            String lat_val = getNode(att, LATITUDE);
+            String lon_val = getNode(att, LONGITUDE);
+            NamedLocationTime nlm = new NamedLocationTime(
+              orgName, lat_val, lon_val, s_time, e_time, null);
+            if (nlm.isValid())
+              vec.add(nlm);
+            else
+              handleInvalid(nlm);
+          }
+        }
+      }
+      return vec;
     }
 
 //     static Hashtable getChildAttributes(ListElement le, String attrName) {

@@ -236,25 +236,23 @@ public class TimedLocationQuery {
       root.addAttribute(att);
       att.addAttribute(new Attribute("latitude"));
       att.addAttribute(new Attribute("longitude"));
-
-      String usequerytimes=Environment.get("xml.usequerytimes");
-      System.out.println("xml.usequerytimes is "+usequerytimes);
-      if (usequerytimes!=null&&usequerytimes.equalsIgnoreCase("true")) {
-	  att.addAttribute(new Attribute("startTime"));
-	  att.addAttribute(new Attribute("thruTime"));
-      }
+      att.addAttribute(new Attribute("startTime"));
+      att.addAttribute(new Attribute("endTime"));
 
       // attatch a place for the dimensions
       att = new Attribute("dimensions");
       root.addAttribute(att);
 
       // create a stub org dimension
-      att.addChild(createDimStub("Org", orgName, orgMode, null));
+      //att.addChild(createDimStub("Org", orgName, orgMode, null));
+      att.addChild(createDimStub("OrgLocations", orgName, orgMode, null));
+
 
       // create a stub time dimension
-      att.addChild(
-        createDimStub("Time", timeRange, timeMode, timeNode));
-    }
+//       att.addChild(
+//         createDimStub("Time", timeRange, timeMode, timeNode));
+
+     }
 
     private static ListElement createDimStub (
         String name, ValElement val, ValElement mode, ListElement root)

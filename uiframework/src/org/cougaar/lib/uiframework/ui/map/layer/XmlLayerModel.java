@@ -238,39 +238,6 @@ class XmlLayerModel {
 	}
 	
 	obtainData();
-// 	try {
-// 	    XmlInterpreter xint = new XmlInterpreter();
-// 	    Structure str;
-
-// 	    try {
-// 		System.err.println("Attempting to read from URL: "+uriString);
-// 		URL url = new URL(uriString);
-		
-// 		//         InputStream fin = url.openStream();
-// 		// 		    str = xint.readXml(fin);
-// 		// 		    fin.close();		
-// 		// replaced prior 3 lines with these
-// 		int day=0;
-// 		str = TimedLocationQuery.performTimedQuery(day, url);
-// 		// should replace the above line with the following:
-// 		// str = TimedLocationQuery.performQuery(url);
-
-// 		if (str==null) {
-// 		    str = readFileInput(xint, fString);
-// 		}
-// 		System.err.println("After timed query");
-// 	    } catch (Exception exc) {
-// 		str = readFileInput(xint, fString);
-// 	    }
-// 	    System.err.println("Structure: ");
-// 	    xint.writeXml(str, System.err);
-	    
-// 	    load(str);
-	    
-	    
-// 	} catch (Exception ex) {
-// 	    ex.printStackTrace();
-// 	}
 	
 	System.out.println("leaving State()");
 	
