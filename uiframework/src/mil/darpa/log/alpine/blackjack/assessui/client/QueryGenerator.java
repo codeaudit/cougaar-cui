@@ -21,6 +21,8 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
  */
 public class QueryGenerator
 {
+    private static final boolean debug = false;
+
     /** the database table model to set queries on. */
     private DatabaseTableModel dbTableModel;
 
@@ -75,8 +77,9 @@ public class QueryGenerator
                  tm.getColumnIndex(yColumnName),
                  tm.getColumnIndex("assessmentValue"));
 
-        // convert org id headers
-        convertColumnHeaderIDsToNames("org", tm);
+        // convert org id headers (this might be broken now)
+        convertColumnHeaderIDsToNames(
+            new VariableModel("org", null, false, 0, false, 0), tm);
 
         // create hashtable that contains needed org name -> value pairs
         Hashtable ht = new Hashtable();
@@ -114,9 +117,13 @@ public class QueryGenerator
             new StringBuffer("SELECT * FROM assessmentData WHERE (");
 
         // filter data needed based on org, item, metric, time
+        if (debug) System.out.println("Generating Org where clause");
         query.append(generateWhereClause(vim.getDescriptor("Org")));
+        if (debug) System.out.println("Generating Item where clause");
         query.append(" AND "+generateWhereClause(vim.getDescriptor("Item")));
+        if (debug) System.out.println("Generating Metric where clause");
         query.append(" AND "+generateWhereClause(vim.getDescriptor("Metric")));
+        if (debug) System.out.println("Generating Time where clause");
         query.append(" AND "+generateWhereClause(vim.getDescriptor("Time")));
         query.append(")");
 
@@ -128,6 +135,7 @@ public class QueryGenerator
 
         // aggregation across a time range must be done at the client (here)
         // other aggregation has already been taken care of before DB table.
+        if (debug) System.out.println("Aggregating across time range");
         /*
         DatabaseTableModel.Combiner combiner =
             new DatabaseTableModel.Combiner() {
@@ -184,6 +192,7 @@ public class QueryGenerator
         }
 
         // transform based on needed X and Y variables
+        if (debug) System.out.println("Transforming based on needed X/Y");
         String xDescName = xAxis.getName();
         String yDescName = yAxis.getName();
         String xColumnName = DBInterface.getColumnName(xDescName);
@@ -193,9 +202,12 @@ public class QueryGenerator
                            dbTableModel.getColumnIndex("assessmentValue"));
 
         // convert column and row header ids to names
-        convertColumnHeaderIDsToNames(xDescName, dbTableModel);
-        convertRowHeaderIDsToNames(yDescName, dbTableModel);
+        if (debug) System.out.println("Converting column headers to names");
+        convertColumnHeaderIDsToNames(xAxis, dbTableModel);
+        if (debug) System.out.println("Converting row headers to names");
+        convertRowHeaderIDsToNames(yAxis, dbTableModel);
 
+        if (debug) System.out.println("Done.  Firing table change event");
         dbTableModel.fireTableChangedEvent(
             new TableModelEvent(dbTableModel, TableModelEvent.HEADER_ROW));
     }
@@ -228,7 +240,7 @@ public class QueryGenerator
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)v.getValue();
             if ((v.getState() == v.FIXED) || (node.isLeaf()))
             {
-                whereClause = generateWhereClause(varName, node.toString());
+                whereClause = generateWhereClause(varName, node);
             }
             else
             {
@@ -251,19 +263,17 @@ public class QueryGenerator
 
         whereClause.append("(");
 
-        Enumeration neededIDs;
-        if (varName.equalsIgnoreCase("time"))
+        Vector neededIDsVector = new Vector();
+        while (neededValues.hasMoreElements())
         {
-            neededIDs = neededValues;
+            DefaultMutableTreeNode n =
+                (DefaultMutableTreeNode)neededValues.nextElement();
+            neededIDsVector.add(((Hashtable)n.getUserObject()).get("ID"));
         }
-        else
-        {
-            neededIDs = DBInterface.
-                lookupValues(DBInterface.getTableName(varName), "name",
-                             "id", neededValues).elements();
-        }
+
         whereClause.append(
-            createDelimitedList(neededIDs, columnName + " = ", "", " OR "));
+            createDelimitedList(neededIDsVector.elements(),
+                                columnName + " = ", "", " OR "));
         whereClause.append(")");
 
         return whereClause.toString();
@@ -291,9 +301,23 @@ public class QueryGenerator
         return whereClause.toString();
     }
 
-    private static void convertColumnHeaderIDsToNames(String varName,
+    private static String generateWhereClause(String varName,
+                                              DefaultMutableTreeNode neededValue)
+    {
+        StringBuffer whereClause = new StringBuffer();
+        String columnName = DBInterface.getColumnName(varName);
+
+        whereClause.append(columnName);
+        whereClause.append(" = ");
+        whereClause.append(((Hashtable)neededValue.getUserObject()).get("ID"));
+        return whereClause.toString();
+    }
+
+    private static void convertColumnHeaderIDsToNames(VariableModel vm,
                                                       DatabaseTableModel tm)
     {
+        String varName = vm.getName();
+
         if (!varName.equalsIgnoreCase("time"))
         {
             Vector oldColumnHeaders = new Vector();
@@ -301,9 +325,9 @@ public class QueryGenerator
             {
                 oldColumnHeaders.add(tm.getColumnName(column));
             }
-            Enumeration newColumnHeaders = DBInterface.
-                lookupValues(DBInterface.getTableName(varName), "id", "name",
-                             oldColumnHeaders.elements()).elements();
+
+            Enumeration newColumnHeaders =
+                convertHeaderIDsToNames(vm, oldColumnHeaders.elements());
 
             int columnCount = 1;
             while (newColumnHeaders.hasMoreElements())
@@ -314,9 +338,11 @@ public class QueryGenerator
         }
     }
 
-    private static void convertRowHeaderIDsToNames(String varName,
+    private static void convertRowHeaderIDsToNames(VariableModel vm,
                                                    DatabaseTableModel tm)
     {
+        String varName = vm.getName();
+
         if (!varName.equalsIgnoreCase("Time"))
         {
             Vector oldRowHeaders = new Vector();
@@ -324,9 +350,10 @@ public class QueryGenerator
             {
                 oldRowHeaders.add(tm.getValueAt(row, 0));
             }
-            Enumeration newRowHeaders = DBInterface.
-                lookupValues(DBInterface.getTableName(varName), "id",
-                             "name", oldRowHeaders.elements()).elements();
+
+            Enumeration newRowHeaders =
+                convertHeaderIDsToNames(vm, oldRowHeaders.elements());
+
             int rowCount = 0;
             while (newRowHeaders.hasMoreElements())
             {
@@ -335,6 +362,48 @@ public class QueryGenerator
                     rowCount++, 0);
             }
         }
+    }
+
+    private static Enumeration
+        convertHeaderIDsToNames(VariableModel vm, Enumeration oldHeaders)
+    {
+        Enumeration newHeaders = null;
+        if (vm.getValue() instanceof DefaultMutableTreeNode)
+        {
+            Vector newHeaderObjects = new Vector();
+            DefaultMutableTreeNode tn = (DefaultMutableTreeNode)vm.getValue();
+            if (tn.isLeaf())
+            {
+                newHeaderObjects.add(tn);
+            }
+            else
+            {
+                while (oldHeaders.hasMoreElements())
+                {
+                    String oldHeader = oldHeaders.nextElement().toString();
+                    for (int ci = 0; ci < tn.getChildCount(); ci++)
+                    {
+                        DefaultMutableTreeNode child =
+                            (DefaultMutableTreeNode)tn.getChildAt(ci);
+                        Hashtable childHT = (Hashtable)child.getUserObject();
+                        if (oldHeader.equals(childHT.get("ID")))
+                        {
+                            newHeaderObjects.add(child);
+                            break;
+                        }
+                    }
+                }
+            }
+            newHeaders = newHeaderObjects.elements();
+        }
+        else
+        {
+            newHeaders = DBInterface.
+                    lookupValues(DBInterface.getTableName(vm.getName()), "id",
+                    "name", oldHeaders).elements();
+        }
+
+        return newHeaders;
     }
 
     /**
