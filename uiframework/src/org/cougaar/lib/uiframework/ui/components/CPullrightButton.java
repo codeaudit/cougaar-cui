@@ -84,7 +84,7 @@ public class CPullrightButton extends JButton implements Selector
     /**
      * Set the control used for making selection
      *
-     * @param selector the selection control
+     * @param selectorControl the selection control
      */
      public void setSelectorControl(final Selector selectorControl)
      {
@@ -271,7 +271,7 @@ public class CPullrightButton extends JButton implements Selector
     /**
      * main for unit test
      *
-     * @param String[] args ignored
+     * @param args ignored arguments
      */
     public static void main(String[] args)
     {

@@ -447,7 +447,7 @@ public class Chart extends Graph2D implements Runnable
                     -
 
   <br>
-  @param min New maximum Y data point
+  @param max New maximum Y data point
   *********************************************************************************************************************/
   public void setYMax(double max)
   {
@@ -481,7 +481,7 @@ public class Chart extends Graph2D implements Runnable
                     -
 
   <br>
-  @param min New maximum X data point
+  @param max New maximum X data point
   *********************************************************************************************************************/
   public void setXMax(double max)
   {

@@ -38,7 +38,7 @@ import java.io.InputStream;
  * This class extends the interactive graphics class G2Dint to incorporate
  * contouring.
  *
- * @version  $Revision: 1.6 $, $Date: 2002-03-14 15:14:22 $.
+ * @version  $Revision: 1.7 $, $Date: 2004-03-12 15:01:34 $.
  * @author   Leigh Brookshaw
  */
 
@@ -603,7 +603,7 @@ public class Contour extends G2Dint {
 
   /**
    * Set the label precision.
-   * @param s Precision
+   * @param p Precision
    */
      public void setLabelPrecision(int p) {
                    labelPrecision = p;

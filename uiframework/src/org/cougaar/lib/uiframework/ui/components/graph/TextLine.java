@@ -37,7 +37,7 @@ import java.awt.image.*;
  * This class is designed to bundle together all the information required
  * to draw short Strings with subscripts and superscripts
  *
- * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:35 $
+ * @version $Revision: 1.5 $, $Date: 2004-03-12 15:01:34 $
  * @author  Leigh Brookshaw
  */
 
@@ -319,7 +319,7 @@ public class TextLine extends Object {
 
   /**
    * Set the Justification to use with the class
-   * @param t Justification
+   * @param i Justification
    */
      public void setJustification( int i ) {
           switch (i) {

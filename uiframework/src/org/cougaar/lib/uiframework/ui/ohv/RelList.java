@@ -49,9 +49,9 @@ public class RelList extends Choice {
    *  to be shown in the GUI.  This constructor automatically configures the
    *  selections to be those available in the supplied OrgHierModel and visible
    *  in this portion of the hierarchy.
-   *  @param model the OrgHierModel which is being shown
+   *  @param m the OrgHierModel which is being shown
    *  @param g the Graph indicating the visible section of the hierarchy
-   *  @param itemListener a receiver for selection events on this Component
+   *  @param l a receiver for selection events on this Component
    */
   public RelList (OrgHierModel m, Graph g, ItemListener l) {
     TreeSet names = new TreeSet();

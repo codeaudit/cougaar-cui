@@ -42,7 +42,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:36 $
+ * @version $Revision: 1.5 $, $Date: 2004-03-12 15:01:34 $
  * @author Leigh Brookshaw
  */
 public class VectorSet extends DataSet {
@@ -166,7 +166,7 @@ public class VectorSet extends DataSet {
 
   /**
    *  Instantiate an empty data set.
-   * @param s The scaling to use when plotting the vectors.
+   * @param scale The scaling to use when plotting the vectors.
    * @exception  Exception
    *            A Generic exception if it fails to instantiate the
    *            the class with the correct stride.

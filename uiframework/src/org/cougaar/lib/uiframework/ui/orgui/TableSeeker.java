@@ -32,7 +32,7 @@ public class TableSeeker implements UnaryPredicate {
   /**
    *  Detect whether the provided object is what we're looking for.  In this
    *  case, we are looking for TableWrappers with the name "OrgRelTable".
-   *  @param an Object from the logplan
+   *  @param obj an Object from the logplan
    *  @return true iff the Object is a TableWrapper named "OrgRelTable"
    */
   public boolean execute (Object obj) {

@@ -52,7 +52,7 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.8 $, $Date: 2002-03-14 15:14:22 $
+ * @version  $Revision: 1.9 $, $Date: 2004-03-12 15:01:34 $
  * @author   Leigh Brookshaw
  */
 
@@ -398,7 +398,7 @@ public class Graph2D extends JPanel { // PHF
  *  Attach a previously created Axis. Only Axes that have been attached will
  *  be drawn
  *
- *    @param the Axis to attach.
+ *    @param a the Axis to attach.
 */
     public void attachAxis( Axis a ) {
 
@@ -417,7 +417,7 @@ public class Graph2D extends JPanel { // PHF
 
 /**
  * Detach a previously attached Axis.
- *    @param the Axis to dettach.
+ *    @param a the Axis to dettach.
 */
     public void detachAxis( Axis a ) {
 
@@ -615,7 +615,7 @@ public class Graph2D extends JPanel { // PHF
  *  This paints the entire plot. It calls the draw methods of all the
  *  attached axis and data sets.
  *  The order of drawing is - Axis first, data legends next, data last.
- *  @param g Graphics state.
+ *  @param lg Graphics state.
  */
     public void paintComponent(Graphics lg) {  // PHF
         super.paintComponent(lg);               // PHF

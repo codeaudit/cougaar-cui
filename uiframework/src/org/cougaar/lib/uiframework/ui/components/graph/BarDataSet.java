@@ -72,7 +72,7 @@ public class BarDataSet extends PolygonFillableDataSet
                       can be added at a time
 
   <br>
-  @param d[] Bar data array
+  @param d Bar data array
   @param count Number of bar data points to read from the data array
   *********************************************************************************************************************/
   public BarDataSet(double d[], int count) throws Exception
@@ -90,7 +90,7 @@ public class BarDataSet extends PolygonFillableDataSet
 
   <br>
   @param d Array of (x,y) points where d[n] is the x value and d[n+1] is the y value
-  @param n Number of data point pairs in the array
+  @param count Number of data point pairs in the array
   @param fill Indicates if this data set should use polygon fill for rendering
   @param width Indicates the width, in units, of the data bars
   *********************************************************************************************************************/
@@ -177,7 +177,7 @@ public class BarDataSet extends PolygonFillableDataSet
                       can be added at a time
 
   <br>
-  @param d[] Bar data array
+  @param d Bar data array
   @param count Number of bar data points to read from the data array
   *********************************************************************************************************************/
   public void appendBarData(double d[], int count) throws Exception
@@ -214,7 +214,7 @@ public class BarDataSet extends PolygonFillableDataSet
                     - The number of bar data points to get from the array is calculated based on d.length/2
 
   <br>
-  @param d[] Bar data array
+  @param d Bar data array
   @see #changeBarData(double[], int)
   *********************************************************************************************************************/
   public void changeBarData(double d[])
@@ -237,7 +237,7 @@ public class BarDataSet extends PolygonFillableDataSet
                       can be added at a time
 
   <br>
-  @param d[] Bar data array
+  @param d Bar data array
   @param count Number of bar data points to read from the data array
   *********************************************************************************************************************/
   public void changeBarData(double d[], int count)
@@ -464,7 +464,7 @@ public class BarDataSet extends PolygonFillableDataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
             double[2] = distance where distance will be -1 if no point was found
 	*********************************************************************************************************************/
@@ -479,7 +479,7 @@ public class BarDataSet extends PolygonFillableDataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @param useOffset Use data set offset
   @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
             double[2] = distance where distance will be -1 if no point was found
@@ -525,7 +525,7 @@ public class BarDataSet extends PolygonFillableDataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @param maxDist2 Maximum squared distance of the closest point
   @param useOffset Use data set offset
   @return Closest point to the specified coordinates, or null if there is no such point

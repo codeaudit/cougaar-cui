@@ -434,7 +434,7 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
   <b>Description</b>: Enables/Disables the display of X axis dividers.
 
   <br>
-  @param show True if the dividers are to be displayed, false otherwise
+  @param value True if the dividers are to be displayed, false otherwise
 	*********************************************************************************************************************/
   public void setShowXDividers(boolean value)
   {

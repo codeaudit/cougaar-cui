@@ -100,8 +100,8 @@ public class SimpleTPLocation implements TPLocation {
    *  Add a new data point to the model.  The unique id associated with the
    *  data point is used to check for previously cached occurrences of the
    *  same information.
-   *  @param id the unique id String associated with this data
-   *  @param t the starting time for the given location
+   *  @param t0 the starting time for the given location
+   *  @param t1 the ending time for the given location
    *  @param loc the location understood by the model for a period of time
    */
   public void add (long t0, long t1, Location loc) {

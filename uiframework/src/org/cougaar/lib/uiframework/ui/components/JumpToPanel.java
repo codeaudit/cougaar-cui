@@ -105,7 +105,7 @@ public class JumpToPanel implements Tool
     /**
      * Tool interface method. Set the retrieval key for this tool.
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey)
     {

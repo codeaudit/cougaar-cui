@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/components/IconScalePanel.java,v $
- * $Revision: 1.4 $
- * $Date: 2002-04-25 13:59:15 $
+ * $Revision: 1.5 $
+ * $Date: 2004-03-12 15:01:34 $
  * $Author: mthome $
  * 
  * **********************************************************************
@@ -129,7 +129,7 @@ public class IconScalePanel extends JPanel implements Serializable, Tool
     /**
      * Tool interface method. Set the retrieval key for this tool.
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey)
     {

@@ -61,7 +61,7 @@ public class StepDataSet extends PolygonFillableDataSet
 
   <br>
   @param d Array of (x,y) points where d[n] is the x value and d[n+1] is the y value
-  @param n Number of data point pairs in the array
+  @param count Number of data point pairs in the array
   @param fill Indicates if this data set should use polygon fill for rendering
   *********************************************************************************************************************/
   public StepDataSet(double d[], int count, boolean fill) throws Exception
@@ -81,7 +81,7 @@ public class StepDataSet extends PolygonFillableDataSet
                       can be added at a time
 
   <br>
-  @param d[] Step data array
+  @param d Step data array
   @param count Number of step data points to read from the data array
   @param color Color to be used when rendering the data set
   *********************************************************************************************************************/
@@ -164,7 +164,7 @@ public class StepDataSet extends PolygonFillableDataSet
                       can be added at a time
 
   <br>
-  @param d[] Step data array
+  @param d Step data array
   @param count Number of step data points to read from the data array
   *********************************************************************************************************************/
   public void appendStepData(double d[], int count) throws Exception
@@ -200,7 +200,7 @@ public class StepDataSet extends PolygonFillableDataSet
                     - The number of step data points to get from the array is calculated based on d.length/2
 
   <br>
-  @param d[] Step data array
+  @param d Step data array
   @see #changeStepData(double[], int)
   *********************************************************************************************************************/
   public void changeStepData(double d[])
@@ -223,7 +223,7 @@ public class StepDataSet extends PolygonFillableDataSet
                       can be added at a time
 
   <br>
-  @param d[] Step data array
+  @param d Step data array
   @param count Number of step data points to read from the data array
   *********************************************************************************************************************/
   public void changeStepData(double d[], int count)
@@ -347,7 +347,7 @@ public class StepDataSet extends PolygonFillableDataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
             double[2] = distance where distance will be -1 if no point was found
 	*********************************************************************************************************************/
@@ -362,7 +362,7 @@ public class StepDataSet extends PolygonFillableDataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @param useOffset Use data set offset
   @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
             double[2] = distance where distance will be -1 if no point was found
@@ -477,7 +477,7 @@ public class StepDataSet extends PolygonFillableDataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @param maxDist2 Maximum squared distance of the closest point
   @param useOffset Use data set offset
   @return Closest point to the specified coordinates, or null if there is no such point

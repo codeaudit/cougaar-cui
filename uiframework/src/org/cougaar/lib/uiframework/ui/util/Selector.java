@@ -40,7 +40,7 @@ public interface Selector
     /**
      * Set the item to be selected.
      *
-     * @param the item to be selected.
+     * @param selectedItem the item to be selected.
      */
     public void setSelectedItem(Object selectedItem);
 

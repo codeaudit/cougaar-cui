@@ -130,7 +130,7 @@ public class CRadioButtonSelectionControl extends JPanel
     /**
      * Set the selected radio button
      *
-     * @param the radio button string to select
+     * @param selectedItem the radio button string to select
      */
     public void setSelectedItem(Object selectedItem)
     {
@@ -153,7 +153,6 @@ public class CRadioButtonSelectionControl extends JPanel
     /**
      * Get the selected radio button
      *
-     * @param a string representing the selected radio button
      */
     public Object getSelectedItem()
     {

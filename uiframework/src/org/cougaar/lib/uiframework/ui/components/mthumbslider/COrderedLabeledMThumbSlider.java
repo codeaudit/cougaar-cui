@@ -79,7 +79,7 @@ public class COrderedLabeledMThumbSlider
     /**
      * Create a new mulitple thumbed slider with the given number of thumbs
      *
-     * @param numThumb the number of thumb for slider control.
+     * @param numThumbs the number of thumb for slider control.
      * @param minValue the minimum value for this slider
      * @param maxValue the maximum value for this slider
      */
@@ -94,7 +94,7 @@ public class COrderedLabeledMThumbSlider
     /**
      * Create a new mulitple thumbed slider with the given number of thumbs
      *
-     * @param numThumb the number of thumb for slider control.
+     * @param numThumbs the number of thumb for slider control.
      * @param minValue the minimum value for this slider
      * @param maxValue the maximum value for this slider
      */
@@ -485,7 +485,7 @@ public class COrderedLabeledMThumbSlider
     /**
      * set value of thumb at given index.
      *
-     * @param f new value for thumb at given index
+     * @param d new value for thumb at given index
      * @param index index of thumb
     */
     public void setValueAt(double d, int index)
@@ -496,7 +496,7 @@ public class COrderedLabeledMThumbSlider
     /**
      * Translates from float value to slider's integer value.
      *
-     * @param f "value" float value
+     * @param d "value" float value
      * @return slider's integer value
      */
     public int toSlider(double d)

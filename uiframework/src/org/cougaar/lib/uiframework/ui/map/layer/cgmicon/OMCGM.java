@@ -136,7 +136,6 @@ public class OMCGM extends OMGraphic
      * @param lonPoint longitude in decimal degrees
      * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
      * or OMGraphic.DECIMAL_DEGREES
-     * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
   public void setLocation(float latPoint, float lonPoint, int units)
   {

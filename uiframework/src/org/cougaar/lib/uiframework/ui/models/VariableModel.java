@@ -61,7 +61,7 @@ public class VariableModel
      *                        aligned with variable selector.  False is
      *                        variable label should be vertically aligned
      *                        with variable selector
-     * @param labelSize       width of the varableLabel (if 0, use preferred)
+     * @param labelWidth      width of the varableLabel (if 0, use preferred)
      */
     public VariableModel(String name, Selector selectComponent,
                          boolean swappable, int state, boolean horizontal,
@@ -210,7 +210,7 @@ public class VariableModel
     /**
      * Set the selected value of the variable
      *
-     * @param new selected value for this variable
+     * @param value new selected value for this variable
      */
     public void setValue(Object value)
     {

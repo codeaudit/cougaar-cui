@@ -336,7 +336,7 @@ public class CLabeledSlider extends JPanel implements Tool
     /**
      * Set whether to show labeled tick marks under slider.
      *
-     * @param if true, slider will have labeled tick marks.
+     * @param showTicks if true, slider will have labeled tick marks.
      */
     public void setShowTicks(boolean showTicks)
     {
@@ -452,7 +452,7 @@ public class CLabeledSlider extends JPanel implements Tool
     /**
      * Tool interface method. Set the retrieval key for this tool.
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey)
     {

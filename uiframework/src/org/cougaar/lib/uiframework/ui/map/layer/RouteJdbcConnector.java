@@ -65,7 +65,7 @@ public class RouteJdbcConnector
 
   <br><b>Notes</b>:<br>
 
-  @param String organization name
+  @param owner String organization name
   @return Vector routes                  -
 
   <br>

@@ -61,7 +61,6 @@ public class ListElement extends Element {
   /**
    *  Add an Attribute to this ListElement.  It will be added to a table where
    *  it can be found by its name.
-   *  @param name the name of the Attribute sought
    *  @param a the Attribute to be added
    */
   public void addAttribute (Attribute a) {

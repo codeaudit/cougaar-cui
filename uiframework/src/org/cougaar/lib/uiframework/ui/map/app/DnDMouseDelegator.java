@@ -37,13 +37,16 @@ public class DnDMouseDelegator extends com.bbn.openmap.MouseDelegator
   private DragGestureRecognizer dragRec = null;
 
   /**
-  * Construct a MouseDelegator with an associated MapBean.
-  * @param map MapBean
+  * Construct a MouseDelegator 
   */
   public DnDMouseDelegator()
   {
   }
 
+  /**
+  * Construct a MouseDelegator with an associated MapBean.
+  * @param map MapBean
+  */
   public DnDMouseDelegator(MapBean map)
   {
     super(map);

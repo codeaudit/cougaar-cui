@@ -46,7 +46,7 @@ import java.net.URL;
  * Markers are stroked using the line drawing method of the class Graph.
  * This means that any stroked figure can become a marker.
  *
- * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:34 $
+ * @version $Revision: 1.5 $, $Date: 2004-03-12 15:01:34 $
  * @author  Leigh Brookshaw
  */
 
@@ -146,7 +146,7 @@ public class Markers extends Object {
  * @param draw <i>true</i> if the point is to drawn to, <i>false</i> if
  * the point is to be moved to.
  * @param x X pixel to move/draw to.
- * @param x Y pixel to move/draw to.
+ * @param y Y pixel to move/draw to.
  */
       public void AddMarker(int n, boolean draw[], int x[], int y[]) {
          AddMarker(last+1,n,draw,x,y);

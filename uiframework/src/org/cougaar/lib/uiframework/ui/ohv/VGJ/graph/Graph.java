@@ -361,7 +361,7 @@
    // insertNodeAt(int index)===================================================
    /**
     * insert new node into graph; into the nodelist at the index
-    * @param integer index to place node
+    * @param index index to place node
     * @return nodeList_ with the new node
     */
       public void insertNodeAt(int index) throws IOException
@@ -456,7 +456,7 @@
    // insertEdge(int n1, int n2)
    /**
     * insert an edge between two nodes
-    * @param two integers node indexes
+
     * 
     */
       public void insertEdge(int n1, int n2)
@@ -565,7 +565,7 @@
    // removeEdge(int n1, int n2)================================================
    /**
     * remove the connection from n1 to n2 but leave the nodes in place
-    * @param integer index of each node on the edge
+
     */
       public void removeEdge(int n1, int n2)
       {
@@ -595,7 +595,7 @@
    
    // parents(int n)============================================================
    /**
-    * @param node to get parents of
+    * @param n node to get parents of
     * @return a set of all the nodes leading to n
     */
       public Set parents(int n)

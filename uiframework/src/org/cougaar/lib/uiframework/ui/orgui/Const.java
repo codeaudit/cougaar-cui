@@ -55,7 +55,6 @@ public abstract class Const {
 
   /**
    *  Include a complete XML element with text content.
-   *  @param buf the StringBuffer in which XML is being formed
    *  @param name the name of the XML element
    *  @param val the text content of the XML element
    */
@@ -67,7 +66,6 @@ public abstract class Const {
 
   /**
    *  Include the opening tag of an XML element.
-   *  @param buf the StringBuffer in which XML is being formed
    *  @param name the name of the XML element
    */
   public static void addOpenTag (PrintStream ps, String name) {
@@ -76,7 +74,6 @@ public abstract class Const {
 
   /**
    *  Include the opening tag of an XML element with one defined attribute.
-   *  @param buf the StringBuffer in which XML is being formed
    *  @param name the name of the XML element
    *  @param attrib the name of the defined attribute
    *  @param val the value of the defined attribute
@@ -98,7 +95,6 @@ public abstract class Const {
 
   /**
    *  Include the closing tag of an XML element.
-   *  @param buf the StringBuffer in which XML is being formed
    *  @param name the name of the XML element
    */
   public static void addCloseTag (PrintStream ps, String name) {

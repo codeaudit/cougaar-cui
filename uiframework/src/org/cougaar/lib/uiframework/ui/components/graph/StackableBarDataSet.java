@@ -57,10 +57,10 @@ public class StackableBarDataSet extends DataSet
   <br>
   @param graph Graph this data set (and all contained data sets) is to be attached to
   @param xaxis X-axis this data set (and all contained data sets) is to be attached to
-  @param yaxis Y-axis this data set (and all contained data sets) is to be attached to
+  @param yaxisLeft Y-axis this data set (and all contained data sets) is to be attached to
+  @param yaxisRight Y-axis this data set (and all contained data sets) is to be attached to
   @param width Width of the bars to be rendered
 
-  @throws SomeException Description of any exceptions thrown goes here
   *********************************************************************************************************************/
   public StackableBarDataSet(Graph2D graph, Axis xaxis, Axis yaxisLeft, Axis yaxisRight, double width, ColorProducer producer)
   {
@@ -404,7 +404,7 @@ public class StackableBarDataSet extends DataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
             double[2] = distance where distance will be -1 if no point was found
 	*********************************************************************************************************************/
@@ -419,7 +419,7 @@ public class StackableBarDataSet extends DataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @param useOffset Use data set offset
   @return Closest point to the specified coordinates as a double array of double[0] = X value, double[1] = Y value,
             double[2] = distance where distance will be -1 if no point was found
@@ -456,7 +456,7 @@ public class StackableBarDataSet extends DataSet
 
   <br>
   @param x X coordinate
-  @param x Y Coordinate
+  @param y Y Coordinate
   @param maxDist2 Maximum squared distance of the closest point
   @param useOffset Use data set offset
   @return Closest point to the specified coordinates, or null if there is no such point

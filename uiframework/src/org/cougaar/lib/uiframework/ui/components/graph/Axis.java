@@ -59,7 +59,7 @@ import java.lang.*;
  * but in this mode nothing is automated, the user must code everything
  * manually
  *
- * @version  $Revision: 1.5 $, $Date: 2001-10-26 21:38:33 $.
+ * @version  $Revision: 1.6 $, $Date: 2004-03-12 15:01:34 $.
  * @author   Leigh Brookshaw
  */
 
@@ -782,7 +782,7 @@ public class Axis extends Object {
 
   /**
    * Draw the axis using the passed Graphics context.
-   * @param g Graphics context for drawing
+   * @param lg Graphics context for drawing
    */
       public void drawAxis(Graphics lg)
       {
@@ -844,7 +844,7 @@ public class Axis extends Object {
 
   /**
    * Set the font of the title
-   * @param c Title font.
+   * @param f Title font.
    */
      public void setTitleFont(Font f)   {   title.setFont(f); }
 

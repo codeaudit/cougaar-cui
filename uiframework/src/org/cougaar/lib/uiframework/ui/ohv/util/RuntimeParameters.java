@@ -97,9 +97,6 @@ import java.net.URL;
 	 * Loads properties from a java resource.  This will load the
 	 * named resource identifier into the given properties instance.
 	 *
-	 * @param properties the Properties instance to receive the properties
-	 * @param resourceName the name of the resource to load
-	 * @param verbose indicates whether status messages should be printed
 	 */
 	public boolean load()
 	{

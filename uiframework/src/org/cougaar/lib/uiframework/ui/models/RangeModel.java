@@ -107,7 +107,7 @@ public class RangeModel
     /**
      * Set the maximum value for range
      *
-     * @param min the new maximum value for range
+     * @param max the new maximum value for range
      */
     public void setMax(int max)
     {
@@ -151,7 +151,7 @@ public class RangeModel
     /**
      * Set the maximum value for range
      *
-     * @param min the new maximum value for range
+     * @param max the new maximum value for range
      */
     public void setFMax(float max)
     {
@@ -195,7 +195,7 @@ public class RangeModel
     /**
      * Set the maximum value for range
      *
-     * @param min the new maximum value for range
+     * @param max the new maximum value for range
      */
     public void setDMax(double max)
     {
