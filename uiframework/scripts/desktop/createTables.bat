@@ -32,4 +32,4 @@ rem set DBPASSWORD="init1389"
 rem set DBPASSWORD="blackjack"
 set DBPASSWORD="blackjacka"
 
-java -DSTARTTIME=0 -DENDTIME=1 -DCREATEITEMUNITTABLE=true -DCREATEDATA=false -DCREATEORGS=false -DCREATEITEMS=false -DCREATEMETRICS=false -DRANDOMDATA=false -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.util.BlackjackTableCreator %DBTYPE% %DBURL% %DBUSER% %DBPASSWORD%
+java -DSTARTTIME=0 -DENDTIME=-1 -DCREATEITEMUNITTABLE=false -DCREATEDATA=false -DCREATEORGS=false -DCREATEMETRICS=true -DRANDOMDATA=false -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.util.BlackjackTableCreator %DBTYPE% %DBURL% %DBUSER% %DBPASSWORD%
