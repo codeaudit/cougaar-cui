@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.*;
 
 import org.cougaar.lib.aggagent.dictionary.glquery.samples.CustomQueryBaseAdapter;
+import org.cougaar.domain.glm.ldm.Constants;
 
 import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoStructure;
 import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoEncoder;
@@ -52,7 +53,8 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
         Double time_double = new Double(0.0);
         String rate = null;
 
-        if (t.getVerb().equals("ProjectSupply") == true) {
+//        if (t.getVerb().equals("ProjectSupply") == true) {
+        if (t.getVerb().equals(Constants.Verb.PROJECTSUPPLY) == true) {
 
           Asset direct_object = t.getDirectObject();
 
