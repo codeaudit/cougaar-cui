@@ -311,22 +311,22 @@ public class InventoryQuery implements Query, PropertyChangeListener
       {
         tblColumn[i] = (TableColumn) tableColumns.nextElement();
         DataSet dataSet = (DataSet)model.dataSets.get(model.getColumnName(i));
-        if(dataSet != null)
+       /* if(dataSet != null)
         {
           LabelIcon icon = new LabelIcon(dataSet);
            TableCellRenderer headerRenderer = tblColumn[i].getHeaderRenderer();
  	   //A java V1.3 compatability thing-headerRenderers default is null
- 	   if(headerRenderer == null) {
- 	       headerRenderer = new DefaultTableCellRenderer();
- 	       tblColumn[i].setHeaderRenderer(headerRenderer);
- 	   }
+  	   if(headerRenderer == null) {
+  	       headerRenderer = new DefaultTableCellRenderer();
+  	       tblColumn[i].setHeaderRenderer(headerRenderer);
+  	   }
            ((DefaultTableCellRenderer)headerRenderer).setIcon(icon);
           //System.out.println("persistent name " + model.getColumnName(i));
-        }
+        }*/
 
         i++;
       }
-
+      
       for (i=0; i<tblColumn.length; i++)
       {
         DataSet dataSet = (DataSet)model.dataSets.get(model.getColumnName(i));
