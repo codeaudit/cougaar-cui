@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -39,6 +39,8 @@ public class CNodeSelector extends JPanel implements Selector
 {
     private DefaultMutableTreeNode selectedNode;
     private CNodeSelectionControl nsc;
+    private JPanel includedControlPanel;
+    private JPanel northPanel;
 
     /**
      * Default constructor.  Create a new tree with a simple default
@@ -70,6 +72,31 @@ public class CNodeSelector extends JPanel implements Selector
         init(root);
     }
 
+    public void updateUI()
+    {
+        super.updateUI();
+
+        if (northPanel != null)
+        {
+            Color back = nsc.getBackground();
+            setBackground(northPanel, new Color(back.getRGB()));
+        }
+    }
+
+    private void setBackground(Component c, Color newColor)
+    {
+        c.setBackground(newColor);
+
+        if (c instanceof Container)
+        {
+            Container con = (Container)c;
+            for (int i = 0; i < con.getComponentCount(); i++)
+            {
+                setBackground(con.getComponent(i), newColor);
+            }
+        }
+    }
+
     /**
      * Initialize control
      *
@@ -81,6 +108,13 @@ public class CNodeSelector extends JPanel implements Selector
         nsc = new CNodeSelectionControl(root);
         JScrollPane scrolledNSC = new JScrollPane(nsc);
         add(scrolledNSC, BorderLayout.CENTER);
+        northPanel = new JPanel(new BorderLayout());
+        northPanel.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
+        includedControlPanel = new JPanel();
+        includedControlPanel.setLayout(
+          new BoxLayout(includedControlPanel, BoxLayout.Y_AXIS));
+        northPanel.add(includedControlPanel, BorderLayout.CENTER);
+        add(northPanel, BorderLayout.NORTH);
         setPreferredSize(new Dimension(400, 200));
 
         nsc.addTreeSelectionListener(new TreeSelectionListener() {
@@ -132,6 +166,24 @@ public class CNodeSelector extends JPanel implements Selector
                                       Object newValue)
     {
         super.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    /**
+     * Add a control to be contained in (but not managed by) this control
+     *
+     * @param control externally managed control
+     */
+    public void addIncludedControl(Component control)
+    {
+        includedControlPanel.add(control);
+        updateUI();
+
+        control.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e)
+            {
+                fireActionPerformed();
+            }
+          });
     }
 
     /**

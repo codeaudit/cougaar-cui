@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -71,7 +71,7 @@ public class CTreeButton extends CPullrightButton implements Selector
     }
 
     /**
-     * Iniitialize tree button
+     * Initialize tree button
      */
     private void init(DefaultMutableTreeNode root,
                       DefaultMutableTreeNode selectedNode)
@@ -79,6 +79,16 @@ public class CTreeButton extends CPullrightButton implements Selector
         ns = new CNodeSelector(root);
         ns.setSelectedItem(selectedNode);
         setSelectorControl(ns);
+    }
+
+    /**
+     * Add a control to be contained in (but not managed by) this control
+     *
+     * @param control externally managed control
+     */
+    public void addIncludedControl(Component control)
+    {
+        ns.addIncludedControl(control);
     }
 
     /**
