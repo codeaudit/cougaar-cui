@@ -15,6 +15,7 @@ public class BlackjackTableCreator
     private static String dbDriver;
     private static String user;
     private static String password;
+    private static boolean accessdb = false;
     private static boolean randomdata = Boolean.getBoolean("RANDOMDATA");
     private static boolean createItemTable = Boolean.getBoolean("CREATEITEMS");
     private static boolean createMetricTable = Boolean.getBoolean("CREATEMETRICS");
@@ -40,11 +41,13 @@ public class BlackjackTableCreator
         {
             dbURL = "jdbc:odbc:";
             dbDriver = "sun.jdbc.odbc.JdbcOdbcDriver";
+            accessdb = true;
         }
         else if (databaseType.equalsIgnoreCase("oracle"))
         {
             dbURL = "jdbc:oracle:thin:@";
             dbDriver = "oracle.jdbc.driver.OracleDriver";
+            accessdb = false;
         }
         else
         {
@@ -210,9 +213,9 @@ public class BlackjackTableCreator
         System.out.println(
             "Number of rows to be inserted into assessmentData: " +
             (orgSize * (itemSize+1) * metricSize * (endTime - startTime + 1)));
-        stmt.close();
 
-        PreparedStatement prepStmt = con.prepareStatement(
+        PreparedStatement prepStmt = null;
+        prepStmt = con.prepareStatement(
             "INSERT INTO assessmentData VALUES (?, ?, ?, ?, ?)");
         for (int org=0; org<orgSize; org++)
         {
@@ -221,19 +224,33 @@ public class BlackjackTableCreator
                 for (int time=startTime; time<(endTime+1); time++)
                     for (int metric=0; metric<metricSize; metric++)
                     {
-                        prepStmt.setInt(1, org);
-                        prepStmt.setInt(2, item);
-                        prepStmt.setInt(3, time);
-                        prepStmt.setInt(4, metric);
-                        if (randomdata)
+                        // access db does not support prepared statements
+                        if (accessdb)
                         {
-                            prepStmt.setFloat(5, rand.nextFloat() * 2);
+                            stmt.executeUpdate(
+                                "INSERT INTO assessmentData VALUES"
+                                + " (" + org + ", " + item + ", " +
+                                time + ", " + metric + ", " +
+                                (randomdata ?
+                                String.valueOf(rand.nextFloat() * 2)
+                                : "NULL") + ")");
                         }
                         else
                         {
-                            prepStmt.setNull(5, Types.FLOAT);
+                            prepStmt.setInt(1, org);
+                            prepStmt.setInt(2, item);
+                            prepStmt.setInt(3, time);
+                            prepStmt.setInt(4, metric);
+                            if (randomdata)
+                            {
+                                prepStmt.setFloat(5, rand.nextFloat() * 2);
+                            }
+                            else
+                            {
+                                prepStmt.setNull(5, Types.FLOAT);
+                            }
+                            prepStmt.executeUpdate();
                         }
-                        prepStmt.executeUpdate();
                     }
             con.commit();
             long secondsPassed = ((new Date()).getTime() - start)/1000;
@@ -248,6 +265,7 @@ public class BlackjackTableCreator
                                secondsToGo + " seconds");
         }
 
+        stmt.close();
         prepStmt.close();
     }
 
