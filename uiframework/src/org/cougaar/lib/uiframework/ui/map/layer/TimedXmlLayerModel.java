@@ -22,12 +22,13 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.location.*;
+//import com.bbn.openmap.layer.location.*;
 
 import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
 import org.cougaar.lib.uiframework.transducer.elements.Structure;
-import org.cougaar.lib.uiframework.ui.map.util.NamedLocationTM;
-import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
+// import org.cougaar.lib.uiframework.ui.map.util.NamedLocationTM;
+import org.cougaar.lib.uiframework.ui.map.util.NamedLocationTime;
+import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 
 class TimedXmlLayerModel extends XmlLayerModel {
     OMGraphicList curTimeMarkers;
@@ -118,71 +119,61 @@ class TimedXmlLayerModel extends XmlLayerModel {
 	    
 	}
 
-     // NamedLocationTMModel nltmmodel;
-    // void setTime(long time) {
-    //   curTime=time;
-    //   markers=new Vector();
-		//   for (Iterator itr=nltmmodel.iteratorAt(curTime); itr.hasNext();) {
-		//    NamedLocationTM nl=(NamedLocationTM)itr.next();
-		//    makeUnit(nl.getLatitude(),nl.getLongitude(), Color.white, // red,
-		//	     nl.getName(),
-		//	     nl.getName(),      //			     " MSG ",
-		//	     nl.getMetrics()    // createData(50, 100, 250)
-		//	     );
-		//   }
-    // }
-
-    
     void load(Structure s) {
-      allNLUnits=new ScheduleImpl();
-      curTimeMarkers=new OMGraphicList();
-
+	allNLUnits=new ScheduleImpl();
+	curTimeMarkers=new OMGraphicList();
+	
         System.out.println("TimedXmlLayerModel.load()");
-		Vector vec=NamedLocationTM.generate(s);
-
-
-    // nltmmodel=new NamedLocationTMModel(urlString);
-    // make nltmmodel a member of State
-    // setTime(NamedLocationTMModel.getEpoch());
-
-    Unit unit;
-		for (Iterator itr=vec.iterator(); itr.hasNext();) {
-		    NamedLocationTM nl=(NamedLocationTM)itr.next();
-		    unit = makeUnit(nl.getLatitude(),nl.getLongitude(), Color.white, // red,
-			     nl.getName(),
-			     nl.getName(),
-//			     " MSG ",
-			     nl.getMetrics()
-			     // createData(50, 100, 250)
-			     );
-        nl.setUnit(unit);
-        allNLUnits.add(nl);
-		}
-
-    
-    transitionTimes=NamedLocationTM.getTransitionTimes(allNLUnits);
+	// Vector vec=NamedLocationTM.generate(s);
+	Vector vec=NamedLocationTime.generate(s);
+	
+	// nltmmodel=new NamedLocationTMModel(urlString);
+	// make nltmmodel a member of State
+	// setTime(NamedLocationTMModel.getEpoch());
+	
+	Unit unit;
+	for (Iterator itr=vec.iterator(); itr.hasNext();) {
+	    // NamedLocationTM nl=(NamedLocationTM)itr.next();
+	    NamedLocationTime nl=(NamedLocationTime)itr.next();
+	    unit = makeUnit(nl.getLatitude(),nl.getLongitude(), Color.white, // red,
+			    nl.getName(),
+			    nl.getName(),
+			    //			     " MSG ",
+			    nl.getMetrics()
+			    // createData(50, 100, 250)
+			    );
+	    nl.setUnit(unit);
+	    allNLUnits.add(nl);
+	}
+	
+	
+	// transitionTimes=NamedLocationTM.getTransitionTimes(allNLUnits);
+	transitionTimes=NamedLocationTime.getTransitionTimes(allNLUnits);
         for (Iterator it=transitionTimes.iterator(); it.hasNext(); ) {
-          Long ttime=(Long)it.next();
-          Collection nls=NamedLocationTM.getNamedLocationsAtTime(allNLUnits, ttime.longValue());
-
-          System.out.println("NamedLocationTMs at time: "+ttime+": ");
-          System.out.println(nls);
+	    Long ttime=(Long)it.next();
+	    // Collection nls=NamedLocationTM.getNamedLocationsAtTime(allNLUnits, ttime.longValue());
+	    Collection nls=NamedLocationTime.getNamedLocationsAtTime(allNLUnits, ttime.longValue());
+	    
+	    System.out.println("NamedLocations at time: "+ttime+": ");
+	    System.out.println(nls);
         }
 
-  }
-
+    }
+    
     Collection getTransitionTimes() {
-      return transitionTimes;
+	return transitionTimes;
     }
 
 
   void setTime(long time) {
       System.out.println("tmodel setTime");
       curTimeMarkers.clear();
-      Collection nls=NamedLocationTM.getNamedLocationsAtTime(allNLUnits, time);
+      // Collection nls=NamedLocationTM.getNamedLocationsAtTime(allNLUnits, time);
+      Collection nls=NamedLocationTime.getNamedLocationsAtTime(allNLUnits, time);
       for (Iterator it=nls.iterator(); it.hasNext(); ) {
-          NamedLocationTM nltm=(NamedLocationTM)it.next();
-     System.out.println("tmodel setTime "+nltm);
+          // NamedLocationTM nltm=(NamedLocationTM)it.next();
+          NamedLocationTime nltm=(NamedLocationTime)it.next();
+	  System.out.println("tmodel setTime "+nltm);
 
           if (nltm!=null && nltm.getUnit()!=null &&
             nltm.getUnit().getGraphic()!=null) {

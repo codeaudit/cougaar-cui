@@ -12,8 +12,8 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/ColorCodeUnit.java,v $
- * $Revision: 1.1 $
- * $Date: 2001-02-15 13:20:58 $
+ * $Revision: 1.2 $
+ * $Date: 2001-02-23 21:56:55 $
  * $Author: krotherm $
  * 
  * **********************************************************************
@@ -27,24 +27,8 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import java.util.*;
-import com.bbn.openmap.LatLonPoint;
-
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.event.ProjectionEvent;
-
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.location.*;
-//import assessment.StoplightFrame;
-//import assessment.*;
-import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
-import org.cougaar.lib.uiframework.transducer.elements.Structure;
-import org.cougaar.lib.uiframework.ui.map.util.NamedLocation;
 
 
 

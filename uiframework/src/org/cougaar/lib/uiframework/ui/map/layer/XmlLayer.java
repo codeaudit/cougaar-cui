@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Attic/XmlLayer.java,v $
- * $Revision: 1.1 $
- * $Date: 2001-02-15 13:20:59 $
+ * $Revision: 1.2 $
+ * $Date: 2001-02-23 21:56:55 $
  * $Author: krotherm $
  *
  * **********************************************************************
@@ -41,14 +41,6 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.location.*;
-//// import assessment.StoplightFrame;
-// import assessment.*;
-/*
-import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
-import org.cougaar.lib.uiframework.transducer.elements.Structure;
-import org.cougaar.lib.uiframework.ui.map.util.NamedLocationM;
-*/
 
 /**
  * Layer objects are components which can be added to the MapBean to

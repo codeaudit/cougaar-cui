@@ -22,7 +22,7 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.location.*;
+//import com.bbn.openmap.layer.location.*;
 
 import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
 import org.cougaar.lib.uiframework.transducer.elements.Structure;

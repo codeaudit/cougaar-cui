@@ -12,8 +12,8 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/VecIcon.java,v $
- * $Revision: 1.1 $
- * $Date: 2001-02-15 13:20:58 $
+ * $Revision: 1.2 $
+ * $Date: 2001-02-23 21:56:55 $
  * $Author: krotherm $
  * 
  * **********************************************************************
@@ -38,7 +38,7 @@ import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.event.ProjectionEvent;
 
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.location.*;
+//import com.bbn.openmap.layer.location.*;
 
 public class VecIcon extends OMGraphic {
     float basepixyf=.2f;
