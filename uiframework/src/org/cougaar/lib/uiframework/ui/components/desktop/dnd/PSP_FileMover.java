@@ -41,7 +41,7 @@ import javax.swing.tree.*;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import org.cougaar.core.agent.ClusterIdentifier;
+import org.cougaar.core.mts.MessageAddress;
 import org.cougaar.core.blackboard.CollectionSubscription;
 import org.cougaar.core.blackboard.Subscription;
 import org.cougaar.planning.ldm.asset.Asset;
