@@ -66,6 +66,16 @@ public class COrderedLabeledMThumbSlider
     }
 
     /**
+     * Get the slider control contained by this labeled panel
+     *
+     * @return the slider control contained by this labeled panel
+     */
+    public CMThumbSlider getSlider()
+    {
+        return slider;
+    }
+
+    /**
      * Called to initialize component with minimum and maximum range values.
      *
      * @param minValue the minimum value for this slider
@@ -297,6 +307,28 @@ public class COrderedLabeledMThumbSlider
         }
     }
     private boolean updateUIAfterPaint = true;
+
+    /**
+     * get value of thumb at given index.
+     *
+     * @param index index of thumb
+     * @return value of thumb at given index
+     */
+    public float getValueAt(int index)
+    {
+        return fromSlider(slider.getValueAt(index));
+    }
+
+    /**
+     * set value of thumb at given index.
+     *
+     * @param f new value for thumb at given index
+     * @param index index of thumb
+    */
+    public void setValueAt(float f, int index)
+    {
+        slider.setValueAt(toSlider(f), index);
+    }
 
     /**
      * Translates from float value to slider's integer value.

@@ -3,6 +3,7 @@ package org.cougaar.lib.uiframework.ui.components;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
+import java.util.Vector;
 import javax.swing.*;
 
 import org.cougaar.lib.uiframework.ui.util.Selector;
@@ -214,5 +215,34 @@ public class CPullrightButton extends JButton implements Selector
         }
         */
 
+    }
+
+    /**
+     * main for unit test
+     *
+     * @param String[] args ignored
+     */
+    public static void main(String[] args)
+    {
+        final CPullrightButton prb = new CPullrightButton();
+        CSliderSelector ss =
+            new CSliderSelector("Set New Time:", new String[]{"C+"}, 0, 100);
+        prb.setSelectorControl(ss);
+        ss.addPropertyChangeListener("selectedItem",
+                                     new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    Number n = (Number)((Vector)e.getNewValue()).elementAt(0);
+                    prb.setText("C+" + n.intValue());
+                }
+            });
+        Vector defaultValue = new Vector();
+        defaultValue.add(new Integer(50));
+        ss.setSelectedItem(defaultValue);
+
+        JFrame frame = new JFrame();
+        frame.getContentPane().add(prb);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
