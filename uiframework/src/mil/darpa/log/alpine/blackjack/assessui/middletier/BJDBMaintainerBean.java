@@ -2,6 +2,7 @@ package mil.darpa.log.alpine.blackjack.assessui.middletier;
 
 import java.io.*;
 import java.lang.Integer;
+import java.util.Vector;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -64,6 +65,8 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         AggInfoDecoder myDecoder = new AggInfoDecoder ();
         myDecoder.startXMLDecoding (updateXML);
         int index = 0;
+        Vector org_list = new Vector();
+        Vector item_list = new Vector();
 
         try {
             stmt = connection.createStatement();
@@ -91,6 +94,14 @@ if (index == 0) {
 
                 int org_id = getOrgID (myStruct.getOrg());
 //            System.out.println ("org id is " + org_id);
+
+                if (org_list.contains ("" + org_id) == false) {
+                    org_list.add ("" + org_id);
+                }
+
+                if (item_list.contains ("" + item_id) == false) {
+                    item_list.add ("" + item_id);
+                }
 
                 if (myStruct.getTime() != null) {
 
@@ -124,6 +135,8 @@ if (index == 0) {
 
             // Save the work in the database
             stmt.executeUpdate("COMMIT");
+
+            AggregateEntries (org_list, item_list);
         }
         catch(SQLException e)
         {
@@ -358,6 +371,24 @@ System.out.print ("insert"+time_index);
 
         return (time_in_days);
     }
+
+    private void  AggregateEntries (Vector org_list, Vector item_list) {
+
+      int index;
+
+      for (index = 0; index < org_list.size(); index++) {
+          System.out.print ((String) org_list.elementAt(index) + " ");
+      }
+
+      System.out.println ("");
+
+      for (index = 0; index < item_list.size(); index++) {
+          System.out.print ((String) item_list.elementAt(index) + " ");
+      }
+
+      System.out.println ("");
+
+    } /* end of AggregateEntries */
 
     public void ejbActivate() {}
     public void ejbPassivate() {}
