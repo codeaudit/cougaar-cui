@@ -1,0 +1,34 @@
+infantry	data/cgm/cgmicons/3115f.cgm	platoon
+light infantry	data/cgm/cgmicons/31151f.cgm	section
+mechanized infantry	data/cgm/cgmicons/31156f.cgm	squad
+armor	data/cgm/cgmicons/3112f.cgm	company
+armored cavalry	data/cgm/cgmicons/311821f.cgm	battalion
+recon	data/cgm/cgmicons/311823f.cgm	regiment
+airborne	data/cgm/cgmicons/31154f.cgm	brigade
+air assault	data/cgm/cgmicons/31155f.cgm	division
+field artillery	data/cgm/cgmicons/3117f.cgm	corps
+air defense	data/cgm/cgmicons/3111f.cgm	squad
+supply	data/cgm/cgmicons/3133f.cgm	army
+maintenance	data/cgm/cgmicons/3135f.cgm	
+medical	data/cgm/cgmicons/3132f.cgm
+subsistence	data/cgm/cgmicons/31333f.cgm
+clothing	data/cgm/cgmicons/31334f.cgm
+petroleum	data/cgm/cgmicons/31335f.cgm
+construction materials	data/cgm/cgmicons/31336f.cgm
+ammunition	data/cgm/cgmicons/31337f.cgm
+personal demand	data/cgm/cgmicons/31338f.cgm
+major end items	data/cgm/cgmicons/31339f.cgm
+anti-armor	data/cgm/cgmicons/3113f.cgm	squad
+aviation	data/cgm/cgmicons/3114f.cgm	section
+attack helicopter	data/cgm/cgmicons/311421f.cgm	platoon
+air cavalry	data/cgm/cgmicons/311824f.cgm	company
+engineer	data/cgm/cgmicons/3116f.cgm	battalion
+chemical	data/cgm/cgmicons/3121f.cgm	regiment
+signal	data/cgm/cgmicons/3124f.cgm	brigade
+intelligence	data/cgm/cgmicons/3122216f.cgm	division
+transport	data/cgm/cgmicons/3134f.cgm	corps
+medical supply	data/cgm/cgmicons/313310f.cgm
+repair parts supply	data/cgm/cgmicons/313311f.cgm
+ordnance	data/cgm/cgmicons/ordnance.cgm
+313f	data/cgm/cgmicons/313f.cgm	
+31152f	data/cgm/cgmicons/31152f.cgm	
