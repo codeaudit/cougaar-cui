@@ -2,6 +2,7 @@ package mil.darpa.log.alpine.blackjack.assessui.util;
 
 import java.io.FileInputStream;
 import java.sql.*;
+import java.util.Date;
 import java.util.Random;
 
 import org.cougaar.lib.uiframework.transducer.*;
@@ -29,6 +30,10 @@ public class BlackjackTableCreator
                                "<access|oracle> <dburl> <user> <password>");
             return;
         }
+
+        System.out.println("Database Type: " + args[0]);
+        System.out.println(" Database URL: " + args[1]);
+        System.out.println("  User Accout: " + args[2] + "\n");
 
         String databaseType = args[0];
         if (databaseType.equalsIgnoreCase("access"))
@@ -63,8 +68,7 @@ public class BlackjackTableCreator
             populateTransducerTables();        // connections in some
             con = establishConnection(dbURL);  // databases.
             con.setAutoCommit(false);          //
-            stmt = con.createStatement();      //
-            populateOtherTables(stmt);
+            populateOtherTables(con);
             con.commit();
         }
         catch(Exception e)
@@ -178,8 +182,11 @@ public class BlackjackTableCreator
         }
     }
 
-    private static void populateOtherTables(Statement stmt) throws Exception
+    private static void populateOtherTables(Connection con) throws Exception
     {
+        Statement stmt = con.createStatement();
+
+        // metric table
         if (createMetricTable)
         {
             String[] metrics = {"Demand", "Days of Supply",
@@ -187,9 +194,11 @@ public class BlackjackTableCreator
 
             for (int i=0; i < metrics.length; i++)
             {
-                stmt.executeUpdate("INSERT INTO assessmentMetrics VALUES (" + i +
-                                    ", '" + metrics[i] + "')");
+                stmt.executeUpdate("INSERT INTO assessmentMetrics VALUES ("
+                                    + i + ", '" + metrics[i] + "')");
             }
+
+            con.commit();
         }
 
         // Value table
@@ -197,26 +206,58 @@ public class BlackjackTableCreator
         int orgSize = getNumberOfRows(stmt, "assessmentOrgs");
         int itemSize = getNumberOfRows(stmt, "itemWeights");
         int metricSize = getNumberOfRows(stmt, "assessmentMetrics");
+        System.out.println("Time Range from " + startTime + " to " + endTime);
+        System.out.println(
+            "Number of rows to be inserted into assessmentData: " +
+            (orgSize * itemSize * metricSize * (endTime - startTime)));
+        stmt.close();
+
+        PreparedStatement prepStmt = con.prepareStatement(
+            "INSERT INTO assessmentData VALUES (?, ?, ?, ?, ?)");
         for (int org=0; org<orgSize; org++)
+        {
+            long start = (new Date()).getTime();
             for (int item=0; item<itemSize; item++)
                 for (int time=startTime; time<endTime; time++)
                     for (int metric=0; metric<metricSize; metric++)
-                        stmt.executeUpdate("INSERT INTO assessmentData VALUES"
-                                           + " (" + org + ", " + item + ", " +
-                                           time + ", " + metric + ", " +
-                                           (randomdata ?
-                                           String.valueOf(rand.nextFloat() * 2)
-                                           : "NULL") + ")");
+                    {
+                        prepStmt.setInt(1, org);
+                        prepStmt.setInt(2, item);
+                        prepStmt.setInt(3, time);
+                        prepStmt.setInt(4, metric);
+                        if (randomdata)
+                        {
+                            prepStmt.setFloat(5, rand.nextFloat() * 2);
+                        }
+                        else
+                        {
+                            prepStmt.setNull(5, Types.FLOAT);
+                        }
+                        prepStmt.executeUpdate();
+                    }
+            con.commit();
+            long secondsPassed = ((new Date()).getTime() - start)/1000;
+            long secondsToGo = secondsPassed * (orgSize - org);
+            long hoursToGo = secondsToGo / 3600;
+            secondsToGo -= (hoursToGo * 3600);
+            long minutesToGo = secondsToGo / 60;
+            secondsToGo -= (minutesToGo * 60);
+            System.out.println("\nCompleted filling data for org #" + org);
+            System.out.println("Estimated time to go: " + hoursToGo +
+                               " hours, " + minutesToGo + " minutes, and " +
+                               secondsToGo + " seconds");
+        }
+
+        prepStmt.close();
     }
 
     private static int getNumberOfRows(Statement stmt, String tableName)
         throws SQLException
     {
-        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
-        int rowCount = 0;
-        while (rs.next()) rowCount++;
+        ResultSet rs = stmt.executeQuery("SELECT COUNT (*) FROM " + tableName);
+        rs.next();
+        int rowCount = rs.getInt(1);
         rs.close();
-
         System.out.println(rowCount + " rows in " + tableName);
         return rowCount;
     }
