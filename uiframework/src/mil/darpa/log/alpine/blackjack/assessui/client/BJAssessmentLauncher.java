@@ -44,6 +44,9 @@ public class BJAssessmentLauncher extends CFrameLauncher
         //        new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         pack();
         setVisible(true);
+
+        // load item and org trees
+        Object dummy = DBInterface.orgTree;
     }
 
     /**
