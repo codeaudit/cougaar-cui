@@ -19,6 +19,10 @@ set LIB_PATH=%LIB_PATH%;%LIB_HOME%\xml4j_2_0_11.jar
 set LIB_PATH=%LIB_PATH%;%LIB_HOME%\core.jar
 set LIB_PATH=%LIB_PATH%;%LIB_HOME%\openmap.jar
 
+if not exist %LIB_HOME%\xml4j_2_0_11.jar goto err1
+if not exist %LIB_HOME%\core.jar goto err1
+if not exist %LIB_HOME%\openmap.jar goto err1
+
 set SRC_FILES=%MAP_SRC_HOME%\util\*.java 
 set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\layer\*.java 
 set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\app\*.java
@@ -30,5 +34,21 @@ set JAVAFLAGS= -g  %deprec% -classpath %LIB_PATH% -d %CUR_BIN_DIR%
 
 %JAVAC% %JAVAFLAGS% %SRC_FILES%
 
+goto ok
+
+:err1
+ echo You are missing a required JAR file.
+ echo You need the following JAR files:
+ echo    %LIB_HOME%\xml4j_2_0_11.jar
+ echo    %LIB_HOME%\core.jar
+ echo    %LIB_HOME%\openmap.jar
+ echo Cannot build.
+ echo Done.
+
+ goto end
+
+:ok
 echo Finished Building Map UI classes.
 echo on
+
+:end
