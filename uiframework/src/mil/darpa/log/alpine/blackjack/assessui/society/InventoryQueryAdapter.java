@@ -3,6 +3,8 @@ package mil.darpa.log.alpine.blackjack.assessui.society;
 import java.util.*;
 import java.io.*;
 
+import java.lang.Double;
+
 import org.cougaar.lib.aggagent.dictionary.glquery.samples.CustomQueryBaseAdapter;
 import org.cougaar.domain.glm.ldm.Constants;
 
@@ -114,10 +116,15 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
           element = (QuantityScheduleElementImpl) schedule_list.nextElement();
 
-          rate = "" + element.getQuantity();
+          Double mydouble = new Double(element.getQuantity());
+
+          if (mydouble.isNaN())
+            rate = "0.0";
+          else
+            rate = "" + element.getQuantity();
 
           looping++;
-          System.out.print (" " + looping + " ");
+          System.out.print (" " + rate + "(" + looping + ")");
 
           // Pull out the start time and put it in a string
 
