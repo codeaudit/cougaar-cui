@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT starttime (#PCDATA)>
+<!ELEMENT endtime (#PCDATA)>
+<!ELEMENT relationship (#PCDATA)>
+<!ELEMENT other (#PCDATA)>
+<!ELEMENT Cluster (other, relationship, starttime?, endtime?)?>
+<!ATTLIST Cluster
+  ID CDATA #REQUIRED
+>
+<!ELEMENT orgrels (Cluster*)>
