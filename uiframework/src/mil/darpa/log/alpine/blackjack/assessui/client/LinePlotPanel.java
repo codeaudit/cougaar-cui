@@ -238,10 +238,20 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         tablePanel.setMinimumSize(new Dimension(0, 0));
 
         // high level layout
-        JPanel controlPanel = new JPanel(new BorderLayout());
-        controlPanel.add(fixedVariablesPanel, BorderLayout.WEST);
-        controlPanel.add(independentVariablesPanel, BorderLayout.CENTER);
-        controlPanel.add(featureSelectionControl, BorderLayout.EAST);
+        GridBagLayout gbl = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx=1;
+        gbc.weighty=1;
+        JPanel controlPanel = new JPanel(gbl);
+        gbc.fill=GridBagConstraints.BOTH;
+        gbl.setConstraints(fixedVariablesPanel, gbc);
+        controlPanel.add(fixedVariablesPanel);
+        gbl.setConstraints(independentVariablesPanel, gbc);
+        controlPanel.add(independentVariablesPanel);
+        gbc.weightx=0;
+        gbc.weighty=0;
+        gbl.setConstraints(featureSelectionControl, gbc);
+        controlPanel.add(featureSelectionControl);
         final JSplitPane chartPanel =
             new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                            linePlotPanel, tablePanel);
