@@ -1,54 +1,8 @@
 graph [
    directed 1
    node [
-      id 1
-      label "FUTURE"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x 62.0
-            y 77.0
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         group 18
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 2
-      label "DLAHQ"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x -444.5
-            y 81.0
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         group 18
-         shape "Oval"
-      ]
-   ]
-   node [
       id 4
-      label "INDUSTRIAL-BASE"
+      label "416-TKCO-POL"
       graphics [
          Image [
             Type "URL"
@@ -139,7 +93,7 @@ graph [
    ]
    node [
       id 0
-      label "CENTCOM-HHC"
+      label "10-TCBN-HHC"
       graphics [
          Image [
             Type "URL"
@@ -161,7 +115,7 @@ graph [
    ]
    node [
       id 20
-      label "JTF-HHC"
+      label "89-TKCO-CGO"
       graphics [
          Image [
             Type "URL"
@@ -175,28 +129,6 @@ graph [
          width 100.0
          height 70.0
          depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 5
-      label "10-TCBN-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x 220.0
-            y 79.0
-            z 0.0
-         ]
-         width 105.30000000000001
-         height 67.5
-         depth 97.5
       ]
       vgj [
          labelPosition "center"

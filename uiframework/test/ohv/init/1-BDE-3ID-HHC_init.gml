@@ -1,62 +1,108 @@
 graph [
    directed 1
    node [
-      id 1
-      label "FUTURE"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x 62.0
-            y 77.0
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         group 18
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 2
-      label "DLAHQ"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x -444.5
-            y 81.0
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         group 18
-         shape "Oval"
-      ]
-   ]
-   node [
       id 4
-      label "INDUSTRIAL-BASE"
+      label "1-BDE-3ID-HHC"
       graphics [
          Image [
-            Type "URL"
+            Type ""
             Location ""
          ]
          center [
-            x -125.5
-            y 77.0
+            x -67.5
+            y 142.0
+            z 0.0
+         ]
+         width 100.0
+         height 70.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 17
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 7
+      label "1-64-ARBN"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 110.5
+            y 2.0
+            z 0.0
+         ]
+         width 100.0
+         height 70.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 17
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 8
+      label "3-7-INFBN"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -347.5
+            y 2.0
+            z 0.0
+         ]
+         width 100.0
+         height 70.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 17
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 9
+      label "3-15-INFBN"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -55.5
+            y 2.0
+            z 0.0
+         ]
+         width 100.0
+         height 70.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 17
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 10
+      label "26-FSB"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -189.5
+            y 2.0
             z 0.0
          ]
          width 100.0
@@ -134,72 +180,6 @@ graph [
       ]
       vgj [
          labelPosition "below"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 0
-      label "CENTCOM-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x -210.0
-            y 206.5
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 20
-      label "JTF-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x -300.0
-            y 80.5
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 5
-      label "10-TCBN-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x 220.0
-            y 79.0
-            z 0.0
-         ]
-         width 105.30000000000001
-         height 67.5
-         depth 97.5
-      ]
-      vgj [
-         labelPosition "center"
          shape "Oval"
       ]
    ]

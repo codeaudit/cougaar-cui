@@ -1,16 +1,16 @@
 graph [
    directed 1
    node [
-      id 1
-      label "FUTURE"
+      id 5
+      label "3-BDE-2ID-HHC"
       graphics [
          Image [
-            Type "URL"
+            Type ""
             Location ""
          ]
          center [
-            x 62.0
-            y 77.0
+            x -45.5
+            y 178.0
             z 0.0
          ]
          width 100.0
@@ -19,21 +19,21 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 18
+         group 16
          shape "Oval"
       ]
    ]
    node [
-      id 2
-      label "DLAHQ"
+      id 11
+      label "126-MEDTM-FSURG"
       graphics [
          Image [
-            Type "URL"
+            Type ""
             Location ""
          ]
          center [
-            x -444.5
-            y 81.0
+            x -45.5
+            y 48.0
             z 0.0
          ]
          width 100.0
@@ -42,21 +42,21 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 18
+         group 16
          shape "Oval"
       ]
    ]
    node [
-      id 4
-      label "INDUSTRIAL-BASE"
+      id 12
+      label "296-SPTBN"
       graphics [
          Image [
-            Type "URL"
+            Type ""
             Location ""
          ]
          center [
-            x -125.5
-            y 77.0
+            x -351.5
+            y 54.0
             z 0.0
          ]
          width 100.0
@@ -65,12 +65,81 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 17
+         group 16
          shape "Oval"
       ]
    ]
    node [
-      id 17
+      id 13
+      label "2-3-INFBN"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 144.5
+            y 52.0
+            z 0.0
+         ]
+         width 100.0
+         height 70.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 16
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 14
+      label "1-23-INFBN"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -219.5
+            y 52.0
+            z 0.0
+         ]
+         width 100.0
+         height 70.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 16
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 15
+      label "5-20-INFBN"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 292.5
+            y 52.0
+            z 0.0
+         ]
+         width 100.0
+         height 70.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 16
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 16
       label ""
       graphics [
          Image [
@@ -134,72 +203,6 @@ graph [
       ]
       vgj [
          labelPosition "below"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 0
-      label "CENTCOM-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x -210.0
-            y 206.5
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 20
-      label "JTF-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x -300.0
-            y 80.5
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 5
-      label "10-TCBN-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x 220.0
-            y 79.0
-            z 0.0
-         ]
-         width 105.30000000000001
-         height 67.5
-         depth 97.5
-      ]
-      vgj [
-         labelPosition "center"
          shape "Oval"
       ]
    ]
