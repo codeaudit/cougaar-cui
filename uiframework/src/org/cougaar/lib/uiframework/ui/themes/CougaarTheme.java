@@ -23,8 +23,8 @@ public class CougaarTheme extends DefaultMetalTheme
     private final FontUIResource smallFont = new FontUIResource("Trebuchet MS", Font.PLAIN, 10); // 10nothing automatic
 
     private final ColorUIResource primary1 = new ColorUIResource(255, 255, 102); // labels (Axis)
-    private final ColorUIResource primary2 = new ColorUIResource(248, 248, 248);// Graph Framework, Axis Values, selected text
-    private final ColorUIResource primary3 = new ColorUIResource(192, 192, 192); // text selection
+    private final ColorUIResource primary2 = new ColorUIResource(192, 192, 192);// Graph Framework, Axis Values, selected text
+    private final ColorUIResource primary3 = new ColorUIResource(100, 100, 100); // text selection, tool tip background
 
     private final ColorUIResource secondary1 = new ColorUIResource(150, 150, 150); // Inactive window borders (control outlines)
     private final ColorUIResource secondary2 = new ColorUIResource(100, 100, 100); // Secondary shadows
