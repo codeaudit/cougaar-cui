@@ -366,7 +366,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
      */
     public static void main(String[] args)
     {
-        CFrame frame = new CFrame("Line Plot Chart", false);
+        CFrame frame = new CFrame(UIConstants.LINEPLOT_UI_NAME, false);
         LinePlotPanel lpp = new LinePlotPanel(false);
         VariableInterfaceManager vim = lpp.getVariableInterfaceManager();
         vim.getDescriptor("Org").setValue("23INBN");

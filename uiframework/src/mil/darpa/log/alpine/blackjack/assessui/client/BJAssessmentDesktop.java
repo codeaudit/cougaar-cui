@@ -30,20 +30,16 @@ public class BJAssessmentDesktop extends CDesktopFrame
 
         addTool("Map View", 'M', CMap.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
-        addTool("Stoplight View", 'S', StoplightPanel.class,
+        addTool(UIConstants.STOPLIGHT_UI_NAME, 'S', StoplightPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
-        addTool("Lineplot View", 'L', LinePlotPanel.class,
+        addTool(UIConstants.LINEPLOT_UI_NAME, 'L', LinePlotPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
-        addTool("Stoplight View (PLAF)", 't', StoplightPanel.class,
+        addTool(UIConstants.STOPLIGHT_UI_NAME +  " (PLAF)", 't',
+                StoplightPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
-        addTool("Lineplot View (PLAF)", 'i', LinePlotPanel.class,
+        addTool(UIConstants.LINEPLOT_UI_NAME + " (PLAF)", 'i',
+                LinePlotPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
-        //addTool("Stoplight View (Old Style)", 'o', StoplightPanel.class,
-        //        new Class[]{boolean.class, boolean.class},
-        //        new Object[]{new Boolean(false), new Boolean(false)});
-        //addTool("Lineplot View (Old Style)", 'n', LinePlotPanel.class,
-        //        new Class[]{boolean.class, boolean.class},
-        //        new Object[]{new Boolean(false), new Boolean(false)});
         setVisible(true);
     }
 

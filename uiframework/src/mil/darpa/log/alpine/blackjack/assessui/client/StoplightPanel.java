@@ -346,7 +346,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         }
         else
         {
-            linePlotFrame = new CFrame("Line Plot Chart", plaf);
+            linePlotFrame = new CFrame(UIConstants.LINEPLOT_UI_NAME, plaf);
         }
         LinePlotPanel lpp = new LinePlotPanel(plaf, useMenuButtons);
         VariableInterfaceManager linePlotVIM =
@@ -405,7 +405,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         if (linePlotFrame instanceof CDesktopFrame)
         {
             CDesktopFrame cfc = (CDesktopFrame)linePlotFrame;
-            cfc.createInnerFrame("Lineplot View" + (plaf?" (PLAF)":""), lpp);
+            cfc.createInnerFrame( + (plaf?" (PLAF)":""), lpp);
         }
         else
         {
@@ -488,7 +488,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         }
 
         boolean plaf = Boolean.getBoolean("PLAF");
-        CFrame frame = new CFrame("Stoplight Chart", plaf);
+        CFrame frame = new CFrame(UIConstants.STOPLIGHT_UI_NAME, plaf);
         StoplightPanel slp = new StoplightPanel(plaf);
         slp.getVariableInterfaceManager().getDescriptor("Metric").
             setValue("Supply as Proportion of Demand");
