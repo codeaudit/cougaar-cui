@@ -12,6 +12,13 @@ import org.cougaar.lib.planserver.*;
 import java.util.*;
 import java.io.*;
 
+/**
+ *  The PSP_QueryBase is the base class for PSPs that respond to HTTP POST
+ *  requests by using a QueryInterpreter implementation.  The generic algorithm
+ *  handles most of work involved in getting the query and parsing the XML and
+ *  so forth.  Subclasses are responsible for creating and configuring the
+ *  QueryInterpreter.
+ */
 public abstract class PSP_QueryBase
     extends PSP_BaseAdapter implements PlanServiceProvider
 {
@@ -108,7 +115,7 @@ public abstract class PSP_QueryBase
    *  constructor.  This method, however, is called after the PlugInDelegate
    *  reference is available, which may be required for some initializations.
    */
-  public abstract void initQueryInterpreter ();
+  protected abstract void initQueryInterpreter ();
 
   /**
    *  Provide a reference to the QueryInterpreter to be used by this PSP.  The
@@ -116,7 +123,7 @@ public abstract class PSP_QueryBase
    *  it is processing a query.
    *  @return the QueryInterpreter implementation
    */
-  public abstract QueryInterpreter getQueryInterpreter ();
+  protected abstract QueryInterpreter getQueryInterpreter ();
 
   /**
    *  Use a reference to the local PlugIn as a means of accessing the Cluster's

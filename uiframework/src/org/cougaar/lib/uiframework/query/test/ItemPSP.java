@@ -17,7 +17,7 @@ public class ItemPSP extends PSP_QueryBase {
    *  it is processing a query.
    *  @return the QueryInterpreter implementation
    */
-  public QueryInterpreter getQueryInterpreter () {
+  protected QueryInterpreter getQueryInterpreter () {
     return responder;
   }
 
@@ -27,7 +27,7 @@ public class ItemPSP extends PSP_QueryBase {
    *  the initialization can be performed in the implementation class's
    *  constructor.  This method, however, is called after the PlugInDelegate
    */
-  public void initQueryInterpreter () {
+  protected void initQueryInterpreter () {
     responder = new GenericInterpreter();
     responder.addAttribute(new ItemGrabber(this));
     responder.addDimension(createItemDimension());

@@ -3,7 +3,6 @@ package org.cougaar.lib.uiframework.transducer;
 
 import java.io.*;
 
-import com.ibm.xml.parser.util.*;
 import com.ibm.xml.parser.*;
 import org.w3c.dom.*;
 
@@ -35,7 +34,7 @@ public class XmlInterpreter {
    */
   public Structure readXml (BufferedReader bufr) {
     Parser p = new Parser(dtdPath);
-    TXDocument txt = p.readStream(bufr);
+    Document txt = p.readStream(bufr);
 
     Node t = txt.getDocumentElement();
     if (t.getNodeName().equals("structure"))
