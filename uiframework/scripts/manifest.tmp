@@ -4,6 +4,12 @@ Java-Bean: True
 Name: org/cougaar/lib/uiframework/ui/components/CLabeledSlider.class
 Java-Bean: True
 
+Name: org/cougaar/lib/uiframework/ui/components/CLinePlotChart.class
+Java-Bean: True
+
+Name: org/cougaar/lib/uiframework/ui/components/CNodeSelectionControl.class
+Java-Bean: True
+
 Name: org/cougaar/lib/uiframework/ui/components/CMenuButton.class
 Java-Bean: True
 
@@ -13,10 +19,22 @@ Java-Bean: True
 Name: org/cougaar/lib/uiframework/ui/components/CMThumbSliderThresholdControl.class
 Java-Bean: True
 
+Name: org/cougaar/lib/uiframework/ui/components/CMultipleSliderControl.class
+Java-Bean: True
+
 Name: org/cougaar/lib/uiframework/ui/components/CNodeSelector.class
 Java-Bean: True
 
+Name: org/cougaar/lib/uiframework/ui/components/mthumbslider/COrderedLabeledMThumbSlider.class
+Java-Bean: True
+
 Name: org/cougaar/lib/uiframework/ui/components/CRangeButton.class
+Java-Bean: True
+
+Name: org/cougaar/lib/uiframework/ui/components/CRadioButtonSelectionControl.class
+Java-Bean: True
+
+Name: org/cougaar/lib/uiframework/ui/components/CRangeSelector.class
 Java-Bean: True
 
 Name: org/cougaar/lib/uiframework/ui/components/CSliderRangeControl.class
@@ -29,6 +47,9 @@ Name: org/cougaar/lib/uiframework/ui/components/CStoplightTable.class
 Java-Bean: True
 
 Name: org/cougaar/lib/uiframework/ui/components/CTreeButton.class
+Java-Bean: True
+
+Name: org/cougaar/lib/uiframework/ui/components/CViewFeatureSelectionControl.class
 Java-Bean: True
 
 
