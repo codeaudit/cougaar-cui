@@ -138,23 +138,24 @@ public class CStoplightTable extends CRowHeaderTable
     public void
         setViewFeatureSelectionControl(final CViewFeatureSelectionControl vfc)
     {
-        vfc.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e)
+        vfc.addPropertyChangeListener("selectedItem",
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
                 {
-                    if (e.getActionCommand().
-                        equals(CViewFeatureSelectionControl.COLOR))
+                    String newValue = e.getNewValue().toString();
+                    if (newValue.equals(CViewFeatureSelectionControl.COLOR))
                     {
                         setShowColor(true);
                         setShowValue(false);
                     }
-                    else if (e.getActionCommand().
-                             equals(CViewFeatureSelectionControl.VALUE))
+                    else if (newValue.
+                        equals(CViewFeatureSelectionControl.VALUE))
                     {
                         setShowColor(false);
                         setShowValue(true);
                     }
-                    else if (e.getActionCommand().
-                             equals(CViewFeatureSelectionControl.BOTH))
+                    else if (newValue.
+                        equals(CViewFeatureSelectionControl.BOTH))
                     {
                         setShowColor(true);
                         setShowValue(true);
