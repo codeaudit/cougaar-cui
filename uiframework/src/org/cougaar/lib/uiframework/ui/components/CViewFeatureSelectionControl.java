@@ -143,14 +143,18 @@ public class CViewFeatureSelectionControl extends JPanel
         }
         menu.add(new JSeparator());
 
+        boolean enabled = fitHorizontallyControl.isEnabled();
         fitHorizontallyControl =
             new JCheckBoxMenuItem(fitHorizontallyControl.getText(),
                                   fitHorizontallyControl.isSelected());
         fitHorizontallyControl.setMnemonic('H');
+        fitHorizontallyControl.setEnabled(enabled);
+        enabled = fitVerticallyControl.isEnabled();
         fitVerticallyControl =
             new JCheckBoxMenuItem(fitVerticallyControl.getText(),
                                   fitVerticallyControl.isSelected());
         fitVerticallyControl.setMnemonic('V');
+        fitVerticallyControl.setEnabled(enabled);
         addActionListenersToFitControls();
         menu.add(fitHorizontallyControl);
         menu.add(fitVerticallyControl);
