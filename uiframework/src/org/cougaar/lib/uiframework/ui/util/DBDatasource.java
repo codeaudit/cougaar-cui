@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -20,6 +20,7 @@
  */
 package org.cougaar.lib.uiframework.ui.util;
 
+import java.io.FileInputStream;
 import java.sql.*;
 import java.util.*;
 import javax.swing.tree.*;
@@ -124,6 +125,27 @@ public class DBDatasource
         mt.openConnection();
         Structure s = mt.readFromDb(null);
         mt.closeConnection();
+        return s;
+    }
+
+    /**
+     * Recreates a structure based on data from a file.
+     *
+     * @param config configuration object for mapped transducer.
+     * @return structure based on data from the database.
+     */
+    public static Structure readFromFile (String fileName)
+    {
+        Structure s = null;
+        try
+        {
+            XmlInterpreter xint = new XmlInterpreter();
+            FileInputStream fin = new FileInputStream(fileName);
+            s = xint.readXml(fin);
+            fin.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return s;
     }
 
