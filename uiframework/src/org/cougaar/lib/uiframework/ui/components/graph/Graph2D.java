@@ -52,7 +52,7 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.7 $, $Date: 2001-10-26 21:38:34 $
+ * @version  $Revision: 1.8 $, $Date: 2002-03-14 15:14:22 $
  * @author   Leigh Brookshaw
  */
 
@@ -589,7 +589,7 @@ public class Graph2D extends JPanel { // PHF
     }
 /**
  * Set the background color for the entire canvas.
- * @params c The color to set the canvas
+ * @param c The color to set the canvas
  */
     public void setGraphBackground(Color c) {
         if(c == null) return;
@@ -600,7 +600,7 @@ public class Graph2D extends JPanel { // PHF
 
 /**
  * Set the background color for the data window.
- * @params c The color to set the data window.
+ * @param c The color to set the data window.
  */
     public void setDataBackground(Color c) {
         if(c == null) return;
@@ -615,7 +615,7 @@ public class Graph2D extends JPanel { // PHF
  *  This paints the entire plot. It calls the draw methods of all the
  *  attached axis and data sets.
  *  The order of drawing is - Axis first, data legends next, data last.
- *  @params g Graphics state.
+ *  @param g Graphics state.
  */
     public void paintComponent(Graphics lg) {  // PHF
         super.paintComponent(lg);               // PHF
@@ -794,8 +794,8 @@ public class Graph2D extends JPanel { // PHF
  *  A hook into the Graph2D.paint method. This is called before
  *  anything is plotted. The rectangle passed is the dimension of
  *  the canvas minus the border dimensions.
- *  @params g Graphics state
- *  @params r Rectangle containing the graph
+ *  @param g Graphics state
+ *  @param r Rectangle containing the graph
  */
     public void paintFirst( Graphics g, Rectangle r) {
     }
@@ -805,8 +805,8 @@ public class Graph2D extends JPanel { // PHF
  *  the data is drawn but after the axis.
  *  The rectangle passed is the dimension of
  *  the data window.
- *  @params g Graphics state
- *  @params r Rectangle containing the data
+ *  @param g Graphics state
+ *  @param r Rectangle containing the data
  */
     public void paintBeforeData( Graphics g, Rectangle r) {
     }
@@ -816,8 +816,8 @@ public class Graph2D extends JPanel { // PHF
  *  everything has been drawn.
  *  The rectangle passed is the dimension of
  *  the data window.
- *  @params g Graphics state
- *  @params r Rectangle containing the data
+ *  @param g Graphics state
+ *  @param r Rectangle containing the data
  */
     public void paintLast( Graphics g, Rectangle r) {
       if( lastText != null ) {

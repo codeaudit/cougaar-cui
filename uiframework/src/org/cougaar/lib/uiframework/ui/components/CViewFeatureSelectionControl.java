@@ -232,7 +232,7 @@ public class CViewFeatureSelectionControl extends JPanel
      * If set to true the data cells will compress in height to fit all cells
      * in the viewport.  Otherwise, a Vertical scrollbar is used.
      *
-     * @preturn current selected state of checkbox
+     * @return current selected state of checkbox
      */
     public boolean getFitVertically()
     {

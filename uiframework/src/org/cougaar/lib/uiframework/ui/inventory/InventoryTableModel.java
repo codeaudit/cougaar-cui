@@ -1714,25 +1714,20 @@ public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
   {
       return getValueAt(0, c).getClass();
   }
-  /**********************************************************************************************
-  <b>Description</b>: RowObjectComparer
-
-  <br><b>Notes</b>:<br>
-	                  supports array sorting
-
-  <br>
-  
-
-  @return static class
-
-	**********************************************************************************************/
+  /**
+   * <b>Description</b>: RowObjectComparer
+   * 
+   * <br><b>Notes</b>:<br>  supports array sorting
+   * 
+   * <br>
+   */
   public static class RowObjectComparer implements ArraySorter.Comparer
   {
-	   public int compare(Object a, Object b)
-	   {
-	    return ((RowObject)a).compareTo((RowObject)b);
-	   }
-      }
+    public int compare(Object a, Object b)
+    {
+      return ((RowObject)a).compareTo((RowObject)b);
+    }
+  }
 }  // end of tablemodel
   /**********************************************************************************************
   <b>Description</b>: ScheduleTableEntry
@@ -1741,10 +1736,6 @@ public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
 	                  The data class
 
   <br>
-  
-
-  
-
 	**********************************************************************************************/
   class ScheduleTableEntry {
     String name;

@@ -348,7 +348,7 @@
    
    //getNodeFromIndex(int index)================================================
    /**
-    * @returns the node at  the 'index'
+    * @return the node at  the 'index'
     */
       public Node getNodeFromIndex (int index) {
         return nodeList_.nodeFromIndex(index);
@@ -596,7 +596,7 @@
    // parents(int n)============================================================
    /**
     * @param node to get parents of
-    * @returns a set of all the nodes leading to n
+    * @return a set of all the nodes leading to n
     */
       public Set parents(int n)
       {
@@ -618,7 +618,7 @@
    
    // children(int n)===========================================================
    /**
-    * @returns a set of all the nodes n leads to
+    * @return a set of all the nodes n leads to
     */
       public Set children(int n)
       {
@@ -627,7 +627,7 @@
    
    // numberOfNodes()===========================================================
    /**
-    * @returns the number of nodes in the graph
+    * @return the number of nodes in the graph
     */
       public int numberOfNodes()
       {
@@ -636,7 +636,7 @@
    
    // firstNode()===============================================================
    /**
-    * @returns the first node of the graph
+    * @return the first node of the graph
     */
       public Node firstNode()
       {
@@ -646,7 +646,7 @@
    
    //nextNode(Node node)========================================================
    /**
-    * @returns the next node after node
+    * @return the next node after node
     */
       public Node nextNode(Node node)
       {
@@ -656,7 +656,7 @@
    
    //getIndexFromNode (Node node)===============================================
    /**
-    * @returns the integer value of the index for the node
+    * @return the integer value of the index for the node
     */
       public int getIndexFromNode (Node node)
       {
@@ -665,7 +665,7 @@
    
    //firstNodeIndex()===========================================================
    /**
-    * @returns the  index of the first node in graph.nodeList
+    * @return the  index of the first node in graph.nodeList
     */
       public int firstNodeIndex()
       {
@@ -674,7 +674,7 @@
    
    //nextNodeIndex(int index)===================================================
    /**
-    * @returns the index of the next node after the current index
+    * @return the index of the next node after the current index
     */
       public int nextNodeIndex(int index)	
       {

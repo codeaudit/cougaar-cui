@@ -38,7 +38,7 @@ import java.io.InputStream;
  * This class extends the interactive graphics class G2Dint to incorporate
  * contouring.
  *
- * @version  $Revision: 1.5 $, $Date: 2001-10-26 21:38:34 $.
+ * @version  $Revision: 1.6 $, $Date: 2002-03-14 15:14:22 $.
  * @author   Leigh Brookshaw
  */
 
@@ -556,7 +556,7 @@ public class Contour extends G2Dint {
 
   /**
    * Set the number of contour levels.
-   * @@param l Number of contour levels
+   * @param l Number of contour levels
    */
      public void setNLevels(int l) {
          if(l <= 0) return;

@@ -171,7 +171,7 @@ public class ObjectTransferable implements Transferable
   @return Local JVM data flavor of the specified class if the local parameter is true, serializable data flavor of the
           specified class if the local parameter is true
   
-  @see #getDataFlavor(classType)
+  @see #getDataFlavor(Class)
 	*********************************************************************************************************************/
   public static final DataFlavor getDataFlavor(Class classType, boolean local)
   {
