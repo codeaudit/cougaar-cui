@@ -1,0 +1,39 @@
+mkdir bin
+
+ALP_INSTALL_PATH=/home/ebmartin/Projects/delta
+
+LIBPATHS= ./bin
+LIBPATHS=$LIBPATHS;./uiframework.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/aggagent.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/core.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/glm.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/toolkit.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/planserver.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/xerces.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/xalan.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/xml4j_2_0_11.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/fesi-111.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/classes12.zip
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/jcchart400K.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/xygraf.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/jess50.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/omcore.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/mail.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/activation.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/jsdk.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/delta.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/qslink.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/javaiopatch.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/jms.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/jndi.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/com.ibm.mq.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/com.ibm.mqjms.jar
+LIBPATHS=$LIBPATHS;$ALP_INSTALL_PATH/lib/blackjack.jar
+
+SOURCEFILES=
+SOURCEFILES="$SOURCEFILES ./src/org/cougaar/lib/uiframework/ui/inventory/*.java"
+SOURCEFILES="$SOURCEFILES ./src/org/cougaar/lib/uiframework/ui/components/*.java"
+SOURCEFILES="$SOURCEFILES ./src/org/cougaar/lib/uiframework/ui/components/graph/*.java"
+SOURCEFILES="$SOURCEFILES ./src/org/cougaar/lib/uiframework/ui/components/mthumbslider/*.java"
+
+javac -classpath $LIBPATHS -d ./bin $SOURCEFILES
