@@ -25,10 +25,9 @@ import java.sql.*;
 import java.util.*;
 import javax.swing.tree.*;
 
-import org.cougaar.lib.uiframework.transducer.*;
-import org.cougaar.lib.uiframework.transducer.configs.*;
-import org.cougaar.lib.uiframework.transducer.elements.*;
-//import org.cougaar.lib.uiframework.transducer.custom.JTreeInterpreter;
+import org.cougaar.lib.uiframework.transducer.MappedTransducer;
+import org.cougaar.lib.uiframework.transducer.configs.SqlTableMap;
+import org.cougaar.lib.uiframework.transducer.elements.Structure;
 
 /**
  * This class is used to extract data from a database specified by system
@@ -125,27 +124,6 @@ public class DBDatasource
         mt.openConnection();
         Structure s = mt.readFromDb(null);
         mt.closeConnection();
-        return s;
-    }
-
-    /**
-     * Recreates a structure based on data from a file.
-     *
-     * @param config configuration object for mapped transducer.
-     * @return structure based on data from the database.
-     */
-    public static Structure readFromFile (String fileName)
-    {
-        Structure s = null;
-        try
-        {
-            XmlInterpreter xint = new XmlInterpreter();
-            FileInputStream fin = new FileInputStream(fileName);
-            s = xint.readXml(fin);
-            fin.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return s;
     }
 
