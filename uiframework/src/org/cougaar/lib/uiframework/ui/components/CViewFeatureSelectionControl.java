@@ -107,16 +107,16 @@ public class CViewFeatureSelectionControl extends JPanel
 
     private void addActionListenersToFitControls()
     {
-        fitHorizontallyControl.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent e)
+        fitHorizontallyControl.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e)
                 {
                     boolean newState = fitHorizontallyControl.isSelected();
                     CViewFeatureSelectionControl.this.firePropertyChange(
                         "fitHorizontally", !newState, newState);
                 }
             });
-        fitVerticallyControl.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent e)
+        fitVerticallyControl.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e)
                 {
                     boolean newState = fitVerticallyControl.isSelected();
                     CViewFeatureSelectionControl.this.firePropertyChange(
