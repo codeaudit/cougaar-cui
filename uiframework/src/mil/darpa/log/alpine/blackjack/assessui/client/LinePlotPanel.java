@@ -242,10 +242,10 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         linePlotPanel.add(yAxisPanel, BorderLayout.WEST);
         linePlotPanel.add(xAxisPanel, BorderLayout.SOUTH);
         titledBorder =
-            BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                            variableManager.toString(), TitledBorder.CENTER,
-                            TitledBorder.DEFAULT_POSITION,
-                            MetalLookAndFeel.getWindowTitleFont());
+           BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                            variableManager.toString());
+        titledBorder.setTitleJustification(TitledBorder.CENTER);
+        titledBorder.setTitleFont(MetalLookAndFeel.getWindowTitleFont());
         linePlotPanel.setBorder(titledBorder);
 
         // generate initial query based on initial variable settings
