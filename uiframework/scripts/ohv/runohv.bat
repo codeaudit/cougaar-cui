@@ -1,5 +1,5 @@
 @rem **** 
-echo off
+@echo off
 
 @rem set ORGHV_HOME=c:\dev\ui\fromcvs\cougaar\uiframework
 if "%ORGHV_HOME%"=="" goto err1
@@ -42,3 +42,5 @@ goto end
 :end
 popd
 echo done.
+
+@echo on
