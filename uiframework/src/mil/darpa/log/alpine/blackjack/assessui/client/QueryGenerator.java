@@ -291,7 +291,7 @@ public class QueryGenerator
             int columnCount = 1;
             while (newColumnHeaders.hasMoreElements())
             {
-                String name = newColumnHeaders.nextElement().toString().trim();
+                String name = newColumnHeaders.nextElement().toString();
                 tm.setColumnName(columnCount++, name);
             }
         }
@@ -316,9 +316,7 @@ public class QueryGenerator
             int rowCount = 0;
             while (newRowHeaders.hasMoreElements())
             {
-                tm.setValueAt(
-                    newRowHeaders.nextElement().toString().trim(),
-                    rowCount++, 0);
+                tm.setValueAt(newRowHeaders.nextElement(), rowCount++, 0);
             }
         }
     }
