@@ -1,0 +1,32 @@
+infantry	../cgmicons/3115f.cgm	platoon
+light infantry	../cgmicons/31151f.cgm	section
+mechanized infantry	../cgmicons/31156f.cgm	squad
+armor	../cgmicons/3112f.cgm	company
+armored cavalry	../cgmicons/311821f.cgm	battalion
+recon	../cgmicons/311823f.cgm	regiment
+airborne	../cgmicons/31154f.cgm	brigade
+air assault	../cgmicons/31155f.cgm	division
+field artillery	../cgmicons/3117f.cgm	corps
+air defense	../cgmicons/3111f.cgm	squad
+supply	../cgmicons/3133f.cgm	army
+maintenance	../cgmicons/3135f.cgm	
+medical	../cgmicons/3132f.cgm
+subsistence	../cgmicons/31333f.cgm
+clothing	../cgmicons/31334f.cgm
+petroleum	../cgmicons/31335f.cgm
+construction materials	../cgmicons/31336f.cgm
+ammunition	../cgmicons/31337f.cgm
+personal demand	../cgmicons/31338f.cgm
+major end items	../cgmicons/31339f.cgm
+anti-armor	../cgmicons/3113f.cgm	squad
+aviation	../cgmicons/3114f.cgm	section
+attack helicopter	../cgmicons/311421f.cgm	platoon
+air cavalry	../cgmicons/311824f.cgm	company
+engineer	../cgmicons/3116f.cgm	battalion
+chemical	../cgmicons/3121f.cgm	regiment
+signal	../cgmicons/3124f.cgm	brigade
+intelligence	../cgmicons/3122216f.cgm	division
+transport	../cgmicons/3134f.cgm	corps
+medical supply	../cgmicons/313310f.cgm
+repair parts supply	../cgmicons/313311f.cgm
+ordnance	../cgmicons/ordnance.cgm
