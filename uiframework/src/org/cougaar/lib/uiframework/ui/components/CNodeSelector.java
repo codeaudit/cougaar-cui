@@ -72,7 +72,6 @@ public class CNodeSelector extends JPanel implements Selector
 
                     DefaultMutableTreeNode oldSelectedNode = selectedNode;
                     selectedNode = node;
-                    String selection =(String)node.getUserObject();
                     firePropertyChange("selectedItem", oldSelectedNode,
                                        selectedNode);
                 }
