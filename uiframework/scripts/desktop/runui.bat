@@ -6,6 +6,9 @@ echo * core.jar, openmap.jar, and                                *
 echo * xml4j_2_0_11.jar (IMB XML parser) in ..\..\lib.           *
 echo *************************************************************
 
+copy marker.txt ..\map
+cd ..\map
+
 set LIB_PATH=..\..\lib
 set DATA_PATH=.\data
 
@@ -31,4 +34,7 @@ set DBPASSWORD="pfischer"
 rem set DBPASSWORD="jmeyer"
 rem set DBPASSWORD="init1389"
 
-java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dopenmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentDesktop
+java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentDesktop
+
+del marker.txt
+cd ..\desktop
