@@ -15,8 +15,8 @@
  *
  * **********************************************************************
  *
- * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/OpenMap.java,v $
- * $Revision: 1.4 $
+ * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
+ * $Revision: 1.1 $
  * $Date: 2001-02-26 15:37:27 $
  * $Author: krotherm $
  *
@@ -57,18 +57,18 @@ import org.cougaar.lib.uiframework.ui.map.layer.XmlLayerBase;
 //import org.cougaar.lib.uiframework.ui.map.layer.KMTLayer;
 
 /**
- * The OpenMap Viewer application.
+ * The CMap Viewer application.
  * <p>
  * This is a sample application using the MapBean.
  *
  */
-public class OpenMap implements Serializable, CougaarUI {
+public class CMap implements Serializable, CougaarUI {
 
     /** The name of the properties file to read. */
-    public static String propsFileName = "openmap.properties";
+    public static String propsFileName = "cmap.properties";
 
     /** The name of the system directory containing a properties file. */
-    public static String configDirProperty = "openmap.configDir";
+    public static String configDirProperty = "cmap.configDir";
 
     /** Starting X coordinate of window */
     public static transient final String xProperty = "openmap.x";
@@ -155,7 +155,7 @@ public class OpenMap implements Serializable, CougaarUI {
 	if (propsIn == null) {
 
 	    if (verbose) {
-		Debug.error("OpenMap: Unable to locate resources: "
+		Debug.error("CMap: Unable to locate resources: "
 			    + resourceName);
 	    }
 	    return false;
@@ -167,7 +167,7 @@ public class OpenMap implements Serializable, CougaarUI {
 		return true;
 	    } catch (java.io.IOException e) {
 		if (verbose) {
-		    Debug.error("OpenMap: Caught IOException loading resources: "
+		    Debug.error("CMap: Caught IOException loading resources: "
 				+ resourceName);
 		}
 		return false;
@@ -193,7 +193,7 @@ public class OpenMap implements Serializable, CougaarUI {
 	    return true;
 	} catch (java.io.IOException e) {
 	    if (verbose) {
-		Debug.error("OpenMap Caught IOException loading resources: "
+		Debug.error("CMap Caught IOException loading resources: "
 			    + url);
 	    }
 	    return false;
@@ -253,16 +253,16 @@ public class OpenMap implements Serializable, CougaarUI {
      * com.bbn.openmap.app.openmap.properties.
      * </li>
      * <li>
-     * Read properties from the openmap installion, if they exist.
-     * This is usually <openmapInstallDir>/openmap.properties.
+     * Read properties from the cmap installion, if they exist.
+     * This is usually <cmapInstallDir>/cmap.properties.
      * </li>
      * <li>
-     * Read user properties from $HOME/openmap.properties.  This is
+     * Read user properties from $HOME/cmap.properties.  This is
      * based on the JDK system property <code>user.home</code>
      * </li>
      * </ol>
      * @param loadProperties true if you want to look in
-     * certain locations for the openmap.properties file, overwriting
+     * certain locations for the cmap.properties file, overwriting
      * any properties that may already be set.
      */
     public void initApplication(boolean loadProperties) {
@@ -322,7 +322,7 @@ public class OpenMap implements Serializable, CougaarUI {
     }
 
     /**
-     * Initialize the OpenMap Environment.
+     * Initialize the CMap Environment.
      *
      * @param applet an applet or null
      */
@@ -358,7 +358,7 @@ public class OpenMap implements Serializable, CougaarUI {
     // kwr
 
     /**
-     * Start OpenMap Viewer as a standalone application.
+     * Start CMap Viewer as a standalone application.
      *
      * @param args String[] curently ignored
      */
@@ -366,27 +366,27 @@ public class OpenMap implements Serializable, CougaarUI {
 
 	// static initializations of Debugging and Environment
 	init(null);
-	// start instance of OpenMap
-	new OpenMap().init();
+	// start instance of CMap
+	new CMap().init();
     }
 
 
 
     public static void main (String[] args) {
-      System.out.println("alp openmap") ;
+      System.out.println("alp cmap") ;
 	    // static initializations of Debugging and Environment
 	    init(null);
-	    // start instance of OpenMap
-	    new OpenMap().init();
+	    // start instance of CMap
+	    new CMap().init();
 
     }
 
 
-    public static OpenMap generateMapBean(JPanel panel)
+    public static CMap generateMapBean(JPanel panel)
     {
-	OpenMap om;
+	CMap om;
 	init(null);
-	om=new OpenMap();
+	om=new CMap();
 	om.initApplication(true);
 	om.prepareMap(panel);  // similar to start()
 
@@ -403,11 +403,11 @@ public class OpenMap implements Serializable, CougaarUI {
 
 	if (Debug.debugging("version")){
 	// output version information
-	    Debug.output("OpenMap Viewer " +
+	    Debug.output("CMap Viewer " +
 			 Environment.get(Environment.Version));
 	    Debug.output("Build " +
 			 Environment.get(Environment.BuildDate, "<no build tag>"));
-	    Debug.output("OpenMap Viewer running inside " +
+	    Debug.output("CMap Viewer running inside " +
 			 Environment.get("java.vendor") + " Java VM on " +
 			 Environment.get("os.name"));
 	}
@@ -454,9 +454,9 @@ public class OpenMap implements Serializable, CougaarUI {
 
 	layerHandler = getLayerHandler();
 	if (layerHandler == null){
-	    layerHandler = new LayerHandler("openmap", props);
+	    layerHandler = new LayerHandler("cmap", props);
 	} else {
-	    layerHandler.init("openmap", props);
+	    layerHandler.init("cmap", props);
 	}
 
   	menu.add(layerHandler.getLayersMenu("Edit Layers..."));
@@ -465,7 +465,7 @@ public class OpenMap implements Serializable, CougaarUI {
 	// show the help pages.
 	JMenu helpMenu =  new JMenu("Help");
 	helpMenu.setMnemonic('H');
-	JMenuItem mi = helpMenu.add(new JMenuItem("OpenMap"));
+	JMenuItem mi = helpMenu.add(new JMenuItem("CMap"));
 	mi.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
@@ -543,13 +543,13 @@ public class OpenMap implements Serializable, CougaarUI {
     }
 
     // end -- kwr
-    public OpenMap () {
+    public CMap () {
 	props = new Properties();
     }
 
     private boolean showUponInit = true;
 
-    public OpenMap(boolean initApp)
+    public CMap(boolean initApp)
     {
         showUponInit = false;
         if (initApp) init(null);
@@ -558,7 +558,7 @@ public class OpenMap implements Serializable, CougaarUI {
     }
 
     /**
-     * Load default properties, and then launch OpenMap.  Kept here to
+     * Load default properties, and then launch CMap.  Kept here to
      * preserve the API.
      */
     public void init () {
@@ -568,15 +568,15 @@ public class OpenMap implements Serializable, CougaarUI {
 
     /**
      * An init() that gives the option of whether or not to have the
-     * application search for the openmap.properties file located in
-     * the openmap.jar file, or in the user's home directory, or in
+     * application search for the cmap.properties file located in
+     * the cmap.jar file, or in the user's home directory, or in
      * the CLASSPATH.  Set the argument to false if you are setting
      * the properties (for layers, startup projection, etc) manually,
      * and don't want your values overwritten by the default values in
-     * an openmap.properties file.
+     * an cmap.properties file.
      * @param loadResourceProperties false if you've set the
      * properties manually, true if you want the properties to be set
-     * off the openmap.properties file.
+     * off the cmap.properties file.
      */
     public void init (boolean loadResourceProperties) {
 
@@ -585,7 +585,7 @@ public class OpenMap implements Serializable, CougaarUI {
     }
 
     /**
-     * Launch OpenMap, assuming that all the properties have been set.
+     * Launch CMap, assuming that all the properties have been set.
      */
 
     // JRootPane rootPane = null;
@@ -600,11 +600,11 @@ public class OpenMap implements Serializable, CougaarUI {
 
 	if (Debug.debugging("version")){
 	    // output version information
-	    Debug.output("OpenMap Viewer " +
+	    Debug.output("CMap Viewer " +
 			 Environment.get(Environment.Version));
 	    Debug.output("Build " +
 			 Environment.get(Environment.BuildDate, "<no build tag>"));
-	    Debug.output("OpenMap Viewer running inside " +
+	    Debug.output("CMap Viewer running inside " +
 			 Environment.get("java.vendor") + " Java VM on " +
 			 Environment.get("os.name"));
 	}
@@ -646,9 +646,9 @@ public class OpenMap implements Serializable, CougaarUI {
 
 	layerHandler = getLayerHandler();
 	if (layerHandler == null){
-	    layerHandler = new LayerHandler("openmap", props);
+	    layerHandler = new LayerHandler("cmap", props);
 	} else {
-	    layerHandler.init("openmap", props);
+	    layerHandler.init("cmap", props);
 	}
 
   	menu.add(layerHandler.getLayersMenu("Edit Layers..."));
@@ -657,7 +657,7 @@ public class OpenMap implements Serializable, CougaarUI {
 	// show the help pages.
 	JMenu helpMenu =  new JMenu("Help");
 	helpMenu.setMnemonic('H');
-	JMenuItem mi = helpMenu.add(new JMenuItem("OpenMap"));
+	JMenuItem mi = helpMenu.add(new JMenuItem("CMap"));
 	mi.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
@@ -757,11 +757,11 @@ public class OpenMap implements Serializable, CougaarUI {
 
 	if (Debug.debugging("version")){
 	// output version information
-	    Debug.output("OpenMap Viewer " +
+	    Debug.output("CMap Viewer " +
 			 Environment.get(Environment.Version));
 	    Debug.output("Build " +
 			 Environment.get(Environment.BuildDate, "<no build tag>"));
-	    Debug.output("OpenMap Viewer running inside " +
+	    Debug.output("CMap Viewer running inside " +
 			 Environment.get("java.vendor") + " Java VM on " +
 			 Environment.get("os.name"));
 	}
@@ -803,9 +803,9 @@ public class OpenMap implements Serializable, CougaarUI {
 
 	layerHandler = getLayerHandler();
 	if (layerHandler == null){
-	    layerHandler = new LayerHandler("openmap", props);
+	    layerHandler = new LayerHandler("cmap", props);
 	} else {
-	    layerHandler.init("openmap", props);
+	    layerHandler.init("cmap", props);
 	}
 
   	menu.add(layerHandler.getLayersMenu("Edit Layers..."));
@@ -822,7 +822,7 @@ public class OpenMap implements Serializable, CougaarUI {
 	// show the help pages.
 	JMenu helpMenu =  new JMenu("Help");
 	helpMenu.setMnemonic('H');
-	JMenuItem mi = helpMenu.add(new JMenuItem("OpenMap"));
+	JMenuItem mi = helpMenu.add(new JMenuItem("CMap"));
 	mi.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
@@ -1088,7 +1088,7 @@ public class OpenMap implements Serializable, CougaarUI {
      * too, if you want them to communication with each other.
      *
      * @param props the Properties object created from the
-     * openmap.properties file.
+     * cmap.properties file.
      */
     public void setWidgets(Properties props){
 	MapBean map = new BufferedMapBean();
@@ -1225,6 +1225,9 @@ public class OpenMap implements Serializable, CougaarUI {
 	return layerHandler;
     }
 }
+
+
+
 
 
 
