@@ -492,7 +492,7 @@ public class DatabaseTableModel implements TableModel
      *                               aggregated header should be set
      */
     public void aggregateRows(int[] significantColumns, String aggHeader,
-                              int aggregatedHeaderColumn)
+                              int aggregatedHeaderColumn, Combiner c)
     {
         if (getRowCount() > 1)
         {
@@ -503,7 +503,8 @@ public class DatabaseTableModel implements TableModel
                 dataRows.removeElementAt(1);
                 Vector aggregateRow =
                     extractAndAggregateRows(modelRow, significantColumns,
-                                            aggHeader, aggregatedHeaderColumn);
+                                            aggHeader, aggregatedHeaderColumn,
+                                            c);
                 dataRows.addElement(aggregateRow);
             }
         }
@@ -526,7 +527,8 @@ public class DatabaseTableModel implements TableModel
      */
      private Vector
         extractAndAggregateRows(Vector modelRow, int[] significantColumns,
-                                String aggHeader, int aggregatedHeaderColumn)
+                                String aggHeader, int aggregatedHeaderColumn,
+                                Combiner c)
     {
         Vector aggregateRow = modelRow;
 
@@ -549,7 +551,7 @@ public class DatabaseTableModel implements TableModel
             if (matches)
             {
                 dataRows.removeElementAt(rowIndex--);
-                aggregateRow = combine(aggregateRow, row);
+                aggregateRow = combine(aggregateRow, row, c);
             }
          }
          aggregateRow.setElementAt(aggHeader, aggregatedHeaderColumn);
@@ -565,9 +567,10 @@ public class DatabaseTableModel implements TableModel
      *                     row
      * @param headerColumn the column index in which the new
      *                     aggregated header should be set
+     * @param combiner     the object used to combine two values into one.
      */
     public void aggregateRows(Enumeration rowList, String aggHeader,
-                              int headerColumn)
+                              int headerColumn, Combiner combiner)
     {
         Vector aggregateRow = null;
         while (rowList.hasMoreElements())
@@ -581,7 +584,7 @@ public class DatabaseTableModel implements TableModel
             }
             else
             {
-                aggregateRow = combine(aggregateRow, row);
+                aggregateRow = combine(aggregateRow, row, combiner);
             }
         }
         aggregateRow.set(headerColumn, aggHeader);
@@ -615,46 +618,34 @@ public class DatabaseTableModel implements TableModel
      *
      * @param row1 first row to be combined
      * @param row2 second row to be combined
+     * @param combiner the object used to combine two values into one.
      * @return the combined row
      */
-    private Vector combine(Vector row1, Vector row2)
+    private Vector combine(Vector row1, Vector row2, Combiner combiner)
     {
         Vector combinedRow = new Vector();
         for (int i = 0; i < row1.size(); i++)
         {
-            combinedRow.add(combine(row1.elementAt(i), row2.elementAt(i)));
+            combinedRow.add(
+                combiner.combine(row1.elementAt(i), row2.elementAt(i)));
         }
 
         return combinedRow;
     }
 
     /**
-     * combines values into one value
-     *
-     * This method currently uses hard coded combining method.
-     * Will be extended in future to use a given method.
-     *
-     * @param obj1 first object to be combined
-     * @param obj2 second object to be combined
-     * @return the combined object
+     * Used to model how to combine two values into one
      */
-    private Object combine(Object obj1, Object obj2)
+    public static interface Combiner
     {
-        Object combinedObject = null;
-        if (obj1 instanceof Float)
-        {
-            float f1 = ((Float)obj1).floatValue();
-            float f2 = ((Float)obj2).floatValue();
-            float f1Badness = Math.abs(f1 - 1);
-            float f2Badness = Math.abs(f2 - 1);
-            combinedObject =  (f1Badness > f2Badness) ? obj1 : obj2;
-        }
-        else
-        {
-            combinedObject = obj1;
-        }
-
-        return combinedObject;
+        /**
+         * combines values into one value
+         *
+         * @param obj1 first object to be combined
+         * @param obj2 second object to be combined
+         * @return the combined object
+         */
+        public Object combine(Object obj1, Object obj2);
     }
 
     /**
