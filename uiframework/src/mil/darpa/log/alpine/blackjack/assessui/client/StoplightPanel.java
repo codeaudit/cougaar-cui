@@ -79,6 +79,17 @@ public class StoplightPanel extends JPanel implements CougaarUI
     }
 
     /**
+     * Returns true if this CougaarUI supports pluggable look and feel.  This
+     * method is required to implement the CougaarUI interface.
+     *
+     * @return true if UI supports pluggable look and feel
+     */
+    public boolean supportsPlaf()
+    {
+        return plaf;
+    }
+
+    /**
      * This private class is a JComboBox that implements the Selector
      * interface.  This is required to use a JComboBox with the
      * variable interface manager.

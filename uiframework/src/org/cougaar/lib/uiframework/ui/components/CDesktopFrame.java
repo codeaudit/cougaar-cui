@@ -42,14 +42,16 @@ public class CDesktopFrame extends CFrame
 
     private void init()
     {
-        addMenus();
         desktopPane = new CDesktopPane();
         getContentPane().add(desktopPane, BorderLayout.CENTER);
+        addMenus();
     }
 
     // Menus
     private JMenu viewMenu = null;
     private JMenu windowMenu = null;
+    private JMenuItem closeMenuItem = null;
+    private JMenuItem printSelectedMenuItem = null;
 
     /**
      * Add a new tool to the view pulldown menu
@@ -85,7 +87,6 @@ public class CDesktopFrame extends CFrame
     {
         final JInternalFrame f =
             new JInternalFrame(title, true, true, true, true);
-        //f.getContentPane().add(panel, BorderLayout.CENTER);
         cougaarUI.install(f);
         f.setSize(800, 500);
         desktopPane.add(f, JLayeredPane.PALETTE_LAYER);
@@ -112,16 +113,26 @@ public class CDesktopFrame extends CFrame
         f.addInternalFrameListener(new InternalFrameAdapter() {
                 public void internalFrameClosed(InternalFrameEvent e)
                 {
-                    // remove frame's menu item from window menu
-                    windowMenu.remove(mi);
-
                     // try to make another frame active
                     JInternalFrame[] ifs = desktopPane.getAllFrames();
                     int ai = usingJdk13orGreater() ? 0 : 1;
-                    try {ifs[ai].setSelected(true);}catch(Exception ex){}
+                    try {ifs[ai].setSelected(true);} catch(Exception ex){}
 
                     f.removeInternalFrameListener(this);
                     f.dispose();
+
+                    // remove frame's menu item from window menu
+                    windowMenu.remove(mi);
+                }
+
+                public void internalFrameDeiconified(InternalFrameEvent e)
+                {
+                    updateEnabledMenuOptions();
+                }
+
+                public void internalFrameIconified(InternalFrameEvent e)
+                {
+                    updateEnabledMenuOptions();
                 }
             });
     }
@@ -163,11 +174,13 @@ public class CDesktopFrame extends CFrame
         fileMenu.add(printMenu);
         createMenuItem(printMenu, "Entire Desktop", 'D', "",
                        new PrintAction(this, true));
-        createMenuItem(printMenu, "Selected View", 'S', "",
-                       new PrintAction(this, false));
+        printSelectedMenuItem =
+            createMenuItem(printMenu, "Selected View", 'S', "",
+                           new PrintAction(this, false));
 
         // close active inner frame with close (not whole window)
-        createMenuItem(fileMenu, "Close", 'C', "", new CloseAction());
+        closeMenuItem =
+            createMenuItem(fileMenu, "Close", 'C', "", new CloseAction());
 
         // put the exit option back at the end of menu
         fileMenu.add(comps[comps.length - 1]);
@@ -180,21 +193,45 @@ public class CDesktopFrame extends CFrame
         windowMenu = (JMenu)menuBar.add(new JMenu("Window"));
         windowMenu.setMnemonic('W');
 
-        // disable window menu when empty
-        windowMenu.setEnabled(false);
+        // disable window menu, close menu item, and print selected view menu
+        // item when window menu is empty.
+        updateEnabledMenuOptions();
         windowMenu.getPopupMenu().addContainerListener(new ContainerListener(){
                 public void componentAdded(ContainerEvent e)
                 {
-                    windowMenu.setEnabled(true);
+                    updateEnabledMenuOptions();
                 }
                 public void componentRemoved(ContainerEvent e)
                 {
-                    if (windowMenu.getPopupMenu().getComponentCount() == 0)
-                    {
-                        windowMenu.setEnabled(false);
-                    }
+                    updateEnabledMenuOptions();
                 }
             });
+    }
+
+    /**
+     * Set all menu items to the correct enabled state.
+     */
+    private void updateEnabledMenuOptions()
+    {
+        boolean plafSupported = true;
+        JInternalFrame[] ifs = desktopPane.getAllFrames();
+        for (int i = 0; i < ifs.length; i++)
+        {
+            CougaarUI cui = (CougaarUI)ifs[i].getContentPane().getComponent(0);
+            if (!cui.supportsPlaf())
+            {
+                plafSupported = false;
+                break;
+            }
+        }
+        boolean windowsOpen = (ifs.length > 0);
+        boolean windowSelected =
+            windowsOpen ? (getSelectedFrame() != null) : false;
+
+        windowMenu.setEnabled(windowsOpen);
+        closeMenuItem.setEnabled(windowSelected);
+        printSelectedMenuItem.setEnabled(windowSelected);
+        lafMenu.setEnabled(plafSupported);
     }
 
     private class PrintAction extends AbstractAction
@@ -298,7 +335,12 @@ public class CDesktopFrame extends CFrame
 
         public void actionPerformed(ActionEvent e) {
             // try to make frame active
-            try {frame.setSelected(true);}catch(Exception ex){}
+            try
+            {
+                frame.setIcon(false);
+                frame.setSelected(true);
+            }
+            catch(Exception ex){}
         }
     }
 

@@ -90,7 +90,8 @@ public class CFrame extends JFrame implements Printable
     // Menus
     protected JMenuBar menuBar = null;
     protected JMenu fileMenu = null;
-    private JMenu lafMenu = null;
+    protected JMenu lafMenu = null;
+    protected JMenuItem metalMenuItem = null;
     private JMenu themesMenu = null;
     private ButtonGroup lafMenuGroup = new ButtonGroup();
     private ButtonGroup themesMenuGroup = new ButtonGroup();
@@ -168,6 +169,7 @@ public class CFrame extends JFrame implements Printable
 
 	mi = createLafMenuItem(lafMenu, "Java Look & Feel", 'J', "", metal);
 	mi.setSelected(true); // this is the default l&f
+        metalMenuItem = mi;
 
 	createLafMenuItem(lafMenu, "Macintosh Look & Feel", 'M', "", mac);
 

@@ -24,4 +24,12 @@ public interface CougaarUI
      * @param f frame to which this user interface should be added
      */
     public void install(JInternalFrame f);
+
+    /**
+     * Returns true if this UI supports pluggable look and feel.  Otherwise,
+     * only Metal look and feel support is assumed.
+     *
+     * @return true if UI supports pluggable look and feel.
+     */
+    public boolean supportsPlaf();
 }

@@ -28,6 +28,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
  */
 public class LinePlotPanel extends JPanel implements CougaarUI
 {
+    private boolean plaf = true;
     private DatabaseTableModel databaseTableModel = new DatabaseTableModel();
     private CLinePlotChart chart = new CLinePlotChart(databaseTableModel);
     private final static int spacing = 5;
@@ -47,8 +48,9 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     public LinePlotPanel(boolean plaf)
     {
         super(new BorderLayout());
+        this.plaf = plaf;
 
-        createComponents(plaf);
+        createComponents();
     }
 
     /**
@@ -74,6 +76,17 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     }
 
     /**
+     * Returns true if this CougaarUI supports pluggable look and feel.  This
+     * method is required to implement the CougaarUI interface.
+     *
+     * @return true if UI supports pluggable look and feel
+     */
+    public boolean supportsPlaf()
+    {
+        return plaf;
+    }
+
+    /**
     /**
      * When look and feel or theme is changed, this method is called.  It sets
      * the font scheme based on metal L&F properties.
@@ -90,10 +103,8 @@ public class LinePlotPanel extends JPanel implements CougaarUI
 
     /**
      * Creates the components of the line plot UI
-     *
-     * @param plaf true if pluggable look and feel must be supported
      */
-    private void createComponents(boolean plaf)
+    private void createComponents()
     {
         DefaultMutableTreeNode root = DBInterface.metricTree;
         CTreeButton metricTreeButton =
