@@ -48,6 +48,14 @@ public class CPullrightButton extends JButton implements Selector
      */
     public void popupMenu(int x, int y)
     {
+        // Don't popup off screen
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension pullrightD = pullright.getPreferredSize();
+        int popupX = x + pullrightD.width;
+        int popupY = y + pullrightD.height;
+        if (popupX > screen.width) x = screen.width - pullrightD.width;
+        if (popupY > screen.height) y = screen.height - pullrightD.height;
+
         pullright.setLocation(x, y);
         pullright.setInvoker(this);
         pullright.setVisible(true);
@@ -83,7 +91,15 @@ public class CPullrightButton extends JButton implements Selector
                 public void actionPerformed(ActionEvent e)
                 {
                     Point p = getLocationOnScreen();
-                    popupMenu(p.x + getSize().width, p.y);
+                    Dimension screen =
+                        Toolkit.getDefaultToolkit().getScreenSize();
+                    Dimension pullrightD = pullright.getPreferredSize();
+                    int popupX = p.x + pullrightD.width;
+                    int popupY = p.y + pullrightD.height;
+                    popupMenu((popupX > screen.width) ?
+                       p.x - pullrightD.width : p.x + getSize().width,
+                       (popupY > screen.height) ?
+                       p.y-pullrightD.height + getSize().height:p.y);
                 }
              });
      }
