@@ -95,7 +95,7 @@ public class MappedTransducer extends SqlTransducer {
     private Statement st = null;
 
     private Hashtable lists = new Hashtable();
-    private Vector orphans = new Vector();
+    private Hashtable stand_ins = new Hashtable();
     private Hashtable values = new Hashtable();
 
     public MappedAssembly (String[] id) {
@@ -109,10 +109,10 @@ public class MappedTransducer extends SqlTransducer {
         // first get the nodes in the tree structure
         queryForStructure(config.createQuery(rootId));
 
-        if (orphans.size() > 0)
+        if (stand_ins.size() > 0)
           System.out.println("MappedTransducer::Assembly::readFromDb:  found " +
-            orphans.size() + " orphans");
-        orphans.clear();
+            stand_ins.size() + " stand-ins");
+        stand_ins.clear();
 
         // Create the containing Structure for this tree and install its id
         // keys in its "dbId" attribute
@@ -148,8 +148,8 @@ public class MappedTransducer extends SqlTransducer {
       String[] fieldVals = new String[attributes.length];
       while (rs.next()) {
         int i = -1;
-        long id = rs.getLong(1);
-        long parent = rs.getLong(2);
+        Long id = new Long(rs.getLong(1));
+        Long parent = new Long(rs.getLong(2));
         for (i = 0; i < fieldVals.length; i++)
           fieldVals[i] = rs.getString(i + 3);
 
@@ -157,30 +157,35 @@ public class MappedTransducer extends SqlTransducer {
           System.out.print(";" + fieldVals[j]);
         System.out.println();
 
-        ListElement elt = new ListElement();
+        // check for an existing stand-in; if none exists, create a new node
+        ListElement elt = (ListElement) stand_ins.remove(id);
+        if (elt == null) {
+          elt = new ListElement();
+          // this element may have children; keep a tabulated reference so
+          // that they can be attatched later
+          lists.put(id, elt);
+        }
 
-        // install the attributes into the nascent ListElement
-        // by design, they must be in the canonical order
+        // Install the attributes into the possibly nascent ListElement.
+        // By design, they must be in the canonical order
         for (i = 0; i < attributes.length; i++)
           elt.addAttribute(new Attribute(attributes[i], fieldVals[i]));
 
         // if this is the root node, keep a reference handy.  Otherwise,
-        // check for an existing parent node (there should be one) and bond
-        // to it.  If there isn't one, join the orphans.
-        if (parent == -1) {
+        // check for an existing parent node (or create a stand-in) and bond
+        // to it.
+        if (parent.longValue() == -1) {
           root = elt;
         }
         else {
-          ListElement parentNode = (ListElement) lists.get(new Long(parent));
-          if (parentNode == null)
-            orphans.add(elt);
-          else
-            parentNode.addChild(elt);
+          ListElement parentNode = (ListElement) lists.get(parent);
+          if (parentNode == null) {
+            parentNode = new ListElement();
+            stand_ins.put(parent, parentNode);
+            lists.put(parent, parentNode);
+          }
+          parentNode.addChild(elt);
         }
-
-        // this element may have children; keep a tabulated reference so
-        // that they can be attatched later
-        lists.put(new Long(id), elt);
       }
     }
   }
