@@ -22,8 +22,8 @@ public class DBInterface extends DBDatasource
 {
     /** Item tree from database */
     public static DefaultMutableTreeNode
-        // itemTree = createItemTree();  Uncomment when using itemWeights table
-        itemTree = createTree(getTableName("item"));
+        itemTree = createItemTree();  //Uncomment when using itemWeights table
+        //itemTree = createTree(getTableName("item"));
 
     /** Organization tree from database */
     public static DefaultMutableTreeNode
@@ -160,15 +160,35 @@ public class DBInterface extends DBDatasource
 
         if (!variableDescriptorName.equalsIgnoreCase("time"))
         {
-            //if (variableDescriptorName.equalsIgnoreCase("Item"))
-            //{
-            //    tableName = "itemWeights";
-            //}
-            //else
-            //{
+            if (variableDescriptorName.equalsIgnoreCase("Item"))
+            {
+                tableName = "itemWeights";
+            }
+            else
+            {
                 tableName = "assessment" + variableDescriptorName + "s";
-            //}
+            }
         }
         return tableName;
+    }
+
+    /**
+     * Modify show property on every node of a tree.
+     *
+     * @param tn root of tree to modify.
+     * @param prop new show property for all nodes.
+     */
+    public static void
+        setNewShowProperty(DefaultMutableTreeNode tn, String prop)
+    {
+        SelectableHashtable ht = (SelectableHashtable)tn.getUserObject();
+        ht.setSelectedProperty(prop);
+
+        for (int i = 0; i < tn.getChildCount(); i++)
+        {
+            DefaultMutableTreeNode ctn =
+                (DefaultMutableTreeNode)tn.getChildAt(i);
+            setNewShowProperty(ctn, prop);
+        }
     }
 }
