@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 echo Running Map UI...
 
 setlocal
@@ -13,10 +13,10 @@ set LIB_PATH=%LIB_PATH%;%LIB_HOME%\core.jar
 set LIB_PATH=%LIB_PATH%;%LIB_HOME%\openmap.jar
 set LIB_PATH=%LIB_PATH%;.\data
 
-set JAVAC=c:\jdk1.2.2\bin\java
-set JAVAFLAGS=  -mx64m  %Debugging% -Dopenmap.configDir=.\data -classpath %LIB_PATH% 
+set JAVAC=d:\jdk1.2.2\bin\java
+set JAVAFLAGS=  -mx64m  %Debugging% -Dopenmap.configDir=.\data -classpath %LIB_PATH%
 
-%JAVAC% %JAVAFLAGS% org.cougaar.lib.uiframework.ui.map.app.OpenMap 
+%JAVAC% %JAVAFLAGS% org.cougaar.lib.uiframework.ui.map.app.OpenMap
 
 echo Finished Running Map UI.
 echo on

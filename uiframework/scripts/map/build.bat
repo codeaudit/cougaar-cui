@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 echo Building Map UI classes...
 
 setlocal
@@ -29,7 +29,7 @@ set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\app\*.java
 
 
 @rem Here's where the compiler lives and the flags we like to give it
-set JAVAC=c:\jdk1.2.2\bin\javac
+set JAVAC=d:\jdk1.2.2\bin\javac
 set JAVAFLAGS= -g  %deprec% -classpath %LIB_PATH% -d %CUR_BIN_DIR%
 
 %JAVAC% %JAVAFLAGS% %SRC_FILES%

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <a name="NamedLocationList">
+    <val>Organization</val>
+  </a>
+  <list>
+    <list>
+      <a name="UID">
+        <val>23INBN</val>
+      </a>
+	<a name="latitude"><val>16.55</val></a>
+	<a name="longitude"><val>38.6</val></a>
+	<a name="startDate"> <val>312</val></a><a name="thruDate"> <val>342</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+
+    <list>
+      <a name="UID">
+        <val>30INBN</val>
+      </a>
+	<a name="latitude"><val>14.44</val></a>
+	<a name="longitude"><val>36.3</val></a>
+	<a name="startDate"> <val>312</val></a><a name="thruDate"> <val>342</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>31INBN</val>
+      </a>
+	<a name="latitude"><val>17.35</val></a>
+	<a name="longitude"><val>38.2</val></a>
+	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>342</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>3-7-INBN</val>
+      </a>
+	<a name="latitude"><val>16.7</val></a>
+	<a name="longitude"><val>38.2</val></a>
+	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>4-7-INBN</val>
+      </a>
+	<a name="latitude"><val>14.1</val></a>
+	<a name="longitude"><val>36.2</val></a>
+	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>42</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>5-7-INBN</val>
+      </a>
+	<a name="latitude"><val>16.8</val></a>
+	<a name="longitude"><val>37.1</val></a>
+	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>6-7-INBN</val>
+      </a>
+	<a name="latitude"><val>14.5</val></a>
+	<a name="longitude"><val>37.2</val></a>
+	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>7-7-INBN</val>
+      </a>
+	<a name="latitude"><val>16.1</val></a>
+	<a name="longitude"><val>38.5</val></a>
+	<a name="startDate"> <val>31</val></a><a name="thruDate"> <val>34</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric12"><val>150</val></a>
+	<a name="metric2"><val>250</val></a>
+	<a name="metric3"><val>30</val></a>
+	<a name="metric4"><val>250</val></a>
+	<a name="metric5"><val>111</val></a>
+	<a name="metric6"><val>125</val></a>
+	</a>
+    </list>
+
+
+    <list>
+      <a name="UID">
+        <val>MCCGlobalMode</val>
+      </a>
+	<a name="latitude"><val>15.2</val></a>
+	<a name="longitude"><val>37.5</val></a>
+	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric2"><val>50</val></a>
+	<a name="metric3"><val>50</val></a>
+	<a name="metric4"><val>50</val></a>
+	<a name="metric5"><val>50</val></a>
+	<a name="metric6"><val>50</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>Test</val>
+      </a>
+	<a name="latitude_with_typeo"><val>15.2</val></a>
+	<a name="longitude"><val>37.5</val></a>
+	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>42</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>51</val></a>
+	<a name="metric2"><val>52</val></a>
+	<a name="metric3"><val>53</val></a>
+	<a name="metric4"><val>151</val></a>
+	<a name="metric5"><val>252</val></a>
+	<a name="metric6"><val>53</val></a>
+	</a>
+    </list>
+    <list>
+      <a name="UID">
+        <val>3ID</val>
+      </a>
+	<a name="latitude"><val>17.2</val></a>
+	<a name="longitude"><val>38.2</val></a>
+	<a name="startDate"> <val>3</val></a><a name="thruDate"> <val>42</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>3</val></a>
+	<a name="metric2"><val>50</val></a>
+	<a name="metric3"><val>150</val></a>
+	<a name="metric4"><val>51</val></a>
+	<a name="metric5"><val>52</val></a>
+	<a name="metric6"><val>53</val></a>
+	</a>
+    </list>
+    <list>
+        <a name="UID">
+          <val>1BDE</val>
+        </a>
+	<a name="latitude"><val>16.3</val></a>
+	<a name="longitude"><val>38.2</val></a>
+	<a name="symbol"><val>Armored</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>50</val></a>
+	<a name="metric2"><val>150</val></a>
+	<a name="metric3"><val>250</val></a>
+	<a name="metric4"><val>51</val></a>
+	<a name="metric5"><val>12</val></a>
+	<a name="metric6"><val>13</val></a>
+	</a>
+    </list>
+    <list>
+          <a name="UID">
+            <val>3-69-ARBN</val>
+          </a>
+	<a name="latitude"><val>16.55</val></a>
+	<a name="longitude"><val>38.9</val></a>
+	<a name="symbol"><val>Armored</val></a>
+	<a name="thruDate"> <val>3</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>255</val></a>
+	<a name="metric2"><val>4</val></a>
+	<a name="metric3"><val>6</val></a>
+	<a name="metric4"><val>22</val></a>
+	<a name="metric5"><val>23</val></a>
+	<a name="metric6"><val>259</val></a>
+	</a>
+    </list>
+    <list>
+          <a name="UID">
+            <val>3-69-ARBN</val>
+          </a>
+	<a name="latitude"><val>16.55</val></a>
+	<a name="longitude"><val>38.5</val></a>
+	<a name="symbol"><val>Armored</val></a>
+	<a name="startDate"> <val>3</val></a><a name="thruDate"> <val>42</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>2</val></a>
+	<a name="metric2"><val>4</val></a>
+	<a name="metric3"><val>6</val></a>
+	<a name="metric4"><val>22</val></a>
+	<a name="metric5"><val>23</val></a>
+	<a name="metric6"><val>259</val></a>
+	</a>
+    </list>
+    <list>
+          <a name="UID">
+            <val>3-69-ARBN</val>
+          </a>
+	<a name="latitude"><val>16</val></a>
+	<a name="longitude"><val>38</val></a>
+	<a name="symbol"><val>Armored</val></a>
+	<a name="startDate"> <val>42</val></a><a name="thruDate"> <val>312</val></a>
+	<a name="Metrics">
+	<a name="metric1"><val>2</val></a>
+	<a name="metric2"><val>4</val></a>
+	<a name="metric3"><val>6</val></a>
+	<a name="metric4"><val>22</val></a>
+	<a name="metric5"><val>23</val></a>
+	<a name="metric6"><val>259</val></a>
+	</a>
+    </list>
+  </list>
+</structure>
