@@ -14,6 +14,19 @@ import org.cougaar.lib.aggagent.ldm.PlanObject;
 
 import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
 
+/**
+ *  <p>
+ *  This PlugIn class is designed to fit into an Aggregation Agent and there
+ *  manage a table of relationships among the Organizations in a society.  Data
+ *  is expected to come in the form produced by OrgSubAdapter (q.v.), which
+ *  matches the subscription maintained by this type of PlugIn.  The data
+ *  structure obtained by compiling inputs from the various Clusters is
+ *  published on the logplan, where it may be accessed by any interested
+ *  parties.  In particular, PSP_OrgSub is a PSP that reports results to the
+ *  Aggregation Agent's clients.
+ *  </p><p>
+ *  Currently, only superior/subordinate relationships are supported.
+ */
 public class OrgSubPlugIn extends SimplePlugIn {
   // a couple of constants
   private static String SUBORDINATE = "ADMINISTRATIVESUBORDINATE";
@@ -39,7 +52,11 @@ public class OrgSubPlugIn extends SimplePlugIn {
   private IncrementalSubscription tableSubs = null;
 
   /**
-   *
+   *  Subscribe to the logplan for relational data coming in from the society
+   *  and for the locally maintained relationship table. If the table exists
+   *  before this PlugIn has had a chance to create one, then, possibly, the
+   *  Node is being restored after going down.  Another possibility is that two
+   *  or more instances of this class are operating on the host Cluster.
    */
   public void setupSubscriptions () {
     relSubs = (IncrementalSubscription) subscribe(relData);
@@ -47,7 +64,8 @@ public class OrgSubPlugIn extends SimplePlugIn {
   }
 
   /**
-   *
+   *  Process incoming relational data and create or find the locally
+   *  maintained relationship table.
    */
   public void execute () {
     // find the table of schedules on the logplan, or else create one
@@ -86,6 +104,7 @@ public class OrgSubPlugIn extends SimplePlugIn {
     }
   }
 
+  // Add a relationship to the table.
   private void insertRelation (
       String org, String rel, String other, long start, long end)
   {
@@ -97,6 +116,9 @@ public class OrgSubPlugIn extends SimplePlugIn {
     tpr.addRelation(rel, other, start, end);
   }
 
+  // Search the children of a node for one of a particular name and extract
+  // its contents as a String value; for purposes of the search, non-ELEMENT
+  // nodes are ignored.
   private String findChildValue (String name, Node n) {
     NodeList nl = n.getChildNodes();
     for (int i = 0; i < nl.getLength(); i++) {
@@ -112,6 +134,8 @@ public class OrgSubPlugIn extends SimplePlugIn {
     return "anonymous";
   }
 
+  // Search the children of a node looking for text content.  The values of all
+  // TEXT children are concatenated and returned.  Non-TEXT nodes are ignored.
   private static String findNodeText (Node n) {
     StringBuffer buf = new StringBuffer();
     NodeList nl = n.getChildNodes();

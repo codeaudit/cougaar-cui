@@ -14,6 +14,34 @@ import org.cougaar.lib.planserver.PlanServiceUtilities;
 
 import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
 
+/**
+ *  The PSP_OrgSub class is a class of PSPs for the Aggregation Agent that
+ *  report on relationships among the Organizations in a society.  The
+ *  information required for it to do its job is provided by the OrgSubPlugIn,
+ *  which must also reside on the AggAgent.  The output produced by this class
+ *  conforms to the DTD
+ *  <pre>
+ *    &lt;!ELEMENT orgrels (Cluster*)&gt;
+ *    &lt;!ELEMENT Cluster (other, relationship, starttime?, endtime?)&gt;
+ *    &lt;!ATTLIST Cluster ID CDATA #REQUIRED&gt;
+ *    &lt;!ELEMENT other (#PCDATA)&gt;
+ *    &lt;!ELEMENT relationship (#PCDATA)&gt;
+ *    &lt;!ELEMENT starttime (#PCDATA)&gt;
+ *    &lt;!ELEMENT endtime (#PCDATA)&gt;
+ *  </pre>
+ *  which is exemplified by the following:
+ *  <pre>
+ *    &lt;orgrels&gt;
+ *      &lt;Cluster ID="1BDE-3ID"&gt;
+ *        &lt;other&gt;3-69-ARBN&lt;/other&gt;
+ *        &lt;relationship&gt;ADMINISTRATIVESUBORDINATE&lt;/relationship&gt;
+ *        &lt;starttime&gt;3975379853&lt;/starttime&gt;
+ *        &lt;endtime&gt;3998787991&lt;/endtime&gt;
+ *      &lt;/Cluster&gt;
+ *      ...
+ *    &lt;/orgrels&gt;
+ *  </pre>
+ */
 public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
   // a couple of constants
   private static String SUBORDINATE = "ADMINISTRATIVESUBORDINATE";
