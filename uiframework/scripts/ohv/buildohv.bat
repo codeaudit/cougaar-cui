@@ -9,7 +9,7 @@ if NOT EXIST "%ORGHV_HOME%"  goto err2
 set SRC_BASE=%ORGHV_HOME%\src
 set BIN_BASE=%ORGHV_HOME%\classes
 
-set LIB_BASE=%ORGHV_HOME%\lib
+set LIB_BASE=%ORGHV_HOME%\..\..\lib
 rem set LIB_BASE=%COUGAAR_INSTALL_PATH%
 
 set LIBPATH=%BIN_BASE%
