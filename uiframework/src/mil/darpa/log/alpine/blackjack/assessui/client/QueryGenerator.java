@@ -128,6 +128,48 @@ public class QueryGenerator
 
         // aggregation across a time range must be done at the client (here)
         // other aggregation has already been taken care of before DB table.
+        /*
+        DatabaseTableModel.Combiner combiner =
+            new DatabaseTableModel.Combiner() {
+                public Object combine(Object obj1, Object obj2)
+                {
+                    Object combinedObject = null;
+                    if (obj1 instanceof Float)
+                    {
+                        float f1 = ((Float)obj1).floatValue();
+                        float f2 = ((Float)obj2).floatValue();
+                        float f1Badness = Math.abs(f1 - 1);
+                        float f2Badness = Math.abs(f2 - 1);
+                        combinedObject = (f1Badness > f2Badness) ? obj1 : obj2;
+                    }
+                    else
+                    {
+                        combinedObject = obj1;
+                    }
+
+                    return combinedObject;
+                }
+            };
+        */
+        DatabaseTableModel.Combiner combiner =
+            new DatabaseTableModel.Combiner() {
+                public Object combine(Object obj1, Object obj2)
+                {
+                    Object combinedObject = null;
+                    if (obj1 instanceof Float)
+                    {
+                        float f1 = ((Float)obj1).floatValue();
+                        float f2 = ((Float)obj2).floatValue();
+                        combinedObject = new Float(f1 + f2);
+                    }
+                    else
+                    {
+                        combinedObject = obj1;
+                    }
+
+                    return combinedObject;
+                }
+            };
         VariableModel timeDescriptor = vim.getDescriptor("Time");
         if (timeDescriptor.getState() == VariableModel.FIXED)
         {
@@ -138,7 +180,7 @@ public class QueryGenerator
                                         dbTableModel.getColumnIndex("metric")};
             dbTableModel.aggregateRows(significantColumns,
                                        timeRange.toString(),
-                                       timeHeaderColumn);
+                                       timeHeaderColumn, combiner);
         }
 
         // transform based on needed X and Y variables
@@ -302,9 +344,11 @@ public class QueryGenerator
      * @param node         node under which to aggregate
      * @param headerColumn index of column that contains row headers to match
      *                     with tree elements.
+     * @param combiner     the object used to combine two values into one.
      */
     private void aggregateTreeRows(DefaultMutableTreeNode node,
-                                   int headerColumn)
+                                   int headerColumn,
+                                   DatabaseTableModel.Combiner combiner)
     {
         for (int i = 0; i < node.getChildCount(); i++)
         {
@@ -312,7 +356,7 @@ public class QueryGenerator
                 (DefaultMutableTreeNode)node.getChildAt(i);
             dbTableModel.aggregateRows(getLeafList(tn).elements(),
                                        tn.getUserObject().toString(),
-                                       headerColumn);
+                                       headerColumn, combiner);
         }
     }
 
