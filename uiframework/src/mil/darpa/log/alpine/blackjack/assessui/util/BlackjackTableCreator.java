@@ -47,6 +47,7 @@ public class BlackjackTableCreator
         }
         else if (databaseType.equalsIgnoreCase("oracle"))
         {
+	    // dbURL = "jdbc:oracle:oci8:@";
             dbURL = "jdbc:oracle:thin:@";
             dbDriver = "oracle.jdbc.driver.OracleDriver";
             accessdb = false;
@@ -252,32 +253,19 @@ public class BlackjackTableCreator
             ResultSet anotherrs = null;
             try
             {
-                // class VIII
-                anothercon = establishConnection(dbURL, "blackjack8",
-                    (dbURL.endsWith("eiger.alpine.bbn.com:1521:alp") ?
-                                    "init1389" : "blackjack8"));
-                anotherstmt = anothercon.createStatement();
-                anotherrs = anotherstmt.executeQuery(
-                    "SELECT nsn, unit_issue FROM catalog_master");
-                while(anotherrs.next())
-                {
-                    stmt.executeUpdate(
-                        "INSERT INTO assessmentItemUnits VALUES ('NSN/" +
-                        anotherrs.getString(1) + "', '" +
-                        anotherrs.getString(2)+"')");
-                }
-                anotherrs.close();
-                anotherstmt.close();
-                anothercon.close();
-                con.commit();
+                con.setAutoCommit(true);
 
-                // class I
-                anothercon = establishConnection(dbURL, "blackjack",
-                    (dbURL.endsWith("eiger.alpine.bbn.com:1521:alp") ?
-                                    "init1389" : "blackjack"));
+                // class III
+                //anothercon = establishConnection(dbURL, "icis",
+                //    (dbURL.endsWith("eiger.alpine.bbn.com:1521:alp") ?
+                //                    "init1389" : "icis"));
+                anothercon =
+                    establishConnection(dbURL, "blackjacka", "blackjacka");
                 anotherstmt = anothercon.createStatement();
+                //anotherrs = anotherstmt.executeQuery(
+                //    "SELECT nsn, ui FROM header WHERE nsn like '91%'");
                 anotherrs = anotherstmt.executeQuery(
-                    "SELECT nsn, ui FROM class1_item");
+                    "SELECT nsn, ui FROM fuels_unit_of_issue");
                 while(anotherrs.next())
                 {
                     try {
@@ -293,13 +281,39 @@ public class BlackjackTableCreator
                 anothercon.close();
                 con.commit();
 
-                // class III
-                anothercon = establishConnection(dbURL, "icis",
+                //*****************************
+                //dbURL = "jdbc:oracle:thin:@alp-3.alp.isotic.org:1521:alp";
+                //*****************************
+
+                // class VIII
+                anothercon = establishConnection(dbURL, "blackjack",
                     (dbURL.endsWith("eiger.alpine.bbn.com:1521:alp") ?
-                                    "init1389" : "icis"));
+                                    "init1389" : "blackjack"));
                 anotherstmt = anothercon.createStatement();
                 anotherrs = anotherstmt.executeQuery(
-                    "SELECT nsn, ui FROM header WHERE nsn like '91%'");
+                    "SELECT nsn, unit_issue FROM catalog_master");
+                while(anotherrs.next())
+                {
+                    try {
+                    stmt.executeUpdate(
+                        "INSERT INTO assessmentItemUnits VALUES ('NSN/" +
+                        anotherrs.getString(1) + "', '" +
+                        anotherrs.getString(2)+"')");
+                    }
+                    catch (Exception e){System.out.println(e.getMessage());}
+                }
+                anotherrs.close();
+                anotherstmt.close();
+                anothercon.close();
+                con.commit();
+
+                // class I
+                anothercon = establishConnection(dbURL, "blackjack",
+                    (dbURL.endsWith("eiger.alpine.bbn.com:1521:alp") ?
+                                    "init1389" : "blackjack"));
+                anotherstmt = anothercon.createStatement();
+                anotherrs = anotherstmt.executeQuery(
+                    "SELECT nsn, ui FROM class1_item");
                 while(anotherrs.next())
                 {
                     try {
