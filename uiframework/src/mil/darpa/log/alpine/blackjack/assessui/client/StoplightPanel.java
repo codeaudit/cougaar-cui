@@ -26,6 +26,7 @@ import org.cougaar.lib.uiframework.ui.models.StoplightThresholdModel;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
 import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 import org.cougaar.lib.uiframework.ui.util.Selector;
+import org.cougaar.lib.uiframework.ui.util.SliderControl;
 import org.cougaar.lib.uiframework.ui.util.TableSorter;
 import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 
@@ -44,6 +45,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private DatabaseTableModel stoplightTableModel = new DatabaseTableModel();
     private VariableInterfaceManager variableManager;
     private CStoplightTable stoplightChart;
+    private JPanel thresholdsPanel = null;
 
     /**
      * Create a new stoplight panel
@@ -127,6 +129,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         CRangeButton rangeButton =
             new CRangeButton("C+", DBInterface.minTimeRange,
                              DBInterface.maxTimeRange, plaf);
+        rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
+                                           DBInterface.maxTimeRange);
 
         VariableModel[] variables =
         {
@@ -156,11 +160,13 @@ public class StoplightPanel extends JPanel implements CougaarUI
                 public void variableChanged(VariableModel vm)
                 {
                     qg.generateQuery(variableManager);
+                    updateThresholdExtents();
                 }
                 public void variablesSwapped(VariableModel vm1,
                                              VariableModel vm2)
                 {
                     qg.generateQuery(variableManager);
+                    updateThresholdExtents();
                 }
             });
 
@@ -171,7 +177,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
             new CViewFeatureSelectionControl(BoxLayout.Y_AXIS);
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
 
-        JPanel thresholdsPanel;
         if (plaf)
         {
             thresholdsPanel = new CSliderThresholdControl(0f, 2f);
@@ -180,6 +185,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         {
             thresholdsPanel = new CMThumbSliderThresholdControl(0f, 2f);
         }
+        updateThresholdExtents();
         thresholdsPanel.setBorder(
             BorderFactory.createTitledBorder("Color Thresholds"));
 
@@ -407,6 +413,35 @@ public class StoplightPanel extends JPanel implements CougaarUI
         }
         return (JFrame)parent;
     }
+
+    private void updateThresholdExtents()
+    {
+        // find minimum and maximum values in table
+        float minValue = Float.MAX_VALUE;
+        float maxValue = Float.MIN_VALUE;
+        for (int row = 0; row < stoplightTableModel.getRowCount(); row++)
+        {
+            for (int column = 1; column < stoplightTableModel.getColumnCount();
+                 column++)
+            {
+                float value = ((Number)
+                    stoplightTableModel.getValueAt(row, column)).floatValue();
+                minValue = Math.min(minValue, value);
+                maxValue = Math.max(maxValue, value);
+            }
+        }
+
+        float newShift = ((SliderControl)thresholdsPanel).
+            roundAndSetSliderRange(minValue, maxValue);
+        // if new slider range was modified by an exponential amount,
+        // redistribute threshold values
+        if (newShift != shift)
+        {
+            ((SliderControl)thresholdsPanel).evenlyDistributeValues();
+            shift = newShift;
+        }
+    }
+    private float shift = 0;
 
     /**
      * Main for unit testing.
