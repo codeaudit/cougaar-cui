@@ -218,13 +218,15 @@ public class CStoplightTable extends CRowHeaderTable
     /**
      * This renderer is used to color code the data cells.
      */
+    private static final Color naGrey = new Color(230, 230, 230);
+    private static final DecimalFormat valueFormat =
+        new DecimalFormat("####.##");
     private class StoplightCellRenderer extends DefaultTableCellRenderer
     {
-        private DecimalFormat valueFormat = new DecimalFormat("####.##");
-
         public StoplightCellRenderer()
         {
             super();
+            setHorizontalAlignment(JLabel.CENTER);
         }
 
         public Component
@@ -248,21 +250,24 @@ public class CStoplightTable extends CRowHeaderTable
                 toolTipText.append(value.toString());
             }
             setToolTipText(toolTipText.toString());
-            setHorizontalAlignment(JLabel.CENTER);
+
             colorRenderer(value);
-            super.getTableCellRendererComponent(table, value, isSelected,
-                                                hasFocus, row, column);
-            if (showValue)
+            setFont(table.getFont());
+            if ((showValue) && (value instanceof Number))
             {
-                if (value instanceof Number)
-                {
-                    setValue(valueFormat.format(value));
-                }
+                setText(valueFormat.format(value));
             }
             else
             {
-                setValue("");
+                setText("");
             }
+
+	          // ---- begin optimization to avoid painting background ----
+	          Color back = getBackground();
+	          boolean colorMatch = (back != null) &&
+                ( back.equals(table.getBackground()) ) && table.isOpaque();
+            setOpaque(!colorMatch);
+	          // ---- end optimization to aviod painting background ----
 
             return this;
         }
@@ -300,8 +305,7 @@ public class CStoplightTable extends CRowHeaderTable
                 }
                 else
                 {
-                    // Color.lightGray = 192, 192, 192
-                    setBackground(new Color(230, 230, 230));
+                    setBackground(naGrey);
                 }
             }
             else
