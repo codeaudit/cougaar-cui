@@ -143,11 +143,11 @@ public class DBInterface extends DBDatasource
             ht.put("UID", metrics[i]);
             ht.put("ID", metricIDs[i]);
 
-            if ((i == 1) || (i == 3))
+            if ((i == 1) || (i == 2) || (i == 3))
             {
                 p.add(new DefaultMutableTreeNode(ht));
             }
-            else if ((i == 0) || (i == 2) || (i == 4))
+            else if ((i == 0) || (i == 4) || (i == 5))
             {
                 groupB.add(new DefaultMutableTreeNode(ht));
             }

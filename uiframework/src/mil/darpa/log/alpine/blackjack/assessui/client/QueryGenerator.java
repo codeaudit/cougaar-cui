@@ -33,11 +33,13 @@ public class QueryGenerator
 {
     private static final boolean debug = false;
     public static final String INV_SAF_METRIC = "Inventory Over Target Level";
+    public static final String INV_CRITICAL_METRIC = "Inventory Over Critical Level";
     public static final String RES_DEM_METRIC = "Cumulative Resupply Over Cumulative Demand";
     private static final String DEMAND_METRIC = "Demand";
     private static final String DUEIN_METRIC = "DueIn";
     private static final String DUEOUT_METRIC = "DueOut";
     private static final String INVENTORY_METRIC = "Inventory";
+    private static final String CRITICAL_LEVEL_METRIC = "Critical Level";
     private static final String TARGET_LEVEL_METRIC = "Target Level";
     private static final String NO_DATA = "No Data Available";
 
@@ -338,7 +340,8 @@ public class QueryGenerator
         // derive unit column if needed
         String metric = vim.getDescriptor("Metric").getValue().toString();
         if (yDescName.equals("Item") &&
-            !metric.equals(INV_SAF_METRIC) && !metric.equals(RES_DEM_METRIC))
+            !metric.equals(INV_SAF_METRIC) && !metric.equals(RES_DEM_METRIC) &&
+            !metric.equals(INV_CRITICAL_METRIC))
         {
             if (debug) System.out.println("Adding unit of issue column");
             dbTableModel.insertColumn(1);
@@ -386,6 +389,15 @@ public class QueryGenerator
 
             query = generateRatioQuery(vim, "Org", orgNode,
                                        INVENTORY_METRIC, TARGET_LEVEL_METRIC,
+                                       metricInt);
+        }
+        else if (metricString.equals(INV_CRITICAL_METRIC))
+        {
+            int metricInt = Integer.parseInt(DBInterface.lookupValue(
+              DBInterface.getTableName("Metric"), "name", "id", metricString));
+
+            query = generateRatioQuery(vim, "Org", orgNode,
+                                       INVENTORY_METRIC, CRITICAL_LEVEL_METRIC,
                                        metricInt);
         }
         else if (metricString.equals(RES_DEM_METRIC))
