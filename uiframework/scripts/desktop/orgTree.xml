@@ -7,136 +7,215 @@
         <a name="UID">
             <val>All Units</val>
         </a>
-        <a name="SAFETY_LEVEL">
-            <val>1.0</val>
-        </a>
         <list>
             <a name="UID">
-                <val>3-BDE-2ID-HHC</val>
-            </a>
-            <a name="SAFETY_LEVEL">
-                <val>1.0</val>
+                <val>3ID-HHC</val>
             </a>
             <list>
                 <a name="UID">
-                    <val>1-23-INFBN</val>
+                    <val>3-BDE-2ID-HHC</val>
                 </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
-                </a>
+                <list>
+                    <a name="UID">
+                        <val>1-23-INFBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>5-20-INFBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>2-3-INFBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>296-SPTBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>1-37-FABN</val>
+                    </a>
+                </list>
             </list>
             <list>
                 <a name="UID">
-                    <val>5-20-INFBN</val>
+                    <val>1-BDE-3ID-HHC</val>
                 </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
-                </a>
+                <list>
+                    <a name="UID">
+                        <val>1-64-ARBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>3-15-INFBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>3-7-INFBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>26-FSB</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>1-9-FABN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>11-ENGBN</val>
+                    </a>
+                </list>
             </list>
             <list>
                 <a name="UID">
-                    <val>2-3-INFBN</val>
+                    <val>2-BDE-3ID-HHC</val>
                 </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
-                </a>
+                <list>
+                    <a name="UID">
+                        <val>2-7-INFBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>3-69-ARBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>4-64-ARBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>3-FSB</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>1-41-FABN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>10-ENGBN</val>
+                    </a>
+                </list>
             </list>
             <list>
                 <a name="UID">
-                    <val>296-SPTBN</val>
+                    <val>3-DISCOM-HHC</val>
                 </a>
-                <a name="SAFETY_LEVEL">
-                    <val>7.0</val>
+                <list>
+                    <a name="UID">
+                        <val>703-MSB</val>
+                    </a>
+                </list>
+            </list>
+            <list>
+                <a name="UID">
+                    <val>24-SPTGP-HHC</val>
                 </a>
+                <list>
+                    <a name="UID">
+                        <val>92-ENGBN-CBTHVY</val>
+                    </a>
+                </list>
             </list>
         </list>
         <list>
             <a name="UID">
-                <val>1-BDE-3ID-HHC</val>
-            </a>
-            <a name="SAFETY_LEVEL">
-                <val>1.0</val>
+                <val>1-MEB</val>
             </a>
             <list>
                 <a name="UID">
-                    <val>1-64-ARBN</val>
+                    <val>7-MAR</val>
                 </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
-                </a>
-            </list>
-            <list>
-                <a name="UID">
-                    <val>3-15-INFBN</val>
-                </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
-                </a>
-            </list>
-            <list>
-                <a name="UID">
-                    <val>3-7-INFBN</val>
-                </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
-                </a>
-            </list>
-            <list>
-                <a name="UID">
-                    <val>26-FSB</val>
-                </a>
-                <a name="SAFETY_LEVEL">
-                    <val>7.0</val>
-                </a>
+                <list>
+                    <a name="UID">
+                        <val>1-7-MAR</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>2-7-MAR</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>3-7-MAR</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>3-11-MAR</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>1-TKBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>DET-3-AAVBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>CO-A-1-LARBN</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>DET-1-CEBN</val>
+                    </a>
+                </list>
             </list>
         </list>
         <list>
             <a name="UID">
-                <val>2-BDE-3ID-HHC</val>
-            </a>
-            <a name="SAFETY_LEVEL">
-                <val>1.0</val>
+                <val>RED-CROSS-HQ</val>
             </a>
             <list>
                 <a name="UID">
-                    <val>2-7-INFBN</val>
-                </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
+                    <val>KARACHI-REFUGEE-CAMP</val>
                 </a>
             </list>
             <list>
                 <a name="UID">
-                    <val>3-69-ARBN</val>
-                </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
+                    <val>NAWABSHA-REFUGEE-CAMP</val>
                 </a>
             </list>
             <list>
                 <a name="UID">
-                    <val>4-64-ARBN</val>
-                </a>
-                <a name="SAFETY_LEVEL">
-                    <val>3.0</val>
+                    <val>HYDERABAD-REFUGEE-CAMP</val>
                 </a>
             </list>
             <list>
                 <a name="UID">
-                    <val>3-FSB</val>
-                </a>
-                <a name="SAFETY_LEVEL">
-                    <val>7.0</val>
+                    <val>SUKKUR-REFUGEE-CAMP</val>
                 </a>
             </list>
-        </list>
-        <list>
-            <a name="UID">
-                <val>PAKISTAN-REFUGEES</val>
-            </a>
-            <a name="SAFETY_LEVEL">
-                <val>3.0</val>
-            </a>
+            <list>
+                <a name="UID">
+                    <val>MIRPURKHAS-REFUGEE-CAMP</val>
+                </a>
+            </list>
+            <list>
+                <a name="UID">
+                    <val>BELA-REFUGEE-CAMP</val>
+                </a>
+            </list>
         </list>
     </list>
 </structure>
