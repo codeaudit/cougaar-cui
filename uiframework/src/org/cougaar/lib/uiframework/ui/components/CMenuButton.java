@@ -209,7 +209,7 @@ public class CMenuButton extends JButton implements Selector
             if (selectedValue instanceof RangeModel)
             {
                 RangeModel range = (RangeModel)selectedValue;
-                value = "C+" + range.getMin() + " to C+" + range.getMax();
+                value = "C0" + range.getMin() + " to C0" + range.getMax();
             }
             else
             {
