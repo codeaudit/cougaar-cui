@@ -16,6 +16,7 @@ import org.cougaar.lib.uiframework.ui.components.CDesktopFrame;
 import org.cougaar.lib.uiframework.ui.components.CFrame;
 import org.cougaar.lib.uiframework.ui.components.CRangeButton;
 import org.cougaar.lib.uiframework.ui.components.CMThumbSliderThresholdControl;
+import org.cougaar.lib.uiframework.ui.components.CRadioButtonSelectionControl;
 import org.cougaar.lib.uiframework.ui.components.CRLabel;
 import org.cougaar.lib.uiframework.ui.components.CSliderThresholdControl;
 import org.cougaar.lib.uiframework.ui.components.CStoplightTable;
@@ -187,6 +188,33 @@ public class StoplightPanel extends JPanel implements CougaarUI
                 }
             });
 
+        // item view panel
+        final String descriptionString =  "Description";
+        final String nsnString = "NSN";
+        CRadioButtonSelectionControl itemDisplayPanel =
+            new CRadioButtonSelectionControl(new String[]{descriptionString,
+                                                          nsnString},
+                                           BoxLayout.X_AXIS);
+        itemDisplayPanel.setSelectedItem(descriptionString);
+        itemDisplayPanel.setBorder(
+            BorderFactory.createTitledBorder("Item Representation"));
+        itemDisplayPanel.addPropertyChangeListener("selectedItem",
+                                                new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    String newValue = e.getNewValue().toString();
+                    String newShowProperty =
+                        newValue.equals(descriptionString) ? "UID" : "ITEM_ID";
+                    DBInterface.setNewShowProperty(DBInterface.itemTree,
+                                                   newShowProperty);
+                    updateView();
+                    //stoplightTableModel.fireTableChangedEvent(
+                    //    new TableModelEvent(stoplightTableModel,
+                    //                        TableModelEvent.HEADER_ROW));
+                }
+            });
+
+
         if (plaf)
         {
             thresholdsPanel = new CSliderThresholdControl(0f, 2f);
@@ -296,6 +324,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         gbc.weighty=0;
         JPanel topControlPanel = new JPanel(gbl);
         gbc.fill=GridBagConstraints.BOTH;
+        gbl.setConstraints(itemDisplayPanel, gbc);
+        topControlPanel.add(itemDisplayPanel);
         gbl.setConstraints(viewPanel, gbc);
         topControlPanel.add(viewPanel);
         gbc.weightx=1;
