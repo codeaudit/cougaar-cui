@@ -19,6 +19,6 @@ public class TableSeeker implements UnaryPredicate {
    */
   public boolean execute (Object obj) {
     return (obj instanceof TableWrapper) &&
-      ((TableWrapper) obj).getName().equals("OrgRelTable");
+      ((TableWrapper) obj).getName().equals(Const.TABLE_NAME);
   }
 }

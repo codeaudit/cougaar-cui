@@ -43,12 +43,6 @@ import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
  *  </pre>
  */
 public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
-  // a couple of constants
-  private static String SUBORDINATE = "ADMINISTRATIVESUBORDINATE";
-  private static String SUPERIOR = "ADMINISTRATIVESUPERIOR";
-  private static String SUBORDINATE_OUT = "AdministrativeSubordinate";
-  private static String SUPERIOR_OUT = "AdministrativeSuperior";
-
   // XML headers included at the top of each response
   // for validating parsers:
   // private static String XML_HEADERS =
@@ -85,7 +79,7 @@ public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
     for (Enumeration e = table.elements(); e.hasMoreElements(); ) {
       TPRelations rels = (TPRelations) e.nextElement();
       String org = rels.getOrgName();
-      Iterator i = rels.getAllRelatives(SUPERIOR);
+      Iterator i = rels.getAllRelatives(Const.SUPERIOR);
       if (i.hasNext()) {
         while (i.hasNext())
           snippets.add(clusterTag(org, i.next().toString()));
@@ -114,7 +108,7 @@ public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
       buf.append("<other>");
       buf.append(superior);
       buf.append("</other><relationship>");
-      buf.append(SUPERIOR_OUT);
+      buf.append(Const.SUPERIOR);
       buf.append("</relationship>");
     }
     buf.append("</Cluster>");

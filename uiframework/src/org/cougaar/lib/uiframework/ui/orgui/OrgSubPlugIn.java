@@ -28,18 +28,6 @@ import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
  *  Currently, only superior/subordinate relationships are supported.
  */
 public class OrgSubPlugIn extends SimplePlugIn {
-  // a couple of constants
-  private static String SUBORDINATE = "ADMINISTRATIVESUBORDINATE";
-  private static String SUPERIOR = "ADMINISTRATIVESUPERIOR";
-
-  // name of the table wrapper on the logplan
-  private static String TABLE_NAME = "OrgRelTable";
-
-  // XML tag names recognized by this class
-  private static String RELS = "Relations";
-  private static String ORG_RELS = "OrgRelations";
-  private static String RELATIONSHIP = "OrgRelationship";
-
   // store the information in a hashtable keyed by organization
   private Hashtable table = null;
 
@@ -49,7 +37,7 @@ public class OrgSubPlugIn extends SimplePlugIn {
       if (obj instanceof PlanObject) {
         String root =
           ((PlanObject) obj).getDocument().getDocumentElement().getNodeName();
-        return root.equals(ORG_RELS) || root.equals(RELS);
+        return root.equals(Const.ORG_RELS);
       }
       return false;
     }
@@ -86,18 +74,20 @@ public class OrgSubPlugIn extends SimplePlugIn {
       }
       if (table == null) {
         table = new Hashtable();
-        publishAdd(new TableWrapper(TABLE_NAME, table));
+        publishAdd(new TableWrapper(Const.TABLE_NAME, table));
       }
     }
 
     if (relSubs.hasChanged()) {
       for (Enumeration e = relSubs.getAddedList(); e.hasMoreElements(); ) {
         PlanObject po = (PlanObject) e.nextElement();
-        visitRoot(po.getDocument().getDocumentElement());
+        visitOrgRels(po.getDocument().getDocumentElement());
       }
     }
   }
 
+  // Slated for removal
+  /*
   private void visitRoot (Node n) {
     String name = n.getNodeName();
     if (name.equals(RELS))
@@ -108,40 +98,54 @@ public class OrgSubPlugIn extends SimplePlugIn {
       System.out.println("OrgSubPlugIn::visitRoot:  unrecognized root \"" +
         name + "\"");
   }
+  */
 
-  private void visitRels (Node n) {
+  private void visitOrgRels (Node n) {
+    System.out.println("OrgSubPlugIn::visitOrgRels");
     NodeList orgs = n.getChildNodes();
     for (int i = 0; i < orgs.getLength(); i++) {
+      System.out.println("  -> child #" + i);
       Node child = orgs.item(i);
       if (child.getNodeType() == Node.ELEMENT_NODE &&
-          child.getNodeName().equals(ORG_RELS))
+          child.getNodeName().equals(Const.CLUSTER))
       {
-        visitOrgRels(child);
+        System.out.println("  - -> Visiting " + child.getNodeName());
+        visitRelation((Element) child);
+      }
+      else {
+        System.out.println("  - -> Ignoring " + child.getNodeName());
       }
     }
   }
 
-  private void visitOrgRels (Node n) {
-    NodeList rels = n.getChildNodes();
-    for (int i = 0; i < rels.getLength(); i++) {
-      Node child = rels.item(i);
-      if (child.getNodeType() == Node.ELEMENT_NODE &&
-          child.getNodeName().equals(RELATIONSHIP))
-      {
-        String superior = findChildValue("superior", child);
-        String subordinate = findChildValue("subordinate", child);
-        long start = Long.parseLong(findChildValue("start", child));
-        long end = Long.parseLong(findChildValue("end", child));
-        insertRelation(superior, SUBORDINATE, subordinate, start, end);
-        insertRelation(subordinate, SUPERIOR, superior, start, end);
-      }
-    }
+  private void visitRelation (Element n) {
+    System.out.println("OrgSubPlugIn::visitRelation");
+    String id = n.getAttribute(Const.ID_ATTRIBUTE);
+    String relative = findChildValue(Const.RELATIVE, n);
+    String role = findChildValue(Const.REL_TYPE, n);
+    long start = Long.parseLong(findChildValue(Const.START, n));
+    long end = Long.parseLong(findChildValue(Const.END, n));
+    insertRelation(id, role, relative, start, end);
+    insertRelation(relative, converse(role), id, start, end);
+  }
+
+  // get the converse of the role
+  // currently, only superior/subordinate relationships are supported
+  private String converse (String role) {
+    if (role.equals(Const.SUBORDINATE))
+      return Const.SUPERIOR;
+    else if (role.equals(Const.SUPERIOR))
+      return Const.SUBORDINATE;
+    System.out.println("OrgSubPlugIn::converse:  No converse for " + role);
+    return "<<Converse of " + role + ">>";
   }
 
   // Add a relationship to the table.
   private void insertRelation (
       String org, String rel, String other, long start, long end)
   {
+    System.out.println("OrgSubPlugIn::insertRelation:  " +
+      org + " " + rel + " " + other + " " + start + " " + end);
     TPRelations tpr = (TPRelations) table.get(org);
     if (tpr == null) {
       tpr = new TPRelations(org);
