@@ -146,11 +146,6 @@
           </a>
           <list>
             <a name="UID">
-              <val>703-MSB</val>
-            </a>
-          </list>
-          <list>
-            <a name="UID">
               <val>DIVARTY-3ID-HHB</val>
             </a>
           </list>
@@ -518,6 +513,11 @@
             <a name="UID">
               <val>3-DISCOM-HHC</val>
             </a>
+            <list>
+              <a name="UID">
+                <val>703-MSB</val>
+              </a>
+            </list>
           </list>
           <list>
             <a name="UID">
