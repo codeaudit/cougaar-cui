@@ -424,10 +424,13 @@ public class StoplightPanel extends JPanel implements CougaarUI
             for (int column = 1; column < stoplightTableModel.getColumnCount();
                  column++)
             {
-                float value = ((Number)
-                    stoplightTableModel.getValueAt(row, column)).floatValue();
-                minValue = Math.min(minValue, value);
-                maxValue = Math.max(maxValue, value);
+                Object valueObj = stoplightTableModel.getValueAt(row, column);
+                if (valueObj instanceof Number)
+                {
+                    float value = ((Number)valueObj).floatValue();
+                    minValue = Math.min(minValue, value);
+                    maxValue = Math.max(maxValue, value);
+                }
             }
         }
 
