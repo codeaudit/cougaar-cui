@@ -297,6 +297,10 @@ public class CLinePlotChart extends Graph2D
                      tm.getValueAt(row, 0).toString());
             }
         }
+
+        // Make this adjustable later
+        yaxis_left.minimum = 0;
+
         revalidate();
         repaint();
     }
