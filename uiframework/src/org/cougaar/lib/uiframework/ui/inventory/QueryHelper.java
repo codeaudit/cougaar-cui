@@ -28,21 +28,15 @@ import org.cougaar.mlm.ui.data.UISimpleSchedule;
 import org.cougaar.mlm.ui.planviewer.ConnectionHelper;
 import org.cougaar.mlm.ui.planviewer.XMLClientConfiguration;
 
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryDayRolloverListener;
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
-
 import org.cougaar.util.ThemeFactory;
 
 
 public class QueryHelper implements ActionListener,
-            ItemListener,
-                                    InventoryDayRolloverListener {
+            ItemListener{
   static final String UPDATE = "Update";
   static final String RESET = "Reset";
   static final String CLEAR = "Clear";
   static final String SAVE = "Save";
-  static final String MOVIE_MODE = "Movie Mode";
   static final String CDAY_MODE = "Cdays";
 
   String clusterURL;
@@ -56,8 +50,6 @@ public class QueryHelper implements ActionListener,
   boolean doDisplayTable = true;
   
 
-  InventoryExecutionTimeStatusHandler timeStatusHandler;
-
   private BlackJackInventoryChart chart = null;
   private CChartLegend legend = null;
   private JTable table = null;
@@ -66,7 +58,7 @@ public class QueryHelper implements ActionListener,
      use the container passed as an argument.
    */
 
-  public QueryHelper(Query query, String clusterURL, BlackJackInventoryChart chart, JTable table, CChartLegend legend, boolean doDisplayTable, InventoryExecutionTimeStatusHandler aTimeStatusHandler)
+  public QueryHelper(Query query, String clusterURL, BlackJackInventoryChart chart, JTable table, CChartLegend legend, boolean doDisplayTable)
   {
     this.query = query;
     this.clusterURL = clusterURL;
@@ -85,7 +77,6 @@ public class QueryHelper implements ActionListener,
     if (indx > -1) assetName = assetName.substring(indx+1);
 
     PSP_package = XMLClientConfiguration.PSP_package;
-    timeStatusHandler = aTimeStatusHandler;
 
     this.chart = chart;
     this.legend = legend;
@@ -236,19 +227,7 @@ public class QueryHelper implements ActionListener,
   public void itemStateChanged(ItemEvent e) {
       if(e.getSource() instanceof JCheckBox) {
     JCheckBox source = (JCheckBox) e.getSource();
-    if(source.getActionCommand().equals(MOVIE_MODE)) {
-        if(timeStatusHandler != null) {
-      if(e.getStateChange() == e.SELECTED){
-//          System.out.println("Query Helper::Turning on Movies");
-          timeStatusHandler.addDayRolloverListener(this);
-      }
-      else {
-//          System.out.println("Query Helper::Turning off Movies");
-          timeStatusHandler.removeDayRolloverListener(this);
-      }
-        }
-    }
-    else if(source.getActionCommand().equals(CDAY_MODE)) {
+    if(source.getActionCommand().equals(CDAY_MODE)) {
         query.setToCDays(e.getStateChange() == e.SELECTED);
     }
       }

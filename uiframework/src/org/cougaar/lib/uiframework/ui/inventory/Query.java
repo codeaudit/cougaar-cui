@@ -22,8 +22,6 @@ import javax.swing.JSplitPane;
 
 import org.cougaar.lib.uiframework.ui.components.CChartLegend;
 
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
 
 /**
  * Define an interface that must be implemented to add a query
@@ -50,7 +48,7 @@ public interface Query {
   /* Create chart.
      */
 
-  JPanel createChart(String title, InventoryExecutionTimeStatusHandler timeHandler, JSplitPane split);
+  JPanel createChart(String title, JSplitPane split);
 
   boolean setChartData(String title, BlackJackInventoryChart chart, CChartLegend legend);
 

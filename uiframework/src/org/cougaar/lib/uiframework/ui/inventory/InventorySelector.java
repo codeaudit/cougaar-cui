@@ -51,8 +51,6 @@ import org.cougaar.mlm.ui.planviewer.ConnectionHelper;
 import org.cougaar.mlm.ui.planviewer.XMLClientConfiguration;
 import org.cougaar.glm.execution.eg.ClusterInfo;
 
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
 
 
 public class InventorySelector implements CougaarUI, InventoryDataProvider
@@ -103,9 +101,6 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
   //static final String PSP_id = "GLMINVENTORY.PSP";
   static final String PSP_id = "inventory"; //"GLMINVENTORY.PSP";
 
-
-  InventoryExecutionTimeStatusHandler timeStatusHandler=null;
-  InventoryExecutionListener executionListener=null;
 
 //  private BlackJackInventoryChart chart = new BlackJackInventoryChart("", null, "Quantity", true);
   public BlackJackInventoryChart chart = new BlackJackInventoryChart("", null, "Quantity", true);
@@ -963,32 +958,7 @@ System.out.println("java.version: " + System.getProperty("java.version"));
     }
   }
 
-  private boolean setupTimeStatusHandler() {
 
-      //System.out.println("InventorySelector::Setting up Time status Handler");
-
-      if(executionListener == null) {
-    timeStatusHandler = new InventoryExecutionTimeStatusHandler();
-    Object[] handlers = {timeStatusHandler};
-    ClusterInfo ci = new ClusterInfo(clusterName,hostAndPort);
-
-    //System.out.println("InventorySelector::Trying to create InventoryExecutionListener");
-
-    try {
-        executionListener = new InventoryExecutionListener(ci,handlers);
-        if(executionListener!=null) {
-      executionListener.start();
-        }
-    }
-    catch(Exception e) {
-        timeStatusHandler=null;
-        System.err.println("WARNING::Inventory Selector:  Could not connect to PSP_ExecutionWatcher - movie mode will not be available. - Exeception was: " + e.toString());
-        //        throw new RuntimeException(e.toString());
-        return false;
-    }
-      }
-      return true;
-  }
 
   private void setDataSetMenu()
   {
@@ -1384,7 +1354,7 @@ System.out.println("java.version: " + System.getProperty("java.version"));
         {
           Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
           query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
-          new QueryHelper(query, hostAndPort + "$" + clusterName + "/", null, null, null, false, null);
+          new QueryHelper(query, hostAndPort + "$" + clusterName + "/", null, null, null, false);
         }
         else if(fileBased)
         {
@@ -1409,10 +1379,9 @@ System.out.println("java.version: " + System.getProperty("java.version"));
             else
             {
               System.out.println("from port");
-              setupTimeStatusHandler();
               Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
               query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
-              new QueryHelper(query, hostAndPort + "$" + clusterName + "/", null, null, null, false, null);
+              new QueryHelper(query, hostAndPort + "$" + clusterName + "/", null, null, null, false);
             }
           }
         }
@@ -1502,10 +1471,9 @@ System.out.println("java.version: " + System.getProperty("java.version"));
         //System.out.println("performQuery currentAsset = " + currentAsset + " setcuurentasset = " + setCurrentAsset);
         if(!fileBased && !useCache)
         {
-          setupTimeStatusHandler();
           Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
           query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
-          new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable, timeStatusHandler);
+          new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable);
         }
         else if(fileBased)
         {
@@ -1530,10 +1498,9 @@ System.out.println("java.version: " + System.getProperty("java.version"));
             else
             {
               System.out.println("from port");
-              setupTimeStatusHandler();
               Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
               query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
-              new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable, timeStatusHandler);
+              new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable);
             }
           }
         }

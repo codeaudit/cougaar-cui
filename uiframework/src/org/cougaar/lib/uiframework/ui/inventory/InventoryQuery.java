@@ -57,9 +57,6 @@ import org.cougaar.mlm.ui.data.UISimpleInventory;
 
 
 
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionTimeStatusHandler;
-import org.cougaar.mlm.ui.planviewer.inventory.InventoryExecutionListener;
-
 public class InventoryQuery implements Query, PropertyChangeListener
 {
   String assetName;
@@ -198,7 +195,7 @@ public class InventoryQuery implements Query, PropertyChangeListener
 
   }
 
-  public JPanel createChart(String title, InventoryExecutionTimeStatusHandler timeHandler, JSplitPane split)
+  public JPanel createChart(String title,  JSplitPane split)
   {
     return null;
   }
