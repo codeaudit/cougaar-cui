@@ -159,6 +159,15 @@ public class CComponentMenu extends JPopupMenu implements Selector
         actionListeners.remove(al);
     }
 
+    /**
+     * Reorder menu items such that selected item is at the bottom.
+     */
+    public void reorderMenuItems()
+    {
+        remove(selectedMenu);
+        add(selectedMenu);
+    }
+
     private void fireActionPerformed()
     {
         for (int i = 0; i < actionListeners.size(); i++)
