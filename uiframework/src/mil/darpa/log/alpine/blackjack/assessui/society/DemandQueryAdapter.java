@@ -95,6 +95,12 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           // Is this right?
           // Is this right?
           PlanElement pe = t.getPlanElement();
+
+          if (pe == null) {
+            System.out.println ("WARNING: no plan element for demand task");
+            continue;
+          }
+
           UID cluster_object_name = pe.getUID();
 
           if (cluster_object_name == null) {
