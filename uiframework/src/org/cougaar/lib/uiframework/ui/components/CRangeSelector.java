@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -39,12 +39,10 @@ public class CRangeSelector extends JPanel implements Selector, SliderControl
 {
     private RangeModel range = null;
     private JButton okButton;
-    private SliderControl rangeControl;
-    private boolean plaf = false;
+    private CMThumbSliderRangeControl rangeControl;
 
     /**
-     * Default constructor.  Create a new Range Selector that doesn't support
-     * pluggable look and feel.
+     * Create a new Range Selector
      */
     public CRangeSelector()
     {
@@ -55,26 +53,11 @@ public class CRangeSelector extends JPanel implements Selector, SliderControl
     /**
      * Create a new Range Selector
      *
-     * @param plaf true if pluggable look and feel must be supported
-     */
-    public CRangeSelector(boolean plaf)
-    {
-        super(new BorderLayout());
-        this.plaf = plaf;
-        init(0, 1);
-    }
-
-    /**
-     * Create a new Range Selector
-     *
-     * @param plaf true if pluggable look and feel must be supported
      * @param minRangeValue minimum value for range
      * @param maxRangeValue maximum value for range
      */
-    public CRangeSelector(boolean plaf, float minRangeValue,
-                          float maxRangeValue)
+    public CRangeSelector(float minRangeValue, float maxRangeValue)
     {
-        this.plaf = plaf;
         init(minRangeValue, maxRangeValue);
     }
 
@@ -146,16 +129,8 @@ public class CRangeSelector extends JPanel implements Selector, SliderControl
     private void init(float minRangeValue, float maxRangeValue)
     {
         setLayout(new BorderLayout(10, 10));
-        if (plaf)
-        {
-            rangeControl =
-                new CSliderRangeControl(minRangeValue, maxRangeValue);
-        }
-        else
-        {
-            rangeControl =
-                new CMThumbSliderRangeControl(minRangeValue, maxRangeValue);
-        }
+        rangeControl =
+          new CMThumbSliderRangeControl(minRangeValue, maxRangeValue);
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
         okButton = new JButton("OK");
@@ -197,14 +172,7 @@ public class CRangeSelector extends JPanel implements Selector, SliderControl
         if (newSelection instanceof RangeModel)
         {
             RangeModel newRange = (RangeModel)newSelection;
-            if (plaf)
-            {
-                ((CSliderRangeControl)rangeControl).setRange(newRange);
-            }
-            else
-            {
-                ((CMThumbSliderRangeControl)rangeControl).setRange(newRange);
-            }
+            rangeControl.setRange(newRange);
             updateRange();
         }
     }
@@ -254,14 +222,7 @@ public class CRangeSelector extends JPanel implements Selector, SliderControl
     private void updateRange()
     {
         RangeModel oldRange = range;
-        if (plaf)
-        {
-            range = ((CSliderRangeControl)rangeControl).getRange();
-        }
-        else
-        {
-            range = ((CMThumbSliderRangeControl)rangeControl).getRange();
-        }
+        range = rangeControl.getRange();
         firePropertyChange("selectedItem", oldRange, range);
     }
 }

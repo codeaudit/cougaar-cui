@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -264,7 +264,7 @@ public class CMenuButton extends JButton implements Selector
         CMenuButton mb = new CMenuButton();
         Selector itemSelector = new CNodeSelector();
         mb.addSelector("Item", itemSelector);
-        mb.addSelector("Time", new CRangeSelector(false));
+        mb.addSelector("Time", new CRangeSelector());
         mb.addSelector("Org", new CNodeSelector());
         mb.addSelector("Metric", new CNodeSelector());
         mb.setSelectedItem(itemSelector);

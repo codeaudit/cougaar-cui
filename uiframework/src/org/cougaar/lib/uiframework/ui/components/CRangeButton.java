@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -51,7 +51,7 @@ public class CRangeButton
     public CRangeButton()
     {
         super();
-        init("C", 0, 100, false);
+        init("C", 0, 100);
     }
 
     /**
@@ -60,12 +60,11 @@ public class CRangeButton
      * @param prefix the prefix to prepend before range values
      * @param min    the minimum value for the range
      * @param max    the maximum value for the range
-     * @param plaf   true if pluggable look and feel is required.
      */
-    public CRangeButton(String prefix, int min, int max, boolean plaf)
+    public CRangeButton(String prefix, int min, int max)
     {
         super();
-        init(prefix, min, max, plaf);
+        init(prefix, min, max);
     }
 
     /**
@@ -74,13 +73,12 @@ public class CRangeButton
      * @param prefix the prefix to prepend before range values
      * @param min    the minimum value for the range
      * @param max    the maximum value for the range
-     * @param plaf   true if pluggable look and feel is required.
      */
-    private void init(final String prefix, int min, int max, boolean plaf)
+    private void init(final String prefix, int min, int max)
     {
         this.prefix = prefix;
         RangeModel range = new RangeModel(min, max);
-        rs = new CRangeSelector(plaf, min, max);
+        rs = new CRangeSelector(min, max);
         rs.setSelectedItem(range);
         setSelectorControl(rs);
 
