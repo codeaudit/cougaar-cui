@@ -150,7 +150,6 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
                myGw=buildWindow_(mygraph);
                myGw.setCanvasTitle(canvastitle);
              if (exitOnWindowClose) {
-               System.out.println("Adding window listener.");
                myGw.addWindowListener(new WindowAdapter() {
                  public void windowClosing(WindowEvent e) {
                   System.err.println("Window closing, so we are done. Bye.");
@@ -158,7 +157,6 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
                  }
                });
              } else {
-               System.out.println("Adding dispose window listener.");
                myGw.addWindowListener(new WindowAdapter() {
                  public void windowClosing(WindowEvent e) {
                   System.err.println("Window closing, but siblings live on.");
@@ -168,29 +166,24 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
                                
 
              }
-             System.out.println("showgraph adding ota: "+ota);
              myGw.addOTActionListener(ota);
 
 
                 if (mygraph.isDirected()&& mygraph.numberOfNodes()>0) {
-                  //TreeAlgorithm talg = new TreeAlgorithm('d');
-                  //gw.addAlgorithm(talg, "Tree", "Tree Down");
                   if (dynamicLayoutDesired||deleteFirstNode) {
                     firstNode = mygraph.firstNodeIndex();
                     if (dynamicLayoutDesired) {
                       myGw.selectNodeFromIndex(firstNode);
                       myGw.applyAlgorithm("Tree.Tree Down");
-                      //gw.applyAlgorithm("CGD.CGD");
                       try {
                         Thread.sleep(100);
                       } catch (Exception e) {}
                     }
                     if (deleteFirstNode) {
-                      //mygraph.removeNode(firstNode);
                       myGw.deleteNode(firstNode);
                     }
                     myGw.center();
-                  } // end if (dynamicLayoutDesired||deleteFirstNode) 
+                  }
 
                   }
 
@@ -288,20 +281,16 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
         int curry=150;
         int xdelta=40;
         int ydelta=20;
-        //DDimension nodeSizeBox=new DDimension(90,20);
-         int height =GraphCanvas.getLoudSystemProperty("ui.orgView.defaultNodeHeight", 90, 89);
-         int width=GraphCanvas.getLoudSystemProperty("ui.orgView.defaultNodeWidth", 130, 129);
+        
+        int height = GraphCanvas.getLoudSystemProperty(
+          "ui.orgView.defaultNodeHeight", 90);
+        int width = GraphCanvas.getLoudSystemProperty(
+          "ui.orgView.defaultNodeWidth", 130);
         DDimension nodeSizeBox=new DDimension(width, height);
 
-        void syncWith(Graph mygraph) {
-          Node tmpNode;
-          for (tmpNode=mygraph.firstNode(); tmpNode!=null;
-	              tmpNode=mygraph.nextNode(tmpNode)) {
-            System.out.println("syncWith Adding node labeled: "+tmpNode.getLabel()
-                  +" ID: "+tmpNode.getId()
-                  +" idx: "+tmpNode.getIndex());
-            add(tmpNode);
-          }
+        void syncWith (Graph g) {
+          for (Node n = g.firstNode(); n != null; n = g.nextNode(n))
+            add(n);
         }
 
         private void add(Node node) {
@@ -447,19 +436,16 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
       public void addSuperior(Graph mygraph, String sup, String sub) {
             int id1, id2;
             int idx1, idx2;
-              Node aNode;
-              id1 = nodeNames.getNodeID(mygraph, sup);
-              aNode = mygraph.getNodeFromId(id1);
-              idx1=aNode.getIndex();
+            Node aNode;
+            id1 = nodeNames.getNodeID(mygraph, sup);
+            aNode = mygraph.getNodeFromId(id1);
+            idx1=aNode.getIndex();
 
-              id2 = nodeNames.getNodeID(mygraph, sub);
-              aNode = mygraph.getNodeFromId(id2);
-              idx2=aNode.getIndex();
-              System.err.print("addSuperior "+sup+" "+sub);
-              System.err.println("supid "+id1+" subid "+id2);
-              System.err.println("supidx "+idx1+" subidx "+idx2);
+            id2 = nodeNames.getNodeID(mygraph, sub);
+            aNode = mygraph.getNodeFromId(id2);
+            idx2=aNode.getIndex();
            mygraph.insertEdge(idx1, idx2);
-            }
+      }
 
       public void clearLinks() {
         mygraph.removeAllEdges();
@@ -481,9 +467,6 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
                 id2 = nodeNames.getNodeID(mygraph, sub);
                 aNode = mygraph.getNodeFromId(id2);
                 idx2=aNode.getIndex();
-                System.err.print("addSuperiorLink "+sup+" "+sub);
-                System.err.println("supid "+id1+" subid "+id2);
-                System.err.println("supidx "+idx1+" subidx "+idx2);
                 mygraph.insertEdge(idx1, idx2);
               }
       }
@@ -499,11 +482,7 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
               id1 = nodeNames.getNodeID(mygraph, nodeLabel);
               aNode = mygraph.getNodeFromId(id1);
               idx1=aNode.getIndex();
-              prevVal=aNode.setDrillDownOn(hasDrillDown); 
-
-              System.err.print("drillDownNode "+nodeLabel+" ");
-              System.err.print("id "+id1+" idx "+idx1);
-              System.err.println(" newval "+hasDrillDown);
+              prevVal=aNode.setDrillDownOn(hasDrillDown);
             }
 	    return prevVal;
       }
@@ -516,13 +495,8 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
               aNode = mygraph.getNodeFromId(id1);
               idx1=aNode.getIndex();
               aNode.setColor(color);
-
-              System.err.print("colorNode "+nodeLabel+" ");
-              System.err.print("id "+id1+" idx "+idx1);
-              System.err.println(" color "+color);
             }
       }
-            /* */
 
       public void addSuperior(String sup, String sub) {
             int id1, id2;

@@ -339,22 +339,13 @@
    /**
     * @returns the node at  the 'index'
     */
-      public Node getNodeFromIndex(int index)
-      { 
-              System.err.println("Graph getNodeFromIndex "+index);
-         return nodeList_.nodeFromIndex(index);
+      public Node getNodeFromIndex (int index) {
+        return nodeList_.nodeFromIndex(index);
       }
-   
-   
-   
-      public Node getNodeFromId(int id)
-      {
-              System.err.println("Graph getNodeFromId "+id);
 
-         return (Node)(idHash_.get(new Integer(id))); 
+      public Node getNodeFromId (int id) {
+        return (Node) idHash_.get(new Integer(id));
       }
-   
-   
    
    // insertNodeAt(int index)===================================================
    /**

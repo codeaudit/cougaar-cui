@@ -9,9 +9,7 @@
  */
 package org.cougaar.lib.uiframework.ui.ohv;
 
-//import org.apache.xerces.parsers.DOMParser;
 import org.apache.xerces.parsers.DOMParser;
-
 
 import java.io.File;
 import java.io.FileReader;
@@ -39,140 +37,141 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/* ============= alp 6.8 ====== 
-import alp.ldm.plan.ScheduleImpl;
-import alp.ldm.plan.ScheduleElementImpl;
-/* ===================  */
-/* ============= alp 7 ======   */
 import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
-/* ===================  */
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
 /**
-  Represents an Organization Hierarchy.
-**/
-  public class OrgHierModel {
-    ScheduleImpl orgRelSched;
-    OrgHierGenerator ohg;
+ *  Represents an Organization Hierarchy.
+ */
+public class OrgHierModel {
+  ScheduleImpl orgRelSched;
+  OrgHierGenerator ohg;
 
-    public OrgHierModel(Collection c) {
-      orgRelSched=new ScheduleImpl(c);
-      ohg=new OrgHierGenerator(c);
-    }
-    public TreeSet getTransitionTimes() {
-      TreeSet transitionTimes = null;
-    //if (transitionTimes==null) {
-        transitionTimes = new TreeSet();
-//     orgRelSched.iterator() keeps throwing an exception 
-//     so we will use the enumeration instead 
-//        for (Iterator it=orgRelSched.iterator(); it.hasNext(); ) {
-//          OrgHierRelationship ohr=(OrgHierRelationship)it.next();
+  public OrgHierModel (Collection c) {
+    orgRelSched = new ScheduleImpl(c);
+    ohg=new OrgHierGenerator(c);
+  }
 
-        for (Enumeration en=orgRelSched.getAllScheduleElements(); en.hasMoreElements() ; ) {
-          OrgHierRelationship ohr=(OrgHierRelationship)en.nextElement();
-          transitionTimes.add(new Long(ohr.getStartTime()));
-          transitionTimes.add(new Long(ohr.getEndTime()));
-        }
-    //}
-      return transitionTimes;
-    }
+  public TreeSet getTransitionTimes () {
+    TreeSet transitionTimes = null;
+    transitionTimes = new TreeSet();
 
-    public long getStartTime() { return orgRelSched.getStartTime(); }
-    public long getEndTime() { return orgRelSched.getEndTime(); }
+    for (Enumeration en = orgRelSched.getAllScheduleElements(); en.hasMoreElements(); ) {
+      OrgHierRelationship ohr = (OrgHierRelationship)en.nextElement();
+      transitionTimes.add(new Long(ohr.getStartTime()));
+      transitionTimes.add(new Long(ohr.getEndTime()));
+    }
+    return transitionTimes;
+  }
 
-    public Set generateRoots() {
-      return ohg.generateRoots();
-    }
+  public long getStartTime () {
+    return orgRelSched.getStartTime();
+  }
 
-    public HashSet getSubordinates(String parent) {
-      return ohg.getSubordinates(parent);
-    }
+  public long getEndTime () {
+    return orgRelSched.getEndTime();
+  }
 
-    public Set getSubordinates() {
-      return ohg.getSubordinates();
-    }
+  public Set generateRoots () {
+    return ohg.generateRoots();
+  }
 
-    public HashSet getSuperiors(String parent) {
-      return ohg.getSuperiors(parent);
-    }
+  public HashSet getSubordinates(String parent) {
+    return ohg.getSubordinates(parent);
+  }
 
-    public Set getSuperiors() {
-      return ohg.getSuperiors();
-    }
+  public Set getSubordinates () {
+    return ohg.getSubordinates();
+  }
 
-    public HashSet getSuperiorsAtTime(String parent, long time) {
-      OrgHierGenerator localohg=new OrgHierGenerator(getRelationshipsAtTime(time));
-      return localohg.getSuperiors(parent);
-    }
+  public HashSet getSuperiors (String parent) {
+    return ohg.getSuperiors(parent);
+  }
 
-    public Collection getRelationshipsAtTime(long time) {
-      return orgRelSched.getScheduleElementsWithTime(time);
-    }
-    public Collection getRelationships() {
-      return orgRelSched;
-    }
-    public Collection getRelationshipTypes() {
-      TreeSet rv=new TreeSet();
-      Collection col=orgRelSched;
-      OrgHierRelationship or;
-      String relType;
-      for (Iterator citer=col.iterator(); citer.hasNext(); ) {
-        or=(OrgHierRelationship)citer.next();
-        relType=or.getRelationship();
-	if (relType!=null) {
-	    rv.add(relType);
-	}
-      }
-      return rv;
-    }
-    public Collection getRelationshipsOfType(String relType) {
-      System.out.println("getRelationshipsOfType "+relType);
-      // TreeSet rv=new TreeSet();
-      Vector rv=new Vector();
-      // Collection col=orgRelSched;
-      OrgHierRelationship or;
-      // schedule throws an exception whenever iterator() is called
-      // so I changed this to enumeration until they fix that
-      //for (Iterator citer=col.iterator(); citer.hasNext(); ) {
-      //  or=(OrgHierRelationship)citer.next();
-      for (Enumeration en=orgRelSched.getAllScheduleElements();
-            en.hasMoreElements(); ) {
-        or=(OrgHierRelationship)en.nextElement();
-        System.out.println("or is "+or);
-        if (or.getRelationship()!=null&&relType.equals(or.getRelationship())) {
-          System.out.println("Adding it...");
-          rv.add(or);
-        }
-      }
-      return rv;
-    }
-    public Collection getOrgsAtTime(long time) {
-      TreeSet rv=new TreeSet();
-      Collection col=orgRelSched.getScheduleElementsWithTime(time);
-      OrgHierRelationship or;
-      for (Iterator citer=col.iterator(); citer.hasNext(); ) {
-        or=(OrgHierRelationship)citer.next();
-        rv.add(or.getId());
-      }
-      return rv;
-    }
-    public Collection getOrgs() {
-      TreeSet rv=new TreeSet();
-      OrgHierRelationship or;
-      for (Enumeration en =orgRelSched.getAllScheduleElements(); en.hasMoreElements(); ) {
-        or=(OrgHierRelationship)en.nextElement();
-        rv.add(or.getId());
-      }
-      return rv;
-    }
+  public Set getSuperiors () {
+    return ohg.getSuperiors();
+  }
 
-  }     // end class OrgHierModel
+  public HashSet getSuperiorsAtTime (String parent, long time) {
+    OrgHierGenerator localohg=new OrgHierGenerator(getRelationshipsAtTime(time));
+    return localohg.getSuperiors(parent);
+  }
 
+  public Collection getRelationshipsAtTime (long time) {
+    return orgRelSched.getScheduleElementsWithTime(time);
+  }
 
+  public Collection getRelationships () {
+    return orgRelSched;
+  }
+
+  /**
+   *  Report all of the relationship types found in the current model.
+   */
+  public Collection getRelationshipTypes () {
+    TreeSet rv=new TreeSet();
+    Collection col=orgRelSched;
+    OrgHierRelationship or;
+    String relType;
+    for (Iterator citer = col.iterator(); citer.hasNext(); ) {
+      or = (OrgHierRelationship) citer.next();
+      relType = or.getRelationship();
+      if (relType != null)
+        rv.add(relType);
+    }
+    return rv;
+  }
+
+  /**
+   *  Report only those relationships types that are found between two members
+   *  of the provided set of organizations.
+   */
+  public Collection getRelationshipTypes (Set org) {
+    TreeSet rels = new TreeSet();
+    Enumeration e = orgRelSched.getAllScheduleElements();
+    while (e.hasMoreElements()) {
+      OrgHierRelationship r = (OrgHierRelationship) e.nextElement();
+      String t = r.getRelationship();
+      if (t != null && org.contains(r.getId()) && org.contains(r.getOtherId()))
+        rels.add(t);
+    }
+    return rels;
+  }
+
+  public Collection getRelationshipsOfType (String relType) {
+    Vector rv=new Vector();
+    OrgHierRelationship or;
+    for (Enumeration en=orgRelSched.getAllScheduleElements();
+        en.hasMoreElements(); )
+    {
+      or = (OrgHierRelationship) en.nextElement();
+      if (or.getRelationship()!=null&&relType.equals(or.getRelationship()))
+        rv.add(or);
+    }
+    return rv;
+  }
+
+  public Collection getOrgsAtTime (long time) {
+    TreeSet rv=new TreeSet();
+    Collection col=orgRelSched.getScheduleElementsWithTime(time);
+    OrgHierRelationship or;
+    for (Iterator citer=col.iterator(); citer.hasNext(); ) {
+      or=(OrgHierRelationship)citer.next();
+      rv.add(or.getId());
+    }
+    return rv;
+  }
+
+  public Collection getOrgs() {
+    TreeSet rv=new TreeSet();
+    OrgHierRelationship or;
+    for (Enumeration en =orgRelSched.getAllScheduleElements(); en.hasMoreElements(); ) {
+      or=(OrgHierRelationship)en.nextElement();
+      rv.add(or.getId());
+    }
+    return rv;
+  }
+}

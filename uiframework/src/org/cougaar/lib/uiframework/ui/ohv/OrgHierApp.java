@@ -12,366 +12,211 @@ package org.cougaar.lib.uiframework.ui.ohv;
 import java.io.File;
 import java.util.Vector;
 
-// import java.net.URL;
-
 import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
 /**
-  Application which displays OrgHierarchies.
-**/
+ *  Application which displays OrgHierarchies.
+ */
 public class OrgHierApp {
+  // This is a temporary measure--this value was being held as a system
+  // property, which is as bad as possible.  Currently it is a static class
+  // variable.  Eventually, this will be either an instance class variable or
+  // a method parameter, as is appropriate.
+  private static String url_for_rels = null;
 
-  final boolean debug=
-    //true;
-     false;
+  /**
+   *  Initalizes default values for several properties and then attempts
+   *  to load properties from a configuration file.
+   */
+  public static void initApp () {
+    RuntimeParameters myprp=new RuntimeParameters();
+    myprp.setProperty("ui.orgView.defaultFontSize", "11");
+    myprp.setProperty("ui.orgView.defaultNodeVSpace", "31");
+    myprp.setProperty("ui.orgView.defaultNodeHSpace", "4");
+    myprp.setProperty("ui.orgView.defaultTestFile", "c:\\data\\deftest.xml");
+    myprp.setProperty("ui.orgView.aggURL", "http://localhost:5555/$AGG/agg/demo/GENERIC.PSP?QUERY_ORG_HIERARCHY");
 
-    /**
-       Initalizes default values for several properties and then attempts
-       to load properties from a configuration file.
-     **/
-  public static void initApp() {
-  	RuntimeParameters myprp=new RuntimeParameters();
-	myprp.setProperty("ui.orgView.defaultFontSize", "11");
-	myprp.setProperty("ui.orgView.defaultNodeVSpace", "31"); 
-	myprp.setProperty("ui.orgView.defaultNodeHSpace", "4");
-	myprp.setProperty("ui.orgView.defaultTestFile", "c:\\data\\deftest.xml");
-	myprp.setProperty("ui.orgView.aggURL", "http://localhost:5555/$AGG/agg/demo/GENERIC.PSP?QUERY_ORG_HIERARCHY");
-
-	myprp.load();
-	myprp.addToSystemProperties();
-
+    myprp.load();
+    myprp.addToSystemProperties();
   }
 
-    /**
-       Main executable for running viewer application and test applications.
-     **/
-  public static void main(String[] args) {
-    ArgVector argsV=new ArgVector(args);
+  /**
+   *  Main executable for running viewer application and test applications.
+   */
+  public static void main (String[] args) {
+    ArgVector argV=new ArgVector(args);
 
-    if (argsV.size() == 0) {
-	showCommunityView(args);
+    if (argV.size() == 0) {
+	showCommunityView(argV);
     }
-    if (argsV.contains("testciv")||argsV.contains("cview")) {
-	showCommunityView(args);
+    if (argV.contains("testciv")||argV.contains("cview")) {
+	showCommunityView(argV);
     }
-    if (argsV.contains("testdlv")||argsV.contains("dynview")) {
-      test2(args);
+    if (argV.contains("testdlv")||argV.contains("dynview")) {
+      test2(argV);
     }
-    if (argsV.contains("testdlev")||argsV.contains("dynlevview")) {
-      testdlev(args);
+    if (argV.contains("testdlev")||argV.contains("dynlevview")) {
+      testdlev(argV);
     }
-    if (argsV.contains("editor")) {
-      editor(argsV);
+    if (argV.contains("editor")) {
+      editor(argV);
     }
-    if (argsV.contains("testTextTree")||argsV.contains("texttree")) {
-      testTextTree(argsV);
+    if (argV.contains("testTextTree")||argV.contains("texttree")) {
+      testTextTree(argV);
     }
   }
 
-  public static void testTextTree(ArgVector argV) {
-      System.out.println("Starting testTextTree.");
-      try {
-	  String xmlFile;
-	  OrgHierRelationship ohr;
-	  initApp();
-	  
-	  try {
-	      if (argV.size() >0) {
-		  // if using arguments, the url must be the first argument if you want it on the cmdline
-		  if (argV.containsIgnoreCase("defaultTest")) {
-		      xmlFile = System.getProperty("ui.orgView.defaultTestFile");
-		      File file=new File(xmlFile);
-		      xmlFile=file.toURL().toString();
-		  } else if (argV.containsIgnoreCase("useUrlFromProps")) {
-		      xmlFile = System.getProperty("ui.orgView.aggURL");
-		  } else {
-		      xmlFile = argV.firstElement().toString();
-		  }
-	      } else {
-		  xmlFile = System.getProperty("ui.orgView.aggURL");
-	      }
-	      System.out.println("Using URL: "+xmlFile);
-	      OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
-	      
-	      Vector v = orgHierParser.parse();
-	      
-	      System.out.println("Finished parsing.");
-	      
-	      System.out.println();
-	      System.out.println("OrgHierModel output: ");
-	      OrgHierModel ohm=new OrgHierModel(v);
-	      System.out.println("Start time: "+ohm.getStartTime());
-	      System.out.println("Transition times: "+ohm.getTransitionTimes());
-	      System.out.println("End time: "+ohm.getEndTime());
-	      System.out.println("Finished OrgHierModel output.");
-	      
-	      System.out.println();
-	      System.out.println("OrgHierModelViewer output: ");
-	      OrgHierModelViewer ohmv=new TextOrgHierModelViewer(ohm, System.out);
-	      ohmv.show();
-	      System.out.println("Finished OrgHierModelViewer output.");
-	      
-	      OrgHierTextTree ohtt=new OrgHierTextTree(ohm);
-	      ohtt.show();
-	      
-	      
-	  } catch (Exception ex) { ex.printStackTrace(); }
-      } finally {
-	  System.out.println("Leaving testTextTree.");
+  private static Vector parseInput (ArgVector argV) {
+    Vector v = new Vector();
+    try {
+      String xmlFile = null;
+      if (argV.size() > 0) {
+        if (argV.containsIgnoreCase("defaultTest"))
+          xmlFile = (new File(
+            System.getProperty("ui.orgView.defaultTestFile"))).toString();
+        else if (argV.containsIgnoreCase("useUrlFromProps"))
+          xmlFile = System.getProperty("ui.orgView.aggURL");
+        else
+          xmlFile = argV.firstElement().toString();
       }
+      else {
+        xmlFile = System.getProperty("ui.orgView.aggURL");
+      }
+
+      // set the static class variable, this is still needed sometimes;
+      // eventually, this should be removed
+      url_for_rels = xmlFile;
+
+      System.out.println("Using URL:  " + xmlFile);
+      OrgHierParser ohp = new OrgHierParser(xmlFile);
+      System.out.print("Parsing input XML...");
+      v = ohp.parse();
+      System.out.println("done parsing.");
+    }
+    catch (Exception eek) {
+      System.out.println("Unable to read input--" + eek);
+    }
+
+    return v;
   }
 
-  public static void editor(ArgVector argV) {
+  public static void testTextTree (ArgVector argV) {
+    System.out.println("Starting testTextTree.");
+    try {
+      OrgHierRelationship ohr;
+      initApp();
+
+      OrgHierModel ohm = new OrgHierModel(parseInput(argV));
+
+      // Show the results through the plain text viewer, if desired
+      // (new TextOrgHierModelViewer(ohm, System.out)).show();
+
+      // Show the results through the text tree viewer
+      (new OrgHierTextTree(ohm)).show();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    finally {
+      System.out.println("Leaving testTextTree.");
+    }
+  }
+
+  public static void editor (ArgVector argV) {
     System.out.println("Starting editor.");
     try {
-    String xmlFile;
-    OrgHierRelationship ohr;
-    initApp();
+      OrgHierRelationship ohr;
+      initApp();
 
-    try {
-    if (argV.size() >0) {
-      if (argV.containsIgnoreCase("defaultTest")) {
-        xmlFile = System.getProperty("ui.orgView.defaultTestFile");
-        File file=new File(xmlFile);
-        xmlFile=file.toURL().toString();
-      } else {
-        xmlFile = argV.firstElement().toString();
-      }
-    } else {
-      xmlFile = System.getProperty("ui.orgView.aggURL");
+      OrgHierModel ohm = new OrgHierModel(parseInput(argV));
+
+      OrgHierVGJControl.setMouseDraggingState(true);
+      OrgHierVGJControl.setSmallPanelState(false);
+
+      if (argV.containsIgnoreCase("dynamic"))
+        (new OrgHierVGJDynLayoutTree(ohm)).show();
+      else
+        (new OrgHierVGJCommunityTree(ohm)).show();
     }
-    System.out.println("Using URL: "+xmlFile);
-    OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
-
-    Vector v = orgHierParser.parse();
-
-    System.out.println("Finished parsing.");
-
-    System.out.println();
-    System.out.println("OrgHierModel output: ");
-    OrgHierModel ohm=new OrgHierModel(v);
-    System.out.println("Start time: "+ohm.getStartTime());
-    System.out.println("Transition times: "+ohm.getTransitionTimes());
-    System.out.println("End time: "+ohm.getEndTime());
-    System.out.println("Finished OrgHierModel output.");
-
-    OrgHierVGJControl.setMouseDraggingState(true);
-    OrgHierVGJControl.setSmallPanelState(false);
-
-    if (argV.containsIgnoreCase("dynamic")) {
-      System.err.println("dynamic");
-      OrgHierVGJDynLayoutTree ohvt=new OrgHierVGJDynLayoutTree(ohm);
-      ohvt.show();
-    } else {
-      System.err.println("community");
-      OrgHierVGJCommunityTree ohvt=new OrgHierVGJCommunityTree(ohm);
-      ohvt.show();
+    catch (Exception ex) {
+      ex.printStackTrace();
     }
-
-    } catch (Exception ex) { ex.printStackTrace(); }
-    } finally {
+    finally {
       System.out.println("Leaving editor.");
     }
   }
 
-    public static OrgHierModel updateModel() {
-	return updateModel(System.getProperty("url.for.rels"));
-    }
-    public static OrgHierModel updateModel(String urlName) {
-	System.out.println("OrgHierApp updateModel with ["+urlName+"]");
-    OrgHierParser orgHierParser = new OrgHierParser(urlName);
-    Vector v = orgHierParser.parse();
-
-    System.out.println("Finished parsing.");
-
-    System.out.println();
-    System.out.println("OrgHierModel output: ");
-    OrgHierModel ohm=new OrgHierModel(v);
-    System.out.println("Start time: "+ohm.getStartTime());
-    System.out.println("Transition times: "+ohm.getTransitionTimes());
-    System.out.println("End time: "+ohm.getEndTime());
-    System.out.println("Finished OrgHierModel output.");
-    return ohm;
+  public static OrgHierModel updateModel () {
+    return new OrgHierModel((new OrgHierParser(url_for_rels)).parse());
   }
-  public static void showCommunityView(String[] args) {
+
+  public static void showCommunityView (ArgVector argV) {
     System.out.println("Starting civ.");
     try {
-    String xmlFile;
-    OrgHierRelationship ohr;
-    initApp();
+      OrgHierRelationship ohr;
+      initApp();
 
-    try {
-    if (args.length>0) {
-      if (args[0].equalsIgnoreCase("defaultTest")) {
-        xmlFile = System.getProperty("ui.orgView.defaultTestFile");
-        File file=new File(xmlFile);
-        xmlFile=file.toURL().toString();
-      } else {
-        xmlFile = args[0];
-      }
-    } else {
-      xmlFile = System.getProperty("ui.orgView.aggURL");
+      OrgHierModel ohm = new OrgHierModel(parseInput(argV));
+
+      // Show the data with the text tree viewer, if desired
+      // (new OrgHierTextTree(ohm)).show();
+
+      // Show the data with the community tree viewer
+      (new OrgHierVGJCommunityTree(ohm)).show();
     }
-    System.out.println("Using URL: "+xmlFile);
-    System.setProperty("url.for.rels", xmlFile);
-
-    OrgHierModel ohm=updateModel();
-    // OrgHierModel ohm=updateModel(xmlFile);
-
-
-//     OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
-
-//     Vector v = orgHierParser.parse();
-
-//     System.out.println("Finished parsing.");
-
-//     System.out.println();
-//     System.out.println("OrgHierModel output: ");
-//     OrgHierModel ohm=new OrgHierModel(v);
-//     System.out.println("Start time: "+ohm.getStartTime());
-//     System.out.println("Transition times: "+ohm.getTransitionTimes());
-//     System.out.println("End time: "+ohm.getEndTime());
-//     System.out.println("Finished OrgHierModel output.");
-
-    System.out.println();
-    System.out.println("OrgHierModelViewer output: ");
-    OrgHierModelViewer ohmv=new TextOrgHierModelViewer(ohm, System.out);
-    ohmv.show();
-    System.out.println("Finished OrgHierModelViewer output.");
-
-    OrgHierTextTree ohtt=new OrgHierTextTree(ohm);
-    ohtt.show();
-
-//    OrgHierVGJOrgTree ohvt=new OrgHierVGJOrgTree(ohm);
-//    ohvt.show();
-
-    OrgHierVGJCommunityTree ohvt=new OrgHierVGJCommunityTree(ohm);
-    ohvt.show();
-
-    } catch (Exception ex) { ex.printStackTrace(); }
-    } finally {
-      System.out.println("Leaving testciv.");
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    finally {
+      System.out.println("Leaving civ.");
     }
   }
 
-  public static void test2(String[] args) {
-    System.out.println("Starting testdlv with args ["+args+"]");
+  public static void test2 (ArgVector argV) {
+    System.out.println("Starting testdlv...");
     try {
-    String xmlFile;
-    OrgHierRelationship ohr;
-    initApp();
-    xmlFile = "file:/c:/dev/ui/kr/sfp/defTest.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/deftestb.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/defTestTime.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/dbjconfadm.xml";
+      OrgHierRelationship ohr;
+      initApp();
 
-    try {
-    if (args.length>0) {
-      if (args[0].equalsIgnoreCase("defaultTest")) {
-        xmlFile = System.getProperty("ui.orgView.defaultTestFile");
-        File file=new File(xmlFile);
-        xmlFile=file.toURL().toString();
-      } else {
-        xmlFile = args[0];
-      }
-    } else {
-      xmlFile = System.getProperty("ui.orgView.aggURL");
+      OrgHierModel ohm = new OrgHierModel(parseInput(argV));
+
+      // show the data with the text tree viewer, if desired
+      // (new OrgHierTextTree(ohm)).show();
+
+      // show the data with the dynamic tree viewer
+      (new OrgHierVGJDynLayoutTree(ohm)).show();
     }
-    System.out.println("Using URL: "+xmlFile);
-    OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
-
-    Vector v = orgHierParser.parse();
-
-    System.out.println("Finished parsing.");
-
-    System.out.println();
-    System.out.println("OrgHierModel output: ");
-    OrgHierModel ohm=new OrgHierModel(v);
-    System.out.println("Start time: "+ohm.getStartTime());
-    System.out.println("Transition times: "+ohm.getTransitionTimes());
-    System.out.println("End time: "+ohm.getEndTime());
-    System.out.println("Finished OrgHierModel output.");
-
-    System.out.println();
-    System.out.println("OrgHierModelViewer output: ");
-    OrgHierModelViewer ohmv=new TextOrgHierModelViewer(ohm, System.out);
-    ohmv.show();
-    System.out.println("Finished OrgHierModelViewer output.");
-
-    OrgHierTextTree ohtt=new OrgHierTextTree(ohm);
-    ohtt.show();
-
-    OrgHierVGJDynLayoutTree ohvt=new OrgHierVGJDynLayoutTree(ohm);
-    ohvt.show();
-
-    } catch (Exception ex) { ex.printStackTrace(); }
-    } finally {
-      System.out.println("Leaving testdlv with args ["+args+"]");
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    finally {
+      System.out.println("Leaving testdlv.");
     }
   }
 
-
-
-  public static void testdlev(String[] args) {
-    System.out.println("Starting testdlv with args ["+args+"]");
+  public static void testdlev(ArgVector argV) {
+    System.out.println("Starting testdlv...");
     try {
-    String xmlFile;
-    OrgHierRelationship ohr;
-    initApp();
+      OrgHierRelationship ohr;
+      initApp();
 
-    try {
-    if (args.length>0) {
-      if (args[0].equalsIgnoreCase("defaultTest")) {
-        xmlFile = System.getProperty("ui.orgView.defaultTestFile");
-        File file=new File(xmlFile);
-        xmlFile=file.toURL().toString();
-      } else {
-        xmlFile = args[0];
-      }
-    } else {
-      xmlFile = System.getProperty("ui.orgView.aggURL");
+      OrgHierModel ohm = new OrgHierModel(parseInput(argV));
+
+      // Show the data with the text tree viewer, if desired
+      // (new OrgHierTextTree(ohm)).show();
+
+      OrgHierVGJControl.setMouseDraggingState(true);
+      OrgHierVGJControl.setSmallPanelState(false);
+
+      OrgHierVGJDynLevelTree ohvt=new OrgHierVGJDynLevelTree(ohm);
+      ohvt.show();
+
     }
-    System.out.println("Using URL: "+xmlFile);
-    OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
-
-    Vector v = orgHierParser.parse();
-
-    System.out.println("Finished parsing.");
-
-    System.out.println();
-    System.out.println("OrgHierModel output: ");
-    OrgHierModel ohm=new OrgHierModel(v);
-    System.out.println("Start time: "+ohm.getStartTime());
-    System.out.println("Transition times: "+ohm.getTransitionTimes());
-    System.out.println("End time: "+ohm.getEndTime());
-    System.out.println("Finished OrgHierModel output.");
-
-    System.out.println();
-    System.out.println("OrgHierModelViewer output: ");
-    OrgHierModelViewer ohmv=new TextOrgHierModelViewer(ohm, System.out);
-    ohmv.show();
-    System.out.println("Finished OrgHierModelViewer output.");
-
-    OrgHierTextTree ohtt=new OrgHierTextTree(ohm);
-    ohtt.show();
-
-    OrgHierVGJControl.setMouseDraggingState(true);
-    OrgHierVGJControl.setSmallPanelState(false);
-
-    OrgHierVGJDynLevelTree ohvt=new OrgHierVGJDynLevelTree(ohm);
-    ohvt.show();
-
-    } catch (Exception ex) { ex.printStackTrace(); }
-    } finally {
-      System.out.println("Leaving testdlv with args ["+args+"]");
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    finally {
+      System.out.println("Leaving testdlv.");
     }
   }
-
-
-
-
 }
-
-
-
-

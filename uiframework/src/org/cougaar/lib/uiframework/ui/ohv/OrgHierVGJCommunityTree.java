@@ -13,15 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.TreeSet;
-import java.util.Enumeration;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.net.URL;
 import java.awt.Color;
 
@@ -36,33 +28,25 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.gui.GraphWindow;
 import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
 import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
-
-
-
-
- /**
- Graphical Tree viewer for an Organization Hierarchy.
- **/
-
-public class OrgHierVGJCommunityTree 
-    extends OrgHierVGJBase
-    implements OrgHierModelViewer
+/**
+ * Graphical Tree viewer for an Organization Hierarchy.
+ */
+public class OrgHierVGJCommunityTree
+    extends OrgHierVGJBase implements OrgHierModelViewer
 {
-    
-    public OrgHierVGJCommunityTree(Collection col) { 
+    public OrgHierVGJCommunityTree(Collection col) {
 	this(new OrgHierModel(col));
     }
-    
-    public OrgHierVGJCommunityTree(OrgHierModel ohm) {	
+
+    public OrgHierVGJCommunityTree(OrgHierModel ohm) {
 	super(ohm);
 	init(ohm);
- 	// vgjBase=this;
     }
-    
+
     public OrgHierVGJBase create(Collection rels) {
 	return new OrgHierVGJCommunityTree(rels);
     }
-    
+
     // The following methods support show_initialized
     // They will probably end up being implementations which are called by
     //      a method in the abstract superclass
@@ -80,51 +64,37 @@ public class OrgHierVGJCommunityTree
     }
 
     public void showProviderControl() {}
-    
+
     boolean wantNewWindow() {
 	return false;
     }
-    
+
     String getTitle() { return "Overview"; }
 
-    public void show_initialized() {
-      out.println("Here is the INITIALIZED OrgHierVGJCommunityTree: "); 
-      String initFileName=getInitFileName();
-      String title=getTitle();
-      boolean wantNewWindow=wantNewWindow();
-
-      show_initialized(wantNewWindow);
- 
-      out.println("Finished showing the OrgHierVGJCommunityTree.");
-    }
+  /**
+   *  Show this community tree, creating a new window, if desired.
+   */
+  public void show () {
+    show_initialized(wantNewWindow());
+  }
 
 
-    // called by show_initialized in superclass
-    public void showGraph(VGJ vgj) {
-	    vgj.showGraph(false, false, true, ota, false);
-    }
-    public void showNewGraph(VGJ vgj) {
-	    vgj.showGraph(false, false, true, ota, true);
-    }
+  // called by show_initialized in superclass
+  public void showGraph(VGJ vgj) {
+    vgj.showGraph(false, false, true, ota, false);
+  }
 
+  public void showNewGraph(VGJ vgj) {
+    vgj.showGraph(false, false, true, ota, true);
+  }
 
-    public static void showOrgGraph(String forOrg) {
-	String selOrg=forOrg;
-      System.out.println("show org graph for selected node: "+selOrg);
-      if (selOrg==null) {
-        System.err.println("==========================");
-        System.err.println("Select an Organization !!!");
-        System.err.println("Select an Organization !!!");
-        System.err.println("Select an Organization !!!");
-        System.err.println("Select an Organization !!!");
-        System.err.println("==========================");
-      } else {
-      // create and show vgjOrgTree (use my model)
-	  System.out.println("vgjcommunitytree ota updating model");
-	  OrgHierVGJOrgTree ohvt=new OrgHierVGJOrgTree(ohm, selOrg);
-	  ohvt.show();
-      }
-    }
+  /**
+   *  Create and show an org tree
+   */
+  public static void showOrgGraph (String forOrg) {
+    if (forOrg != null)
+      (new OrgHierVGJOrgTree(ohm, forOrg)).show();
+  }
 }
 
 

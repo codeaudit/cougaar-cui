@@ -161,50 +161,45 @@
    
          // ============ mod throughout block
 
-   static public int getSystemProperty(String key, int defaultVal) {
-         String defaultValStr=null;
-         int rcInt=defaultVal;
+  static public int getSystemProperty (String key, int defaultVal) {
+    return getIntSystemProperty(key, defaultVal, false);
+  }
 
-         try {
-          defaultValStr = System.getProperty(key);
-          rcInt=Integer.parseInt(defaultValStr);
-         } catch (Exception ex) {
-         }
-      return rcInt;
-   }
+  static public int getLoudSystemProperty (String key, int defaultVal) {
+    return getIntSystemProperty(key, defaultVal, true);
+  }
 
+  static public int getIntSystemProperty (
+      String key, int defaultVal, boolean loud)
+  {
+    int v = defaultVal;
+    try {
+      v = Integer.parseInt(System.getProperty(key));
+    }
+    catch (Exception ex) {
+      if (loud)
+        System.err.println("Warning:  No valid " + key +
+          " value found.  Using default:  " + defaultVal);
+    }
+    return v;
+  }
 
-   static public int getLoudSystemProperty(String key, int defaultVal, int invalidVal) {
-         int rcInt=invalidVal;
-         rcInt=getSystemProperty(key, invalidVal);
-         if (rcInt==invalidVal) {
-          rcInt=defaultVal;
-          System.err.println("Warning: No valid "+key+" value specified.  Defaulting to: "+defaultVal);
-         }
-         return rcInt;
-   }
-   private void setNodeSpacing() {
-         int hspace=getLoudSystemProperty("ui.orgView.defaultNodeHSpace", 10, -1);
-         int vspace=getLoudSystemProperty("ui.orgView.defaultNodeVSpace", 30, -1);
-         hSpacing=hspace;
-         vSpacing=vspace;
-         System.err.println("out setNodeSpacing h,v:"+hSpacing+"="+hspace+", "+vSpacing+"="+vspace);
-   }
+  private void setNodeSpacing () {
+    hSpacing = getLoudSystemProperty("ui.orgView.defaultNodeHSpace", 10);
+    vSpacing = getLoudSystemProperty("ui.orgView.defaultNodeVSpace", 30);
+  }
 
          // ============ end of mod throughout block
 
-      public GraphCanvas(Graph graph_in, Frame frame_in)
-      {
-        System.err.println("in ctor for GraphCanvas");
+      public GraphCanvas(Graph graph_in, Frame frame_in) {
          graph_ = graph_in;
          frame_ = frame_in;
-      
-         setBackground(Color.white);
-         setBackground(new Color(225,225,225));
 
-         // ============ mod throughout block     
-         //font_ = new Font("Helvetica", Font.PLAIN, 12);  // mod
-         //font_ = new Font("Helvetica", Font.PLAIN, 9);      // mod
+         setBackground(Color.white);
+
+         // ============ mod throughout block
+         //font_ = new Font("Helvetica", Font.PLAIN, 12);
+         //font_ = new Font("Helvetica", Font.PLAIN, 9);
 
          //int fontSize=getSystemProperty("ui.orgView.defaultFontSize", -1);
          //if (fontSize<0) {
@@ -212,72 +207,51 @@
          // System.err.println("Warning: No fontSize specified.  Defaulting to: "+fontSize);
          //}
 
-         int fontSize=getLoudSystemProperty("ui.orgView.defaultFontSize", 8, -1);
+         int fontSize = getLoudSystemProperty("ui.orgView.defaultFontSize", 8);
 
-         font_ = new Font("Helvetica", Font.PLAIN, fontSize);      // mod
-         setNodeSpacing();            // mod
-
+         font_ = new Font("Helvetica", Font.PLAIN, fontSize);
+         setNodeSpacing();
 
          // Only use runtime parameter if the program has NOT already explicitly
          // set the value.  If the program explicitly sets the value, use that.
-         System.err.println("check wantMouseDragging "+wantMouseDragging);
-         if (wantMouseDragging==null) {
-            wantMouseDragging=new Boolean(RuntimeParameters
-                .getLoudSystemProperty("ui.orgView.mouseDrag", "false"));
-            System.err.println("set wantMouseDragging "+wantMouseDragging);
+         if (wantMouseDragging == null) {
+            wantMouseDragging =
+              new Boolean(RuntimeParameters.getLoudSystemProperty(
+                "ui.orgView.mouseDrag", "false"));
          }
          // ============ end of mod throughout block
 
          computeBounds_();
-      
+
          scaleMatrix_ = new Matrix44();
-      
+
          scaleMatrix_.matrix[0][0] = scaleMatrix_.matrix[1][1] =
                               scaleMatrix_.matrix[2][2] = scaleMatrix_.matrix[3][3] = 1.0;
-      
+
          shiftMatrix_ = new Matrix44(scaleMatrix_);
          rotxMatrix_ = new Matrix44(scaleMatrix_);
          rotxMatrix_.matrix[1][1] = rotxMatrix_.matrix[2][2] = -1.0;
          rotxMatrix_.matrix[2][1] = -(rotxMatrix_.matrix[1][2] = 0.0);
          rotzMatrix_ = new Matrix44(scaleMatrix_);
-      
+
          updateViewTransform_();
-      
+
          dragFix_ = new DragFix(this);
       }
-   
-   
-   
-   
-   
+
    // This will give the initial window size.
-      public Dimension preferredSize()
-      {
-         int hWinSize=getLoudSystemProperty("ui.orgView.hWinSize", 1280, 1280);
-         int vWinSize=getLoudSystemProperty("ui.orgView.vWinSize", 1010, 1010);
-	 System.out.println("preferredSize: h,v: "+hWinSize+","+vWinSize);
-         return new Dimension(hWinSize, vWinSize);
-         //return new Dimension(1024, 640);
-         //return new Dimension(1024, 400);
-         //return new Dimension(400, 400);
-      }
-   
-   
-   
-   
-   
-      public synchronized void paint(Graphics graphics)
-      {
-         graphics.dispose();
-         paintOver();
-      }
-   
-   
-   
-   
-   
-   
-      public synchronized void paintOver()
+  public Dimension preferredSize () {
+    int hWinSize = getLoudSystemProperty("ui.orgView.hWinSize", 1280);
+    int vWinSize = getLoudSystemProperty("ui.orgView.vWinSize", 1010);
+    return new Dimension(hWinSize, vWinSize);
+  }
+
+  public synchronized void paint (Graphics graphics) {
+    graphics.dispose();
+    paintOver();
+  }
+
+  public synchronized void paintOver()
       {
          Dimension tmpdim = size();
          if(tmpdim.width != windowSize_.width || tmpdim.height != windowSize_.height)
@@ -1822,21 +1796,18 @@
    
    
        private void processDoubleClickNode() {
-	   String dblClickEdit=RuntimeParameters
-	      .getLoudSystemProperty("double.click.edit.node",
-				      "false");
-	   String dblClickExpand=RuntimeParameters
-	      .getLoudSystemProperty("double.click.expand.node",
-				      "true");
-	   System.out.println("dblclk ed,ex: "+dblClickEdit+" , "+dblClickExpand);
+	 String dblClickEdit = RuntimeParameters.getLoudSystemProperty(
+           "double.click.edit.node", "false");
+	 String dblClickExpand = RuntimeParameters.getLoudSystemProperty(
+           "double.click.expand.node", "true");
 	   
          Node which = selectedNode_;
 	 String nodeLabel = which.getLabel();
 	 // get node label
 	 // OrgHierVGJOrgTree.showOrgGraph(nodeLabel);
-	 if (dblClickExpand.equalsIgnoreCase("true")) {
+	 if (dblClickExpand.equalsIgnoreCase("true") && which.getDrillDownOn())
 	     OrgHierVGJCommunityTree.showOrgGraph(nodeLabel);
-	 }
+
 	 if (dblClickEdit.equalsIgnoreCase("true")) {
 	     setNodeProperties(false);
 	 }

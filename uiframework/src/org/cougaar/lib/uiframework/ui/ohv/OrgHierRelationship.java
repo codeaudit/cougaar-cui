@@ -29,24 +29,17 @@ import java.net.URL;
 
 import java.io.IOException;
 
-/* ====== alp 6.8      =======       
-import alp.ldm.plan.ScheduleImpl;
-import alp.ldm.plan.ScheduleElementImpl;
-/* ===========  */
-
-/* ====== alp 7               */
 import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
-/* ===========  */
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
-  Represents relationships between orgs in a society.
-  Constructed from a ClusterParser.
-  Used by an OrgHierModel.
-**/
+ *  Represents relationships between orgs in a society.
+ *  Constructed from a ClusterParser.
+ *  Used by an OrgHierModel.
+ */
 public class OrgHierRelationship extends ScheduleElementImpl {
   public OrgHierRelationship(ClusterParser cp) {
     String other=null;
@@ -55,25 +48,14 @@ public class OrgHierRelationship extends ScheduleElementImpl {
     init(cp.getId(),cp.getStartTime(), cp.getEndTime(), cp.getRelationship(), other);
   }
 
-
   public boolean equals(OrgHierRelationship rhs) {
-      //  System.err.println("    eq_ohr "+rhs);
     boolean rc= (id.equals(rhs.id)
           && other.equals(rhs.other)
           && rel.equals(rhs.rel)
           && getStartTime()==rhs.getStartTime()
           && getEndTime()==rhs.getEndTime());
-    // System.err.println("    eq_ohr rc "+rc);
     return rc;
   }
-//   public boolean equals(OrgHierRelationship rhs) {
-//     boolean rc= (id==rhs.id
-//           && other==rhs.other
-//           && rel==rhs.rel
-//           && getStartTime()==rhs.getStartTime()
-//           && getEndTime()==rhs.getEndTime());
-//     return rc;
-//   }
 
   boolean isValidCluster() { return (id!=null&&id!=""); }
   String getId() { return id; }
@@ -95,7 +77,6 @@ public class OrgHierRelationship extends ScheduleElementImpl {
     String rc="OrgHierRelationship(start="+getStartTime()+", end="+getEndTime()+", id="+id+", rel="+rel+", other="+other+")";
     return rc;
   }
-
-}      // end class OrgHierRelationship
+}
 
 

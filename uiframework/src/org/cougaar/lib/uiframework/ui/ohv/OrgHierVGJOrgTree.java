@@ -38,32 +38,35 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
 import java.util.StringTokenizer;
 
-
-
- /**
- Graphical Tree viewer for an Organization Hierarchy.
- **/
-
-public class OrgHierVGJOrgTree  
-    extends OrgHierVGJBase
-    implements OrgHierModelViewer
+/**
+ * Graphical Tree viewer for an Organization Hierarchy.
+ */
+public class OrgHierVGJOrgTree
+    extends OrgHierVGJBase implements OrgHierModelViewer
 {
+  private String name;
+  private RelList relList;
 
-    private String name;
-    private RelList relList;
-    
-    public OrgHierVGJOrgTree(Collection col, String name) { 
-	this(new OrgHierModel(col), name);
-    }
-    public OrgHierVGJOrgTree(OrgHierModel ohm, String name) {super(ohm); 
-	this.name=name;
-	relList=new RelList(ohm, relListAction);
-    } 
+  /**
+   *  Report to the caller the name of this view, if any.
+   */
+  public String getName () {
+    return name;
+  }
+
+  public OrgHierVGJOrgTree (Collection col, String name) {
+    this(new OrgHierModel(col), name);
+  }
+
+  public OrgHierVGJOrgTree (OrgHierModel ohm, String forOrg) {
+    super(ohm);
+    name = forOrg;
+  }
 
     public OrgHierVGJBase create(Collection rels) {
 	return new OrgHierVGJOrgTree(rels, name);
     }
-    
+
     // The following methods support show_initialized
     // They will probably end up being implementations which are called by
     //      a method in the abstract superclass
@@ -79,37 +82,34 @@ public class OrgHierVGJOrgTree
     }
 
     private boolean wantProviderControl() {
-      String showProviderControl=RuntimeParameters
-	      .getLoudSystemProperty("showProviderControl",
-				      "true");
-      System.out.println("showProviderControl: ["+showProviderControl+"]");
-      return (showProviderControl!=null 
-	      && showProviderControl.trim().equalsIgnoreCase("true"));
+      String showProviderControl = RuntimeParameters.getLoudSystemProperty(
+        "showProviderControl", "true");
+      return showProviderControl != null &&
+        showProviderControl.trim().equalsIgnoreCase("true");
     }
 
-    public void showProviderControl() {
-	if (wantProviderControl()) {
-	    System.out.println("showing provider control.");
-	    vgj.addControl(relList);
-	}
+  /**
+   *  Show any additional controls needed by this class of UI.
+   */
+  public void showProviderControl () {
+    if (wantProviderControl()) {
+      relList = new RelList(ohm, mygraph, relListAction);
+      vgj.addControl(relList);
     }
-    
+  }
+
     private boolean wantNewWindow() {
 	return true;
     }
-    
+
     String getTitle() { return name+" Community"; }
 
-    public void show_initialized() {
-      out.println("Here is the INITIALIZED OrgHierVGJOrgTree: "); 
-      String initFileName=getInitFileName();
-      String title=getTitle();
-      boolean wantNewWindow=wantNewWindow();
-
-      // vgjBase.show_initialized(initFileName, title, wantNewWindow, this);
-      show_initialized(wantNewWindow);
-      out.println("Finished showing the OrgHierVGJOrgTree.");
-    }
+  /**
+   *  Show this org tree and create a new window, if desired.
+   */
+  public void show () {
+    show_initialized(wantNewWindow());
+  }
 
     // Called by method in superclass
     public void showGraph(VGJ vgj) {
@@ -127,23 +127,19 @@ public class OrgHierVGJOrgTree
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 		    System.out.println("in relListAction updrel selected");
 		    String relType = (String) e.getItem();
-		    //combo.getSelectedItem();
-		    //updateSuperiorRelationships();
-		    // get selection from relList
-		    // String relType = (String)relList.getSelectedValue();
 		    System.out.println("   reltype is "+relType);
 		    // update graph based on relType
 		    updateRelationships(relType);
-		    
+
 		    // set title here
 		    vgj.setCanvasTitle(name+" Community with "+relType+" Relationships");
-		    
+
 		    System.out.println("out relListAction");
 		}
 	    }
 	};
 
-} 
+}
 
 
 

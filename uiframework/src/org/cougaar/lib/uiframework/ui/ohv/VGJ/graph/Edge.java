@@ -235,8 +235,6 @@
       boolean inplane, boolean directed, boolean arrow_only, int quality,
       GraphCanvas canvas, int which_gr)
       {
-	  //System.out.println("drawing edge method "+directed+","+arrow_only);
-
           Graphics2D graphics = (Graphics2D) graphicsParm;       
           BasicStroke wideStroke = new BasicStroke(3.0f);
 	  graphics.setStroke(wideStroke);
@@ -283,8 +281,6 @@
             if(npoints == 0) {
 		graphics.setColor(Color.blue);
 		if (directed) {
-		    System.out.println("drawing edge "+(int)p1.x+","+(int)p1.y+","+
-				       partway(p1.x, p2.x, .75)+","+ partway(p1.y, p2.y, .75));
 		    graphics.drawLine((int)p1.x, (int)p1.y,
 				      partway(p1.x, p2.x, .75), partway(p1.y, p2.y, .75));
 		    graphics.setColor(Color.orange);
@@ -292,8 +288,6 @@
 				      partway(p1.y, p2.y, .75),
 				      (int)p2.x, (int)p2.y);
 		} else {
-		    System.out.println("drawing edge ! directed "+(int)p1.x+","+(int)p1.y+","+
-				       p2.x+","+ p2.y);
 		    graphics.drawLine((int)p1.x, (int)p1.y,
 				      (int)p2.x, (int)p2.y);
 		}

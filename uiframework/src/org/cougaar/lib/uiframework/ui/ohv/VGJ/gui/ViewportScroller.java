@@ -210,17 +210,11 @@
          {
             backImage_ = createImage(width_, height_);
          }
-      
-         // Graphics graphics = backImage_.getGraphics();
-	 Graphics graphics;
-         try {
-	     graphics = backImage_.getGraphics();
-         } catch (Exception ex) {
-          ex.printStackTrace();
-          System.err.println("trying to recover...");
-          return;
-         }
 
+         if (backImage_ == null)
+           return;
+           
+         Graphics graphics = backImage_.getGraphics();
       
          graphics.setColor(getBackground());
          graphics.fillRect(0, 0, width_, height_);

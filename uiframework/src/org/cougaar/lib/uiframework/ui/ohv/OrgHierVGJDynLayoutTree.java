@@ -9,9 +9,7 @@
  */
 package org.cougaar.lib.uiframework.ui.ohv;
 
-//import org.apache.xerces.parsers.DOMParser;
 import org.apache.xerces.parsers.DOMParser;
-
 
 import java.io.File;
 import java.io.FileReader;
@@ -28,25 +26,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.net.URL;
 
-/*
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import java.io.IOException;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-*/
-
-/*
-import ui.SupKeeper;
-import ui.TreeBuilder;
-*/
-//import dom.DOMParserWrapper;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,20 +34,16 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Graph;
 import org.cougaar.lib.uiframework.ui.ohv.VGJ.gui.GraphWindow;
 import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
 
-
-
-
- /**
- Graphical Tree viewer for an Organization Hierarchy.
- **/
-
-  public class OrgHierVGJDynLayoutTree  implements OrgHierModelViewer {
+/**
+ * Graphical Tree viewer for an Organization Hierarchy.
+ */
+public class OrgHierVGJDynLayoutTree  implements OrgHierModelViewer {
     private OrgHierModel ohm;
     private String textTree;
     private String delim="\n";
     private Stack branchStack = new Stack();
     private PrintStream out=System.out;
-    private int DEBUG=40;
+    private int DEBUG = 0;
 
     public OrgHierVGJDynLayoutTree(Collection col) { init(new OrgHierModel(col));}
     public OrgHierVGJDynLayoutTree(OrgHierModel ohm) {init(ohm);}
@@ -301,8 +276,4 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
     }
     public long getStartTime() { return ohm.getStartTime(); }
     public long getEndTime() { return ohm.getEndTime(); }
-
-  }
-
-
-
+}

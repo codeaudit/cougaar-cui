@@ -654,10 +654,9 @@
          return true;
       }
 
-      org.cougaar.lib.uiframework.ui.ohv.OrgTreeAction myAction=null;
+      org.cougaar.lib.uiframework.ui.ohv.OrgTreeAction myAction = null;
       public void addOTActionListener(org.cougaar.lib.uiframework.ui.ohv.OrgTreeAction ota) {
          myAction=ota;
-        System.out.println("added OTAlistener: "+ota+" "+myAction);
       }
    
 

@@ -11,7 +11,6 @@ package org.cougaar.lib.uiframework.ui.ohv;
 
 import org.apache.xerces.parsers.DOMParser;
 
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -27,7 +26,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.net.URL;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,20 +34,16 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Graph;
 import org.cougaar.lib.uiframework.ui.ohv.VGJ.gui.GraphWindow;
 import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
 
-
-
-
- /**
- Graphical Tree viewer for an Organization Hierarchy.
- **/
-
-  public class OrgHierVGJDynLevelTree  implements OrgHierModelViewer {
+/**
+ * Graphical Tree viewer for an Organization Hierarchy.
+ */
+public class OrgHierVGJDynLevelTree  implements OrgHierModelViewer {
     private OrgHierModel ohm; 
     private String textTree; 
     private String delim="\n"; 
-    private Stack branchStack = new Stack(); 
+    private Stack branchStack = new Stack();
     private PrintStream out=System.out; 
-    private int DEBUG=40; 
+    private int DEBUG = 0; 
  
     public OrgHierVGJDynLevelTree(Collection col) { init(new OrgHierModel(col));} 
     public OrgHierVGJDynLevelTree(OrgHierModel ohm) {init(ohm);} 
@@ -75,7 +69,7 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
       out.println("Relationships at time "+timeStr+": ");
       OrgHierVGJDynLevelTree ohtt=new OrgHierVGJDynLevelTree(rels); 
       ohtt.show(); 
-    } 
+    }
  
     public void show_dynamic() { 
       out.println("Here is the DYNAMIC OrgHierVGJDynLevelTree: "); 
@@ -199,7 +193,7 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
  
  
  
-    private String indent(int depth) 
+    private String indent(int depth)
     {
 	    final String str="--------------------------------------------------"+
 	      "----------------------------------------------------------------"+
@@ -207,43 +201,37 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
 	    return str.substring(0,depth*2);
     }
  
-    private String getBranchDFS(String rootId, int depth) { 
-      String rcString=indent(depth)+rootId+delim; 
- 	    HashSet kids; 
-	    String sub;
+  private String getBranchDFS(String rootId, int depth) {
+    String rcString=indent(depth)+rootId+delim;
+    HashSet kids;
+    String sub;
 
-      // System.out.println("in getBranchDFS("+rootId+","+depth+") rcS: "+rcString);
-	    if (branchStack.contains(rootId)) {
-	      rcString=indent(depth)+rootId+" [stopping here due to cycle] "+delim;
-	      System.out.println("Number of BranchStack elements: "+branchStack.size()
-			       +" branchStr: "+rcString);
-  	  } else {
-  	    branchStack.push(rootId);
+    if (branchStack.contains(rootId)) {
+      rcString=indent(depth)+rootId+" [stopping here due to cycle] "+delim;
+      System.out.println("Number of BranchStack elements: "+branchStack.size()
+        +" branchStr: "+rcString);
+    } else {
+      branchStack.push(rootId);
 
-  	    kids = ohm.getSubordinates(rootId);
-        if (kids!=null) {
-          for (Iterator kiter=kids.iterator(); kiter.hasNext(); ) {
-            sub=(String)kiter.next();
-	          rcString += getBranchDFS(sub,depth+1);
-          }
+      kids = ohm.getSubordinates(rootId);
+      if (kids!=null) {
+        for (Iterator kiter=kids.iterator(); kiter.hasNext(); ) {
+          sub=(String)kiter.next();
+          rcString += getBranchDFS(sub,depth+1);
         }
+      }
 
-	      String str = (String)branchStack.pop();
-	      if (! str.equals(rootId)) { System.err.println("branchStack.pop()!=root"); }
-	    }
+      String str = (String)branchStack.pop();
+      if (! str.equals(rootId))
+        System.err.println("branchStack.pop()!=root");
+    }
+    return rcString;
+  }
 
-      // System.out.println("out getBranchDFS("+rootId+","+depth+") rcS: "+rcString);
-
-	    return rcString;
-    } 
- 
-    public TreeSet getTransitionTimes() { 
+    public TreeSet getTransitionTimes() {
       return ohm.getTransitionTimes();
     }
     public long getStartTime() { return ohm.getStartTime(); }
     public long getEndTime() { return ohm.getEndTime(); }
- 
-  } 
-
-
+}
 

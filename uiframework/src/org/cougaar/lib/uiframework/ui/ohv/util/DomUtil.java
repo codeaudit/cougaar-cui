@@ -26,8 +26,6 @@ import java.net.URL;
 import java.io.InputStream;
 import java.io.IOException;
 
-
-
 /**
   Provides DOM utility methods.
 **/
@@ -123,7 +121,6 @@ public class DomUtil {
             }
 
 	    // changed to work with the older xerces.jar file
-            // child.normalize();
 	    normalize(child);
             String nodeval=child.getNodeValue();
             System.out.println("child: nodeType="+child.getNodeType()
@@ -132,9 +129,6 @@ public class DomUtil {
               System.out.println("TAG-MATCH");
             }
             printValues(child, tag, indentlevel);
-            //retstr=child.getNodeValue();
-            //break;
-          //}
         }
         }
       }
@@ -152,7 +146,6 @@ public class DomUtil {
     String retstr=null;
 
     // changed to make this work with the older xerces.jar file
-    // cel.normalize();
     normalize(cel);
       NodeList children = cel.getChildNodes();
       Node child;
@@ -198,56 +191,7 @@ public class DomUtil {
           }
         }
       }
-            /*
-      NodeList nodes=cel.getElementsByTagName(tag);
-      System.out.println(nodes.getLength());
-      if (nodes.getLength()>0) {
-        String retstr2=((Element)nodes.item(0)).getNodeValue();
-        System.out.println("retstr2="+retstr2);
-      }     */
       return retstr;
     }
-
-
-
-//    public static void main(String[] args) {
-//      test(args);
-//    }
-
-//    public static void test(String[] args) {
-//      String xmlFile;
-//      OrgHierRelationship ohr;
-//      xmlFile = "file:/c:/alp_workspace/xerces-1_2_0/data/personal.xml";
-//      xmlFile = "file:/c:/dev/ui/kr/sfp/defTest.xml";
-//      xmlFile = "file:/c:/JBuilder3/myprojects/org.cougaar.lib.uiframework.ui.ohv/data/deftestb.xml";
-//      xmlFile = "file:/c:/JBuilder3/myprojects/org.cougaar.lib.uiframework.ui.ohv/data/defTestTime.xml";
-//     xmlFile = "file:/c:/JBuilder3/myprojects/org.cougaar.lib.uiframework.ui.ohv/data/dbjconfadm.xml";
-//     OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
-
-//     Vector v = orgHierParser.parse();
-
-//     System.out.println("Finished parsing.");
-
-//     System.out.println();
-//     System.out.println("OrgHierModel output: ");
-//     OrgHierModel ohm=new OrgHierModel(v);
-//     System.out.println("Start time: "+ohm.getStartTime());
-//     System.out.println("Transition times: "+ohm.getTransitionTimes());
-//     System.out.println("End time: "+ohm.getEndTime());
-//     System.out.println("Finished OrgHierModel output.");
-
-//     System.out.println();
-//     System.out.println("OrgHierModelViewer output: ");
-//     OrgHierModelViewer ohmv=new TextOrgHierModelViewer(ohm, System.out);
-//     ohmv.show();
-//     System.out.println("Finished OrgHierModelViewer output.");
-
-//     OrgHierTextTree ohtt=new OrgHierTextTree(ohm);
-//     ohtt.show();
-//   }
-
-
-
-
 }
 

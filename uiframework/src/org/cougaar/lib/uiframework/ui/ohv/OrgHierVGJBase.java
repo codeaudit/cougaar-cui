@@ -38,112 +38,130 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
 import java.util.StringTokenizer;
 
+/**
+ *  Helper classs for Graphical Tree viewers for an Organization Hierarchy.
+ */
 
-
- /**
- Helper classs for Graphical Tree viewers for an Organization Hierarchy.
- **/
-
-abstract public class OrgHierVGJBase { 
-    static protected OrgHierModel ohm; 
-    protected String textTree; 
-    protected String delim="\n"; 
-    protected Stack branchStack = new Stack(); 
-    protected PrintStream out=System.out; 
-    protected int DEBUG=40; 
+abstract public class OrgHierVGJBase {
+    static protected OrgHierModel ohm;
+    protected String textTree;
+    protected String delim="\n";
+    protected Stack branchStack = new Stack();
+    protected int DEBUG = 0;
     protected VGJ vgj;
     protected GraphWindow gw;
     protected Graph mygraph;
 
     abstract public void showGraph(VGJ vgj);
     abstract public void showNewGraph(VGJ vgj);
-    abstract public void show_initialized() ;
+
     abstract String getInitFileName() ;
     abstract String getTitle() ;
     abstract OrgHierVGJBase create(Collection rels) ;
-    abstract public void showProviderControl() ;
 
-    public OrgHierVGJBase(OrgHierModel ohm) {init(ohm); }
+  /**
+   *  Show any additional controls required by the specific class of UI.
+   *  Subclasses should provide the implementation for this function.
+   */
+  abstract public void showProviderControl ();
+
+  /**
+   *  Report to the caller the name of this view, if any.  By default, there
+   *  is no name.  Subclasses that support names will want to override this
+   *  default implementation.
+   *  @return null, by default.
+   */
+  public String getName () {
+    return null;
+  }
+
+    public OrgHierVGJBase(OrgHierModel ohm) {
+      init(ohm);
+    }
+
     protected void init(OrgHierModel ohm) {
-	this.ohm=ohm;
-    } 
+      this.ohm=ohm;
+    }
 
-    public void showRelationshipsAtTime(long time) { 
-	OrgHierRelationship ohr; 
-	
-	Collection rels=ohm.getRelationshipsAtTime(time);
-	String timeStr=""+time;
-	if (time==Long.MAX_VALUE) { timeStr="[The end of time]";
-	} else if	 (time==Long.MIN_VALUE) { timeStr="Epoch";
-	}
-	out.println("Relationships at time "+timeStr+": ");
-	
+    public void showRelationshipsAtTime (long time) {
+	OrgHierRelationship ohr;
+
+	Collection rels = ohm.getRelationshipsAtTime(time);
+	String timeStr = "" + time;
+	if (time == Long.MAX_VALUE)
+          timeStr="[The end of time]";
+        else if (time == Long.MIN_VALUE)
+          timeStr="Epoch";
+
 	OrgHierVGJBase newOhvt=create(rels);
-	show(); 
-    } 
-    
+	show();
+    }
 
-    public static void setDrillDownAttributes(VGJ vgj, Graph mygraph) {
-      String drillDownOrgs=RuntimeParameters
-              .getLoudSystemProperty("drillDownOrgs",
-                                      "CENTCOM-HHC;3ID-HHC");
+    public void setDrillDownAttributes (
+        VGJ vgj, Graph mygraph, String name)
+    {
+      String drillDownOrgs = RuntimeParameters.getLoudSystemProperty(
+        "drillDownOrgs", "");
 
       StringTokenizer st = new StringTokenizer(drillDownOrgs,";");
       String orgstr;
       while (st.hasMoreTokens()) {
-	  orgstr=st.nextToken();
-	  System.out.println("org setddattr ddOrg: ["+orgstr+"]");
-	  vgj.drillDownNode(mygraph, orgstr, true);
+        orgstr = st.nextToken();
+        // Don't allow drill-down for the node whose view is being displayed
+        if (!orgstr.equals(name)) {
+          vgj.drillDownNode(mygraph, orgstr, true);
+        }
       }
     }
 
-    protected void createVisuals() {
-      vgj=VGJ.create();
-      gw=new GraphWindow(true);
+  protected void createVisuals () {
+    vgj = VGJ.create();
+    gw = new GraphWindow(true);
+    mygraph = new Graph();
+  }
 
-      mygraph=new Graph();
-    }
-    protected void updateVisuals(boolean wantNewWindow) {
-      String init_filename=getInitFileName();
-      String title=getTitle();
-      System.out.println("initFilename is ["+init_filename+"]");
-      gw.loadFile(init_filename, mygraph);
-      // out.println(idx++);
- 
-      vgj.syncWith(mygraph);
+  protected void updateGraph () {
+    gw.loadFile(getInitFileName(), mygraph);
+    vgj.syncWith(mygraph);
+    vgj.setGraph(mygraph);
+    vgj.setCanvasTitle(getTitle());
+    setDrillDownAttributes(vgj, mygraph, getName());
+  }
 
-      vgj.setGraph(mygraph);
-      vgj.setCanvasTitle(title);
-      System.out.println("vgjbase show_init numberofnodes: "+mygraph.numberOfNodes());
-  
-      showProviderControl();
+  protected void showVisuals (boolean wantNewWindow) {
+    showProviderControl();
+    if (wantNewWindow)
+      showNewGraph(vgj);
+    else
+      showGraph(vgj);
 
-      setDrillDownAttributes(vgj, mygraph);
+    updateSuperiorRelationships();
+  }
 
-      if (wantNewWindow) {
-	  showNewGraph(vgj);
-      } else {
-	  showGraph(vgj);
-      }
-      updateSuperiorRelationships();
-      System.out.println("Leaving vgjbase show_init.");
-    }
-    public void show_initialized( boolean wantNewWindow
-				  ) {
-      out.println("Here is the INITIALIZED OrgHierVGJBase: "); 
-      createVisuals();
-      updateVisuals(wantNewWindow);
-    }
+  /**
+   *  Show this org hierarchy view.  Subclasses should implement this as is
+   *  consistent with their properties.
+   */
+  abstract public void show ();
 
+  /**
+   *  Show this org hierarchy view, optionally creating a new window in the
+   *  process.
+   */
+  protected void show_initialized (boolean wantNewWindow) {
+    createVisuals();
+    updateGraph();
+    showVisuals(wantNewWindow);
+  }
 
-    protected   OrgTreeAction ota = new OrgTreeAction() {
-	  public void execute()
-	  {
-	    System.out.println("in vgjbase OrgTreeAction.execute -- update org graph");
+    protected OrgTreeAction ota = new OrgTreeAction() {
+	  public void execute () {
 	    updateOrgGraph();
-	    System.out.println("out OrgTreeAction.execute");
 	  }
-	  public String getId() { return "Update"; }
+
+	  public String getId () {
+            return "Update";
+          }
       };
 
 
@@ -152,32 +170,21 @@ abstract public class OrgHierVGJBase {
 	showLiveClusters(vgj, mygraph);
 	vgj.setGraph(mygraph);
 	showGraph(vgj);
-	out.println("Finished updateSuperiorRelationships.");
     }
 
-    void updateRelationships(String relType) {
-	int idx=100;
-        showRelationships(vgj, mygraph, relType);
-        out.println(idx++);
-        showLiveClusters(vgj, mygraph);
-	
-	vgj.setGraph(mygraph);
-	//out.println(idx++);
-	showGraph(vgj);
-        out.println("Finished updateRelationships "+relType);
-
-      }
+    void updateRelationships (String relType) {
+      showRelationships(vgj, mygraph, relType);
+      showLiveClusters(vgj, mygraph);
+      vgj.setGraph(mygraph);
+      showGraph(vgj);
+    }
 
      public void updateOrgGraph() {
        System.out.println("vgjorgtree ota updating model");
        ohm = OrgHierApp.updateModel();
-       updateVisuals(false);
+       updateGraph();
+       showVisuals(false);
      }
-
-    public void show() { 
-     show_initialized(); 
-    } 
-
 
     public void showSuperiorRelationships(VGJ vgj, Graph mygraph) {
       Set sups=ohm.getSuperiors();
@@ -222,7 +229,6 @@ abstract public class OrgHierVGJBase {
 		        	System.out.println("getTreeVGJ vgj.addLink(mygraph, sup, sub); sup: "+sup
                   +" sub: "+sub);
     		    }
-    		    // vgj.addSuperior(mygraph, sup, sub);
     		    vgj.addSuperiorLink(mygraph, sup, sub);
 	    }
     }
@@ -240,23 +246,22 @@ abstract public class OrgHierVGJBase {
 
     }
 
- 
+
     public TreeSet getTransitionTimes() {
       return ohm.getTransitionTimes();
     }
     public long getStartTime() { return ohm.getStartTime(); }
     public long getEndTime() { return ohm.getEndTime(); }
 
-    protected void showOrgGraph() {
-      // selOrg = getSelectedOrg();
-      String selOrg = vgj.getSelectedNodeLabel();
-      showOrgGraph(selOrg);
-    }
+  protected void showOrgGraph() {
+    String selOrg = vgj.getSelectedNodeLabel();
+    showOrgGraph(selOrg);
+  }
 
-    public static void showOrgGraph(String forOrg) {
-	OrgHierVGJCommunityTree.showOrgGraph(forOrg);
-    }
-  } 
+  public static void showOrgGraph(String forOrg) {
+    OrgHierVGJCommunityTree.showOrgGraph(forOrg);
+  }
+}
 
 
 

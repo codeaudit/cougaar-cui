@@ -42,72 +42,64 @@ import org.xml.sax.SAXParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Textual viewer for an Organization Hierarchy.
+ */
+public class TextOrgHierModelViewer implements OrgHierModelViewer {
+  private OrgHierModel model;
+  private PrintStream out;
 
+  public TextOrgHierModelViewer (OrgHierModel model, PrintStream out) {
+    this.model=model;
+    this.out=out;
+  }
 
-
-
-
- /**
-  Textual viewer for an Organization Hierarchy.
- **/
-
-  public class TextOrgHierModelViewer
-        implements OrgHierModelViewer {
-    private OrgHierModel model;
-    private PrintStream out;
-    public TextOrgHierModelViewer(OrgHierModel model, PrintStream out) {
-      this.model=model;
-      this.out=out;
+  public void show () {
+    out.println("Showing Relationships: ");
+    for (Iterator timit=getTransitionTimes().iterator(); timit.hasNext(); ) {
+      long time=((Long)timit.next()).longValue();
+      showRelationshipsAtTime(time);
     }
+    out.println("Done Showing Relationships.");
+  }
 
-    public void show() {
-      out.println("Showing Relationships: ");
-      for (Iterator timit=getTransitionTimes().iterator(); timit.hasNext(); ) {
-        long time=((Long)timit.next()).longValue();
-        showRelationshipsAtTime(time);
+  public void showRelationshipsAtTime(long time) {
+    OrgHierRelationship ohr;
+
+    Collection rels=model.getRelationshipsAtTime(time);
+    String timeStr = "" + time;
+    if (time == Long.MAX_VALUE) {
+      timeStr = "[The end of time]";
+    }
+    else if (time == Long.MIN_VALUE) {
+      timeStr = "Epoch";
+    }
+    out.println("Relationships at time " + timeStr + ": ");
+    Vector checked = new Vector();
+    for (Iterator rit = rels.iterator(); rit.hasNext(); ) {
+      ohr = (OrgHierRelationship) rit.next();
+      if (!checked.contains(ohr.getId())) {
+        checked.add(ohr.getId());
+        Collection col = model.getSuperiorsAtTime(ohr.getId(), time);
+        if (col == null || col.isEmpty()) {
+          out.println("    " + ohr.getId() + " is a top-level organization.");
+        }
+        else {
+          out.println("    " + ohr.getId() + " has Superior(s) " + col);
+        }
       }
-      out.println("Done Showing Relationships.");
     }
+  }
 
-    public void showRelationshipsAtTime(long time) {
-        OrgHierRelationship ohr;
-        //out.println("Here are the relationships at time: "+model.getRelationshipsAtTime(time));
+  public TreeSet getTransitionTimes() {
+    return model.getTransitionTimes();
+  }
 
-      Collection rels=model.getRelationshipsAtTime(time);
-      String timeStr=""+time;
-      if (time==Long.MAX_VALUE) { timeStr="[The end of time]";
-      } else if  (time==Long.MIN_VALUE) { timeStr="Epoch";
-      }
-      out.println("Relationships at time "+timeStr+": ");
-      //System.out.println("  Top Level Organizations (those with no superiors): ");
-      //Iterator rit = model.getRootNodesAtTime(time);
-      Vector checked=new Vector();
-      for (Iterator rit=rels.iterator(); rit.hasNext();) {
-        ohr=(OrgHierRelationship)rit.next();
-        if (!checked.contains(ohr.getId())) {
-          checked.add(ohr.getId());
-          Collection col=model.getSuperiorsAtTime(ohr.getId(), time);
-          if (col==null || col.isEmpty()) {
-           out.println("    "+ohr.getId()+ " is a top-level organization.");
-          } else {
-           out.println("    "+ohr.getId()+ " has Superior(s) " + col);
-          }
-        }       /*
-        if (ohr.hasSuperior()) {
-           out.println("    "+ohr.getId()+ " has Superior " + ohr.getOtherId());
-        } else {
-           out.println("    "+ohr.getId()+ " is a top-level organization.");
-        }        */
-        //out.println("    "+(OrgHierRelationship)rit.next());
-      }
+  public long getStartTime () {
+    return model.getStartTime();
+  }
 
-    }
-
-    public TreeSet getTransitionTimes() {
-      return model.getTransitionTimes();
-    }
-    public long getStartTime() { return model.getStartTime(); }
-    public long getEndTime() { return model.getEndTime(); }
-
-  }    // end class OrgHierModelViewer
-
+  public long getEndTime () {
+    return model.getEndTime();
+  }
+}

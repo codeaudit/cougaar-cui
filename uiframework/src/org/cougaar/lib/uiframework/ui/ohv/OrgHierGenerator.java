@@ -9,7 +9,6 @@
  */
 package org.cougaar.lib.uiframework.ui.ohv;
 
-//import org.apache.xerces.parsers.DOMParser;
 import org.apache.xerces.parsers.DOMParser;
 
 
@@ -42,22 +41,13 @@ import org.xml.sax.SAXParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
-
-
-
-
-
-
-
-  /**
-    Determines hierarchical relationships from a list of directed links.
-  **/
-//    Build one via addOrg.  Roots will be determined.
-  class OrgHierGenerator {
+/**
+ *  Determines hierarchical relationships from a list of directed links.
+ *  Build one via addOrg.  Roots will be determined.
+ */
+class OrgHierGenerator {
     HashtableSet orgs // clid gives hs of ohrs  (clids in society)
       =new HashtableSet();
     HashSet orgRefs  // every clid referenced as sup or sub
