@@ -82,6 +82,7 @@ System.out.println ("c_time_day is " + c_time_day_string);
 System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
             connection = ds.getConnection(username, password);
+            connection.setAutoCommit (false);
         }
         catch(Exception e)
         {
@@ -169,10 +170,11 @@ if (index == 0) {
 
             System.out.println ("Done, processed " + index + " records");
 
-            // Save the work in the database
-            stmt.executeUpdate("COMMIT");
 
 //            AggregateItems (item_list);
+
+            // Save the work in the database
+            connection.commit();
         }
         catch(SQLException e)
         {
