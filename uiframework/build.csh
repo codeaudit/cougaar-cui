@@ -70,6 +70,8 @@ setenv JF3 "${JF3} ${SRCR}/ui/map/query/*.java"
 setenv JF3 "${JF3} ${SRCR}/ui/models/*.java"
 setenv JF3 "${JF3} ${SRCR}/ui/themes/*.java"
 setenv JF3 "${JF3} ${SRCR}/ui/util/*.java"
+setenv JF3 "${JF3} ${SRCR}/ui/map/layer/cgmicon/*.java"
+setenv JF3 "${JF3} ${SRCR}/ui/map/layer/cgmicon/cgm/*.java"
 
 setenv JF3 "${JF3} ${SRBJ}/assessui/middletier/*.java"
 setenv JF3 "${JF3} ${SRBJ}/assessui/webtier/*.java"

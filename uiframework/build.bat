@@ -70,6 +70,8 @@ set JF3=%JF3% %SRCR%\ui\map\query\*.java
 set JF3=%JF3% %SRCR%\ui\models\*.java
 set JF3=%JF3% %SRCR%\ui\themes\*.java
 set JF3=%JF3% %SRCR%\ui\util\*.java
+set JF3=%JF3% %SRCR%\ui\map\layer\cgmicon\*.java
+set JF3=%JF3% %SRCR%\ui\map\layer\cgmicon\cgm\*.java
 
 set JF3=%JF3% %SRBJ%\assessui\middletier\*.java
 set JF3=%JF3% %SRBJ%\assessui\webtier\*.java
