@@ -28,7 +28,7 @@ import org.cougaar.domain.planning.ldm.asset.Asset;
 
 public class DueOutQueryAdapter extends CustomQueryBaseAdapter {
 
-  private static final String METRIC = "DueOuts";
+  private static final String METRIC = "Due Outs";
 
   private StringBuffer output_xml;
   private boolean send_xml = false;
@@ -65,7 +65,7 @@ try {
         long start_time_long = 0;
         long end_time_long = 0;
         Double temp_double = new Double(0.0);
-        String quantity = null;
+        String rate = null;
 
         UID inventory_object_name = in.getUID();
 
@@ -100,8 +100,7 @@ try {
 
           // Only want to look at projected withdraw and acutal withdraw tasks
 
-          if ((t.getVerb().equals(Constants.Verb.PROJECTWITHDRAW) == true) ||
-              (t.getVerb().equals(Constants.Verb.WITHDRAW) == true)) {
+          if (t.getVerb().equals(Constants.Verb.PROJECTWITHDRAW) == true) {
 
               looping++;
               System.out.print (" " + looping + " ");
@@ -161,40 +160,43 @@ try {
 
               System.out.print (", item is: " + item);
 
-              // Find out how many there are and put it in a string
-              Preference quantity_pref = t.getPreference (AspectType.QUANTITY);
-              if (quantity_pref != null) {
-                temp_double = new Double (quantity_pref.getScoringFunction().getBest().getAspectValue().getValue());
+              Rate demand_rate = TaskUtils.getRate (t);
+
+              if ((demand_rate != null) && (demand_rate instanceof CountRate)) {
+                CountRate cr = (CountRate) demand_rate;
+                rate = new String ("" + cr.getEachesPerDay());
               }
-              else {
-                  System.out.println ("No quantity, skipping record");
-                  continue;
+              else if ((demand_rate != null) && (demand_rate instanceof FlowRate)) {
+                FlowRate fr = (FlowRate) demand_rate;
+                rate = new String ("" + fr.getGallonsPerDay());
+              }
+              else
+              {
+                System.out.println ("WARNING: No rate for org " + org + ", item " + item);
+                continue;
               }
 
-              temp_long = temp_double.longValue ();
-              quantity = String.valueOf (temp_long);
-
-              System.out.print (", quantity " + quantity);
+              System.out.print (", rate " + rate);
 
               // If the structure is null, create one
               if (nextStructure == null) {
-                nextStructure = new AggInfoStructure (org, item, start_time, end_time, quantity);
+                nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
               }
               else if ((item.compareTo (nextStructure.getItem()) == 0) &&
                        (start_time.compareTo (nextStructure.getStartTime()) == 0) &&
                        (end_time.compareTo (nextStructure.getEndTime()) == 0)) {
                   System.out.print (" adding to previous " + nextStructure.getRate());
-                  double temp_quantity = Double.parseDouble (nextStructure.getRate());
-                  temp_quantity += Double.parseDouble (quantity);
-                  quantity = String.valueOf (temp_quantity);
-                  System.out.print (" now " + quantity);
-                  nextStructure.setRate (quantity);
+                  double temp_rate = Double.parseDouble (nextStructure.getRate());
+                  temp_rate += Double.parseDouble (rate);
+                  rate = String.valueOf (temp_rate);
+                  System.out.print (" now " + rate);
+                  nextStructure.setRate (rate);
               }
               // Output the record and start a new one
               else {
                 System.out.println ("");
                 writeStructureToXML (nextStructure);
-                nextStructure = new AggInfoStructure (org, item, start_time, end_time, quantity);
+                nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
               }
 
               // One more record parsed
