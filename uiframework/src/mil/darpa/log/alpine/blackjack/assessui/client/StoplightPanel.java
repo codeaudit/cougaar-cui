@@ -124,12 +124,16 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
         CComboSelector metricSelector = new CComboSelector(metrics);
 
+        CRangeButton rangeButton =
+            new CRangeButton("C+", DBInterface.minTimeRange,
+                             DBInterface.maxTimeRange, plaf);
+
         VariableModel[] variables =
         {
             new VariableModel("Metric", metricSelector, false,
                               VariableModel.FIXED, true, 80),
-            new VariableModel("Time", new CRangeButton("C+", 0, 30, plaf),
-                              true, VariableModel.X_AXIS, true, 0),
+            new VariableModel("Time", rangeButton, true,
+                              VariableModel.X_AXIS, true, 0),
             new VariableModel("Item", itemTreeButton, true,
                               VariableModel.Y_AXIS, true, 0),
             new VariableModel("Org", orgTreeButton, true,

@@ -140,14 +140,17 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         root = DBInterface.orgTree;
         CTreeButton orgTreeButton = new CTreeButton(root, root);
 
+        CRangeButton rangeButton =
+            new CRangeButton("C+", DBInterface.minTimeRange,
+                             DBInterface.maxTimeRange, plaf);
+
         VariableModel[] variables =
         {
             new VariableModel("Metric",
                                    /*new JComboBox(TestDataSource.metrics)*/
                                    metricTreeButton, true,
                                    VariableModel.Y_AXIS, true, 0),
-            new VariableModel("Time",
-                                   new CRangeButton("C+", 0, 30, plaf),
+            new VariableModel("Time", rangeButton,
                                    false, VariableModel.X_AXIS, true, 0),
             new VariableModel("Item", itemTreeButton, true,
                                    VariableModel.FIXED, true, 0),

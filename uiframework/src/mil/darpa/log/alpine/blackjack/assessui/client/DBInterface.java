@@ -27,6 +27,16 @@ public class DBInterface extends DBDatasource
     public static DefaultMutableTreeNode
         orgTree = createTree(getTableName("org"));
 
+    /** Minimum time found in time column of assessment data */
+    public static int minTimeRange =
+        getIntFromQuery("SELECT MIN(" + DBInterface.getColumnName("Time") +
+                        ") FROM AssessmentData");
+
+    /** Maximum time found in time column of assessment data */
+    public static int maxTimeRange =
+        getIntFromQuery("SELECT MAX(" + DBInterface.getColumnName("Time") +
+                        ") FROM AssessmentData");
+
     /** Array of strings that represent blackjack metric types */
     public static final Object[]
         metrics = lookupValues("assessmentMetrics", "name").toArray();
@@ -65,6 +75,13 @@ public class DBInterface extends DBDatasource
         }
 
         return root;
+    }
+
+    private static int getIntFromQuery(String query)
+    {
+        String intString =
+            (String)DBInterface.executeVectorReturnQuery(query).firstElement();
+        return Integer.parseInt(intString);
     }
 
     /**
