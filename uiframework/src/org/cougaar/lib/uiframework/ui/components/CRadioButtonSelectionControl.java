@@ -7,11 +7,14 @@ import javax.swing.*;
 
 /**
  * The class can be used to create a control that is comprised of a set of
- * labeled radio buttons.
+ * labeled radio buttons.<BR><BR>
+ *
+ * This bean has bounded property:  "selectedItem"
  */
 public class CRadioButtonSelectionControl extends JPanel
 {
     private ButtonGroup radioButtons = new ButtonGroup();
+    private Object currentSelection = null;
 
     /**
      * Default constructor.  Create a radio button selection control with
@@ -49,6 +52,17 @@ public class CRadioButtonSelectionControl extends JPanel
         }
 
         add(box);
+
+        currentSelection = getSelectedItem();
+        addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    Object oldSelection = currentSelection;
+                    currentSelection = getSelectedItem();
+                    firePropertyChange("selectedItem", oldSelection,
+                                       currentSelection);
+                }
+            });
     }
 
     /**
@@ -65,7 +79,11 @@ public class CRadioButtonSelectionControl extends JPanel
             JRadioButton radioButton = (JRadioButton)buttons.nextElement();
             if (radioButton.getText().equals(selectedItem))
             {
+                Object oldSelection = currentSelection;
                 radioButton.setSelected(true);
+                currentSelection = getSelectedItem();
+                firePropertyChange(
+                    "selectedItem", oldSelection, currentSelection);
             }
         }
     }
