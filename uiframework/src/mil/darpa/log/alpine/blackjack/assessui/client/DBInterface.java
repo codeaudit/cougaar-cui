@@ -9,6 +9,7 @@ import org.cougaar.lib.uiframework.transducer.configs.*;
 import org.cougaar.lib.uiframework.transducer.elements.*;
 
 import org.cougaar.lib.uiframework.ui.util.DBDatasource;
+import org.cougaar.lib.uiframework.ui.util.SelectableHashtable;
 
 /**
  * This class is used to extract data from a database that uses the blackjack
@@ -21,6 +22,7 @@ public class DBInterface extends DBDatasource
 {
     /** Item tree from database */
     public static DefaultMutableTreeNode
+        // itemTree = createItemTree();  Uncomment when using itemWeights table
         itemTree = createTree(getTableName("item"));
 
     /** Organization tree from database */
@@ -40,6 +42,8 @@ public class DBInterface extends DBDatasource
     /** Array of strings that represent blackjack metric types */
     public static final Object[]
         metrics = lookupValues("assessmentMetrics", "name").toArray();
+    public static final Object[]
+        metricIDs = lookupValues("assessmentMetrics", "id").toArray();
 
     /** Tree that represents blackjack metric groupings */
     public static DefaultMutableTreeNode metricTree = makeMetricTree();
@@ -55,6 +59,26 @@ public class DBInterface extends DBDatasource
         config.setIdKey("id");
         config.setParentKey("parent");
         config.addContentKey("UID", "name");
+        config.addContentKey("ID", "id");
+        //config.addContentKey("annotation", "note");
+        config.setPrimaryKeys(new String[] {"keynum"});
+
+        return createTree(restoreFromDb(config));
+    }
+
+    /**
+     * Gets tree representation of data in specified table.  Table must follow
+     * a given schema.
+     */
+    public static DefaultMutableTreeNode createItemTree()
+    {
+        SqlTableMap config = new SqlTableMap();
+        config.setDbTable(getTableName("item"));
+        config.setIdKey("id");
+        config.setParentKey("parent_id");
+        config.addContentKey("UID", "name");
+        config.addContentKey("ID", "id");
+        config.addContentKey("ITEM_ID", "item_id");
         //config.addContentKey("annotation", "note");
         config.setPrimaryKeys(new String[] {"keynum"});
 
@@ -64,14 +88,27 @@ public class DBInterface extends DBDatasource
     private static DefaultMutableTreeNode makeMetricTree()
     {
         DefaultMutableTreeNode p;
+        DefaultMutableTreeNode groupA;
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("");
-        root.add(p = new DefaultMutableTreeNode("Stoplight Components"));
-        p.add(new DefaultMutableTreeNode(metrics[0]));
-        p.add(new DefaultMutableTreeNode(metrics[1]));
-        root.add(p = new DefaultMutableTreeNode("Group A"));
-        for (int i = 2; i < metrics.length; i++)
+        root.add(p = new DefaultMutableTreeNode(
+                            UIConstants.STOPLIGHT_UI_NAME + " Components"));
+        root.add(groupA = new DefaultMutableTreeNode("Group A"));
+
+
+        for (int i = 0; i < metrics.length; i++)
         {
-            p.add(new DefaultMutableTreeNode(metrics[i]));
+            Hashtable ht = new SelectableHashtable("UID");
+            ht.put("UID", metrics[i]);
+            ht.put("ID", metricIDs[i]);
+
+            if (i < 2)
+            {
+                p.add(new DefaultMutableTreeNode(ht));
+            }
+            else
+            {
+                groupA.add(new DefaultMutableTreeNode(ht));
+            }
         }
 
         return root;
@@ -123,7 +160,14 @@ public class DBInterface extends DBDatasource
 
         if (!variableDescriptorName.equalsIgnoreCase("time"))
         {
-            tableName = "assessment" + variableDescriptorName + "s";
+            //if (variableDescriptorName.equalsIgnoreCase("Item"))
+            //{
+            //    tableName = "itemWeights";
+            //}
+            //else
+            //{
+                tableName = "assessment" + variableDescriptorName + "s";
+            //}
         }
         return tableName;
     }
