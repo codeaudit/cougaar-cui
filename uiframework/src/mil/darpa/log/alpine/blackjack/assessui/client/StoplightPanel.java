@@ -184,14 +184,13 @@ public class StoplightPanel extends JPanel implements CougaarUI
             });
 
         // stoplight settings panel
-        viewPanel = new CViewFeatureSelectionControl(BoxLayout.X_AXIS);
+        viewPanel = new CViewFeatureSelectionControl(BoxLayout.Y_AXIS);
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
         metricSelector.addPropertyChangeListener("selectedItem",
                                                  new PropertyChangeListener(){
                 public void propertyChange(PropertyChangeEvent e)
                 {
                     String newSelectedMetric = e.getNewValue().toString();
-                    updateStoplightViewOptions(newSelectedMetric);
                 }
             });
 
@@ -201,10 +200,10 @@ public class StoplightPanel extends JPanel implements CougaarUI
         CRadioButtonSelectionControl itemDisplayPanel =
             new CRadioButtonSelectionControl(new String[]{descriptionString,
                                                           nsnString},
-                                           BoxLayout.X_AXIS);
+                                           BoxLayout.Y_AXIS);
         itemDisplayPanel.setSelectedItem(descriptionString);
         itemDisplayPanel.setBorder(
-            BorderFactory.createTitledBorder("Item Representation"));
+            BorderFactory.createTitledBorder("Item Labels"));
         itemDisplayPanel.addPropertyChangeListener("selectedItem",
                                                 new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e)
@@ -220,7 +219,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
                     //                        TableModelEvent.HEADER_ROW));
                 }
             });
-
 
         if (plaf)
         {
@@ -284,8 +282,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         stoplightPanel.add(scrolledStoplightChart, BorderLayout.CENTER);
         stoplightPanel.setBorder(BorderFactory.createEtchedBorder());
         stoplightChart.setViewFeatureSelectionControl(viewPanel);
-        updateStoplightViewOptions(
-            metricSelector.getSelectedItem().toString());
+        viewPanel.setMode(CViewFeatureSelectionControl.VALUE);
 
         // associate threshold control with stoplight chart
         if (plaf)
@@ -358,19 +355,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
         add(titlePanel, BorderLayout.NORTH);
         add(stoplightPanel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
-    }
-
-    private void updateStoplightViewOptions(String newSelectedMetric)
-    {
-        //if (stoplightMetrics.contains(newSelectedMetric))
-        //{
-        //    viewPanel.setSelectedItem(CViewFeatureSelectionControl.COLOR);
-        //}
-        //else
-        //{
-            viewPanel.setSelectedItem(CViewFeatureSelectionControl.VALUE);
-        //}
-
     }
 
     private void updateView()
@@ -491,12 +475,17 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
     private void updateThresholdExtents()
     {
+        SliderControl thresholdsSlider = (SliderControl)thresholdsPanel;
         if (stoplightMetrics.contains(
             variableManager.getDescriptor("Metric").getValue().toString()))
         {
-            ((SliderControl)thresholdsPanel).setMinValue(0);
-            ((SliderControl)thresholdsPanel).setMaxValue(4);
-            ((SliderControl)thresholdsPanel).evenlyDistributeValues();
+            if ((thresholdsSlider.getMinValue() != 0) ||
+                (thresholdsSlider.getMaxValue() != 4))
+            {
+                thresholdsSlider.setMinValue(0);
+                thresholdsSlider.setMaxValue(4);
+                thresholdsSlider.evenlyDistributeValues();
+            }
             return;
         }
 
@@ -518,13 +507,13 @@ public class StoplightPanel extends JPanel implements CougaarUI
             }
         }
 
-        float newShift = ((SliderControl)thresholdsPanel).
-            roundAndSetSliderRange(minValue, maxValue);
+        float newShift =
+            thresholdsSlider.roundAndSetSliderRange(minValue, maxValue);
         // if new slider range was modified by an exponential amount,
         // redistribute threshold values
         if (newShift != shift)
         {
-            ((SliderControl)thresholdsPanel).evenlyDistributeValues();
+            thresholdsSlider.evenlyDistributeValues();
             shift = newShift;
         }
     }
