@@ -26,9 +26,9 @@ import java.util.*;
 
 import org.cougaar.domain.planning.ldm.plan.Schedule;
 import org.cougaar.domain.planning.ldm.plan.LocationScheduleElement;
+import org.cougaar.domain.planning.ldm.asset.LocationSchedulePG;
 import org.cougaar.domain.glm.ldm.plan.GeolocLocation;
 import org.cougaar.domain.glm.ldm.asset.Organization;
-import org.cougaar.domain.glm.ldm.asset.LocationSchedulePG;
 import org.cougaar.domain.glm.plugins.TimeUtils;
 
 import org.cougaar.lib.aggagent.dictionary.glquery.samples.*;
