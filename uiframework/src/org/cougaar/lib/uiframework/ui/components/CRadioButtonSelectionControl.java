@@ -66,6 +66,15 @@ public class CRadioButtonSelectionControl extends JPanel
     }
 
     /**
+     * Not needed when compiling/running under jdk1.3
+     */
+    protected void firePropertyChange(String propertyName, Object oldValue,
+                                      Object newValue)
+    {
+        super.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    /**
      * Set the selected radio button
      *
      * @param the radio button string to select
