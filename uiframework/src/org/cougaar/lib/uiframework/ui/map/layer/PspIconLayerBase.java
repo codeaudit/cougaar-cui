@@ -44,8 +44,6 @@ import com.bbn.openmap.event.*;
 import org.cougaar.lib.uiframework.ui.components.*;
 import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.util.*;
-import mil.darpa.log.alpine.blackjack.assessui.client.UIConstants;
-import mil.darpa.log.alpine.blackjack.assessui.client.UILaunchPopup;
 
 import org.cougaar.lib.uiframework.ui.map.app.*;
 
@@ -61,7 +59,8 @@ import org.cougaar.lib.uiframework.ui.map.app.*;
 
 public class PspIconLayerBase extends Layer implements MapMouseListener {
 
-    private UILaunchPopup uiLaunchPopup = new UILaunchPopup();
+    private Class uiLaunchClass = null;
+    private Object uiLaunchPopup = null;
     protected OMGraphicList graphics;
 
         ColorCodeUnit ccuA=new ColorCodeUnit();
@@ -88,6 +87,14 @@ public class PspIconLayerBase extends Layer implements MapMouseListener {
 
         graphics = new OMGraphicList(40);
 
+        // try to create blackjack uilaunch popup during runtime
+        // (but don't require it for compilation)
+        try {
+          uiLaunchClass =
+            Class.forName(
+              "mil.darpa.log.alpine.blackjack.assessui.client.UILaunchPopup");
+          uiLaunchPopup = uiLaunchClass.getConstructor(null).newInstance(null);
+        } catch (Exception e) {/* no biggie */}
     }
 
     /**
@@ -132,7 +139,7 @@ public class PspIconLayerBase extends Layer implements MapMouseListener {
     Iterator markerIterator() {
       return myState.markerIterator();
     }
-    
+
     /**
      * Create graphics.
      */
@@ -280,12 +287,26 @@ public class PspIconLayerBase extends Layer implements MapMouseListener {
      */
     public boolean mouseReleased(MouseEvent e){
         final OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
-        if(omgr != null){
+        if ((omgr != null) && (uiLaunchPopup != null)) {
             if (e.isPopupTrigger())
             {
-                uiLaunchPopup.setConfigProperty("Org", getOrgName(omgr));
-                uiLaunchPopup.show(
-                    PspIconLayerBase.this.getParent(), e.getX(), e.getY());
+                try {
+                  // calling blackjack UILaunchPopup methods using reflection
+                  // so that class is not required at compile time.
+                  //uiLaunchPopup.setConfigProperty("Org", getOrgName(omgr));
+                  uiLaunchClass.getMethod("setConfigProperty",
+                    new Class[] {Object.class, Object.class}).
+                      invoke(uiLaunchPopup,
+                             new Object[] {"Org", getOrgName(omgr)});
+                  //uiLaunchPopup.show(
+                  //  PspIconLayerBase.this.getParent(), e.getX(), e.getY());
+                  uiLaunchClass.getMethod("show",
+                    new Class[] {Component.class, Integer.TYPE, Integer.TYPE}).
+                      invoke(uiLaunchPopup,
+                             new Object[] {PspIconLayerBase.this.getParent(),
+                                           new Integer(e.getX()),
+                                           new Integer(e.getY())});
+                } catch (Exception exp) {/* no biggie */}
             }
         } else {
             return false;
