@@ -376,7 +376,8 @@ public class QueryGenerator
                 "(NVL(t1.assessmentValue, 0)/t2.assessmentValue) as " +
                 "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1, (" +
                 denQuery + ") t2 WHERE (t1.ORG (+) = t2.ORG and" +
-                " t1.UnitsOfTime (+) = t2.UnitsOfTime and t1.item (+) = t2.item)";
+                " t1.UnitsOfTime (+) = t2.UnitsOfTime and " +
+                "t1.item (+) = t2.item and t2.assessmentValue <> 0)";
         }
         else
         {
@@ -386,7 +387,8 @@ public class QueryGenerator
                 "(t1.assessmentValue/t2.assessmentValue) as " +
                 "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1 " +
                 "RIGHT OUTER JOIN (" +denQuery+ ") t2 ON (t1.ORG=t2.ORG and" +
-                " t1.UnitsOfTime=t2.UnitsOfTime and t1.item=t2.item)";
+                " t1.UnitsOfTime=t2.UnitsOfTime and t1.item=t2.item and" +
+                " t2.assessmentValue<>0)";
         }
 
         return query;
