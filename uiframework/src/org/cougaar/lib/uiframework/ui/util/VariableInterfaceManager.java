@@ -432,4 +432,33 @@ public class VariableInterfaceManager
 
         return rootSelector;
     }
+
+    /**
+     * Return a string that describes the current settings of all variable
+     * interfaces.
+     *
+     * @return a string that describes the current settings of all variable
+     *         interfaces.
+     */
+    public String toString()
+    {
+        StringBuffer currentSettings = new StringBuffer();
+
+        VariableModel xAxis =
+            (VariableModel)getDescriptors(VariableModel.X_AXIS).nextElement();
+        VariableModel yAxis =
+            (VariableModel)getDescriptors(VariableModel.Y_AXIS).nextElement();
+
+        currentSettings.append(yAxis + " [" + yAxis.getValue() + "] vs ");
+        currentSettings.append(xAxis + " [" + xAxis.getValue() + "] where ");
+        Enumeration vds = getDescriptors(VariableModel.FIXED);
+        while(vds.hasMoreElements())
+        {
+            VariableModel v = (VariableModel)vds.nextElement();
+            currentSettings.append(v + " = " + v.getValue());
+            if (vds.hasMoreElements()) currentSettings.append(" and ");
+        }
+
+        return currentSettings.toString();
+    }
 }
