@@ -26,7 +26,7 @@ import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoDecoder;
 public class BJDBMaintainerBean implements SessionBean
 {
     private static final String HACK_FOR_SAFETY_LEVEL = "Demand";
-    private static final String SAFETY_LEVEL_METRIC_STRING = "Safety Level";
+    private static final String SAFETY_LEVEL = "SafetyLevel";
 
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
@@ -118,14 +118,6 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         boolean run_safety_level_hack = false;
         int safety_level_metric_id = 0;
 
-        if (metric_string.compareTo(HACK_FOR_SAFETY_LEVEL) == 0) {
-            System.out.println ("******************************");
-            System.out.println ("Running hack for safety level!");
-            System.out.println ("******************************");
-            run_safety_level_hack = true;
-            safety_level_metric_id = getMetricID (SAFETY_LEVEL_METRIC_STRING);
-        }
-
         int index = 0;
 
         int start_time_in_days;
@@ -135,6 +127,16 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         try {
             stmt = connection.createStatement();
             createPreparedStatements();
+
+            if (metric_string.compareTo(HACK_FOR_SAFETY_LEVEL) == 0) {
+                System.out.println ("******************************");
+                System.out.println ("Running hack for safety level!");
+                System.out.println ("******************************");
+                run_safety_level_hack = true;
+                safety_level_metric_id = getMetricID (SAFETY_LEVEL);
+                System.out.println ("metric string is " + SAFETY_LEVEL);
+                System.out.println ("metric id is " + safety_level_metric_id);
+            }
 
             int metric_id = getMetricID (metric_string);
 
@@ -186,6 +188,10 @@ if (index == 0) {
 
                 index++;
 
+                if (index % 100 == 0) {
+                    // Save the work in the database
+                    connection.commit();
+                }
             } /* end of while */
 
             System.out.println ("Done, processed " + index + " records");
@@ -434,13 +440,13 @@ System.out.print ("insert"+time_index);
             // The effective query is
             // SELECT id FROM assessmentOrgs WHERE name = org_field_name
 
-            ResultSet rs = stmt.executeQuery ("SELECT * FROM assessmentOrgs WHERE id = " + org_id);
+            ResultSet rs = stmt.executeQuery ("SELECT SAFETY_LEVEL FROM assessmentOrgs WHERE id = " + org_id);
 
             if (rs.next()) { // get the id value
-                // Get out the multiplier
+                multiplier = rs.getFloat ("SAFETY_LEVEL");
             }
             else {
-                // This is really messed up somehow
+                multiplier = 0.0f;
             }
 
             return multiplier;
