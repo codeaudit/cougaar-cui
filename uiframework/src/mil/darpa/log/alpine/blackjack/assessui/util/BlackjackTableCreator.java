@@ -137,6 +137,8 @@ public class BlackjackTableCreator
                                  "name   CHAR(50)     NOT NULL," +
                                  "primary key (id)            )");
 
+        stmt.executeUpdate ("create index assessmentOrgs_name_index on assessmentOrgs (name)");
+
         if (createItemTable)
         {
             try
@@ -146,9 +148,14 @@ public class BlackjackTableCreator
             catch(SQLException e) {} // it doesn't yet exist; good
             stmt.executeUpdate("CREATE TABLE itemWeights" +
                                 "(id     INTEGER      NOT NULL," +
-                                 "parent INTEGER      NOT NULL," +
-                                 "name   CHAR(50)     NOT NULL," +
+                                 "item_id CHAR(20)," +
+                                 "parent_id INTEGER," +
+                                 "parent_id_text CHAR(20)," +
+                                 "name   CHAR(70)," +
+                                 "weight double," +
                                  "primary key (id)            )");
+
+            stmt.executeUpdate ("create index itemWeights_item_id_index on itemWeights (item_id)");
         }
 
         if (createMetricTable)
