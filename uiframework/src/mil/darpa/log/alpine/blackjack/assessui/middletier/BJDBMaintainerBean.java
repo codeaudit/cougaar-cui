@@ -5,6 +5,7 @@
  * Raytheon Systems Company (RSC) Consortium).
  * This software to be used only in accordance with the
  * COUGAAR licence agreement.
+ * yo
  * </copyright>
  */
 package mil.darpa.log.alpine.blackjack.assessui.middletier;
