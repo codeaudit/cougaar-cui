@@ -183,7 +183,7 @@ public class DBDatasource
         JTreeInterpreter jti = new JTreeInterpreter();
         DefaultMutableTreeNode dmtn =
             (DefaultMutableTreeNode)jti.generate(s).getModel().getRoot();
-        trimUIDs(dmtn);
+        //trimUIDs(dmtn);
         return dmtn;
     }
 
@@ -339,6 +339,7 @@ public class DBDatasource
         return executeVectorReturnQuery(con, query.toString());
     }
 
+    /*
     private static void trimUIDs(DefaultMutableTreeNode dmtn)
     {
         dmtn.setUserObject(dmtn.getUserObject().toString().trim());
@@ -347,6 +348,7 @@ public class DBDatasource
             trimUIDs((DefaultMutableTreeNode)dmtn.getChildAt(i));
         }
     }
+    */
 
     private static MappedTransducer makeTransducer (SqlTableMap config)
     {
