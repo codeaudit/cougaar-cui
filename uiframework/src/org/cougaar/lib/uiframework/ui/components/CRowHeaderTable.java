@@ -293,6 +293,22 @@ public class CRowHeaderTable extends JTable
                     }
                     sizeColumnsToFit(-1);
 
+                    // Presentation mode fix
+                    TableModel tm = getModel();
+                    if ((tm != null) && (tm.getColumnCount() > 0))
+                    {
+                        int rowHeight = getColumnHeader(CRowHeaderTable.this, 0).
+                            getTableCellRendererComponent(CRowHeaderTable.this,
+                            "#", false, false, 0, 0).getPreferredSize().height;
+                        if ((rowHeader != null) && (cornerHeader != null)
+                            && (rowHeight > 0))
+                        {
+                            setRowHeight(rowHeight);
+                            rowHeader.setRowHeight(rowHeight);
+                            cornerHeader.setRowHeight(rowHeight);
+                        }
+                    }
+
                     // Ensure that table repaints correctly
                     getTableHeader().resizeAndRepaint();
                     rowHeader.sizeColumnsToFit(-1);
@@ -385,6 +401,33 @@ public class CRowHeaderTable extends JTable
         return targetWidth;
     }
 
+    private TableCellRenderer getColumnHeader(JTable table,int columnIndex)
+    {
+        TableColumn column = table.getColumnModel().getColumn(columnIndex);
+
+        TableCellRenderer cr = null;
+        if (usingJdk13orGreater())
+        {
+            JTableHeader th = table.getTableHeader();
+
+            try
+            {
+                // Without using reflection, the following line is:
+                // ct = th.getDefaultRenderer()
+                // Will not compile under jdk1.2.2 (thus the use of reflection)
+                cr = (TableCellRenderer)th.getClass().
+                        getMethod("getDefaultRenderer", null).invoke(th, null);
+            }
+            catch (Exception e) {e.printStackTrace();}
+        }
+        else
+        {
+            cr = column.getHeaderRenderer(); // jdk1.2
+        }
+
+        return cr;
+    }
+
     private class HeaderCellRenderer extends DefaultTableCellRenderer
     {
         public Component
@@ -447,33 +490,6 @@ public class CRowHeaderTable extends JTable
             }
             setOpaque(true);
 	    setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-        }
-
-        private TableCellRenderer getColumnHeader(JTable table,int columnIndex)
-        {
-            TableColumn column = table.getColumnModel().getColumn(columnIndex);
-
-            TableCellRenderer cr = null;
-            if (usingJdk13orGreater())
-            {
-                JTableHeader th = table.getTableHeader();
-
-                try
-                {
-                    // Without using reflection, the following line is:
-                    // ct = th.getDefaultRenderer()
-                    // Will not compile under jdk1.2.2 (thus the use of reflection)
-                    cr = (TableCellRenderer)th.getClass().
-                        getMethod("getDefaultRenderer", null).invoke(th, null);
-                }
-                catch (Exception e) {e.printStackTrace();}
-            }
-            else
-            {
-                cr = column.getHeaderRenderer(); // jdk1.2
-            }
-
-            return cr;
         }
     }
 }
