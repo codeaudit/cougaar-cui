@@ -46,11 +46,35 @@ import org.cougaar.lib.uiframework.ui.themes.*;
  */
 public class CFrame extends JFrame implements Printable
 {
+    /**
+     * Default constructor.  Create new CFrame without any contents
+     * or title.
+     */
+    public CFrame()
+    {
+        super();
+
+        init();
+    }
+
+    /**
+     * Create a new JFrame with given title and pluggable look and feel support
+     *
+     * @param title frame title
+     * @param plaf true if all components of frame will support pluggable look
+     *             and feel
+     */
     public CFrame(String title, boolean plaf)
     {
         super(title);
+
+        init();
+        setPlaf(plaf);
+    }
+
+    private void init()
+    {
         setJMenuBar(createMenus());
-        lafMenu.setEnabled(plaf);
         setSize(1000, 600);
     }
 
@@ -109,6 +133,17 @@ public class CFrame extends JFrame implements Printable
         //             (imageableHeight - cs.height)*scale/2);
         printTarget.paintAll(g2);
         return Printable.PAGE_EXISTS;
+    }
+
+    /**
+     * Set pluggable look and feel capable
+     *
+     * @param plaf true if all components of frame will support pluggable look
+     *             and feel
+     */
+    public void setPlaf(boolean plaf)
+    {
+        lafMenu.setEnabled(plaf);
     }
 
     /**

@@ -12,6 +12,18 @@ import javax.swing.tree.*;
 public class CNodeSelectionControl extends JTree
 {
     /**
+     * Default constructor.  Creates a new CNodeSelectionControl with default
+     * contents.
+     */
+    public CNodeSelectionControl()
+    {
+        super();
+
+        getSelectionModel().
+            setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    }
+
+    /**
      * Create a new JTree using the given tree model for data.
      *
      * @param top root node of tree model

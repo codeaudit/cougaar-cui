@@ -14,6 +14,7 @@ import org.cougaar.lib.uiframework.ui.components.graph.Axis;
 import org.cougaar.lib.uiframework.ui.components.graph.DataSet;
 import org.cougaar.lib.uiframework.ui.components.graph.Graph2D;
 import org.cougaar.lib.uiframework.ui.components.graph.Markers;
+import org.cougaar.lib.uiframework.ui.models.TestFunctionTableModel;
 
 /**
  * Line plot chart that can get it's data from a table model.  Each row of the
@@ -37,6 +38,7 @@ public class CLinePlotChart extends Graph2D
     public CLinePlotChart()
     {
         super();
+        this.tm = new TestFunctionTableModel();
         init();
     }
 
@@ -51,14 +53,6 @@ public class CLinePlotChart extends Graph2D
         this.tm = tm;
 
         init();
-        regeneratePlots();
-
-        tm.addTableModelListener(new TableModelListener() {
-                public void tableChanged(TableModelEvent e)
-                {
-                    regeneratePlots();
-                }
-            });
     }
 
     /**
@@ -172,6 +166,15 @@ public class CLinePlotChart extends Graph2D
         yaxis_right.setLabelFont(new Font("Helvetica",Font.PLAIN,15));
         yaxis_right.setTitleColor(new Color(100,100,255) );
         */
+
+        regeneratePlots();
+
+        tm.addTableModelListener(new TableModelListener() {
+                public void tableChanged(TableModelEvent e)
+                {
+                    regeneratePlots();
+                }
+            });
     }
 
     /**
@@ -246,7 +249,9 @@ public class CLinePlotChart extends Graph2D
             {
                 for (; columnStart < tm.getColumnCount() ; columnStart++)
                 {
-                    if (tm.getValueAt(rowStart, columnStart) instanceof Float)
+                    Object testValue = tm.getValueAt(rowStart, columnStart);
+                    if ((testValue instanceof Float) ||
+                        (testValue instanceof Double))
                     {
                         break search;
                     }
@@ -277,7 +282,7 @@ public class CLinePlotChart extends Graph2D
                         data[pointLocation] = column;
                     }
                     data[pointLocation + 1] =
-                        ((Float)tm.getValueAt(row, column)).doubleValue();
+                        ((Number)tm.getValueAt(row, column)).doubleValue();
                 }
                 plot(data, numberOfDataPoints, 1,
                      (String)tm.getValueAt(row, 0));
@@ -285,5 +290,18 @@ public class CLinePlotChart extends Graph2D
         }
         revalidate();
         repaint();
+    }
+
+    /**
+     * Main for unit testing.
+     *
+     * @param args ignored
+     */
+    public static void main(String[] args)
+    {
+        JFrame frame = new JFrame();
+        frame.getContentPane().add(new CLinePlotChart(), BorderLayout.CENTER);
+        frame.setSize(400, 100);
+        frame.setVisible(true);
     }
 }

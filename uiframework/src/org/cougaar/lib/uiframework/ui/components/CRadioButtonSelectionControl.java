@@ -14,6 +14,16 @@ public class CRadioButtonSelectionControl extends JPanel
     private ButtonGroup radioButtons = new ButtonGroup();
 
     /**
+     * Default constructor.  Create a radio button selection control with
+     * default selections and horizontal orientation.
+     */
+    public CRadioButtonSelectionControl()
+    {
+        super(new FlowLayout());
+        init(new String[]{"selection 1", "selection 2"} , BoxLayout.X_AXIS);
+    }
+
+    /**
      * Create a new radio button selection control
      *
      * @param selections  array of strings that will be used to label the radio
@@ -23,7 +33,11 @@ public class CRadioButtonSelectionControl extends JPanel
     public CRadioButtonSelectionControl(String[] selections, int orientation)
     {
         super(new FlowLayout());
+        init(selections, orientation);
+    }
 
+    private void init(String[] selections, int orientation)
+    {
         Box box = new Box(orientation);
 
         for (int i = 0; i < selections.length; i++)

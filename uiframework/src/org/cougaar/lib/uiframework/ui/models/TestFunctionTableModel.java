@@ -57,7 +57,7 @@ public class TestFunctionTableModel extends DefaultTableModel
         }
         else
         {
-            return Integer.class;
+            return Double.class;
         }
     }
 

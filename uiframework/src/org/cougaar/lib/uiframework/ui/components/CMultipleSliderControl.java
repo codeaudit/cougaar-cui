@@ -12,6 +12,16 @@ public class CMultipleSliderControl extends JPanel
     private String[] sliderLabels;
 
     /**
+     * Default contructor.  Creates new slider control using default label
+     * and min/max values.  Needed for use as bean.
+     */
+    public CMultipleSliderControl()
+    {
+        super();
+        init(new String[]{"label 1", "label 2"}, 0, 1);
+    }
+
+    /**
      * Creates new slider control uding the given labels.
      *
      * @param sliderLabels an array of labels for the sliders
@@ -22,6 +32,11 @@ public class CMultipleSliderControl extends JPanel
                                   float maxValue)
     {
         super();
+        init(sliderLabels, minValue, maxValue);
+    }
+
+    private void init(String[] sliderLabels, float minValue, float maxValue)
+    {
         this.sliderLabels = sliderLabels;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

@@ -23,6 +23,17 @@ public class CViewFeatureSelectionControl extends CRadioButtonSelectionControl
     private static String[] selections = {COLOR, VALUE, BOTH};
 
     /**
+     * Default constructor.  Create new view feature selection control with
+     * horizontal orientation.
+     */
+    public CViewFeatureSelectionControl()
+    {
+        super(selections, BoxLayout.X_AXIS);
+
+        setSelectedItem(BOTH);
+    }
+
+    /**
      * Create new view feature selection control.
      *
      * @param orientation BoxLayout.X_AXIS or BoxLayout.Y_AXIS

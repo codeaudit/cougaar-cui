@@ -23,6 +23,26 @@ public class COrderedLabeledMThumbSlider extends JPanel
     private DecimalFormat labelFormat;
 
     /**
+     * Default constructor.  Create a new mulitple thumbed slider with 5
+     * thumbs, min value of 0, max value of 1, and unique track colors between
+     * each thumb.
+     */
+    public COrderedLabeledMThumbSlider()
+    {
+        super(new BorderLayout());
+
+        this.numThumbs = 5;
+        initialize(0, 1);
+
+        slider.setFillColorAt(Color.red, 0);
+        slider.setFillColorAt(Color.orange, 1);
+        slider.setFillColorAt(Color.yellow, 2);
+        slider.setFillColorAt(Color.green, 3);
+        slider.setFillColorAt(Color.blue, 4);
+        slider.setTrackFillColor(Color.magenta);
+    }
+
+    /**
      * Create a new mulitple thumbed slider with the given number of thumbs
      *
      * @param numThumb the number of thumb for slider control.
@@ -35,12 +55,6 @@ public class COrderedLabeledMThumbSlider extends JPanel
         super(new BorderLayout());
 
         this.numThumbs = numThumbs;
-
-        slider = new CMThumbSlider(numThumbs);
-        slider.setOpaque(false);
-        slider.putClientProperty( "JSlider.isFilled", Boolean.TRUE );
-        add(slider, BorderLayout.CENTER);
-
         initialize(minValue, maxValue);
     }
 
@@ -53,6 +67,12 @@ public class COrderedLabeledMThumbSlider extends JPanel
     private void initialize(float minValue, float maxValue)
     {
         this.minValue = minValue;
+
+        slider = new CMThumbSlider(numThumbs);
+        slider.setOpaque(false);
+        slider.putClientProperty( "JSlider.isFilled", Boolean.TRUE );
+        add(slider, BorderLayout.CENTER);
+
         unit = (maxValue - minValue) / 100f;
 
         if (Math.abs(maxValue) > 10)

@@ -22,6 +22,16 @@ public class CRangeSelector extends JPanel implements Selector
     private boolean plaf = false;
 
     /**
+     * Default constructor.  Create a new Range Selector that doesn't support
+     * pluggable look and feel.
+     */
+    public CRangeSelector()
+    {
+        super(new BorderLayout());
+        init();
+    }
+
+    /**
      * Create a new Range Selector
      *
      * @param plaf true if pluggable look and feel must be supported
@@ -30,7 +40,11 @@ public class CRangeSelector extends JPanel implements Selector
     {
         super(new BorderLayout());
         this.plaf = plaf;
+        init();
+    }
 
+    private void init()
+    {
         setLayout(new BorderLayout(10, 10));
         if (plaf)
         {

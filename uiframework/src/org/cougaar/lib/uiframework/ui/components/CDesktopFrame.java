@@ -19,6 +19,16 @@ public class CDesktopFrame extends CFrame
     private JDesktopPane desktopPane;
 
     /**
+     * Default constructor.  Create new CFrameContainer without any tools
+     * (i.e. views) or title.
+     */
+    public CDesktopFrame()
+    {
+        super();
+        init();
+    }
+
+    /**
      * Create new CFrameContainer without any tools (i.e. views).
      *
      * @param title of frame.
@@ -26,6 +36,11 @@ public class CDesktopFrame extends CFrame
     public CDesktopFrame(String title)
     {
         super(title, true);
+        init();
+    }
+
+    private void init()
+    {
         addMenus();
         desktopPane = new CDesktopPane();
         getContentPane().add(desktopPane, BorderLayout.CENTER);
