@@ -16,6 +16,7 @@ import org.cougaar.lib.uiframework.ui.components.CRLabel;
 import org.cougaar.lib.uiframework.ui.components.CRowHeaderTable;
 import org.cougaar.lib.uiframework.ui.components.CTreeButton;
 import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
+import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
 import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 import org.cougaar.lib.uiframework.ui.util.TableSorter;
@@ -141,8 +142,12 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         CRangeButton rangeButton =
             new CRangeButton("C", DBInterface.minTimeRange,
                              DBInterface.maxTimeRange, plaf);
-        rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
-                                           DBInterface.maxTimeRange);
+
+        // demo kludge
+        rangeButton.setSelectedItem(new RangeModel(-15, 50));
+        orgTreeButton.setSelectedItem("2-BDE-3ID-HHC");
+        //rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
+        //                                   DBInterface.maxTimeRange);
 
         VariableModel[] variables =
         {

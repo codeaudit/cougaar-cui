@@ -123,7 +123,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private void createComponents()
     {
         stoplightMetrics.add("Supply as Proportion of Demand");
-        stoplightMetrics.add("Inventory Over Safety Level");
+        stoplightMetrics.add(
+            mil.darpa.log.alpine.blackjack.assessui.client.QueryGenerator.INV_SAF_METRIC);
 
         //DefaultMutableTreeNode root =
         //    DBInterface.createTree(DBInterface.getTableName("item"));
@@ -139,8 +140,12 @@ public class StoplightPanel extends JPanel implements CougaarUI
         CRangeButton rangeButton =
             new CRangeButton("C", DBInterface.minTimeRange,
                              DBInterface.maxTimeRange, plaf);
-        rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
-                                           DBInterface.maxTimeRange);
+
+        // demo kludge
+        rangeButton.setSelectedItem(new RangeModel(-15, 50));
+        orgTreeButton.setSelectedItem("2-BDE-3ID-HHC");
+        //rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
+        //                                   DBInterface.maxTimeRange);
 
         VariableModel[] variables =
         {
@@ -490,7 +495,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
             variableManager.getDescriptor("Metric").getValue().toString()))
         {
             ((SliderControl)thresholdsPanel).setMinValue(0);
-            ((SliderControl)thresholdsPanel).setMaxValue(2);
+            ((SliderControl)thresholdsPanel).setMaxValue(4);
             ((SliderControl)thresholdsPanel).evenlyDistributeValues();
             return;
         }
