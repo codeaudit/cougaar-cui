@@ -33,8 +33,9 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
    *  Cluster.  Then convert that schedule to XML for transportation across the
    *  net.
    *  @param matches the collection of Organization assets on the logplan
+   *  @param eventType the published operation applied to the matching Objects
    */
-  public void execute (Collection matches) {
+  public void execute (Collection matches, String eventType) {
     for (Iterator i = matches.iterator(); i.hasNext(); ) {
       Organization org = (Organization) i.next();
       // Determine whether this organization is the one we're looking for by
