@@ -92,20 +92,15 @@ public class CDesktopFrame extends CFrame
         f.setSize(850, 500);
         desktopPane.add(f, JLayeredPane.PALETTE_LAYER);
         f.setVisible(true);
+        try {f.setSelected(true);} catch(Exception e) {}
 
-        // In jdk1.3 new inner frame will automatically be set active
-        if (!usingJdk13orGreater())
-        {
-            try {f.setSelected(true);} catch(Exception e) {}
-
-            SwingUtilities.invokeLater(new Runnable() {
-                    public void run()
-                    {
-                        // workaround for apparent jdk1.2 Swing bug
-                        f.setSize(801, 500);
-                    }
-                });
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+                public void run()
+                {
+                    // workaround for apparent Swing bug
+                    f.setSize(801, 500);
+                }
+            });
 
         // add new window to window menu
         final JMenuItem mi = (JMenuItem)windowMenu.add(new JMenuItem(title));
