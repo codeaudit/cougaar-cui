@@ -1,0 +1,6 @@
+<object type="java.util.Vector">
+  <element type="org.cougaar.lib.planserver.NamedPSP">
+    <Classname>org.cougaar.lib.uiframework.ui.orglocation.psp.PSP_LocQuery</Classname>
+    <PSPName>locations/query.psp</PSPName>
+  </element>
+</object>
