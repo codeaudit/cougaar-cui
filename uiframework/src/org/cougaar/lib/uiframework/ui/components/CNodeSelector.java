@@ -1,6 +1,8 @@
 package org.cougaar.lib.uiframework.ui.components;
 
 import java.awt.*;
+import java.awt.event.*;
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
@@ -75,6 +77,19 @@ public class CNodeSelector extends JPanel implements Selector
                                        selectedNode);
                 }
             });
+
+        nsc.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e)
+                {
+                    int selRow = nsc.getRowForLocation(e.getX(), e.getY());
+                    TreePath selPath =
+                        nsc.getPathForLocation(e.getX(), e.getY());
+                    if(selRow != -1)
+                    {
+                        fireActionPerformed();
+                    }
+                }
+            });
     }
 
     /**
@@ -140,6 +155,38 @@ public class CNodeSelector extends JPanel implements Selector
                 findNode((DefaultMutableTreeNode)nsc.getModel().getRoot(),
                          selectedItem.toString());
             nsc.setSelectionPath(new TreePath(node.getPath()));
+        }
+    }
+
+    private Vector actionListeners = new Vector();
+
+    /**
+     * Adds an action listener that is fired whenever the user attempts to make
+     * a selection (even if the selectedItem property did not change).
+     *
+     * @param al the new action listener
+     */
+     public void addActionListener(ActionListener al)
+     {
+        actionListeners.add(al);
+     }
+
+    /**
+     * Removes a registered action listener.
+     *
+     * @param al the existing action listener
+     */
+    public void removeActionListener(ActionListener al)
+    {
+        actionListeners.remove(al);
+    }
+
+    private void fireActionPerformed()
+    {
+        for (int i = 0; i < actionListeners.size(); i++)
+        {
+            ActionListener al = (ActionListener)actionListeners.elementAt(i);
+            al.actionPerformed(new ActionEvent(this, 0, "selectedItemAction"));
         }
     }
 

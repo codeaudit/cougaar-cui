@@ -210,6 +210,27 @@ public class CRangeSelector extends JPanel implements Selector, SliderControl
         }
     }
 
+    /**
+     * Adds an action listener that is fired whenever the user attempts to make
+     * a selection (even if the selectedItem property did not change).
+     *
+     * @param al the new action listener
+     */
+     public void addActionListener(ActionListener al)
+     {
+        okButton.addActionListener(al);
+     }
+
+    /**
+     * Removes a registered action listener.
+     *
+     * @param al the existing action listener
+     */
+    public void removeActionListener(ActionListener al)
+    {
+        okButton.removeActionListener(al);
+    }
+
     private void updateRange()
     {
         RangeModel oldRange = range;

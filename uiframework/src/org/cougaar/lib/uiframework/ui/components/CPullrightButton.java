@@ -48,14 +48,22 @@ public class CPullrightButton extends JButton
         this.selectorControl = selectorControl;
         setText(selectorControl.getSelectedItem().toString());
         pullright = new PullrightMenu(this, (Component)selectorControl);
+
         selectorControl.addPropertyChangeListener("selectedItem",
                                      new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e)
                 {
                     setText(selectorControl.getSelectedItem().toString());
+                }
+            });
+
+        selectorControl.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
                     pullright.setVisible(false);
                 }
             });
+
         addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {

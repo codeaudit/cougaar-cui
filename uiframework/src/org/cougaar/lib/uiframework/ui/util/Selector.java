@@ -1,6 +1,7 @@
 package org.cougaar.lib.uiframework.ui.util;
 
 import java.awt.Component;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 
 /**
@@ -58,4 +59,19 @@ public interface Selector
      * @param al the existing property change listener
      */
     public void removePropertyChangeListener(PropertyChangeListener al);
+
+    /**
+     * Adds an action listener that is fired whenever the user attempts to make
+     * a selection (even if the selectedItem property did not change).
+     *
+     * @param al the new action listener
+     */
+     public void addActionListener(ActionListener al);
+
+    /**
+     * Removes a registered action listener.
+     *
+     * @param al the existing action listener
+     */
+     public void removeActionListener(ActionListener al);
 }

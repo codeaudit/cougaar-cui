@@ -97,6 +97,12 @@ public class CMenuButton extends JButton implements Selector
             final Selector s = (Selector)comps[i];
             s.addPropertyChangeListener("selectedItem",
                                         new SelectionUpdateListener(s));
+            s.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    propertyChangeHandler(null, s);
+                }
+            });
         }
         updateSelection();
     }
@@ -147,23 +153,28 @@ public class CMenuButton extends JButton implements Selector
 
         public void propertyChange(PropertyChangeEvent e)
         {
-            Object invoker = selectorMenu.getInvoker();
-            if (invoker == CMenuButton.this)
+            propertyChangeHandler(e.getSource(), s);
+        }
+    }
+
+    private void propertyChangeHandler(Object source, Selector s)
+    {
+        Object invoker = selectorMenu.getInvoker();
+        if (invoker == CMenuButton.this)
+        {
+            // The user has created this event using my control.
+            selectorMenu.setInvoker(null);
+            if (s != null)
             {
-                // The user has created this event using my control.
-                selectorMenu.setInvoker(null);
-                if (s != null)
-                {
-                    selectorMenu.setSelectedItem(s);
-                }
-                updateSelection();
+                selectorMenu.setSelectedItem(s);
             }
-            else if (e.getSource() == selectedSelector)
-            {
-                // My selector is being updated via setValue call
-                selectorMenu.setSelectedItem(selectedSelector, false);
-                updateSelection();
-            }
+            updateSelection();
+        }
+        else if (source == selectedSelector)
+        {
+            // My selector is being updated via setValue call
+            selectorMenu.setSelectedItem(selectedSelector, false);
+            updateSelection();
         }
     }
 
@@ -189,7 +200,6 @@ public class CMenuButton extends JButton implements Selector
             }
 
             setText(selectedLabel + ":   " + value);
-
             selectedMenu.getPopupMenu().setVisible(false);
             selectorMenu.setVisible(false);
 
