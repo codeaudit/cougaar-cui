@@ -8,12 +8,12 @@ if NOT EXIST "%ORGHV_HOME%"  goto err2
 
 set SRC_BASE=%ORGHV_HOME%\src
 set BIN_BASE=%ORGHV_HOME%\classes
-set LIB_BASE=d:\home\alpine\lib
+set LIB_BASE=%ORGHV_HOME%\lib
 rem set LIB_BASE=%COUGAAR_INSTALL_PATH%
 
 set LIBPATH=
 set LIBPATH=%LIBPATH%;%BIN_BASE%
-set LIBPATH=%LIBPATH%;%ORGHV_HOME%\config
+set LIBPATH=%LIBPATH%;%ORGHV_HOME%\configs
 set LIBPATH=%LIBPATH%;%ORGHV_HOME%\data
 set LIBPATH=%LIBPATH%;%LIB_BASE%\core.jar
 set LIBPATH=%LIBPATH%;%LIB_BASE%\xerces.jar

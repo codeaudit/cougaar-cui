@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orgrels>
+<Cluster ID="89-TKCO-CGO"><other>10-TCBN-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="3-DISCOM-HHC"><other>3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="2-BDE-3ID-HHC"><other>3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="CENTCOM-HHC"></Cluster>
+<Cluster ID="3ID-HHC"><other>JTF-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="24-SPTGP-HHC"><other>3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="1-BDE-3ID-HHC"><other>3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="DLAHQ"><other>CENTCOM-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="HNS"><other>JTF-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="3-FSB"><other>2-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="FUTURE"><other>CENTCOM-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="416-TKCO-POL"><other>10-TCBN-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="MedicalICP"><other>DLAHQ</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="2-7-INFBN"><other>2-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="HOST-NATION-REFINERY"><other>JTF-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="FuelICP"><other>DLAHQ</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="1-64-ARBN"><other>1-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="DFSP"><other>JTF-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="3-69-ARBN"><other>2-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="296-SPTBN"><other>3-BDE-2ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="126-MEDTM-FSURG"><other>3-BDE-2ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="3-BDE-2ID-HHC"><other>3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="703-MSB"><other>3-DISCOM-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="10-TCBN-HHC"></Cluster>
+<Cluster ID="2-3-INFBN"><other>3-BDE-2ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="4-64-ARBN"><other>2-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="1-23-INFBN"><other>3-BDE-2ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="JTF-HHC"><other>CENTCOM-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="3-7-INFBN"><other>1-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="SubsistenceICP"><other>DLAHQ</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="3-15-INFBN"><other>1-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="SparePartsICP"><other>DLAHQ</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="5-20-INFBN"><other>3-BDE-2ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="INDUSTRIAL-BASE"><other>CENTCOM-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="26-FSB"><other>1-BDE-3ID-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+<Cluster ID="APS-3"><other>JTF-HHC</other><relationship>AdministrativeSuperior</relationship></Cluster>
+</orgrels>
