@@ -22,8 +22,10 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 public class QueryGenerator
 {
     private static final boolean debug = false;
-    private static final String INV_SAF_METRIC = "Inventory Over Safety Level";
+    private static final String INV_SAF_METRIC = "Inventory Over Target Level";
     private static final String NO_DATA = "No Data Available";
+
+    private VariableInterfaceManager variableManagerKludgeHelper = null;
 
     /** the database table model to set queries on. */
     private DatabaseTableModel dbTableModel;
@@ -54,7 +56,8 @@ public class QueryGenerator
      * @return query results in a hashtable where [key = org string] and
      *               [value = metric value]
      */
-    public static Hashtable getOrgMetrics(Enumeration orgs, String item,
+    // made non-static for demo kludge
+    public Hashtable getOrgMetrics(Enumeration orgs, String item,
                                           int time, String metric)
     {
         DatabaseTableModel tm = new DatabaseTableModel();
@@ -105,6 +108,8 @@ public class QueryGenerator
      */
     public void generateQuery(VariableInterfaceManager vim)
     {
+        // demo kluge
+        variableManagerKludgeHelper = vim;
         System.out.println(vim);
 
         //
@@ -178,6 +183,19 @@ public class QueryGenerator
         if (debug) System.out.println("Converting row headers to names");
         convertRowHeaderIDsToNames(yAxis, dbTableModel);
 
+        // sort columns and rows
+        if (debug) System.out.println("Sorting time");
+        if (timeDescriptor.getState() == VariableModel.X_AXIS)
+        {
+            dbTableModel.transpose();
+            dbTableModel.sortRows(0);
+            dbTableModel.transpose();
+        }
+        else if (timeDescriptor.getState() == VariableModel.Y_AXIS)
+        {
+            dbTableModel.sortRows(0);
+        }
+
         // derive unit column if needed
         String metric = vim.getDescriptor("Metric").getValue().toString();
         if (yDescName.equals("Item") &&
@@ -223,7 +241,7 @@ public class QueryGenerator
         if (metricDesc.getValue().toString().equals(INV_SAF_METRIC))
         {
             query = generateRatioQuery(vim, "Org", orgNode,
-                                       "Inventory", "Safety Level");
+                                       "Inventory", "Target Level");
         }
         else
         {
@@ -327,7 +345,8 @@ public class QueryGenerator
             }
             else
             {
-                Enumeration children = node.children();
+                //Enumeration children = node.children(); for Agg. values in db
+                Enumeration children = getLeafList(node).elements();
                 whereClause = generateWhereClause(varName, children);
             }
         }
@@ -338,8 +357,7 @@ public class QueryGenerator
         return whereClause;
     }
 
-    private static String generateWhereClause(String varName,
-                                              Enumeration neededValues)
+    private String generateWhereClause(String varName, Enumeration neededValues)
     {
         StringBuffer whereClause =  new StringBuffer();
         String columnName = DBInterface.getColumnName(varName);
@@ -354,9 +372,21 @@ public class QueryGenerator
             neededIDsVector.add(((Hashtable)n.getUserObject()).get("ID"));
         }
 
-        whereClause.append(
-            createDelimitedList(neededIDsVector.elements(),
-                                columnName + " = ", "", " OR "));
+        // demo kludge
+        String itemString =
+            ((Hashtable)((DefaultMutableTreeNode)variableManagerKludgeHelper.
+                getDescriptor("Item").getValue()).getUserObject()).get("UID").
+                toString();
+        if (varName.equals("Item") && itemString.equals("All Items"))
+        {
+            whereClause.append("0=0");
+        }
+        else
+        {
+            whereClause.append(
+                createDelimitedList(neededIDsVector.elements(),
+                                    columnName + " = ", "", " OR "));
+        }
         whereClause.append(")");
 
         return whereClause.toString();
@@ -478,22 +508,45 @@ public class QueryGenerator
             }
             else
             {
+                // demo kludge
+                Vector allLeaves = getLeafList(tn);
+
                 while (oldHeaders.hasMoreElements())
                 {
                     String oldHeader = oldHeaders.nextElement().toString();
-                    for (int ci = 0; ci < tn.getChildCount(); ci++)
+
+                    // demo kludge
+                    if (vm.getName().equals("Item"))
                     {
-                        DefaultMutableTreeNode child =
-                            (DefaultMutableTreeNode)tn.getChildAt(ci);
-                        Hashtable childHT = (Hashtable)child.getUserObject();
-                        if (oldHeader.equals(childHT.get("ID")))
+                        for (int i = 0; i < allLeaves.size(); i++)
                         {
-                            newHeaderObjects.add(child);
-                            break;
+                            DefaultMutableTreeNode child =
+                                (DefaultMutableTreeNode)allLeaves.elementAt(i);
+                            Hashtable childHT = (Hashtable)child.getUserObject();
+                            if (oldHeader.equals(childHT.get("ID")))
+                            {
+                                newHeaderObjects.add(child);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int ci = 0; ci < tn.getChildCount(); ci++)
+                        {
+                            DefaultMutableTreeNode child =
+                                (DefaultMutableTreeNode)tn.getChildAt(ci);
+                            Hashtable childHT = (Hashtable)child.getUserObject();
+                            if (oldHeader.equals(childHT.get("ID")))
+                            {
+                                newHeaderObjects.add(child);
+                                break;
+                            }
                         }
                     }
                 }
 
+                /*
                 // fill with N/As if data does not exist
                 if (newHeaderObjects.size() != tn.getChildCount())
                 {
@@ -507,6 +560,7 @@ public class QueryGenerator
                         }
                     }
                 }
+                */
             }
             newHeaders = newHeaderObjects.elements();
         }
@@ -599,6 +653,7 @@ public class QueryGenerator
      */
     public static void main(String[] args)
     {
+        /*
         if ((System.getProperty("DBTYPE") == null) ||
             (System.getProperty("DBURL") == null) ||
             (System.getProperty("DBUSER") == null) ||
@@ -630,6 +685,7 @@ public class QueryGenerator
                                time);
             printHashtable(ht);
         }
+        */
     }
 
     private class FurthestFromOneCombiner
