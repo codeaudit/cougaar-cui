@@ -119,6 +119,10 @@ public class AggInfoStructure {
     return end_time;
   }
 
+  public void setEndTime (String new_end_time) {
+    end_time = new_end_time;
+  }
+
   static public String getEndTimeXMLString () {
     return end_time_xml_string;
   }
