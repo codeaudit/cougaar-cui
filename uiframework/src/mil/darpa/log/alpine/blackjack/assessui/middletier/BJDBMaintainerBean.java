@@ -113,7 +113,12 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         AggInfoDecoder myDecoder = new AggInfoDecoder ();
 
         String metric_string;
-        metric_string = myDecoder.startXMLDecoding (updateXML);
+        String org_string;
+
+        myDecoder.startXMLDecoding (updateXML);
+
+        org_string = myDecoder.getOrgFromXML ();
+        metric_string = myDecoder.getMetricFromXML ();
 
         boolean run_safety_level_hack = false;
         int safety_level_metric_id = 0;
@@ -140,6 +145,9 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
             int metric_id = getMetricID (metric_string);
 
+            int org_id = getOrgID (org_string);
+
+            System.out.println ("Org is " + org_string);
             System.out.println ("metric string is " + metric_string);
             System.out.println ("metric id is " + metric_id);
 
@@ -147,9 +155,6 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
                 AggInfoStructure myStruct = myDecoder.getNextDataAtom();
 
-if (index == 0) {
-                System.out.print ("Org " + myStruct.getOrg());
-}
                 System.out.print ("Item " + myStruct.getItem());
                 System.out.print (", Rate " + myStruct.getRate());
 
@@ -158,8 +163,6 @@ if (index == 0) {
                 // If item not in table, skip it
                 if (item_id == -1)
                     continue;
-
-                int org_id = getOrgID (myStruct.getOrg());
 
                 if (myStruct.getTime() != null) {
                     rate_float = Float.parseFloat (myStruct.getValue());
