@@ -16,8 +16,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.3 $
- * $Date: 2001-02-28 21:15:45 $
+ * $Revision: 1.4 $
+ * $Date: 2001-03-01 17:15:49 $
  * $Author: pfischer $
  *
  * ***********************************************************************/
@@ -918,7 +918,7 @@ public class CMap implements Serializable, CougaarUI {
     //	================================
     /* add this in for timesControl    */
 
-    final CLabeledSlider ls = new CLabeledSlider("C0", 10, 0, 1000);
+    final CLabeledSlider ls = new CLabeledSlider("C", 10, 0, 1000);
     ls.setLabelWidth(ls.getMinimumLabelWidth(ls.getLabel()));
     ls.setShowTicks(true);
     ls.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Time"));

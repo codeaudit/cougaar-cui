@@ -31,7 +31,7 @@ public class CRangeButton
     public CRangeButton()
     {
         super();
-        init("C+", 0, 100, false);
+        init("C", 0, 100, false);
     }
 
     /**
@@ -64,15 +64,21 @@ public class CRangeButton
         rs.setSelectedItem(range);
         setSelectorControl(rs);
 
-        setText(prefix + min + " to " + prefix + max);
+        updateText();
         rs.addPropertyChangeListener("selectedItem",
                                      new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e)
                 {
-                    RangeModel r = (RangeModel)rs.getSelectedItem();
-                    setText(prefix + r.getMin() + " to " +prefix + r.getMax());
+                    updateText();
                 }
             });
+    }
+
+    private void updateText()
+    {
+        RangeModel r = (RangeModel)rs.getSelectedItem();
+        setText(prefix + (r.getMin() > 0 ? "+" : "") + r.getMin() + " to " +
+                prefix + (r.getMax() > 0 ? "+" : "") + r.getMax());
     }
 
     /**

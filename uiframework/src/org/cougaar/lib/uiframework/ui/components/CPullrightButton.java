@@ -241,14 +241,15 @@ public class CPullrightButton extends JButton implements Selector
     {
         final CPullrightButton prb = new CPullrightButton();
         CSliderSelector ss =
-            new CSliderSelector("Set New Time:", new String[]{"C0"}, 0, 100);
+            new CSliderSelector("Set New Time:", new String[]{"C"}, 0, 100);
         prb.setSelectorControl(ss);
         ss.addPropertyChangeListener("selectedItem",
                                      new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e)
                 {
                     Number n = (Number)((Vector)e.getNewValue()).elementAt(0);
-                    prb.setText("C0" + n.intValue());
+                    prb.setText("C" + ((n.intValue() > 0) ? "+" : "")  +
+                                n.intValue());
                 }
             });
         Vector defaultValue = new Vector();

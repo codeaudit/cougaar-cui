@@ -139,7 +139,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         CTreeButton orgTreeButton = new CTreeButton(root, root);
 
         CRangeButton rangeButton =
-            new CRangeButton("C0", DBInterface.minTimeRange,
+            new CRangeButton("C", DBInterface.minTimeRange,
                              DBInterface.maxTimeRange, plaf);
         rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
                                            DBInterface.maxTimeRange);

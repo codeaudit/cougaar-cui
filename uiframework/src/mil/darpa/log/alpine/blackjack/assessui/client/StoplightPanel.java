@@ -130,7 +130,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         CComboSelector metricSelector = new CComboSelector(metrics);
 
         CRangeButton rangeButton =
-            new CRangeButton("C0", DBInterface.minTimeRange,
+            new CRangeButton("C", DBInterface.minTimeRange,
                              DBInterface.maxTimeRange, plaf);
         rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
                                            DBInterface.maxTimeRange);
