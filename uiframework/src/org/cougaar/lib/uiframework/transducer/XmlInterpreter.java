@@ -43,15 +43,19 @@ public class XmlInterpreter {
    *  @return the Structure as defined in the XML stream
    */
   public Structure readXml (BufferedReader bufr) {
-    DOMParser p = new DOMParser();
-    p.parse(new InputSource(bufr));
-    Document txt = p.getDocument();
+    try {
+      DOMParser p = new DOMParser();
+      p.parse(new InputSource(bufr));
+      Document txt = p.getDocument();
 
-    Node t = txt.getDocumentElement();
-    if (t.getNodeName().equals("structure"))
-      return visitStructure(t);
-    else
-      return null;
+      Node t = txt.getDocumentElement();
+      if (t.getNodeName().equals("structure"))
+        return visitStructure(t);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   /**
