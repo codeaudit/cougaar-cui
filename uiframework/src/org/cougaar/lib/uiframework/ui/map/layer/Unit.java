@@ -12,8 +12,8 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Unit.java,v $
- * $Revision: 1.3 $
- * $Date: 2001-06-25 18:27:44 $
+ * $Revision: 1.5 $
+ * $Date: 2001-10-26 21:39:15 $
  * $Author: mdavis $
  * 
  * **********************************************************************
@@ -67,12 +67,10 @@ public class Unit {
 
 	void setColor(Color c)
   {
-	    // yuk yuk yuk
 	    if (graphic instanceof VecIcon) {
 		((VecIcon)graphic).setColor(c); 
-	    } else if (graphic instanceof InfantryVecIcon) {
-		((InfantryVecIcon)graphic).setColor(c); 
 	    }
+
 	}
 	public OMGraphic getGraphic() { return graphic; }
 	public String getLabel() { return label; }

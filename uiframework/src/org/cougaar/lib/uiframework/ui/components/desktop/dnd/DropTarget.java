@@ -13,7 +13,7 @@ public interface DropTarget
   public boolean readyForDrop(Point location);
 
   // show: True if the target should indicate a Drag & Drop operation is underway, false if not
-  // droppable: True if the current drag can be droped on the component
+  // dropable: True if the current drag can be droped on the component
   public void showAsDroppable(boolean show, boolean droppable);
 
   public void dropData(Object data);

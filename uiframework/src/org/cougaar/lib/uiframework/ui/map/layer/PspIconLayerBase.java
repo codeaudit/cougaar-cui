@@ -210,8 +210,6 @@ public class PspIconLayerBase extends Layer implements MapMouseListener {
         if(omgr != null) {
             if (omgr instanceof VecIcon) {
                 name=((VecIcon)omgr).getLabel();
-            } else if (omgr instanceof InfantryVecIcon) {
-                name=((InfantryVecIcon)omgr).getLabel();
             }
         }
         return name;
@@ -231,13 +229,6 @@ public class PspIconLayerBase extends Layer implements MapMouseListener {
                 } else {
                     msg=getOrgName(omgr)
                         +"  Double-Clicking on icon brings up a chart.  ";
-                    //                 if (omgr instanceof ArmoredVecIcon) {
-                    //                     msg=((ArmoredVecIcon)omgr).getLabel()+"  "+msg;
-                    //                     // if (curCcu==ccuA) { curCcu=ccuB ; }
-                    //                     // else { curCcu=ccuA; }
-                    //                 } else if (omgr instanceof InfantryVecIcon) {
-                    //                     msg=((InfantryVecIcon)omgr).getLabel()+"  "+msg;
-                    //                 }
                     String metric="metric1";
                     //Unit unit=myState.getUnit(omgr);
                     Unit unit=getUnit(omgr);

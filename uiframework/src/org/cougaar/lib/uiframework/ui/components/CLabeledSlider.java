@@ -7,6 +7,8 @@ import java.util.Hashtable;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import com.bbn.openmap.gui.Tool;
+
 /**
  * A bean that creates a swing slider with a static label and a dynamic label.
  * The dynamic label shows the current value selected.  This slider supports
@@ -14,7 +16,7 @@ import javax.swing.event.*;
  *
  * This bean has a bounded property: "value".
  */
-public class CLabeledSlider extends JPanel
+public class CLabeledSlider extends JPanel implements Tool
 {
     protected int fidelity = 1000;
 
@@ -44,6 +46,9 @@ public class CLabeledSlider extends JPanel
 
     /** the floating point value that corresponds to 1 unit on the slider */
     protected float unit =  0f;
+
+    protected final String defaultToolKey = "clabeledslider";
+    protected String toolKey = new String (defaultToolKey);
 
     /**
      * default constructor.  Creates new labeled slider with "No Name" as label
@@ -413,6 +418,37 @@ public class CLabeledSlider extends JPanel
         }
     }
     private boolean updateUIAfterPaint = true;
+
+    /** 
+     * Tool interface method.  The retrieval key for this tool.
+     *
+     * @return String The key for this tool.
+     */
+    public String getKey()
+    {
+       return toolKey;
+    }
+
+    /**
+     * Tool interface method. Set the retrieval key for this tool.
+     *
+     * @param key The key for this tool.
+     */
+    public void setKey(String aKey)
+    {
+      toolKey = aKey;
+    }
+
+    /**
+     * Tool interface method. The retrieval tool's interface. This is
+     * added to the tool bar.
+     *
+     * @return String The key for this tool.
+     */
+    public Container getFace()
+    {
+      return this;
+    }
 
     /**
      * main for unit testing

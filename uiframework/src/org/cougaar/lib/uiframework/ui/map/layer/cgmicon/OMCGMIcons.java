@@ -19,9 +19,12 @@ import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import org.cougaar.util.ConfigFinder;
 
 public class OMCGMIcons
 {
@@ -52,7 +55,8 @@ public class OMCGMIcons
   {
     System.out.println ("loading CGM icons from file: " + loadMe);
 
-    BufferedReader br = new BufferedReader ( new InputStreamReader (new FileInputStream (loadMe)));
+    ConfigFinder cf = ConfigFinder.getInstance();
+    BufferedReader br = new BufferedReader ( new InputStreamReader ( new FileInputStream (cf.locateFile(loadMe))));
 
     String line = br.readLine();
 

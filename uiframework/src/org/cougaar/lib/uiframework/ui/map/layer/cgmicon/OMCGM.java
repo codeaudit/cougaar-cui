@@ -218,11 +218,11 @@ public class OMCGM extends OMGraphic
 //    omcgmdisp.scale( xrange, yscale);
     omcgmdisp.scale( xrange, yrange);
 
-    if (unitSize != null)
-    {
-      drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
-      ogl.generate(proj);
-    }
+//    if (unitSize != null)
+//    {
+//      drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
+//      ogl.generate(proj);
+//    }
 
     setNeedToRegenerate(false);
 
@@ -379,11 +379,11 @@ public class OMCGM extends OMGraphic
 
       omcgmdisp.scale( xrange, yrange);
 
-      if (unitSize != null)
-      {
-        drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
-        ogl.generate(oldProjection);
-      }
+//      if (unitSize != null)
+//      {
+//        drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
+//        ogl.generate(oldProjection);
+//      }
 
    }
 
@@ -413,7 +413,7 @@ public class OMCGM extends OMGraphic
 
    }
 
-   protected void drawUnitSizeDesignation (String unitSize, float xCoord, float yCoord)
+   protected void drawUnitSizeDesignationNot (String unitSize, float xCoord, float yCoord)
    {
 
      final float LOW_LAT = 0.14f;
@@ -624,7 +624,7 @@ public class OMCGM extends OMGraphic
                             degLat + (BGBOXLATLOW * permScale), degLon + (BGBOXLONLEFT * permScale)
                             };
      OMPoly bgbox = new OMPoly (polypoints, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT );
-     bgbox.setFillColor(Color.white);
+     bgbox.setFillPaint(Color.white);
 
      ogl.add (bgbox);
 

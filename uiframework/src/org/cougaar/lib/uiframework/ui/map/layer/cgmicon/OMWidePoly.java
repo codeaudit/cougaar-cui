@@ -82,8 +82,8 @@ public class OMWidePoly extends OMPoly
         int ai3[] = ai1[j];
         if(isPolygon)
         {
-            if(setPaint(g))
-                g.fillPolygon(ai2, ai3, ai2.length);
+//            if(setPaint(g))
+            g.fillPolygon(ai2, ai3, ai2.length);
             if(!isSameColor)
             {
                 g.setColor(getDisplayColor());

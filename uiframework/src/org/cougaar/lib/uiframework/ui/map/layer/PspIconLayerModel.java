@@ -37,6 +37,7 @@ import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.*;
 
 import org.cougaar.lib.uiframework.ui.map.app.*;
+import org.cougaar.lib.uiframework.ui.components.RangeSliderPanel;
 
 import org.cougaar.domain.glm.map.MapLocationInfo;
 
@@ -65,7 +66,7 @@ public class PspIconLayerModel extends PspIconLayerModelBase
      try
      {
 //         System.out.println("load is loading cgm txt");
-       cgmicons = new OMCGMIcons ("data/cgmload.txt");
+       cgmicons = new OMCGMIcons ("cgmload.txt");
      }
      catch (java.io.IOException ioex)
      {
@@ -82,52 +83,13 @@ public class PspIconLayerModel extends PspIconLayerModelBase
   }
 
 
-  private void makeInfantryUnit(float lat, float lon, Color color,
-                                      String label, String msg, Hashtable data)
-  {
-    OMGraphic omgraphic;
-
-    omgraphic = new InfantryVecIcon(lat, lon, color);
-    ((InfantryVecIcon) omgraphic).addToMessage(msg);
-    ((InfantryVecIcon) omgraphic).setLabel(label);
-    markers.add(omgraphic);
-
-    Unit unit = new Unit(label, omgraphic, data);
-    Unit u2 = (Unit) units.put(omgraphic, unit);
-    if (u2 != null)
-    {
-      System.err.println( "units.put returned non-null value-- inserted unit: "
-                           + unit +" key: "+omgraphic+" returned unit: "+u2);
-    }
-
-  }
-
-  private void makeArmoredUnit(float lat, float lon, Color color,
-                                      String label, String msg, Hashtable data)
-  {
-    OMGraphic omgraphic;
-
-    omgraphic = new ArmoredVecIcon(lat, lon, color);
-    ((ArmoredVecIcon) omgraphic).addToMessage(msg);
-    ((ArmoredVecIcon) omgraphic).setLabel(label);
-    markers.add(omgraphic);
-
-    Unit unit = new Unit(label, omgraphic, data);
-    Unit u2 = (Unit) units.put(omgraphic, unit);
-
-    if (u2 != null)
-    {
-      System.err.println ( "units.put returned non-null value-- inserted unit: "
-                           + unit + " key: "+omgraphic+" returned unit: "+u2);
-    }
-
-  }
 
   private OMGraphic makeIconGraphic ( float lat, float lon, Color color,
                                       String type )
   {
     return makeIconGraphic (lat, lon, color, type, 0);
   }
+
 
   private OMGraphic makeIconGraphic ( float lat, float lon, Color color,
                                       String type, int echelon )
@@ -164,13 +126,11 @@ public class PspIconLayerModel extends PspIconLayerModelBase
 
        if (type.equalsIgnoreCase("Armored"))
        {
-         // ret=new ArmoredVecIcon(lat, lon, color);
-         ret = new CGMVecIcon ( (OMCGM) cgmicons.get ("armor"), lat, lon );
+          ret = new CGMVecIcon ( (OMCGM) cgmicons.get ("armor"), lat, lon );
        }
 
        if (type.equalsIgnoreCase("Infantry"))
        {
-         // ret=new InfantryVecIcon(lat, lon, color);
          ret = new CGMVecIcon ( (OMCGM) cgmicons.get ("infantry"), lat, lon );
        }
 
@@ -312,10 +272,10 @@ public class PspIconLayerModel extends PspIconLayerModelBase
 
      }
 
-    if (ScenarioMap.rangeSlider != null)
+    if (RangeSliderPanel.rangeSlider != null)
     {
-      buildDailyNLUnits( (long)ScenarioMap.rangeSlider.getMinValue() * 1000L,
-                         (long)ScenarioMap.rangeSlider.getMaxValue() * 1000L );
+      buildDailyNLUnits( (long)RangeSliderPanel.rangeSlider.getMinValue() * 1000L,
+                         (long)RangeSliderPanel.rangeSlider.getMaxValue() * 1000L );
     }
 
     // Set all hidden icons
@@ -601,10 +561,10 @@ public class PspIconLayerModel extends PspIconLayerModelBase
     }
 
     // then we rebuild the daily nlUnits
-    if (ScenarioMap.rangeSlider != null)
+    if (RangeSliderPanel.rangeSlider != null)
     {
-      buildDailyNLUnits( (long)ScenarioMap.rangeSlider.getMinValue() * 1000L,
-                         (long)ScenarioMap.rangeSlider.getMaxValue() * 1000L );
+      buildDailyNLUnits( (long)RangeSliderPanel.rangeSlider.getMinValue() * 1000L,
+                         (long)RangeSliderPanel.rangeSlider.getMaxValue() * 1000L );
     }
 
     // then we reset the time to redisplay the units position
@@ -682,7 +642,7 @@ public class PspIconLayerModel extends PspIconLayerModelBase
 
         if (todaysNLUnits == null)
         {
-          System.out.println ("todays units are null");
+          System.out.println ("No units for this time");
           todaysNLUnits = new ScheduleImpl(); // go through the process with nothing to do
         }
 
@@ -1110,7 +1070,7 @@ public class PspIconLayerModel extends PspIconLayerModelBase
                                 OMWideLine.LINETYPE_GREATCIRCLE,
                                 10 );
 
-      Projection proj = ScenarioMap.map.getProjection();
+      Projection proj = ScenarioMap.mapBean.getProjection();
       if (proj == null)
       {
         System.err.println ("Map has no current projection, can't follow air route plot");

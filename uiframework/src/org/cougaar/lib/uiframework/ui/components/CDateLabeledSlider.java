@@ -11,11 +11,15 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class CDateLabeledSlider extends CLabeledSlider
+import com.bbn.openmap.gui.Tool;
+
+public class CDateLabeledSlider extends CLabeledSlider implements Tool
 {
 
   private static final String[] monthList = new String[] {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
+  protected final String defaultToolKey = "cdatelabeledslider";
+  protected String toolKey = new String (defaultToolKey);
 
   public static final long MS_IN_ONE_DAY = 1000*60*60*24;
 

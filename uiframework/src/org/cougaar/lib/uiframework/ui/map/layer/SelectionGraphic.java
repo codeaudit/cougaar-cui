@@ -36,7 +36,7 @@ public class SelectionGraphic extends OMGraphic
     public SelectionGraphic(Color color)
     {
     	bbox = new OMPoly(bboxpoints, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
-    	bbox.setLineColor(color);
+    	bbox.setLinePaint (color);
      	ogl.add(bbox);
      	
      	setVisible(false);
@@ -102,7 +102,7 @@ public class SelectionGraphic extends OMGraphic
       return(storage);
     }
 
-    public void setColor(Color color) { 	bbox.setLineColor(color); }
+    public void setColor(Color color) { 	bbox.setLinePaint (color); }
 
     // OMGraphic requirements
     public float distance(int x, int y) { return ogl.distance(x,y); }

@@ -82,11 +82,11 @@ public class OMCGMbyVisio extends OMCGM
 
     omcgmdisp.scale( adjustedX, adjustedY);
 
-    if (unitSize != null)
-    {
-      drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
-      ogl.generate(proj);
-    }
+//    if (unitSize != null)
+//    {
+//      drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
+//      ogl.generate(proj);
+//    }
 
     setNeedToRegenerate(false);
 
@@ -199,11 +199,11 @@ public class OMCGMbyVisio extends OMCGM
 
     omcgmdisp.scale( adjustedX, adjustedY);
 
-      if (unitSize != null)
-      {
-        drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
-        ogl.generate(oldProjection);
-      }
+//      if (unitSize != null)
+//      {
+//        drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
+//        ogl.generate(oldProjection);
+//      }
 
    }
 

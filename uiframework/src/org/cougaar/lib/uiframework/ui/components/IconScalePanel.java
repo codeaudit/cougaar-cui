@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/components/IconScalePanel.java,v $
- * $Revision: 1.1 $
- * $Date: 2001-06-25 18:27:41 $
+ * $Revision: 1.2 $
+ * $Date: 2001-07-25 18:19:18 $
  * $Author: mdavis $
  * 
  * **********************************************************************
@@ -36,6 +36,9 @@ import java.net.URL;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.gui.Tool;
+
+import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
 
 /**
  * Bean to zoom the Map.
@@ -45,7 +48,7 @@ import com.bbn.openmap.event.*;
  * zoom event is fired to all registered listeners.
  * @see #addZoomListener
  */
-public class IconScalePanel extends JPanel implements Serializable
+public class IconScalePanel extends JPanel implements Serializable, Tool
 {
 
     public final static transient String scaleUpCmd = "scaleUp";
@@ -53,10 +56,30 @@ public class IconScalePanel extends JPanel implements Serializable
 
     protected transient JButton scaleUpButton, scaleDownButton;
 
+    public final static transient String defaultToolKey = "iconscalepanel";
+    protected String toolKey = defaultToolKey;
+
+    private ActionListener actlis = new ActionListener()
+    {
+              public void actionPerformed(java.awt.event.ActionEvent e)
+              {
+                String command = e.getActionCommand();
+
+                if (command.equals(IconScalePanel.scaleUpCmd))
+                {
+                  ScenarioMap.mapBean.findPspIconLayer().changeIconScale (2.0f);
+                }
+	              else if (command.equals(IconScalePanel.scaleDownCmd))
+                {
+                  ScenarioMap.mapBean.findPspIconLayer().changeIconScale (-2.0f);
+                }
+              }
+          };
+
     /**
      * Construct the IconScalePanel.
      */
-    public IconScalePanel(ActionListener actlis)
+    public IconScalePanel()
     {
       super();
 //  	setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -65,7 +88,6 @@ public class IconScalePanel extends JPanel implements Serializable
 	    scaleUpButton = addButton("scaleUp", "Scale Up", scaleUpCmd, actlis);
 	    scaleDownButton = addButton("scaleDown", "Scale Down", scaleDownCmd, actlis);
     }
-
 
     /**
      * Add the named button to the panel.
@@ -90,18 +112,34 @@ public class IconScalePanel extends JPanel implements Serializable
 	        return b;
     }
 
-    /*
-    public static void main(String args[]) {
-
-	final JFrame frame = new JFrame("IconScalePanel");
-	//	frame.setSize(100, 32);
-	IconScalePanel zp = new IconScalePanel();
-	zp.setZoomInFactor(0.9f);
-	zp.setZoomOutFactor(4.5f);
-	frame.setVisible(true);
-	frame.getContentPane().add(zp);
-	frame.setSize(200,100);
-	
+    /** 
+     * Tool interface method.  The retrieval key for this tool.
+     *
+     * @return String The key for this tool.
+     */
+    public String getKey()
+    {
+       return toolKey;
     }
-    */
+
+    /**
+     * Tool interface method. Set the retrieval key for this tool.
+     *
+     * @param key The key for this tool.
+     */
+    public void setKey(String aKey)
+    {
+      toolKey = aKey;
+    }
+
+    /**
+     * Tool interface method. The retrieval tool's interface. This is
+     * added to the tool bar.
+     *
+     * @return String The key for this tool.
+     */
+    public Container getFace()
+    {
+      return this;
+    }
 }

@@ -20,6 +20,8 @@ import com.bbn.openmap.proj.Projection;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 
+import org.cougaar.lib.uiframework.ui.components.RangeSliderPanel;
+
 public class AssetBarGraphic extends OMGraphic
 {
   public static final String ON_HAND = "On Hand";
@@ -113,7 +115,8 @@ public class AssetBarGraphic extends OMGraphic
 
     g.setFont(f.deriveFont(10.0f));
     FontMetrics fm = g.getFontMetrics();
-    double quantity = ((dataSets != null) && (dataSets.get(ON_HAND) != null)) ? ((DataSet)dataSets.get(ON_HAND)).getClosestPoint((double)(map.getCurrentTime()/1000L), 0.0)[1] : 0.0;
+    double quantity = ((dataSets != null) && (dataSets.get(ON_HAND) != null)) ?
+    ((DataSet)dataSets.get(ON_HAND)).getClosestPoint((double) RangeSliderPanel.rangeSlider.getValue() , 0.0)[1] : 0.0;
 
     // Asset name
 

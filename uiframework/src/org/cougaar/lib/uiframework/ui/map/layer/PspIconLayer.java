@@ -10,10 +10,11 @@ import org.cougaar.lib.uiframework.ui.components.desktop.dnd.*;
 import org.cougaar.lib.uiframework.ui.components.graph.*;
 
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMWideLine;
-import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMWidePoly;
+//import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMWidePoly;
 
 import java.io.*;
 import java.util.*;
+import java.awt.Paint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.event.*;
@@ -32,6 +33,7 @@ import org.cougaar.lib.uiframework.ui.map.util.*;
 import org.cougaar.lib.uiframework.ui.map.app.*;
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.CGMVecIcon;
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMCGM;
+import org.cougaar.lib.uiframework.ui.components.RangeSliderPanel;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -105,6 +107,12 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
   public void setTime(String ltime)
   {
 
+    if (ltime == null && time == 0)
+    {
+      // time has never been set
+      ltime = Long.toString ( (long) RangeSliderPanel.rangeSlider.getValue() * 1000L );
+    }
+
     if (ltime != null)
     {
 //      System.err.println("PspIconLayer Setting time to: "+ltime);
@@ -123,11 +131,12 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
         time=(tmp==null)?Long.MIN_VALUE:tmp.longValue();
       }
     }
- //    System.err.println("Time is: "+time);
-    
+
+//    System.err.println("PspIconLayer:setTime is: "+time);
+
     myState.setTime(time);
 
-    synchronized (graphics) // synchronized against paint()
+//    synchronized (graphics) // synchronized against paint()
     {
       createGraphics(graphics);
       addRoutes (graphics);
@@ -191,7 +200,7 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
     this.dragPoint = dragPoint;
     boolean ready = false;
 
-    if (areaSelected && selG.contains(scenarioMap.map.getProjection(), dragPoint))
+    if (areaSelected && selG.contains(scenarioMap.mapBean.getProjection(), dragPoint))
     {
       ready = true;
     }
@@ -331,7 +340,6 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
 
 	  try
 	  {
-//  		FileInputStream fis = new FileInputStream(fileName);
   		ObjectInputStream ois = new ObjectInputStream(fis);
       object = ois.readObject();
       fis.close();
@@ -345,7 +353,7 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
 		return(object);
 	}
 
-  private long dateToMillis(String dateString, long defaultTime)
+  public static long dateToMillis(String dateString, long defaultTime)
   {
     long time = defaultTime;
     
@@ -476,7 +484,7 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
       {
         System.out.println (" found " + rt.elats.size() + " segment sea-based leg for " + rt.getOrg() );
 
-        // construct every start and end as a OMLine
+        // construct every start and end as a OMWideLine
         // the rest are end points
         for (int ii = 0, pp = 2; ii < rt.elats.size(); ii ++)
         {
@@ -524,7 +532,8 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
                                   (float) ( (Double) rt.elons.get(ii)).doubleValue(),
                                   lineType );
 
-          oml.setLineColor (lineColor);
+          oml.setLinePaint(lineColor);
+//          oml.setLineColor (lineColor); deprecated with OpenMap 4.2
           oml.setWidth(2.0f);
 
           oml.addArrowHead(true);
@@ -549,7 +558,7 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
       {
         System.out.println (" found " + rt.elats.size() + " segment air-based leg for " + rt.getOrg() );
 
-        // construct every start and end as a OMLine
+        // construct every start and end as a OMWideLine
         // the rest are end points
         for (int ii = 0, pp = 2; ii < rt.elats.size(); ii ++)
         {
@@ -596,7 +605,7 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
                                   (float) ( (Double) rt.elons.get(ii)).doubleValue(),
                                   lineType );
 
-          oml.setLineColor (lineColor);
+          oml.setLinePaint(lineColor);
           oml.setWidth(2.0f);
           oml.addArrowHead(true);
 
@@ -625,7 +634,7 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
   {
     if (e.getSource() instanceof MapBean)
     {
-      if (areaSelected && !selG.contains(scenarioMap.map.getProjection(), e.getPoint()))
+      if (areaSelected && !selG.contains(scenarioMap.mapBean.getProjection(), e.getPoint()))
       {
         hideSelectedArea();
       }
@@ -800,9 +809,9 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
   {
     Vector data = null;
 
-    if (areaSelected && selG.contains(scenarioMap.map.getProjection(), dragPoint))
+    if (areaSelected && selG.contains(scenarioMap.mapBean.getProjection(), dragPoint))
     {
-		  data = getSelectedUnits(ScenarioMap.map, false);
+		  data = getSelectedUnits(ScenarioMap.mapBean, false);
 		  for (int i=0, isize=data.size(); i<isize; i++)
 		  {
 		    VecIcon icon = (VecIcon)((NamedLocationTime)data.elementAt(i)).getUnit().getGraphic();
@@ -887,36 +896,8 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
     IconDialog iconDialog = IconDialog.getDialog(this);
     Vector namedLocationTimeList = new Vector(0);
     NamedLocationTime nltm = null;
-/*    for (Iterator it=myState.nls.iterator(); it.hasNext(); )
-    {
-      nltm = (NamedLocationTime)it.next();
-      if (nltm!=null && nltm.getUnit()!=null && nltm.getUnit().getGraphic()!=null)
-      {
-        namedLocationTimeList.add(nltm);
-      }
-    }*/
+   Hashtable temp = new Hashtable(300);
 
-/* Eric's original
-
-    Hashtable temp = new Hashtable(1);
-    for (Enumeration enum=myState.allNLUnits.getAllScheduleElements(); enum.hasMoreElements();)
-    {
-      nltm = (NamedLocationTime)enum.nextElement();
-      if (nltm!=null && nltm.getUnit()!=null && nltm.getUnit().getGraphic()!=null)
-      {
-        temp.put(nltm.getUnit().getLabel(), nltm);
-      }
-    }
-
-    for (Enumeration enum=temp.elements(); enum.hasMoreElements();)
-    {
-      nltm = (NamedLocationTime)enum.nextElement();
-      namedLocationTimeList.add(nltm);
-    }
-*/
-
-// non-allNLUnits version
-    Hashtable temp = new Hashtable(1);
    synchronized (myState.schedImplByUnit)  // don't want anybody updating this while we sift through them
    {
      for (Enumeration enum=myState.schedImplByUnit.keys(); enum.hasMoreElements();)

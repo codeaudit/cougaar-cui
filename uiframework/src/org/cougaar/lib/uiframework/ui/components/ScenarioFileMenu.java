@@ -1,76 +1,47 @@
 package org.cougaar.lib.uiframework.ui.components;
 
-import java.util.Vector;
-
+import java.util.*;
 import java.awt.*;
-
-import javax.swing.*;
 import java.awt.event.*;
-import com.bbn.openmap.gui.MenuPanel;
+import javax.swing.*;
 
 import com.bbn.openmap.Environment;
+import com.bbn.openmap.gui.*;
 
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
 import org.cougaar.lib.uiframework.ui.map.layer.PspIconLayer;
 import org.cougaar.lib.uiframework.ui.map.layer.RouteJdbcConnector;
 
-public class ScenarioMenuPanel extends MenuPanel
+public class ScenarioFileMenu extends FileMenu implements MenuBarMenu
 {
 
-  ScenarioMap scenMap;
-
-  public ScenarioMenuPanel (ScenarioMap smap)
-  {
-    scenMap = smap;
-  }
-
-    public JDialog getAboutBox ()
+    public void createAndAdd()
     {
-      if (aboutBox == null) {
-          aboutBox = createAboutBox();
-          aboutBox.getContentPane().setLayout(new BorderLayout());
-          aboutBox.getContentPane().add(createCopyrightViewer(),
-                                        BorderLayout.CENTER);
-          aboutBox.getContentPane().add(
-                  createAboutControls(aboutBox),
-                  BorderLayout.SOUTH
-                  );
-          aboutBox.pack();
-      }
-      
-      return(aboutBox);
-    }
+        add(new AboutMenuItem());
+        
+        if(Environment.isApplet()) {
+            return;
+        }
 
-   /**
-     * Create and add the File menu.
-     */
-    protected void createFileMenu () {
-        // temp variables
-        JCheckBoxMenuItem cb;
-        JRadioButtonMenuItem rb;
-        JMenuItem mi;
+        // Not ready yet
+        //add(createSavePropertiesMenuItem());
+        JMenu saveMenu = new JMenu("Save As..");
+        saveMenu.add(createSaveAsJpegMenuItem());
 
-        // File Menu
-        JMenu file = (JMenu) add(new JMenu("File"));
-        file.setMnemonic('F');
-        mi = (JMenuItem) file.add(new JMenuItem("About"));
-        mi.setMnemonic('t');
-        mi.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              JDialog aboutBox = getAboutBox();
+        add(createSerializeMenu());
+        add(createDeserializeMenu());
 
-                aboutBox.setVisible(true);
-            }
-        });
+        // Not ready yet.
+        //saveMenu.add(createSaveAsGifMenuItem());
+        add(saveMenu);
+        add(new JSeparator());
+        add(createExitMenu());
+    } 
 
-        file.add(new JSeparator());
-        mi = (JMenuItem) file.add(new JMenuItem("Open"));
-        mi.setMnemonic('O');
-        mi.setEnabled(false);
-
-        JMenuItem saveMenu = (JMenuItem) file.add(new JMenuItem("Save As..."));
-        saveMenu.addActionListener(new ActionListener()
-        {
+    public JMenuItem createSerializeMenu()
+    {
+      JMenuItem serializeMenuItem = new JMenuItem("Serialize...");
+	    serializeMenuItem.addActionListener(new ActionListener() {
           public void actionPerformed (ActionEvent ae)
           {
             JFileChooser chooser = new JFileChooser();
@@ -90,7 +61,7 @@ public class ScenarioMenuPanel extends MenuPanel
               System.out.println("You chose to save to this file: " + fullFile );
                try
                {
-                 PspIconLayer pLayer = scenMap.findPspIconLayer();
+                 PspIconLayer pLayer = ScenarioMap.mapBean.findPspIconLayer();
 
                  Vector saveAll = new Vector(2);
                  saveAll.setSize (2);
@@ -109,8 +80,14 @@ public class ScenarioMenuPanel extends MenuPanel
           }
         });
 
-        JMenuItem restoreMenu = (JMenuItem) file.add(new JMenuItem("Restore..."));
-        restoreMenu.addActionListener(new ActionListener()
+      return serializeMenuItem;
+
+    }
+
+    public JMenuItem createDeserializeMenu()
+    {
+        JMenuItem deserializeMenuItem = new JMenuItem("Load Serialized...");
+        deserializeMenuItem.addActionListener(new ActionListener()
         {
           public void actionPerformed (ActionEvent ae)
           {
@@ -128,7 +105,7 @@ public class ScenarioMenuPanel extends MenuPanel
               {
                 java.util.Hashtable loadUp;
 
-                PspIconLayer pLayer = scenMap.findPspIconLayer();
+                PspIconLayer pLayer = ScenarioMap.mapBean.findPspIconLayer();
                 java.io.FileInputStream fis = new java.io.FileInputStream ( chooser.getSelectedFile().getAbsolutePath() );
 
                 Object resObj = pLayer.restore (fis);
@@ -163,24 +140,8 @@ public class ScenarioMenuPanel extends MenuPanel
           }
         });
 
-
-        file.add(new JSeparator());
-        if (Environment.isApplication()) {
-            mi = (JMenuItem) file.add(new JMenuItem("Quit"));
-//         mi.setMnemonic('U');
-            mi.addActionListener(new ActionListener()
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    // HACK - need to call shutdown() on mapbean
-                    // actually we should broadcast a shutdown event so thato ther
-                    // gui components can clean up, and maybe only one can call
-                    // exit.
-
-                    System.exit(0);
-                }
-            });
-        }
+        return deserializeMenuItem;
     }
+
 
 }

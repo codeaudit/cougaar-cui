@@ -222,7 +222,7 @@ public class PspIconKeepAlive extends Thread
 
      public void run()
      {
-       ScenarioMap.map.setProjection( ScenarioMap.map.getProjection() );
+       ScenarioMap.mapBean.setProjection( ScenarioMap.mapBean.getProjection() );
      }
    };
 
