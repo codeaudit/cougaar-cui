@@ -38,7 +38,7 @@ public class LocAttribute extends QueryAttribute {
   }
 
   public String eval (EvaluationLocus l) throws QueryException {
-    String orgName = l.getCoordinate("Organization").location.getName();
+    String orgName = l.getCoordinate("Org").location.getName();
     int day = getDayNumber(l.getCoordinate("Time").location.getName());
 
     Hashtable t = null;
@@ -55,7 +55,7 @@ public class LocAttribute extends QueryAttribute {
     else
       thing = (TPLocation) t.get(orgName);
 
-    Date d = new Date(DayBaseModel.getMillisForDay(day));
+    long d = DayBaseModel.getMillisForDay(day);
     if (thing != null && thing.isInScope(d)) {
       if (lat_or_lon == LATITUDE)
         return String.valueOf(thing.getLocation(d).getLatitude());

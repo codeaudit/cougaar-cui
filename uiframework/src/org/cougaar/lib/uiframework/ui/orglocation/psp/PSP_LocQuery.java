@@ -24,6 +24,7 @@ public class PSP_LocQuery extends PSP_QueryBase {
    *  instance used by this PSP for answering requests.  In some cases, all of
    *  the initialization can be performed in the implementation class's
    *  constructor.  This method, however, is called after the PlugInDelegate
+   *  reference becomes available.
    */
   protected void initQueryInterpreter () {
     responder = new GenericInterpreter();
@@ -31,11 +32,15 @@ public class PSP_LocQuery extends PSP_QueryBase {
     responder.addAttribute(new LocAttribute(this, LocAttribute.LONGITUDE));
     responder.addDimension(createOrgDimension());
     responder.addDimension(createTimeDimension());
+
+    // Debug mode:
+    // echo_queries = true;
+    // echo_results = true;
   }
 
   private QueryDimension createOrgDimension () {
     OrderlessDimension dim = new OrderlessDimension();
-    dim.setName("Orgs");
+    dim.setName("Org");
 
     ListDimNode root = new ListDimNode("All Orgs");
     root.addMembers(new String[] {"Fred", "Joe", "Sam", "Herbie"});
