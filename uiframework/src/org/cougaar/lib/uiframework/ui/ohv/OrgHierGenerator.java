@@ -70,13 +70,20 @@ import org.cougaar.lib.uiframework.ui.ohv.util.*;
         }
      }
      void addNode(OrgHierRelationship ohr) {
+	 try {
         orgs.put(ohr.getId(), ohr);
         orgRefs.add(ohr.getId());
         if (ohr.hasSuperior()) {
-          superiors.put(ohr.getOtherId(), ohr.getId());
-          subordinates.put(ohr.getId(), ohr.getOtherId());
-          orgRefs.add(ohr.getOtherId());
+	    String sup=ohr.getOtherId();
+	    if (sup==null) sup="NULL";
+          superiors.put(sup, ohr.getId());
+          subordinates.put(ohr.getId(), sup);
+          orgRefs.add(sup);
         }
+	 } catch (NullPointerException npe) {
+	     System.err.println("Attempt to add ohr Node with null superior: "+ohr);
+	     System.err.println("Check the society configuration...Ignoring this and Recovering...");
+	 }
      }
 
      /**

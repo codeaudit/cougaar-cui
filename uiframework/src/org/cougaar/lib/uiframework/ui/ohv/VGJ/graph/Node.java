@@ -18,6 +18,9 @@
    import java.awt.Color;
    import java.awt.FontMetrics;
    import java.awt.Toolkit;
+   import java.awt.Graphics2D;
+   import java.awt.RenderingHints;
+   import java.awt.BasicStroke;  
    import java.awt.Image;
    import java.awt.image.ImageObserver;
    import java.awt.image.PixelGrabber;
@@ -764,7 +767,7 @@
    
    
    
-      public void draw(Component comp, Graphics graphics, Matrix44 transform,
+      public void draw(Component comp, Graphics graphicsParm, Matrix44 transform,
                        int quality)
       {
       
@@ -772,6 +775,17 @@
             return;
       
          double scale = transform.scale;
+
+	 Graphics2D graphics = (Graphics2D) graphicsParm;        
+	 BasicStroke myStroke = new BasicStroke(1.0f);
+	 graphics.setStroke(myStroke);
+
+	 RenderingHints qualityHints = new
+	     RenderingHints(RenderingHints.KEY_ANTIALIASING,
+			    RenderingHints.VALUE_ANTIALIAS_ON);
+	 qualityHints.put(RenderingHints.KEY_RENDERING,
+			  RenderingHints.VALUE_RENDER_QUALITY);
+	 graphics.setRenderingHints(qualityHints);
 
          // imageChange_ is used to make sure height and width don't change
          // after this assignment.

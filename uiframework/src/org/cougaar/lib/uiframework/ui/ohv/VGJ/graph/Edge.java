@@ -14,8 +14,9 @@
    package org.cougaar.lib.uiframework.ui.ohv.VGJ.graph;
 
    import java.awt.Graphics;
-   import java.awt.Graphics2D;  //mod
-   import java.awt.BasicStroke;  //mod
+   import java.awt.Graphics2D;  
+   import java.awt.RenderingHints;  
+   import java.awt.BasicStroke;  
    import java.awt.FontMetrics;
    import java.awt.Color;
    import java.lang.System;
@@ -216,15 +217,27 @@
          gml.setValue("linestyle", GMLobject.GMLstring, styleNames[lineStyle_]);
       }
    
+       private int partway(double a, double b, double pc) {
+	   return (int) (a+(b-a)*pc);
+       }
+
 
       public void draw(Graphics graphicsParm, Matrix44 transform,   // mod
       boolean inplane, boolean directed, boolean arrow_only, int quality,
       GraphCanvas canvas, int which_gr)
       {
-        	Graphics2D graphics = (Graphics2D) graphicsParm;        // mod
-          BasicStroke wideStroke = new BasicStroke(3.0f);
-	        graphics.setStroke(wideStroke);
+	  //System.out.println("drawing edge method "+directed+","+arrow_only);
 
+          Graphics2D graphics = (Graphics2D) graphicsParm;       
+          BasicStroke wideStroke = new BasicStroke(3.0f);
+	  graphics.setStroke(wideStroke);
+
+	  RenderingHints qualityHints = new
+	      RenderingHints(RenderingHints.KEY_ANTIALIASING,
+			     RenderingHints.VALUE_ANTIALIAS_ON);
+	  qualityHints.put(RenderingHints.KEY_RENDERING,
+			   RenderingHints.VALUE_RENDER_QUALITY);
+	  graphics.setRenderingHints(qualityHints);
 
          double scale = transform.scale;
       
@@ -259,9 +272,23 @@
       
          if(!arrow_only)
             if(npoints == 0) {
-                graphics.setColor(Color.blue);
-               graphics.drawLine((int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y);
-            }
+		graphics.setColor(Color.blue);
+		if (directed) {
+		    System.out.println("drawing edge "+(int)p1.x+","+(int)p1.y+","+
+				       partway(p1.x, p2.x, .75)+","+ partway(p1.y, p2.y, .75));
+		    graphics.drawLine((int)p1.x, (int)p1.y,
+				      partway(p1.x, p2.x, .75), partway(p1.y, p2.y, .75));
+		    graphics.setColor(Color.orange);
+		    graphics.drawLine(partway(p1.x, p2.x, .75),
+				      partway(p1.y, p2.y, .75),
+				      (int)p2.x, (int)p2.y);
+		} else {
+		    System.out.println("drawing edge ! directed "+(int)p1.x+","+(int)p1.y+","+
+				       p2.x+","+ p2.y);
+		    graphics.drawLine((int)p1.x, (int)p1.y,
+				      (int)p2.x, (int)p2.y);
+		}
+             }
             else
             {
                DPoint3 point = new DPoint3(points_[0]);
@@ -282,12 +309,12 @@
       // Draw arrow.
          if(directed)
          {
-            DPoint3 from = new DPoint3(p2to);
-            from.transform(transform);
-            if((int)from.x == (int)p2.x && (int)from.y == (int)p2.y)
-               from.x -= 10.0;
+//             DPoint3 from = new DPoint3(p2to);
+//             from.transform(transform);
+//             if((int)from.x == (int)p2.x && (int)from.y == (int)p2.y)
+//                from.x -= 10.0;
 
-            drawArrow_(graphics, from, p2);
+//             drawArrow_(graphics, from, p2);
          }
       
       
