@@ -98,7 +98,9 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
   Container frame = null;
   Vector assetNames;
   DoQuery queryListener = new DoQuery();
-  static final String PSP_id = "GLMINVENTORY.PSP";
+  //static final String PSP_id = "GLMINVENTORY.PSP";
+  static final String PSP_id = "inventory"; //"GLMINVENTORY.PSP";
+
 
   InventoryExecutionTimeStatusHandler timeStatusHandler=null;
   InventoryExecutionListener executionListener=null;
@@ -455,8 +457,12 @@ System.out.println("java.version: " + System.getProperty("java.version"));
     try
     {
       ConnectionHelper connection =
-        new ConnectionHelper(clusterURL,
-                             XMLClientConfiguration.PSP_package, PSP_id);
+	new ConnectionHelper(clusterURL, "inventory");
+      
+        //new ConnectionHelper(clusterURL,
+	//                   XMLClientConfiguration.PSP_package, PSP_id);
+
+      
       connection.sendData("ASSET");
       is = connection.getInputStream();
     } catch (Exception e)
