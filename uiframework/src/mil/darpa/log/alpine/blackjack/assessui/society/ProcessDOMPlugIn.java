@@ -33,8 +33,14 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
   private IncrementalSubscription documents;
   private String xml_output;
 
+  private String http_address;
+
   protected void setupSubscriptions() {
     documents = (IncrementalSubscription) subscribe (new DocumentPredicate());
+
+    http_address = getStringParameter ("httpaddress=", getParameters().elements(), "http://192.233.51.155:8000/BJAssessment/DBMaintainer");
+
+    System.out.println ("http_address for the bean is " + http_address);
   }
 
   protected void execute() {
@@ -97,7 +103,8 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
   private void SendXMLOutputString () {
 
     try {
-      URL maintainerURL = new URL("http://192.233.51.155:8000/BJAssessment/DBMaintainer");
+//      URL maintainerURL = new URL("http://192.233.51.155:8000/BJAssessment/DBMaintainer");
+      URL maintainerURL = new URL(http_address);
       URLConnection con = maintainerURL.openConnection();
       con.setDoInput(true);
       con.setDoOutput(true);
@@ -132,6 +139,25 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
     } /* end of catch */
 
   } /* end of SendXMLOutputString */
+
+    /**
+   * Return a String parameter from the head of a list of plugin parameters
+   * @param Enumeration of Plugin command line parameters
+   * @param integer default value if no numeric value found
+   * @return int value parsed from first numeric argument
+   */
+  public static String getStringParameter(String prefix, Enumeration parameters,
+                                          String default_value)
+  {
+    while(parameters.hasMoreElements()) {
+      String param = (String)parameters.nextElement();
+      if (param.startsWith(prefix)) {
+        String sVal = param.substring(prefix.length()).trim();
+        return sVal;
+      }
+    }
+    return default_value;
+  }
 
 } /* end of class ProcessDOMPlugIn */
 
