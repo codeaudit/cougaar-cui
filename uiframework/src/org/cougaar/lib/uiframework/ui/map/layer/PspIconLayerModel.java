@@ -44,7 +44,10 @@ import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
 
-import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
+// For Cougaar 11.0 broke dependency on datagrabber module
+// Copied constants to local AssetTypeConstants file
+//import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
+
 import org.cougaar.planning.ldm.plan.LocationScheduleElement;
 import org.cougaar.planning.ldm.plan.Location;
 import org.cougaar.glm.ldm.plan.GeolocLocationImpl;
@@ -333,10 +336,11 @@ public class PspIconLayerModel extends PspIconLayerModelBase
 //      System.out.println ("\ngetting route way points for: " + uid);
 
       // try for ship routes first, if none get the air route
-      rt = RouteJdbcConnector.findRoutes (uid, DGPSPConstants.CONV_TYPE_SHIP );
+      //      rt = RouteJdbcConnector.findRoutes (uid, DGPSPConstants.CONV_TYPE_SHIP );
+      rt = RouteJdbcConnector.findRoutes (uid, AssetTypeConstants.ASSET_TYPE_SHIP );
       if (rt == null || rt.elats.size() == 0)
       {
-        rt = RouteJdbcConnector.findRoutes (uid, DGPSPConstants.CONV_TYPE_PLANE );
+        rt = RouteJdbcConnector.findRoutes (uid, AssetTypeConstants.ASSET_TYPE_PLANE );
         if (rt == null || rt.elats.size() == 0)
         {
           return;  // apparently we found nothing
@@ -350,7 +354,7 @@ public class PspIconLayerModel extends PspIconLayerModelBase
       }
 
       // for debugging just try the plane
-//      rt = RouteJdbcConnector.findRoutes (uid, DGPSPConstants.CONV_TYPE_PLANE );
+//      rt = RouteJdbcConnector.findRoutes (uid, AssetTypeConstants.ASSET_TYPE_PLANE );
 //     if (rt == null || rt.elats.size() == 0)
 //      return;
 //          rt = followGreatCircleRT (rt);
@@ -1114,7 +1118,8 @@ public class PspIconLayerModel extends PspIconLayerModelBase
         eLats.add( new Double ((double) llTwo.getLatitude()) );
         eLons.add( new Double ((double) llTwo.getLongitude()) );
 
-        types.add ( new Integer (DGPSPConstants.CONV_TYPE_PLANE) );
+	//        types.add ( new Integer (DGPSPConstants.CONV_TYPE_PLANE) );
+        types.add ( new Integer (AssetTypeConstants.ASSET_TYPE_PLANE) );
 
       }
     }

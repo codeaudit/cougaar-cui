@@ -1,6 +1,6 @@
 /*
  * <copyright>
- *  Copyright 1997-2003 Clark Software Engineering (CSE) 
+ *  Copyright 1997-2003 Clark Software Engineering (CSE) and BBN Technolgies LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
  * 
  *  This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,9 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Projection;
 import org.cougaar.lib.uiframework.ui.map.app.ScenarioMap;
 
-import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
+// datagrabber module (not OSS) is the true source for some constants
+// Instead, these are now copied in the local AssetTypeConstants file
+//import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
 
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMWideLine;
 
@@ -86,11 +88,13 @@ public class RouteJdbcConnector
     if (bothRTs == null)
       return null;       // there's nothing for this unit
 
-    if (conveyType == DGPSPConstants.CONV_TYPE_SHIP)
+    //    if (conveyType == DGPSPConstants.CONV_TYPE_SHIP)
+    if (conveyType == AssetTypeConstants.ASSET_TYPE_SHIP)
     {
       return (RoutingTable) bothRTs.get(0);
     }
-    else if (conveyType == DGPSPConstants.CONV_TYPE_PLANE)
+    //    else if (conveyType == DGPSPConstants.CONV_TYPE_PLANE)
+    else if (conveyType == AssetTypeConstants.ASSET_TYPE_PLANE)
     {
       return (RoutingTable) bothRTs.get(1);
     }
@@ -358,10 +362,14 @@ public class RouteJdbcConnector
 
       cvType = rset.getInt(6);
 
-      if (cvType == DGPSPConstants.CONV_TYPE_SHIP)
+      // For Cougaar 11.0, broke dependency on datagrabber module.
+      // Constants were copied into local file.
+      //      if (cvType == DGPSPConstants.CONV_TYPE_SHIP)
+      if (cvType == AssetTypeConstants.ASSET_TYPE_SHIP)
          isAkeeperShip = true;
 
-      if (cvType == DGPSPConstants.CONV_TYPE_PLANE)
+      //      if (cvType == DGPSPConstants.CONV_TYPE_PLANE)
+      if (cvType == AssetTypeConstants.ASSET_TYPE_PLANE)
         isAkeeperPlane = true;
 
       // only get the first starttime for the legs of this asset
@@ -481,7 +489,8 @@ public class RouteJdbcConnector
    public static void main(String[] args)
    {
    	RouteJdbcConnector rjet = new RouteJdbcConnector();
-   	rjet.findRoutes("3ID-HHC", DGPSPConstants.CONV_TYPE_PLANE);
+	//   	rjet.findRoutes("3ID-HHC", DGPSPConstants.CONV_TYPE_PLANE);
+   	rjet.findRoutes("3ID-HHC", AssetTypeConstants.ASSET_TYPE_PLANE);
    }
 
 

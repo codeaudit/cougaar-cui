@@ -52,7 +52,9 @@ import com.bbn.openmap.proj.Projection;
 import org.cougaar.lib.uiframework.ui.map.ScenarioMapBean;
 
 import org.cougaar.planning.ldm.plan.*;
-import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
+// Do not go to the datagrabber for these constants.
+// Copied locally to AssetTypeConstants file
+//import org.cougaar.mlm.ui.grabber.connect.DGPSPConstants;
 import org.cougaar.lib.uiframework.ui.map.util.*;
 import org.cougaar.lib.uiframework.ui.map.app.*;
 import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.CGMVecIcon;
@@ -503,7 +505,8 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
       //
       
       // look up his route based on his name
-      RoutingTable rt = RouteJdbcConnector.findRoutes(unitId, DGPSPConstants.CONV_TYPE_SHIP );
+      //      RoutingTable rt = RouteJdbcConnector.findRoutes(unitId, DGPSPConstants.CONV_TYPE_SHIP );
+      RoutingTable rt = RouteJdbcConnector.findRoutes(unitId, AssetTypeConstants.ASSET_TYPE_SHIP );
       if (rt == null)
       {
         System.out.println (" no sea legs found for unit: " + unitId);
@@ -525,23 +528,23 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
           switch ( ( (Integer) rt.types.get(ii)).intValue())
           {
 
-            case DGPSPConstants.CONV_TYPE_PLANE:
+            case AssetTypeConstants.ASSET_TYPE_PLANE:
               lineType = OMGraphic.LINETYPE_GREATCIRCLE;
               lineColor = Color.yellow;
             break;
 
-            case DGPSPConstants.CONV_TYPE_SHIP:
+            case AssetTypeConstants.ASSET_TYPE_SHIP:
               lineType = OMGraphic.LINETYPE_STRAIGHT;
               lineColor = Color.blue;
             break;
 
-            case DGPSPConstants.CONV_TYPE_TRUCK:
-            case DGPSPConstants.CONV_TYPE_SELF_PROPELLABLE:
+            case AssetTypeConstants.ASSET_TYPE_TRUCK:
+            case AssetTypeConstants.ASSET_TYPE_SELF_PROPELLABLE:
               lineType = OMGraphic.LINETYPE_STRAIGHT;
               lineColor = new Color (0.5f, 0.25f, 0.0f);
             break;
 
-            case DGPSPConstants.CONV_TYPE_TRAIN:
+            case AssetTypeConstants.ASSET_TYPE_TRAIN:
               lineType = OMGraphic.LINETYPE_STRAIGHT;
               lineColor = Color.black;
             break;
@@ -577,7 +580,7 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
       //
       // plane routes
       //
-      rt = RouteJdbcConnector.findRoutes(unitId, DGPSPConstants.CONV_TYPE_PLANE );
+      rt = RouteJdbcConnector.findRoutes(unitId, AssetTypeConstants.ASSET_TYPE_PLANE );
       if (rt == null)
       {
         System.out.println (" no air legs found for unit: " + unitId);
@@ -598,22 +601,22 @@ public class PspIconLayer extends PspIconLayerBase implements MapMouseListener, 
           switch ( ( (Integer) rt.types.get(ii)).intValue())
           {
 
-            case DGPSPConstants.CONV_TYPE_PLANE:
+            case AssetTypeConstants.ASSET_TYPE_PLANE:
               lineType = OMGraphic.LINETYPE_GREATCIRCLE;
               lineColor = Color.yellow;
             break;
 
-            case DGPSPConstants.CONV_TYPE_SHIP:
+            case AssetTypeConstants.ASSET_TYPE_SHIP:
               lineType = OMGraphic.LINETYPE_STRAIGHT;
               lineColor = Color.blue;
             break;
 
-            case DGPSPConstants.CONV_TYPE_TRUCK:
-            case DGPSPConstants.CONV_TYPE_SELF_PROPELLABLE:
+            case AssetTypeConstants.ASSET_TYPE_TRUCK:
+            case AssetTypeConstants.ASSET_TYPE_SELF_PROPELLABLE:
               lineType = OMGraphic.LINETYPE_STRAIGHT;
               lineColor = new Color (0.5f, 0.25f, 0.0f);
 
-            case DGPSPConstants.CONV_TYPE_TRAIN:
+            case AssetTypeConstants.ASSET_TYPE_TRAIN:
               lineType = OMGraphic.LINETYPE_STRAIGHT;
               lineColor = Color.black;
             break;
