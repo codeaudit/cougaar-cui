@@ -87,6 +87,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         catch(Exception e)
         {
             System.out.println ("Not getting database connection");
+            e.printStackTrace();
             throw new CreateException("Could not create BJDBMaintainer: " +
                                       e.getMessage());
         }
@@ -159,7 +160,7 @@ if (index == 0) {
 
                 putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
 
-                AggregateByOrg (org_id, item_id, metric_id, start_time_in_days, end_time_in_days);
+                aggregateByOrg (org_id, item_id, metric_id, start_time_in_days, end_time_in_days);
 
                 System.out.println ("");
                 System.out.print ("" + index);
@@ -171,7 +172,7 @@ if (index == 0) {
             System.out.println ("Done, processed " + index + " records");
 
 
-//            AggregateItems (item_list);
+//            aggregateItems (item_list);
 
             // Save the work in the database
             connection.commit();
@@ -239,15 +240,19 @@ if (index == 0) {
         try
         {
             // See if the item_field_name is in the table already
-            ResultSet rs = stmt.executeQuery("SELECT id FROM assessmentItems WHERE name = '" + item_field_name + "'");
+            ResultSet rs = stmt.executeQuery("SELECT id FROM itemWeights WHERE item_id = '" + item_field_name + "'");
 
             if (rs.next()) { // get the id value
                 item_id = rs.getInt ("ID");
             }
             else {
+                int parent_id = 0;
+                String parent_desc;
+
+                System.out.println ("" + item_field_name + " not found in itemWeights table.  Going to insert new item in the table");
 
                 // If it wasn't in the table, find the maximum id
-                rs = stmt.executeQuery("SELECT max(id) FROM assessmentItems");
+                rs = stmt.executeQuery("SELECT max(id) FROM itemWeights");
 
                 if (rs.next()) {
                     item_id = rs.getInt("MAX(ID)");
@@ -258,8 +263,20 @@ if (index == 0) {
                     item_id = 0;
                 }
 
+                rs = stmt.executeQuery("SELECT id,item_id FROM itemWeights where ITEM_ID = 'ALL_ITEMS'");
+
+                if (rs.next()) {
+                    parent_id = rs.getInt("ID");
+                    parent_desc = rs.getString("ITEM_ID");
+                }
+                else {
+                    // this is the first row in the table
+                    parent_id = 0;
+                    parent_desc = "";
+                }
+
                 // Insert the item with the top of the tree as the parent
-                stmt.executeUpdate("INSERT INTO assessmentItems VALUES (" + item_id + ", 0, '" + item_field_name + "')");
+                stmt.executeUpdate("INSERT INTO itemWeights VALUES (" + item_id + ", '" + item_field_name + "', " + parent_id + ", '" + parent_desc + "', '" + item_field_name + "', 0)");
 
             }
             return item_id;
@@ -288,6 +305,8 @@ if (index == 0) {
                 org_id = rs.getInt ("ID");
             }
             else {
+
+                System.out.println ("" + org_field_name + " not found in assessmentOrgs table.  Going to insert new organization in the table");
 
                 // If it wasn't in the table, find the maximum id
                 rs = stmt.executeQuery("SELECT max(id) FROM assessmentOrgs");
@@ -409,7 +428,7 @@ System.out.print ("insert"+time_index);
         return (time_in_days);
     }
 
-    private void AggregateByOrg (int org_id,
+    private void aggregateByOrg (int org_id,
                                  int item_id,
                                  int metric_id,
                                  int start_time,
@@ -478,10 +497,10 @@ System.out.print ("insert"+time_index);
             throw new EJBException(e);
         }
 
-        AggregateByOrg (parent_org_id, item_id, metric_id, start_time, end_time);
-    } /* end of AggregateByOrganizations */
+        aggregateByOrg (parent_org_id, item_id, metric_id, start_time, end_time);
+    } /* end of aggregateByOrg */
 
-    private void AggregateByOrganizations (Vector org_list,
+    private void aggregateByOrganizations (Vector org_list,
                                            Vector item_list,
                                            int metric_id,
                                            int start_time,
@@ -562,13 +581,13 @@ System.out.print ("insert"+time_index);
         }
 
         if (parent_org_list.size() > 0) {
-            AggregateByOrganizations (parent_org_list, item_list, metric_id, start_time, end_time);
+            aggregateByOrganizations (parent_org_list, item_list, metric_id, start_time, end_time);
         }
         else
             System.out.println ("no parents");
-    } /* end of AggregateByOrganizations */
+    } /* end of aggregateByOrganizations */
 
-    private void AggregateItems (Vector org_list) {
+    private void aggregateItems (Vector org_list) {
 
       int index;
 
@@ -578,7 +597,7 @@ System.out.print ("insert"+time_index);
 
       System.out.println ("");
 
-    } /* end of AggregateItems */
+    } /* end of aggregateItems */
 
     public void ejbActivate() {}
     public void ejbPassivate() {}
