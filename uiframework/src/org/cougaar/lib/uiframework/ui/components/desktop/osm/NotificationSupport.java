@@ -31,8 +31,6 @@ import java.util.Vector;
 /***********************************************************************************************************************
 <b>Description</b>: This class provides event listener support utilities to the Object Storage Manager.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class NotificationSupport
 {
@@ -119,8 +117,6 @@ public class NotificationSupport
 <b>Description</b>: Support class for notification support.  This class stores an individual listener and information
                     about the types of events it is interested in.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class ListenerType
 {

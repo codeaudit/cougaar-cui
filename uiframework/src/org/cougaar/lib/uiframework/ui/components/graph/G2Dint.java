@@ -74,8 +74,6 @@ import java.util.*;
  *    windowing system the mouse button might have to be pressed in the
  *    popup window to ensure it has the keyboard focus.
  *
- * @version $Revision: 1.5 $, $Date: 2001-10-26 21:38:34 $.
- * @author Leigh Brookshaw
  */
 
 public class G2Dint extends Graph2D {

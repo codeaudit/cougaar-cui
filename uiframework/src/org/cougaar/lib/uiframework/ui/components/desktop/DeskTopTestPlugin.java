@@ -49,8 +49,6 @@ import org.cougaar.util.UnaryPredicate;
 /***********************************************************************************************************************
 <b>Description</b>: Allocate transport tasks to roles".
 
-@author Frank Cooley, &copy;2000 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 
 public class DeskTopTestPlugin extends org.cougaar.planning.plugin.legacy.SimplePlugin

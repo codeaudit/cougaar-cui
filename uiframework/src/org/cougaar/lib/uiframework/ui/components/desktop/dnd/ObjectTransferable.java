@@ -15,8 +15,6 @@ import java.util.List;
 /***********************************************************************************************************************
 <b>Description</b>: Object to hold drag and drop data objects.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd.
-@version 1.0
 ***********************************************************************************************************************/
 public class ObjectTransferable implements Transferable
 {

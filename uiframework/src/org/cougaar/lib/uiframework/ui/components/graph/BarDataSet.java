@@ -35,8 +35,6 @@ import java.lang.*;
 <b>Description</b>: Bar chart data set.  Extension of the PolygonFillableDataSet to render a bar chart based on
                     a given data set.
 
-@author Eric B. Martin, &copy;2000 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class BarDataSet extends PolygonFillableDataSet
 {

@@ -52,7 +52,6 @@ import java.awt.Component;
  *  A dialog class for user input of a single string.
  *  </p>Here is the <a href="../gui/InputDialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 public class InputDialog extends Dialog

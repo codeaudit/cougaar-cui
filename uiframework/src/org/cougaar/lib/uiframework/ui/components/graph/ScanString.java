@@ -31,8 +31,6 @@ import java.lang.*;
  * This class is similar to the ScanWord class, except it scans a string
  * for keywords rather than an input stream.
  *
- * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:35 $
- * @author Leigh Brookshaw
  */
 
 public class ScanString extends Object {

@@ -59,8 +59,6 @@ import java.lang.*;
  * but in this mode nothing is automated, the user must code everything
  * manually
  *
- * @version  $Revision: 1.6 $, $Date: 2004-03-12 15:01:34 $.
- * @author   Leigh Brookshaw
  */
 
 public class Axis extends Object {

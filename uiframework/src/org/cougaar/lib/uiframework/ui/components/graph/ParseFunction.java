@@ -58,8 +58,6 @@ import java.lang.*;
  *   <li> Scientific notation using "e", "E", "d", "D".
  * </ul>
  *
- * @version $Revision: 1.5 $, $Date: 2001-10-26 21:38:35 $
- * @author Leigh Brookshaw
  */
 
 public class ParseFunction extends ScanString {

@@ -47,7 +47,6 @@ import java.lang.Exception;
  *	A parse error Exception.
  * </p>Here is the <a href="../graph/ParseError.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 public class ParseError extends Exception
 {

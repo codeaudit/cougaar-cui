@@ -42,8 +42,6 @@ import org.cougaar.lib.uiframework.ui.components.desktop.dnd.*;
                     the Cougaar Desktop application.  This component tests the data entry/changing/deletion
                     capabilities of the OSM.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class OSMDataEntryTestComponent extends ComponentFactory implements CougaarDesktopUI, NotificationListener, DragSource
 {

@@ -33,8 +33,6 @@ import java.text.*;
 <b>Description</b>: Polygon fillable chart data set.  Extension of the DataSet to render a line chart based on a given
                     data set and provide functionality to fill in below the line with the color of the data set.
 
-@author Eric B. Martin, &copy;2000 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class PolygonFillableDataSet extends DataSet
 {

@@ -60,7 +60,6 @@
  *  (phi, theta).
  *	</p>Here is the <a href="../gui/AngleControl.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public class AngleControl extends Canvas
    {

@@ -46,8 +46,6 @@ import org.cougaar.lib.uiframework.ui.components.graph.*;
 <br><br><b>Notes</b>:<br>
 									Provides the component factory to NChart.
 
-@author Frank Cooley, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 
 public class NChartUIComponent extends ComponentFactory implements CougaarDesktopPropertiesUI

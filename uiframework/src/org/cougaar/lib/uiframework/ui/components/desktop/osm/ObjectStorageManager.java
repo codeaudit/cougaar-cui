@@ -36,8 +36,6 @@ import java.lang.reflect.Array;
 <br><br><b>Notes</b>:<br>
 									- An instance of this class is used in the CougaarDesktop to store/share application data
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class ObjectStorageManager
 {

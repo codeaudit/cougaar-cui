@@ -42,8 +42,6 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.5 $, $Date: 2004-03-12 15:01:34 $
- * @author Leigh Brookshaw
  */
 public class VectorSet extends DataSet {
 

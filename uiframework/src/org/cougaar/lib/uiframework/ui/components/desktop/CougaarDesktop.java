@@ -95,8 +95,6 @@ import org.cougaar.lib.uiframework.ui.components.desktop.osm.ObjectStorageManage
 /***********************************************************************************************************************
 <b>Description</b>: This class represents the Cougaar Desktop application.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class CougaarDesktop extends org.cougaar.lib.uiframework.ui.components.CFrame implements javax.swing.SwingConstants
 {

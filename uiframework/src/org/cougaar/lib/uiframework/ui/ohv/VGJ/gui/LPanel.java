@@ -61,7 +61,6 @@
  * A panel class with convenience functions.
  *	</p>Here is the <a href="../gui/LPanel.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

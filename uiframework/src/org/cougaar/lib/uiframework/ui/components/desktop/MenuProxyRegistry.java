@@ -42,8 +42,6 @@ import javax.swing.event.*;
                     transistion from displaying the current application's menu bar on its own window frame and
                     displaying the same application's menu on the Cougaar Desktop applicaiton menu bar.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class MenuProxyRegistry
 {
@@ -136,8 +134,6 @@ public class MenuProxyRegistry
                     a custom separator label to the current Cougaar Desktop applicaiton menu and adds the menu options
                     from the application to the end of the current menu.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class JMenuExtender extends JComponent implements MenuProxy, ActionListener, ChangeListener, PropertyChangeListener, ContainerListener, MenuListener
 {
@@ -344,8 +340,6 @@ class JMenuExtender extends JComponent implements MenuProxy, ActionListener, Cha
 /***********************************************************************************************************************
 <b>Description</b>: This class is used by the Cougaar Desktop applicaiton to implement a proxy for a menu item.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class JMenuItemProxy extends JMenuItem implements MenuProxy, ActionListener, ChangeListener, PropertyChangeListener
 {
@@ -426,8 +420,6 @@ class JMenuItemProxy extends JMenuItem implements MenuProxy, ActionListener, Cha
 <b>Description</b>: This class is used by the Cougaar Desktop applicaiton to implement a proxy for a menu check box
                     item.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class JCheckBoxMenuItemProxy extends JCheckBoxMenuItem implements MenuProxy, ActionListener, ChangeListener, PropertyChangeListener
 {
@@ -510,8 +502,6 @@ class JCheckBoxMenuItemProxy extends JCheckBoxMenuItem implements MenuProxy, Act
 <b>Description</b>: This class is used by the Cougaar Desktop applicaiton to implement a proxy for a menu radio button
                     item.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class JRadioButtonMenuItemProxy extends JRadioButtonMenuItem implements MenuProxy, ActionListener, ChangeListener, PropertyChangeListener
 {
@@ -594,8 +584,6 @@ class JRadioButtonMenuItemProxy extends JRadioButtonMenuItem implements MenuProx
 <b>Description</b>: This class is used by the Cougaar Desktop applicaiton to implement a proxy for a menu separator
                     item.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class JSeparatorProxy extends JSeparator implements MenuProxy
 {

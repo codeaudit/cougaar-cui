@@ -56,7 +56,6 @@
  * used by algorithms.
  * </p>Here is the <a href="../gui/AlgPropDialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

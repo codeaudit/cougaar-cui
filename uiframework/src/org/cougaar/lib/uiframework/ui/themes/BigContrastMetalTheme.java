@@ -40,8 +40,6 @@ import java.awt.*;
 /**
  * This class describes a theme using "green" colors.
  *
- * @version 1.9 10/03/99
- * @author Steve Wilson
  */
 public class BigContrastMetalTheme extends ContrastTheme {
 

@@ -45,7 +45,6 @@
  *	A NodeList class for use in a Graph.
  *	</p>Here is the <a href="../graph/NodeList.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

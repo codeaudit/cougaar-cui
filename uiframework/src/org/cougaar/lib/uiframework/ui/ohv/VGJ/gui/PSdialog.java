@@ -62,7 +62,6 @@
  * PostScript output.
  * </p>Here is the <a href="../gui/PSdialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

@@ -40,8 +40,6 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.7 $, $Date: 2001-10-26 21:38:34 $
- * @author Leigh Brookshaw
  */
 public class DataSet extends Object {
 

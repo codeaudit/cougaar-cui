@@ -33,8 +33,6 @@ import java.io.Serializable;
 <b>Description</b>: This interface is implemented by all applications intended to be used within the Cougaar Desktop
                     environment.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface CougaarDesktopUI extends org.cougaar.lib.uiframework.ui.util.CougaarUI
 {

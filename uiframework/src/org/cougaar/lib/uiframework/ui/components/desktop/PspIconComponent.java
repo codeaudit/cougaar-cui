@@ -44,8 +44,6 @@ import org.cougaar.lib.uiframework.ui.components.*;
 <b>Description</b>: This class is the implementation of the PSP Icon Cougaar Desktop component.  It provides
                     the display of the PSP Icon map application from within the Cougaar Desktop application.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class PspIconComponent extends ComponentFactory implements DateControllableSliderUI
 {

@@ -33,8 +33,6 @@ package org.cougaar.lib.uiframework.ui.components.desktop.osm;
 <br><b>Notes</b>:<br>
                   - This class also generates the ObjectID instance associated with the object
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class ObjectStorage
 {

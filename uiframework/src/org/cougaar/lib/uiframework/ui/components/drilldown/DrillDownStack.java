@@ -52,8 +52,6 @@ import java.util.Stack;
                     be created from other object types that implement the DrillDown interface.  As components are
                     navigated, their drill down counterparts are inserted and removed from the stack.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class DrillDownStack extends JPanel
 {

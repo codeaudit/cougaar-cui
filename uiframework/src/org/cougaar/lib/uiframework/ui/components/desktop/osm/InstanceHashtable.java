@@ -110,9 +110,6 @@ import java.io.*;
  * The Enumerations returned by InstanceHashtable's keys and values methods are
  * <em>not</em> fail-fast.
  *
- * @author  Arthur van Hoff
- * @author  Josh Bloch
- * @version 1.82, 02/02/00
  * @see     Object#equals(java.lang.Object)
  * @see     Object#hashCode()
  * @see     InstanceHashtable#rehash()

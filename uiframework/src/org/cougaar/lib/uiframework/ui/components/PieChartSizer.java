@@ -32,8 +32,6 @@ import java.awt.Graphics;
 <b>Description</b>: This interface provides the capability to size a group of pie charts all the same size.
 
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface PieChartSizer
 {

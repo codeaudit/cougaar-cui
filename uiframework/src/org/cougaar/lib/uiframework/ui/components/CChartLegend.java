@@ -43,8 +43,6 @@ import org.cougaar.lib.uiframework.ui.components.*;
 <b>Description</b>: A legend component for chart data sets with the capability to notify property listeners when the
                     legend sets data set visibility on and off.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class CChartLegend extends JPanel
 {

@@ -43,8 +43,6 @@ import java.awt.image.*;
  *    This class is designed to bundle together all the information required
  *    to draw short Strings
  *
- * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:35 $
- * @author  Leigh Brookshaw
  */
 public class TextState extends Object {
       Font f         = null;

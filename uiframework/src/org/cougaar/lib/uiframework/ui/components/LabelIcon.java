@@ -37,8 +37,6 @@ import org.cougaar.lib.uiframework.ui.components.graph.*;
 <b>Description</b>: This class is an Icon displayable component of a data set.  It can be used any where an Icon object
                     is required and uses the data set's color and fill properties as part of the displayed icon.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class LabelIcon implements Icon, PlotColors
 {

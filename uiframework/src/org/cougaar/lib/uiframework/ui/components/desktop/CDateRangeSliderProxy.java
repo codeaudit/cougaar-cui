@@ -40,8 +40,6 @@ import org.cougaar.lib.uiframework.ui.models.*;
                     control.  This can be returned from a desktop component that implements the DateControllableSliderUI
                     interface to give control of the components slider to the Date Command Slider desktop component.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class CDateRangeSliderProxy implements PropertyChangeListener, SliderProxy
 {

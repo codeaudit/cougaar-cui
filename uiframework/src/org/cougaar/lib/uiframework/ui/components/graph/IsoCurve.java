@@ -37,8 +37,6 @@ import java.lang.*;
  * This class will calculate the constant curve of a given value passing
  * through a grid of values.
  *
- * @version $Revision: 1.4 $, $Date: 2001-10-26 21:38:34 $.
- * @author Leigh Brookshaw
  */
 
 public class IsoCurve extends Object {

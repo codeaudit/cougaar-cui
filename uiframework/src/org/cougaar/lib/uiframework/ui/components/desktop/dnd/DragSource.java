@@ -13,8 +13,6 @@ import java.awt.datatransfer.*;
 <b>Description</b>: The drag source interface.  Implemented by classes which wish to generate/control drag and drop
                     actions for a component or group of components.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd.
-@version 1.0
 ***********************************************************************************************************************/
 public interface DragSource
 {

@@ -43,7 +43,6 @@
  *	This interface represents an updatable graph display.
  *	</p>Here is the <a href="../algorithm/GraphUpdate.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public interface GraphUpdate
    {

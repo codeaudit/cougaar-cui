@@ -75,7 +75,6 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
  *  editor windows.
  *	</p>Here is the <a href="../VGJ.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

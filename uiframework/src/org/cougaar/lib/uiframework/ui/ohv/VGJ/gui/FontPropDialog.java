@@ -57,7 +57,6 @@
  * properites.
  * </p>Here is the <a href="../gui/FontPropDialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

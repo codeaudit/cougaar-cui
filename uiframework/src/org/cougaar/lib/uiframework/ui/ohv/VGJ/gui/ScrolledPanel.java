@@ -62,7 +62,6 @@
  *	</p>Here is the <a href="../gui/ScrolledPanel.java">source</a>.
  *
  *@see		OffsetCanvas
- *@author	Larry Barowski
 **/
    public class ScrolledPanel extends LPanel
    {

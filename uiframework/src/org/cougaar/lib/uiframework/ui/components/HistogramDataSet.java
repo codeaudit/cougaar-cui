@@ -35,8 +35,6 @@ import org.cougaar.lib.uiframework.ui.components.graph.*;
 <b>Description</b>: This class represents a histogram data set which is used along with the
                     org.cougaar.lib.uiframework.ui.components.HChart component to display a histogram.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class HistogramDataSet
 {

@@ -52,8 +52,6 @@ import javax.swing.filechooser.*;
  *     chooser.addChoosableFileFilter(filter);
  *     chooser.showOpenDialog(this);
  *
- * @version 1.9 04/23/99
- * @author Jeff Dinkins
  */
 public class ExtensionFileFilter extends FileFilter {
 

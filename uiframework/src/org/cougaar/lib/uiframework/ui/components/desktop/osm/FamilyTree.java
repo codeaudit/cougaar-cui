@@ -34,8 +34,6 @@ import java.util.Vector;
                     references to other objects of the same type that are lower in the inheritance tree.  This class is
                     designed to provide fast access to a group of objects of the same type.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class FamilyTree
 {
@@ -242,8 +240,6 @@ if (debug) System.out.println("find(): " + link);
 /***********************************************************************************************************************
 <b>Description</b>: This class holds the information on each node in the FamilyTree class.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 class FamilyLink
 {

@@ -50,8 +50,6 @@ import org.cougaar.lib.uiframework.ui.components.desktop.dnd.*;
 <br><br><b>Notes</b>:<br>
 									Builds a 4 chart frame.
 
-@author Frank Cooley, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 
 public class NChart extends javax.swing.JPanel implements PropertyChangeListener

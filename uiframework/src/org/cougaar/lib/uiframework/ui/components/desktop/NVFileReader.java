@@ -41,8 +41,6 @@ import java.util.StringTokenizer;
 <b>Description</b>: This is a utility class designed to "generically" save and load name value pairs to and from an
                     ASCII text file with a specifiable separator.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class NVFileReader
 {

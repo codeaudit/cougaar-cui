@@ -30,8 +30,6 @@ package org.cougaar.lib.uiframework.ui.components.desktop.osm;
 <b>Description</b>: This interface is implemented by listeners that want to be notified when events occur on specific
                     instances or classes of objects stored in the Object Storage Manager.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface NotificationListener
 {

@@ -42,8 +42,6 @@ import java.awt.*;
  * It's great for giving demos of your software to a group
  * where people will have trouble seeing what you're doing.
  *
- * @version 1.6 10/03/99
- * @author Steve Wilson
  */
 public class DemoMetalTheme extends DefaultMetalTheme {
 

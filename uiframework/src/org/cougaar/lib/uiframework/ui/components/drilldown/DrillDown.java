@@ -38,8 +38,6 @@ import java.awt.event.MouseEvent;
 <br><br><b>Notes</b>:<br>
 									- Any notes about the class go here
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface DrillDown
 {

@@ -15,10 +15,10 @@
  *  
  * **********************************************************************
  * 
- * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/components/IconScalePanel.java,v $
- * $Revision: 1.5 $
- * $Date: 2004-03-12 15:01:34 $
- * $Author: mthome $
+ * 
+ * 
+ * 
+ * 
  * 
  * **********************************************************************
  */

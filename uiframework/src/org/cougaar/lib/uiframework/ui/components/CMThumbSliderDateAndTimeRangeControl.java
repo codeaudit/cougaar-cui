@@ -43,8 +43,6 @@ import org.cougaar.lib.uiframework.ui.models.RangeModel;
 <b>Description</b>: A version of the two thumbed slider range control that operates/displays based on time.  This
                     this control contains a right click properties menu
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class CMThumbSliderDateAndTimeRangeControl extends CMThumbSliderRangeControl
 {

@@ -50,7 +50,6 @@
  *	</p>Here is the <a href="../gui/OffsetCanvas.java">source</a>.
  *
  *@see		ScrolledPanel
- *@author	Larry Barowski
 **/
    public abstract class OffsetCanvas extends Canvas
    {

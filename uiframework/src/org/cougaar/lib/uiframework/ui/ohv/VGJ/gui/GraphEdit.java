@@ -67,7 +67,6 @@
  *	GraphEdit is a text editing window for Graphs
  *	</p>Here is the <a href="../gui/GraphEdit.java">source</a>.
  *
- *@author	Steven Hansen
 **/
 
    public class GraphEdit extends Frame {

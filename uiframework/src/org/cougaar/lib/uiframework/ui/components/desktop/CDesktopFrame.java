@@ -48,8 +48,6 @@ import javax.swing.event.InternalFrameEvent;
                     as the communication medium between the CougaarDesktopUI instance and the Cougaar Desktop which it
                     is being displayed in.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class CDesktopFrame extends javax.swing.JInternalFrame implements javax.swing.event.InternalFrameListener, java.beans.VetoableChangeListener
 {

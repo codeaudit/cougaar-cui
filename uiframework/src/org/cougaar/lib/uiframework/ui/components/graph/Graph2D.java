@@ -52,8 +52,6 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.9 $, $Date: 2004-03-12 15:01:34 $
- * @author   Leigh Brookshaw
  */
 
 public class Graph2D extends JPanel { // PHF

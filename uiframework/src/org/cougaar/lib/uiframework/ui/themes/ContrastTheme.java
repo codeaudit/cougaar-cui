@@ -41,8 +41,6 @@ import java.awt.*;
 /**
  * This class describes a higher-contrast Metal Theme.
  *
- * @version 1.3 07/22/99
- * @author Michael C. Albers
  */
 
 public class ContrastTheme extends DefaultMetalTheme {

@@ -55,7 +55,6 @@
  * A dialog class that allows the user to enter group commands.
  * </p>Here is the <a href="../gui/GroupControl.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

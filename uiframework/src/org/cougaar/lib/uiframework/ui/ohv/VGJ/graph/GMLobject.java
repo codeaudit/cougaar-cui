@@ -52,7 +52,6 @@
  *	A GML object that does nothing but create itself and write itself.
  *	</p>Here is the <a href="../graph/GMLobject.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public class GMLobject
       {

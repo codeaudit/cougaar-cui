@@ -29,8 +29,6 @@ package org.cougaar.lib.uiframework.ui.components.desktop.osm;
 /***********************************************************************************************************************
 <b>Description</b>: This class provides information of a notification event.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class NotificationEvent extends java.util.EventObject
 {

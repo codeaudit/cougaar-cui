@@ -44,8 +44,6 @@ import javax.swing.JLabel;
                     to provide a error display within a desktop frame when the requested component factory can not
                     be created.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class ComponentFactoryRegistry extends ComponentFactory implements CougaarDesktopUI
 {

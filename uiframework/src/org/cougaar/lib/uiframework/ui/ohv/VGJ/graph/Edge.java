@@ -57,7 +57,6 @@
  *	A class for representing a graph edge.
  *	</p>Here is the <a href="../graph/Edge.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
    public class Edge

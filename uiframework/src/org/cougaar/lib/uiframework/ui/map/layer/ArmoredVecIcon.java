@@ -11,10 +11,10 @@
  * 
  * **********************************************************************
  * 
- * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/ArmoredVecIcon.java,v $
- * $Revision: 1.1 $
- * $Date: 2001-02-15 13:20:58 $
- * $Author: krotherm $
+ * 
+ * 
+ * 
+ * 
  * 
  * **********************************************************************
  */

@@ -39,8 +39,6 @@ import java.awt.*;
 /**
  * This class describes a theme using glowing green colors.
  *
- * @version 1.3 07/22/99
- * @author Jeff Dinkins
  */
 public class EmeraldTheme extends DefaultMetalTheme {
 

@@ -53,7 +53,6 @@
  *	A class for representing a graph abstractly.
  *	</p>Here is the <a href="../graph/Graph.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
    public class Graph implements Cloneable

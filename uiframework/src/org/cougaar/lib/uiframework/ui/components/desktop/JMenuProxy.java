@@ -42,8 +42,6 @@ import javax.swing.event.*;
                     adds a new menu to the Cougaar Desktop applicaiton current menu bar that represents the currently
                     selected application's menu.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class JMenuProxy extends JMenu implements MenuProxy, ActionListener, ChangeListener, PropertyChangeListener, ContainerListener, MenuListener
 {

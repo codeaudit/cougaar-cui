@@ -37,8 +37,6 @@ import java.awt.image.*;
  * This class is designed to bundle together all the information required
  * to draw short Strings with subscripts and superscripts
  *
- * @version $Revision: 1.5 $, $Date: 2004-03-12 15:01:34 $
- * @author  Leigh Brookshaw
  */
 
 public class TextLine extends Object {

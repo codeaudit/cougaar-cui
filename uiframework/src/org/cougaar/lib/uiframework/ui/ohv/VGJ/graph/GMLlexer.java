@@ -49,7 +49,6 @@
  *      (all numbers are real).
  *	</p>Here is the <a href="../graph/GMLlexer.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public class GMLlexer
    {

@@ -11,10 +11,10 @@
  * 
  * **********************************************************************
  * 
- * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/DragAndDropMouseMode.java,v $
- * $Revision: 1.3 $
- * $Date: 2001-10-26 21:39:14 $
- * $Author: mdavis $
+ * 
+ * 
+ * 
+ * 
  * 
  * **********************************************************************
  */

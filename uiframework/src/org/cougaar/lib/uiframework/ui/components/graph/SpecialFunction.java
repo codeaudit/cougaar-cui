@@ -42,8 +42,6 @@ import java.lang.ArithmeticException;
  * <B>NOTE:</B> These special functions do not necessarily use the fastest
  * or most accurate algorithms.
  *
- * @version $Revision: 1.5 $, $Date: 2004-03-12 15:01:34 $
- * @author Leigh Brookshaw
  */
 
 

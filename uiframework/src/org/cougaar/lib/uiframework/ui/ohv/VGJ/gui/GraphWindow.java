@@ -98,7 +98,6 @@
  *	GraphWindow is a graph editing tool window.
  *	</p>Here is the <a href="../gui/GraphWindow.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public class GraphWindow extends Frame
    {

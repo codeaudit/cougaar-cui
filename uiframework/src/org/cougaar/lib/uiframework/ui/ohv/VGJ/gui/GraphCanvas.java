@@ -77,7 +77,6 @@
  *	A window class for editing and displaying Graphs.
  *	</p>Here is the <a href="../gui/GraphCanvas.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

@@ -40,8 +40,6 @@ import java.awt.*;
 /**
  * This class describes a theme using "khaki" colors.
  *
- * @version 1.4 04/23/99
- * @author Steve Wilson
  */
 public class KhakiMetalTheme extends DefaultMetalTheme {
 

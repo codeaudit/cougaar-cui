@@ -48,8 +48,6 @@ import org.cougaar.lib.uiframework.ui.components.CFrame;
 <br><br><b>Notes</b>:<br>
 									- This class is saved and loaded as an ASCII text file
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class DesktopConfig
 {

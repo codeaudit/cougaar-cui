@@ -32,8 +32,6 @@ import java.awt.*;
 <b>Description</b>: An extension of the swing JSplitPane class that attempts to correct divider location problems
                     when switching look and feel.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class CSplitPane extends javax.swing.JSplitPane
 {

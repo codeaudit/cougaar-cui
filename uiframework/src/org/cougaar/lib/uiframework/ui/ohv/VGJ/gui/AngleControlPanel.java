@@ -47,7 +47,6 @@
  *   YZ plane, XZ plane.
  *   </p>Here is the <a href="../gui/AngleControlPanel.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
    class AngleControlPanel extends LPanel

@@ -58,7 +58,6 @@
  * SCROLL event is sent when the user drags the "window" with the mouse.
  *	</p>Here is the <a href="../gui/ViewportScroller.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public class ViewportScroller extends Canvas
    {

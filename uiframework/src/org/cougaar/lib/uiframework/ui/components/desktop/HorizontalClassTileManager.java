@@ -33,8 +33,6 @@ import java.util.*;
 <b>Description</b>: This class is an implementation of the tile manager interface that attempts to tile windows by
                     horizontal alignment based on class type of each frame's CougaarDesktopUI component.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class HorizontalClassTileManager implements TileManager
 {

@@ -54,7 +54,6 @@ import java.lang.System;
 *  updates the display and waits 5 milliseconds in between.
  *	</p>Here is the <a href="../examplealg/ExampleAlg2.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

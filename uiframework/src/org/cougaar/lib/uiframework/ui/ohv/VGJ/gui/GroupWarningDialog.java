@@ -54,7 +54,6 @@
  * An O.K. / Cancel dialog for group deletion.
  * </p>Here is the <a href="../gui/GroupWarningDialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

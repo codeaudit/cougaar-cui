@@ -34,8 +34,6 @@ import org.cougaar.lib.uiframework.ui.models.RangeModel;
 <b>Description</b>: This interface is used by the desktop Date Command Slider component to itentify controllable
                     sliders in other components and use this interface to control them.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface SliderProxy
 {

@@ -36,8 +36,6 @@ import java.awt.font.LineMetrics;
 /***********************************************************************************************************************
 <b>Description</b>: This class represents one slice of a pie chart.  It contains slice value, label and color.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class PieElement
 {

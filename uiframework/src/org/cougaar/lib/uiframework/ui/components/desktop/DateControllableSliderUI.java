@@ -30,8 +30,6 @@ package org.cougaar.lib.uiframework.ui.components.desktop;
 <b>Description</b>: Desktop components that implement this interface are "advertizing" that there is a date and time 
                     based slider that can be controled by the desktop global Date command slider.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface DateControllableSliderUI extends org.cougaar.lib.uiframework.ui.components.desktop.CougaarDesktopUI
 {

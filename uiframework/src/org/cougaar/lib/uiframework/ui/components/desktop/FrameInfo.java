@@ -35,8 +35,6 @@ import java.io.Serializable;
 <b>Description</b>: This class stores current information about each desktop frame window within the desktop.  It is
                     used by the DesktopInfo class to store/retrieve information about the current application.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class FrameInfo implements java.io.Serializable
 {

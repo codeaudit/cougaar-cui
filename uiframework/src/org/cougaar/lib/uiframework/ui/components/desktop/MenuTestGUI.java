@@ -45,8 +45,6 @@ import org.cougaar.lib.uiframework.ui.components.desktop.CDesktopFrame;
                     (using the option under the Window menu) between displaying the menu bar of a desktop application
                     in the application frame's window or on the Cougaar Desktop application's menu bar.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class MenuTestGUI extends org.cougaar.lib.uiframework.ui.components.desktop.ComponentFactory implements org.cougaar.lib.uiframework.ui.components.desktop.CougaarDesktopUI
 {

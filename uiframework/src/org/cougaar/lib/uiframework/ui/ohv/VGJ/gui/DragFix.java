@@ -83,7 +83,6 @@
  *
  *	</p>Here is the <a href="../gui/DragFix.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public class DragFix implements Runnable
    {

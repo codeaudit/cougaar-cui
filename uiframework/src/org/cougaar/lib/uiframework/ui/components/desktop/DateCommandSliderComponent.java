@@ -44,8 +44,6 @@ import org.cougaar.lib.uiframework.ui.models.*;
                     the display for a global desktop slider which can control the slider movement of other desktop 
                     components (simultaneously) that implement the DateControllableSliderUI interface.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class DateCommandSliderComponent extends ComponentFactory implements CougaarDesktopUI
 {

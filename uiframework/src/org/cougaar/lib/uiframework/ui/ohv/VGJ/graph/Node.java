@@ -72,7 +72,6 @@
  *	A Node class for use in a Graph, and for display.
  *	</p>Here is the <a href="../graph/Node.java">source</a>.
  *
- *@author	Larry Barowski
 **/
    public class Node implements Cloneable, ImageObserver
    {

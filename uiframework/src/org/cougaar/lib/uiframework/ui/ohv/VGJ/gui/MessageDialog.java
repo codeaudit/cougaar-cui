@@ -52,7 +52,6 @@ import java.awt.Event;
  * A dialog class for displaying a message.
  * </p>Here is the <a href="../gui/MessageDialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

@@ -42,8 +42,6 @@ import org.cougaar.lib.uiframework.ui.components.desktop.dnd.*;
 <b>Description</b>: This class is a test Cougaar Desktop component for the Object Storage Manager (OSM) capabilities in
                     the Cougaar Desktop application.  This component tests the notification capabilities of the OSM.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class OSMDataListenerTestComponent extends ComponentFactory implements CougaarDesktopUI, DropTarget
 {

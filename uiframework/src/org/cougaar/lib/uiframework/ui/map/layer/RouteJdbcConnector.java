@@ -49,8 +49,6 @@ import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMWideLine;
 <br><br><b>Notes</b>:<br>
 									- This plugIn is attached to the payment cluster.
 
-@author Frank Cooley, &copy;2000 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class RouteJdbcConnector 
 {

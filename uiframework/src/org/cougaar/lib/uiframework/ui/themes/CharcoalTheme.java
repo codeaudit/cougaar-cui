@@ -41,7 +41,6 @@ import java.awt.*;
  * This class describes a theme using gray colors.
  *
  * 1.3 07/22/99
- * @author Steve Wilson
  */
 public class CharcoalTheme extends DefaultMetalTheme {
 

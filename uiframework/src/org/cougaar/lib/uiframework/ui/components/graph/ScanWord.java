@@ -41,8 +41,6 @@ import java.net.URL;
  * token of the StreamTokenizer is also modified so that scientific notation
  * is recognised.
  *
- * @version $Revision: 1.5 $, $Date: 2001-10-26 21:38:35 $
- * @author Leigh Brookshaw
  */
 
 public class ScanWord extends StreamTokenizer {

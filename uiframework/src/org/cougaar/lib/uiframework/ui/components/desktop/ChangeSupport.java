@@ -34,8 +34,6 @@ import javax.swing.event.ChangeEvent;
 /***********************************************************************************************************************
 <b>Description</b>: Support class for classes that need to implement listner notification services for ChangeListeners.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class ChangeSupport
 {

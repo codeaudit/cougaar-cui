@@ -35,7 +35,6 @@ import javax.swing.plaf.basic.*;
 
 
 /**
- * @version 1.0 09/08/99
  */
 public class BasicMThumbSliderUI extends BasicSliderUI
                 implements MThumbSliderAdditional {

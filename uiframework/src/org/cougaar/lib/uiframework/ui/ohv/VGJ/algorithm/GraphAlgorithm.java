@@ -48,7 +48,6 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Graph;
  *	has the function compute, and that it implements GraphAlgorithm.
  * 	</p>Here is the <a href="../algorithm/GraphAlgorithm.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 public interface GraphAlgorithm
 {

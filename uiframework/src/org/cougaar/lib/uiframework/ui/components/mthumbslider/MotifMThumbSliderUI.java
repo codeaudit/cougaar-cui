@@ -34,7 +34,6 @@ import com.sun.java.swing.plaf.motif.*;
 
 
 /**
- * @version 1.0 09/08/99
  */
 public class MotifMThumbSliderUI extends MotifSliderUI
                 implements MThumbSliderAdditional {

@@ -33,8 +33,6 @@ import java.rmi.server.UID;
 <b>Description</b>: This class combines the network IP address of the machine which it is generated on and a UID
                     instance which is intended to produce a unique ID.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class ObjectID implements java.lang.Cloneable, java.io.Serializable
 {

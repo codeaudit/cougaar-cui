@@ -44,8 +44,6 @@ import java.awt.event.*;
                   - The chart class implements the Runnable interface and must be started with its own thread
                   - Uses the 3rd party graph package which was modified to provide "better" functionality
 
-@author Eric B. Martin, &copy;2000 Clark Software Engineering, Ltd.
-@version 1.0
 ***********************************************************************************************************************/
 public class Chart extends Graph2D implements Runnable
 {
@@ -634,8 +632,6 @@ public class Chart extends Graph2D implements Runnable
   <br><br><b>Notes</b>:<br>
                     -
 
-  @author Some One, &copy;2000 Clark Software Engineering, Ltd.
-  @version 1.0
   ***********************************************************************************************************************/
   private class ResizeAdapter extends ComponentAdapter
   {

@@ -38,8 +38,6 @@ import javax.swing.JInternalFrame;
 <b>Description</b>: This class is a general test Cougaar Desktop component.  Is is a simple component created to show
                     what needs to be done to build a desktop component.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class DesktopTestComponent extends ComponentFactory implements CougaarDesktopUI
 {

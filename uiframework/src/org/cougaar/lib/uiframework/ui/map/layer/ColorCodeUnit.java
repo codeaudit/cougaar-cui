@@ -11,10 +11,10 @@
  * 
  * **********************************************************************
  * 
- * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/ColorCodeUnit.java,v $
- * $Revision: 1.2 $
- * $Date: 2001-02-23 21:56:55 $
- * $Author: krotherm $
+ * 
+ * 
+ * 
+ * 
  * 
  * **********************************************************************
  */

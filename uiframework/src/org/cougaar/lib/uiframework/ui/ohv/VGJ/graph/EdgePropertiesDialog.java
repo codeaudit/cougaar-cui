@@ -71,7 +71,6 @@
  * dialog is modal.
  *	</p>Here is the <a href="../graph/EdgePropertiesDialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
 

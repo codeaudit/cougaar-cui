@@ -11,10 +11,10 @@
  * 
  * **********************************************************************
  * 
- * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Unit.java,v $
- * $Revision: 1.5 $
- * $Date: 2001-10-26 21:39:15 $
- * $Author: mdavis $
+ * 
+ * 
+ * 
+ * 
  * 
  * **********************************************************************
  */

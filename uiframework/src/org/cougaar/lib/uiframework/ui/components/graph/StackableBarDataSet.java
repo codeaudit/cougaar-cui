@@ -36,8 +36,6 @@ import java.io.*;
 <b>Description</b>: Stackable bar chart data set.  Extension of the DataSet to render a set of bar charts stacked (or
                     summed on each bar location (X point value) within each bar data set.
 
-@author Eric B. Martin, &copy;2000 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class StackableBarDataSet extends DataSet
 {

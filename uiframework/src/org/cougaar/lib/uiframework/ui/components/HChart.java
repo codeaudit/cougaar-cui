@@ -38,8 +38,6 @@ import org.cougaar.lib.uiframework.ui.models.*;
 <b>Description</b>: This class is a histogram chart display component that provides X and Y dual-thumb range sliders to
                     narrow or broaden the view of the data on the chart.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class HChart extends javax.swing.JPanel implements ComponentListener
 {

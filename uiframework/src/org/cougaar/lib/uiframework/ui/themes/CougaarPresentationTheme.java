@@ -35,7 +35,6 @@ import java.awt.*;
  * This class describes a theme using offical Cougaar colors.
  *
  * 1.3 12/21/00
- * @author Peter Fischer
  */
 public class CougaarPresentationTheme extends CougaarTheme
 {

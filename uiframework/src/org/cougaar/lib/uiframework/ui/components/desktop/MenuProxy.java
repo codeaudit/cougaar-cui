@@ -31,8 +31,6 @@ package org.cougaar.lib.uiframework.ui.components.desktop;
                     proxy between menus and menu listeners such that an application's menu can be displayed on the
                     window frame of the application or on the Cougaar Desktop application menu itself.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface MenuProxy
 {

@@ -32,8 +32,6 @@ import java.awt.*;
 <b>Description</b>: This interface provides support for an object outside the stackable data set objects to choose data
                     set colors.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public interface ColorProducer
 {

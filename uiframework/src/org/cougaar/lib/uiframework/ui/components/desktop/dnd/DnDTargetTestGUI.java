@@ -47,8 +47,6 @@ import org.cougaar.lib.uiframework.ui.components.desktop.CDesktopFrame;
                     Desktop application.  This is the target component which a text string can be dropped to from the
                     DnDSourceTestGUI desktop component.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class DnDTargetTestGUI extends org.cougaar.lib.uiframework.ui.components.desktop.ComponentFactory implements org.cougaar.lib.uiframework.ui.components.desktop.CougaarDesktopUI, DropTarget
 {

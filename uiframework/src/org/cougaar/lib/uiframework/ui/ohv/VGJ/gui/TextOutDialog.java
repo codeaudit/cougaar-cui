@@ -53,7 +53,6 @@
  *  A dialog class for output of a single string.
  *  </p>Here is the <a href="../gui/TextOutDialog.java">source</a>.
  *
- *@author	Larry Barowski
 **/
 
    public class TextOutDialog extends Dialog

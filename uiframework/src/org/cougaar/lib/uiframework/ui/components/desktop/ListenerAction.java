@@ -65,8 +65,6 @@ import java.lang.reflect.Method;
                     generated (good for applets and distribution) and extra information to be passed along with the
                     event.
 
-@author Eric B. Martin, &copy;2001 Clark Software Engineering, Ltd. & Defense Advanced Research Projects Agency (DARPA)
-@version 1.0
 ***********************************************************************************************************************/
 public class ListenerAction implements ActionListener, WindowListener, ComponentListener, ContainerListener, ListSelectionListener, CaretListener, KeyListener, MouseListener, MouseMotionListener, AWTEventListener, InternalFrameListener, PropertyChangeListener
 {
