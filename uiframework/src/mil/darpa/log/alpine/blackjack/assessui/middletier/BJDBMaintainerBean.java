@@ -99,11 +99,12 @@ public class BJDBMaintainerBean implements SessionBean
               int start_time_in_days = convertTimeToDays (myStruct.getStartTime());
               int end_time_in_days = convertTimeToDays (myStruct.getEndTime());
 
-//              System.out.println ("start time in days is " + start_time_in_days);
-//              System.out.println ("end time in days is " + end_time_in_days);
+              System.out.println ("start days " + start_time_in_days + ",end days " + end_time_in_days);
 
               putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
             }
+
+            System.out.print ("" + index);
 
             index++;
 
@@ -349,12 +350,15 @@ public class BJDBMaintainerBean implements SessionBean
         {
             stmt = connection.createStatement();
 
-            for (int time_index = start_time; time_index <= end_time; time_index++) {
+            for (int time_index = start_time; time_index < end_time; time_index++) {
                 // See if this value is in the table already
                 ResultSet rs = stmt.executeQuery("SELECT assessmentValue FROM assessmentData WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time_index + " AND metric = " + metric);
 
+                System.out.print ("select.");
+
                 // If it's in the table, update the value
                 if (rs.next()) {
+                    System.out.print ("update.");
                     stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + rate + " WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time_index + " AND metric = " + metric);
                 }
                 // Insert the new value
