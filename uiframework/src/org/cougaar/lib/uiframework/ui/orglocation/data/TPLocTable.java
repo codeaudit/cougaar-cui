@@ -16,6 +16,10 @@ public class TPLocTable {
     return name;
   }
 
+  public boolean isEmpty () {
+    return table.isEmpty();
+  }
+
   public void addSchedule (SimpleTPLocation tp) {
     table.put(tp.getName(), tp);
   }
@@ -26,6 +30,10 @@ public class TPLocTable {
 
   public SimpleTPLocation getSchedule (String org) {
     return (SimpleTPLocation) table.get(org);
+  }
+
+  public Enumeration getAllSchedules () {
+    return table.elements();
   }
 
   public void toXml (PrintWriter out) {

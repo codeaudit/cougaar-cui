@@ -26,10 +26,20 @@ public class SimpleTPLocation implements TPLocation {
   // private Hashtable idIndex = new Hashtable();
   private String name = null;
 
+  /**
+   *  Report the name of the organization to which this location schedule
+   *  corresponds.
+   *  @return the org name
+   */
   public String getName () {
     return name;
   }
 
+  /**
+   *  Create a new SimpleTPLocation for the named organization.  Initially,
+   *  the location schedule model is completely empty.
+   *  @param n the name of the organization for which this is the schedule
+   */
   public SimpleTPLocation (String n) {
     name = n;
   }
@@ -44,11 +54,11 @@ public class SimpleTPLocation implements TPLocation {
       TimeLocation n = (TimeLocation) times.elementAt(0);
       for (int i = 1; i < times.size(); i++) {
         TimeLocation m = (TimeLocation) times.elementAt(i);
-        if (m.start > t)
+        if (m.getStart() > t)
           break;
         n = m;
       }
-      return n.loc.duplicate();
+      return n.getLocation().duplicate();
     }
     else {
       return null;
@@ -83,13 +93,18 @@ public class SimpleTPLocation implements TPLocation {
       insertInOrder(n);
     }
     else {
-      n.loc.reset(loc.getLatitude(), loc.getLongitude());
-      n.start = t0;
-      n.end = t1;
+      n.getLocation().reset(loc.getLatitude(), loc.getLongitude());
+      n.setStart(t0);
+      n.setEnd(t1);
       shiftPositionOf(n);
     }
   }
 
+  /**
+   *  Provide an XML digest of this location schedule at the direction of the
+   *  caller, which is more than likely a TPLocTable instance.
+   *  @param out a PrintWriter to which output is directed
+   */
   public void toXml (PrintWriter out) {
     Const.openTag(out, Const.SCHEDULE);
     Const.tagElement(out, Const.ORG_NAME, getName());
@@ -101,14 +116,19 @@ public class SimpleTPLocation implements TPLocation {
   private void shiftPositionOf (TimeLocation loc) {
     int k = times.indexOf(loc);
     int j = k;
-    if (j > 0 && ((TimeLocation) times.elementAt(j - 1)).start > loc.start) {
+    if (j > 0 &&
+        ((TimeLocation) times.elementAt(j - 1)).getStart() > loc.getStart())
+    {
       j--;
-      while (j > 0 && ((TimeLocation) times.elementAt(j - 1)).start > loc.start)
+      while (j > 0 &&
+          ((TimeLocation) times.elementAt(j - 1)).getStart() > loc.getStart())
+      {
         j--;
+      }
     }
     else {
       while (j < times.size() - 1 &&
-          ((TimeLocation) times.elementAt(j + 1)).start < loc.start)
+          ((TimeLocation) times.elementAt(j + 1)).getStart() < loc.getStart())
       {
         j++;
       }
@@ -120,13 +140,13 @@ public class SimpleTPLocation implements TPLocation {
     TimeLocation neighbor = null;
     if (j < times.size() - 1) {
       neighbor = (TimeLocation) times.elementAt(j + 1);
-      if (neighbor.start < loc.end)
-        loc.end = neighbor.start;
+      if (neighbor.getStart() < loc.getEnd())
+        loc.setEnd(neighbor.getStart());
     }
     if (j > 0) {
       neighbor = (TimeLocation) times.elementAt(j - 1);
-      if (neighbor.end > loc.start)
-        neighbor.end = loc.start;
+      if (neighbor.getEnd() > loc.getStart())
+        neighbor.setEnd(loc.getStart());
     }
   }
 
@@ -145,6 +165,22 @@ public class SimpleTPLocation implements TPLocation {
   }
 
   /**
+   *  Provide a summary of the contents of this location schedule to the caller
+   *  @return an Enumeration of all elements in this schedule
+   */
+  public Enumeration getLocationElements () {
+    return times.elements();
+  }
+
+  /**
+   *  Report whether this schedule is devoid of entries.
+   *  @return true if and only if there are no elements in this schedule
+   */
+  public boolean isEmpty () {
+    return times.isEmpty();
+  }
+
+  /**
    *  Give a summary of the state of this location.  In particular, the time
    *  values at which the location changes (the locations themselves can be
    *  added later, if necessary).
@@ -153,35 +189,13 @@ public class SimpleTPLocation implements TPLocation {
     StringBuffer buf = new StringBuffer("SimpleTPLocation[");
     Iterator i = times.iterator();
     if (i.hasNext()) {
-      buf.append(((TimeLocation) i.next()).start);
+      buf.append(((TimeLocation) i.next()).getStart());
       while (i.hasNext()) {
         buf.append(", ");
-        buf.append(((TimeLocation) i.next()).start);
+        buf.append(((TimeLocation) i.next()).getStart());
       }
     }
     buf.append("]");
     return buf.toString();
-  }
-
-  // Keep UID, date, and location together
-  private static class TimeLocation {
-    public long start = -1;
-    public long end = -1;
-    public Location loc = null;
-
-    public TimeLocation (long t0, long t1, Location l) {
-      start = t0;
-      end = t1;
-      loc = l;
-    }
-
-    public void toXml (PrintWriter o) {
-      Const.openTag(o, Const.TIME_LOC);
-      Const.tagElement(o, Const.START, String.valueOf(start));
-      Const.tagElement(o, Const.END, String.valueOf(end));
-      Const.tagElement(o, Const.LATITUDE, String.valueOf(loc.getLatitude()));
-      Const.tagElement(o, Const.LONGITUDE, String.valueOf(loc.getLongitude()));
-      Const.closeTag(o, Const.TIME_LOC);
-    }
   }
 }
