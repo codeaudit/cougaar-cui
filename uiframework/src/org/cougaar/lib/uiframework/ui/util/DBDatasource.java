@@ -101,6 +101,73 @@ public class DBDatasource
     }
 
     /**
+     * Executes a query and returns the first column of the result set in a
+     * Vector.
+     *
+     * @param query query to execute
+     * @return vector containing string representations of the first column of
+     *         the result set.
+     */
+    public static Vector executeVectorReturnQuery(String query)
+    {
+        Connection con = null;
+
+        try
+        {
+            con = getConnection();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        // (reusing a single connection; don't close it)
+
+        return executeVectorReturnQuery(con, query);
+    }
+
+    /**
+     * Executes a query and returns the first column of the result set in a
+     * Vector.
+     *
+     * @param con database connection to use
+     * @param query query to execute
+     * @return vector containing string representations of the first column of
+     *         the result set.
+     */
+    private static Vector
+        executeVectorReturnQuery(Connection con, String query)
+    {
+        Statement stmt = null;
+        ResultSet rs = null;
+        Vector result = new Vector();
+
+        try
+        {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+            while (rs.next())
+            {
+                result.add(rs.getString(1).trim());
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (Exception e){/* I tried */}
+        }
+
+        return result;
+    }
+
+    /**
      * Creates a tree model (viewable by a JTree) based on the contents of the
      * given structure.
      *
@@ -151,7 +218,7 @@ public class DBDatasource
         {
             try
             {
-                //if (con != null) con.close();
+                //if (con != null) con.close(); (reusing a single connection)
             }
             catch(Exception e){/*I tried*/}
         }
@@ -253,47 +320,19 @@ public class DBDatasource
         lookupValues(Connection con, String table, String searchColumn,
                     String resultColumn, String searchValue)
     {
-        Vector values = new Vector();
-        Statement stmt = null;
-        ResultSet rs = null;
+        StringBuffer query = new StringBuffer("SELECT ");
+        query.append(resultColumn + " FROM " + table);
+        if ((searchColumn != null) && (searchValue != null))
+        {
+            if (!searchColumn.equalsIgnoreCase("id"))
+            {
+                searchValue = "'" + searchValue + "'";
+            }
 
-        try
-        {
-            stmt = con.createStatement();
-            StringBuffer query = new StringBuffer("SELECT ");
-            query.append(resultColumn + " FROM " + table);
-            if ((searchColumn != null) && (searchValue != null))
-            {
-                if (!searchColumn.equalsIgnoreCase("id"))
-                {
-                    searchValue = "'" + searchValue + "'";
-                }
-
-                query.append(" WHERE (" + searchColumn +
-                             "=" + searchValue + ")");
-            }
-            //System.out.println("lookup query: " + query);
-            rs = stmt.executeQuery(query.toString());
-            while (rs.next())
-            {
-                values.add(rs.getString(resultColumn).trim());
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-            }
-            catch(Exception e){/*I tried*/}
+            query.append(" WHERE (" + searchColumn + "=" + searchValue + ")");
         }
 
-        return values;
+        return executeVectorReturnQuery(con, query.toString());
     }
 
     private static void trimUIDs(DefaultMutableTreeNode dmtn)
