@@ -2,7 +2,6 @@ package mil.darpa.log.alpine.blackjack.assessui.util;
 
 public class AggInfoStructure {
 
-  private String org;
   private String item;
   private String time;
   private String start_time;
@@ -10,9 +9,6 @@ public class AggInfoStructure {
   private String value;
   private String rate;
 
-  static private final String org_xml_string = "org";
-  static private final String begin_org_xml_string = "<org>";
-  static private final String end_org_xml_string = "</org>";
   static private final String item_xml_string = "item";
   static private final String begin_item_xml_string = "<item>";
   static private final String end_item_xml_string = "</item>";
@@ -32,11 +28,9 @@ public class AggInfoStructure {
   static private final String begin_rate_xml_string = "<rate>";
   static private final String end_rate_xml_string = "</rate>";
 
-  public AggInfoStructure (String new_org,
-			 String new_item,
+  public AggInfoStructure (String new_item,
 			 String new_time,
 			 String new_value) {
-    org = new_org;
     item = new_item;
     time = new_time;
     value = new_value;
@@ -45,34 +39,16 @@ public class AggInfoStructure {
     rate = null;
   }
 
-  public AggInfoStructure (String new_org,
-			 String new_item,
+  public AggInfoStructure (String new_item,
 			 String new_start_time,
 			 String new_end_time,
 			 String new_rate) {
-    org = new_org;
     item = new_item;
     start_time = new_start_time;
     end_time = new_end_time;
     rate = new_rate;
     time = null;
     value = null;
-  }
-
-  public String getOrg () {
-    return org;
-  }
-
-  static public String getOrgXMLString () {
-    return org_xml_string;
-  }
-
-  static public String getOrgStartXMLString () {
-    return begin_org_xml_string;
-  }
-
-  static public String getOrgEndXMLString () {
-    return end_org_xml_string;
   }
 
   public String getItem () {

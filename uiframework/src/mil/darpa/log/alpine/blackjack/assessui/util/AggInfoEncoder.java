@@ -16,6 +16,9 @@ public class AggInfoEncoder {
   private static final String data_atom_xml_string = "data-atom";
   private static final String begin_data_atom_xml_string = "<data-atom>";
   private static final String end_data_atom_xml_string = "</data-atom>";
+  private static final String org_xml_string = "org";
+  private static final String start_org_xml_string = "<org>";
+  private static final String end_org_xml_string = "</org>";
   private static final String metric_xml_string = "metric";
   private static final String start_metric_xml_string = "<metric>";
   private static final String end_metric_xml_string = "</metric>";
@@ -48,6 +51,18 @@ public class AggInfoEncoder {
     return end_data_atom_xml_string;
   }
 
+  public static String getOrgXMLString () {
+    return org_xml_string;
+  }
+
+  public static String getStartOrgXMLString () {
+    return start_org_xml_string;
+  }
+
+  public static String getEndOrgXMLString () {
+    return end_org_xml_string;
+  }
+
   public static String getMetricXMLString () {
     return metric_xml_string;
   }
@@ -60,7 +75,7 @@ public class AggInfoEncoder {
     return end_metric_xml_string;
   }
 
-  public StringBuffer encodeStartOfXML (String metric) {
+  public StringBuffer encodeStartOfXML (String org, String metric) {
     if (state != start_state) {
       System.out.println ("Must finish previous XML before starting another one");
       return null;
@@ -71,6 +86,10 @@ public class AggInfoEncoder {
     ret.append (start_xml_string);
 
     ret.append (start_begin_xml_string);
+
+    ret.append (start_org_xml_string);
+    ret.append (org);
+    ret.append (end_org_xml_string);
 
     ret.append (start_metric_xml_string);
     ret.append (metric);
@@ -90,9 +109,6 @@ public class AggInfoEncoder {
      }
 
      ret.append (begin_data_atom_xml_string);
-     ret.append (AggInfoStructure.getOrgStartXMLString());
-     ret.append (next_structure.getOrg());
-     ret.append (AggInfoStructure.getOrgEndXMLString());
 
      ret.append (AggInfoStructure.getItemStartXMLString());
      ret.append (next_structure.getItem());
@@ -139,12 +155,12 @@ public class AggInfoEncoder {
   }
 
   public static void main (String args[]) {
-    AggInfoStructure myStruct = new AggInfoStructure ("DEPT8H", "PEOPLE", "1", "65");
-    AggInfoStructure myStruct2 = new AggInfoStructure ("DEPT8H", "COMPUTERS", "1", "1.5");
-    AggInfoStructure myStruct3 = new AggInfoStructure ("DEPT8H", "COMPUTERS", "1", "5", "5");
+    AggInfoStructure myStruct = new AggInfoStructure ("PEOPLE", "1", "65");
+    AggInfoStructure myStruct2 = new AggInfoStructure ("COMPUTERS", "1", "1.5");
+    AggInfoStructure myStruct3 = new AggInfoStructure ("COMPUTERS", "1", "5", "5");
     AggInfoEncoder myEncoder = new AggInfoEncoder();
 
-    StringBuffer buf = myEncoder.encodeStartOfXML("DEMAND");
+    StringBuffer buf = myEncoder.encodeStartOfXML("DEPT8H", "DEMAND");
     myEncoder.encodeDataAtom(buf, myStruct);
     myEncoder.encodeDataAtom(buf, myStruct2);
     myEncoder.encodeDataAtom(buf, myStruct3);
