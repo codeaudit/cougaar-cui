@@ -86,20 +86,6 @@ public class OrgSubPlugIn extends SimplePlugIn {
     }
   }
 
-  // Slated for removal
-  /*
-  private void visitRoot (Node n) {
-    String name = n.getNodeName();
-    if (name.equals(RELS))
-      visitRels(n);
-    else if (name.equals(ORG_RELS))
-      visitOrgRels(n);
-    else
-      System.out.println("OrgSubPlugIn::visitRoot:  unrecognized root \"" +
-        name + "\"");
-  }
-  */
-
   private void visitOrgRels (Node n) {
     System.out.println("OrgSubPlugIn::visitOrgRels");
     NodeList orgs = n.getChildNodes();
@@ -118,6 +104,8 @@ public class OrgSubPlugIn extends SimplePlugIn {
     }
   }
 
+  // process a single relationship--the relationship is logged from the
+  // perspective of both of the participants, just in case
   private void visitRelation (Element n) {
     System.out.println("OrgSubPlugIn::visitRelation");
     String id = n.getAttribute(Const.ID_ATTRIBUTE);

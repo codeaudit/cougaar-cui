@@ -110,6 +110,13 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
     ps.println(s);
   }
 
+  /**
+   *  This class is the internal representation of a relationship between two
+   *  Organizations.  It contains the names of the two orgs, the relationship
+   *  identifier, and the starting and ending time of the relationship's
+   *  duration.  In addition to storing this information, the class also
+   *  contains the logic for converting it to an XML representation.
+   */
   protected static class Bond {
     private String org = null;
     private String relative = null;
@@ -117,6 +124,14 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
     private long startTime = 0;
     private long endTime = -1;
 
+    /**
+     *  Create a new Bond populated with the relevant data.
+     *  @param o the name of the primary organization
+     *  @param r the name of the primary organization's relative
+     *  @param rel the type of relative that <i>r</i> is to <i>o</i>
+     *  @param start the millisecond index on which the relationship starts
+     *  @param end the millisecond index on which the relationship ends
+     */
     public Bond (String o, String r, String rel, long start, long end) {
       org = o;
       relative = r;
@@ -125,6 +140,11 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
       endTime = end;
     }
 
+    /**
+     *  Represent this Bond as an XML element (probably as part of a larger
+     *  Document).
+     *  @return a String containing the XML code for this Bond
+     */
     public String toXml () {
       StringBuffer buf = new StringBuffer();
       addOpenTag(buf, Const.CLUSTER, Const.ID_ATTRIBUTE, org);

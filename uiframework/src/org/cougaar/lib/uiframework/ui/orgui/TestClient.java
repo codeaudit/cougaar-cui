@@ -8,14 +8,21 @@ import java.util.*;
 /**
  *  This simple test client connects to a single URL and echoes the response to
  *  standard output.  It can be used to test practically anything that behaves
- *  like a URL.
+ *  like a URL, and it does not care if XML is properly formatted or any other
+ *  such nonsense.
  */
 public class TestClient {
+  // a default URL String, in case the user is too lazy to supply one
   private static String DEFAULT_URL =
-    "http://localhost:5555/$Stuff/orgui/orgsub.psp";
+    "http://localhost:5555/$agg/orgui/orgsub.psp";
 
+  // the URL to which this client will connect
   private String urlString = null;
 
+  /**
+   *  Set the URL to which this client will connect.
+   *  @param url a String representing the target URL
+   */
   public void setUrl (String url) {
     urlString = url;
   }
@@ -35,6 +42,7 @@ public class TestClient {
     return null;
   }
 
+  // read the contents of an InputStream and print them to the screen
   private void echo (InputStream in) {
     if (in == null) {
       System.out.println(
@@ -52,6 +60,10 @@ public class TestClient {
     }
   }
 
+  /**
+   *  Main algorithm--connect to the prescribed site and download the contents.
+   *  Echo those contents to standard out.
+   */
   public void go () {
     echo(connect());
   }
