@@ -12,7 +12,8 @@ package org.cougaar.lib.uiframework.transducer;
 
 import java.io.*;
 
-import com.ibm.xml.parser.*;
+import org.apache.xerces.parsers.DOMParser;
+import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
 import org.cougaar.lib.uiframework.transducer.elements.*;
@@ -42,8 +43,9 @@ public class XmlInterpreter {
    *  @return the Structure as defined in the XML stream
    */
   public Structure readXml (BufferedReader bufr) {
-    Parser p = new Parser(dtdPath);
-    Document txt = p.readStream(bufr);
+    DOMParser p = new DOMParser();
+    p.parse(new InputSource(bufr));
+    Document txt = p.getDocument();
 
     Node t = txt.getDocumentElement();
     if (t.getNodeName().equals("structure"))
