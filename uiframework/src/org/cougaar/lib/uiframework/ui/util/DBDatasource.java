@@ -24,7 +24,7 @@ import org.cougaar.lib.uiframework.transducer.elements.*;
  */
 public class DBDatasource
 {
-    private static final String DBTYPE = System.getProperty("DBTYPE");
+    public static final String DBTYPE = System.getProperty("DBTYPE");
 
     /** JDBC url to use to access the database */
     public static final String DBURL = (DBTYPE.equalsIgnoreCase("access") ?
