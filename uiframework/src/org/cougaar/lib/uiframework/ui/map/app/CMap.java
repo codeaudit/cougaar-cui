@@ -16,9 +16,9 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.1 $
- * $Date: 2001-02-26 15:37:27 $
- * $Author: krotherm $
+ * $Revision: 1.2 $
+ * $Date: 2001-02-27 19:38:12 $
+ * $Author: pfischer $
  *
  * ***********************************************************************/
 
@@ -30,7 +30,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.beans.Beans;
+import java.beans.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.border.BevelBorder;
@@ -47,6 +47,7 @@ import com.bbn.openmap.gui.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 import org.cougaar.lib.uiframework.ui.components.CFrame;
+import org.cougaar.lib.uiframework.ui.components.CLabeledSlider;
 import org.cougaar.lib.uiframework.ui.map.util.*; // only for JTIButton, etc.
 import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 
@@ -917,73 +918,28 @@ public class CMap implements Serializable, CougaarUI {
     //	================================
     /* add this in for timesControl    */
 
-    String[] choices2 = {TimedXmlLayer.EPOCH
-                          , "100"
-                          , "125"
-                          , "150"
-                          , "175"
-                          , "200"
-                          , "225"
-                          , "250"
-                          , "275"
-                          , "300"
-                          , "325"
-                          , "350"
-                          , "375"
-                          , "400"
-                          , TimedXmlLayer.LAST_TIME};
-    ActionListener cbl2 = new ActionListener() {
-	public void actionPerformed(ActionEvent e)
-	    {
-		JComboBox combo=(JComboBox)e.getSource();
-		String newValue =
-		    (String)combo.getSelectedItem();
- 		LayerHandler layerHandler = getLayerHandler();
- 		Layer[] layers=layerHandler.getLayers();
- 		TimedXmlLayer myLayer=null;
- 		int idx;
- 		for(idx=0; idx<layers.length; idx++) {
-      //System.out.println("layer #"+idx+": "+layers[idx].getClass().getName());
- 		    if (layers[idx] instanceof TimedXmlLayer) {
- 			myLayer=(TimedXmlLayer)layers[idx];
-      //System.out.println("break");
- 			break;
- 		    }
- 		}
- 		if (myLayer!=null) {
- 		    System.err.println("setting time on layer: "+myLayer);
- 		    System.err.println("new time: "+newValue);
- 		    myLayer.setTime(newValue);
+    final CLabeledSlider ls = new CLabeledSlider("C+", 10, 0, 1000);
+    ls.setLabelWidth(ls.getMinimumLabelWidth(ls.getLabel()));
+    ls.setShowTicks(true);
+    ls.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Time"));
+    ls.setPreferredSize(new Dimension(350, ls.getPreferredSize().height));
+    updateTimeRange(ls);
+    // For constant updating as slider is adjusted
+    ls.addPropertyChangeListener("value", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                long newValue = ((Number)e.getNewValue()).longValue();
+                updateTime(newValue);
+            }
+        });
 
-        combo.removeAllItems();
-        Collection transitionTimes=myLayer.getTransitionTimes();
-        for (Iterator it=transitionTimes.iterator(); it.hasNext(); ) {
-          Long ttime=(Long)it.next();
-          String timeStr=""+ttime;
-          if (ttime.longValue()==Long.MIN_VALUE) timeStr=TimedXmlLayer.EPOCH;
-          else if (ttime.longValue()==Long.MAX_VALUE) timeStr=TimedXmlLayer.LAST_TIME;
-          combo.addItem(timeStr);
-          // System.out.println("add comboelement for time: "+ttime+": ");
-        }
-
-        combo.setSelectedItem(newValue);
- 		    MapBean mymap = getMapBean();
-        mymap.setScale(mymap.getScale());
- 		} else {
- 		    System.err.println("cannot set time on layer -- myLayer is null");
- 		}
- 		//System.out.println("jb colorcode " +e);
-	    }
-	};
-
-    CTitledComboBox mycb2 = new CTitledComboBox("Time", choices2, cbl2);
-    omts.add(mycb2);
+    omts.add(ls);
     //	================================
 
    /*  End of times control */
 
     //* ================================
 
+    /*  Currently not planning on color coding orgs based on metrics
     final JTIButtonAction jtibaction = new JTIButtonAction() {
 	    public void act(String sel) {
 		System.err.println("jtibaction for selection: "+sel);
@@ -1047,7 +1003,7 @@ public class CMap implements Serializable, CougaarUI {
     jf.setLocation(610,120);
     jf.setTitle("Color Code for Metric");
     omts.add(jtib);
-
+    */
 
     tp.add(omts);
     tp.setFloatable(false);// cannot detach
@@ -1055,7 +1011,58 @@ public class CMap implements Serializable, CougaarUI {
 
     }
 
+    private void updateTimeRange(CLabeledSlider ls) {
+        long minTime = Long.MAX_VALUE;
+        long maxTime = 0;
+        TimedXmlLayer myLayer=findTimeLayer();
 
+        if (myLayer != null) {
+            Collection transitionTimes=myLayer.getTransitionTimes();
+            for (Iterator it=transitionTimes.iterator(); it.hasNext(); ) {
+                Long ttime=(Long)it.next();
+                String timeStr=""+ttime;
+                if ((ttime.longValue()!=Long.MIN_VALUE) &&
+                    (ttime.longValue()!=Long.MAX_VALUE)) {
+                    minTime = Math.min(minTime, ttime.longValue());
+                    maxTime = Math.max(maxTime, ttime.longValue());
+                }
+            }
+        } else {
+            System.out.println("cannot set slider range based on time layer" +
+                              " -- using default range 0 to 500");
+            ls.roundAndSetSliderRange(0, 500);
+        }
+
+        ls.roundAndSetSliderRange((float)minTime, (float)maxTime);
+    }
+
+    private void updateTime(long newValue) {
+        TimedXmlLayer myLayer=findTimeLayer();
+        if (myLayer!=null) {
+            System.err.println("setting time on layer: " + myLayer);
+            System.err.println("new time: " + newValue);
+            myLayer.setTime(String.valueOf(newValue));
+            MapBean mymap = getMapBean();
+            mymap.setScale(mymap.getScale());
+        } else {
+            System.err.println("cannot set time on layer -- myLayer is null");
+        }
+    }
+
+    private TimedXmlLayer findTimeLayer() {
+        LayerHandler layerHandler = getLayerHandler();
+        Layer[] layers=layerHandler.getLayers();
+        TimedXmlLayer myLayer=null;
+        int idx;
+        for(idx=0; idx<layers.length; idx++) {
+            if (layers[idx] instanceof TimedXmlLayer) {
+                myLayer=(TimedXmlLayer)layers[idx];
+                break;
+            }
+        }
+
+        return myLayer;
+    }
 
     void setMapDisplayFor(String location) {
 	float lat=15, lon=39, zoom=3500000;
