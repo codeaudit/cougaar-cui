@@ -167,16 +167,15 @@ public class QueryGenerator
         if (debug) System.out.println("Converting row headers to names");
         convertRowHeaderIDsToNames(yAxis, dbTableModel);
 
-        if (debug) System.out.println("Done.  Firing table change event");
-        dbTableModel.fireTableChangedEvent(
-            new TableModelEvent(dbTableModel, TableModelEvent.HEADER_ROW));
-
         // derive unit column if needed
-        /*
-        if (yDescName.equals("Item"))
+        String metric = vim.getDescriptor("Metric").getValue().toString();
+        if (yDescName.equals("Item") &&
+            (metric.equals("Inventory") || metric.equals("DueOuts")))
         {
+            if (debug) System.out.println("Adding unit of issue column");
             dbTableModel.insertColumn(1);
-            dbTableModel.setColumnName(1, "Units");
+            dbTableModel.setColumnName(1, "UI");
+            boolean uifound = false;
             for (int row = 0; row < dbTableModel.getRowCount(); row++)
             {
                 DefaultMutableTreeNode tn =
@@ -185,11 +184,23 @@ public class QueryGenerator
                 Object units = ht.get("UNITS");
                 if (units != null)
                 {
-                    dbTableModel.setValueAt(ht.get("UNITS"), row, 1);
+                    uifound = true;
+                    dbTableModel.setValueAt(units, row, 1);
+                }
+                else
+                {
+                    dbTableModel.setValueAt("", row, 1);
                 }
             }
+            if (!uifound)
+            {
+                dbTableModel.removeColumn(1);
+            }
         }
-        */
+
+        if (debug) System.out.println("Done.  Firing table change event");
+        dbTableModel.fireTableChangedEvent(
+            new TableModelEvent(dbTableModel, TableModelEvent.HEADER_ROW));
     }
 
     /**
