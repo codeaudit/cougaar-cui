@@ -101,6 +101,7 @@ public class DBInterface extends DBDatasource
         config.addContentKey("UID", "name");
         config.addContentKey("ID", "id");
         config.addContentKey("ITEM_ID", "item_id");
+        config.addContentKey("WEIGHT", "weight");
         config.addContentKey("UNITS", "unit_issue");
         config.setPrimaryKeys(new String[] {"keynum"});
         Structure trees = restoreFromDb(config);

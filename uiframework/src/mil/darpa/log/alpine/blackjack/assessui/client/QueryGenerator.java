@@ -41,6 +41,8 @@ public class QueryGenerator
     /** the database table model to set queries on. */
     private DatabaseTableModel dbTableModel;
 
+    private boolean aggregateItems = false;
+
     /**
      * Creates a new query generator.
      *
@@ -49,6 +51,26 @@ public class QueryGenerator
     public QueryGenerator(DatabaseTableModel dbTableModel)
     {
         this.dbTableModel = dbTableModel;
+    }
+
+    /**
+     * Set whether query generator should aggregate over items or not
+     *
+     * @param newValue true if query generator should aggregate over items.
+     */
+    public void setAggregateItems(boolean newValue)
+    {
+        aggregateItems = newValue;
+    }
+
+    /**
+     * Returns whether query generator is aggregating over items or not
+     *
+     * @return true if query generator is aggregating over items.
+     */
+    public boolean getAggregateItems()
+    {
+        return aggregateItems;
     }
 
     /**
@@ -90,12 +112,12 @@ public class QueryGenerator
         String xColumnName = DBInterface.getColumnName("org");
         String yColumnName = DBInterface.getColumnName("time");
         tm.setXY(tm.getColumnIndex(xColumnName),
-                 tm.getColumnIndex(yColumnName),
+                 new int[]{tm.getColumnIndex(yColumnName)},
                  tm.getColumnIndex("assessmentValue"));
 
         // convert org id headers (this might be broken now)
         convertColumnHeaderIDsToNames(
-            new VariableModel("org", null, false, 0, false, 0), tm);
+            new VariableModel("org", null, false, 0, false, 0), tm, 1);
 
         // create hashtable that contains needed org name -> value pairs
         Hashtable ht = new Hashtable();
@@ -162,7 +184,6 @@ public class QueryGenerator
         }
 
         // aggregation across a time range must be done at the client (here)
-        // other aggregation has already been taken care of before DB table.
         if (debug) System.out.println("Aggregating across time range");
         VariableModel timeDescriptor = vim.getDescriptor("Time");
         if (timeDescriptor.getState() == VariableModel.FIXED)
@@ -188,25 +209,72 @@ public class QueryGenerator
         String yDescName = yAxis.getName();
         String xColumnName = DBInterface.getColumnName(xDescName);
         String yColumnName = DBInterface.getColumnName(yDescName);
+        String itemColumnName = DBInterface.getColumnName("Item");
+        int[] yColumns =
+            (vim.getDescriptor("Item").getState() == VariableModel.FIXED) ?
+                new int[]{dbTableModel.getColumnIndex(yColumnName),
+                          dbTableModel.getColumnIndex(itemColumnName)} :
+                new int[]{dbTableModel.getColumnIndex(yColumnName)};
         dbTableModel.setXY(dbTableModel.getColumnIndex(xColumnName),
-                           dbTableModel.getColumnIndex(yColumnName),
+                           yColumns,
                            dbTableModel.getColumnIndex("assessmentValue"));
 
         // convert column and row header ids to names
         if (debug) System.out.println("Converting column headers to names");
-        convertColumnHeaderIDsToNames(xAxis, dbTableModel);
+        convertColumnHeaderIDsToNames(xAxis, dbTableModel, yColumns.length);
         if (debug) System.out.println("Converting row headers to names");
-        convertRowHeaderIDsToNames(yAxis, dbTableModel);
+        convertRowHeaderIDsToNames(yAxis, dbTableModel, 0);
+        if (yColumns.length > 1)
+        {
+            convertRowHeaderIDsToNames(vim.getDescriptor("Item"), dbTableModel,
+                                       1);
+        }
+
+        // weighted aggregation across items
+        VariableModel itemDescriptor = vim.getDescriptor("Item");
+        if (aggregateItems)
+        {
+            if (debug) System.out.println("Aggregating across items");
+            DefaultMutableTreeNode selectedItemNode =
+                (DefaultMutableTreeNode)itemDescriptor.getValue();
+
+            if (itemDescriptor.getState() == VariableModel.FIXED)
+            {
+                aggregateItems(selectedItemNode, 1);
+            }
+            else
+            {
+                if (itemDescriptor.getState() == VariableModel.X_AXIS)
+                {
+                    dbTableModel.transpose();
+                }
+                for (int i = 0; i < selectedItemNode.getChildCount(); i++)
+                {
+                    aggregateItems((DefaultMutableTreeNode)
+                        selectedItemNode.getChildAt(i), 0);
+                }
+                if (itemDescriptor.getState() == VariableModel.X_AXIS)
+                {
+                    dbTableModel.transpose();
+                }
+            }
+        }
+        // remove item column if it is there and not needed
+        if ((itemDescriptor.getState() == VariableModel.FIXED) &&
+            (aggregateItems))
+        {
+            dbTableModel.removeColumn(1);
+        }
 
         // sort columns and rows
         if (debug) System.out.println("Sorting time");
-        if (timeDescriptor.getState() == VariableModel.X_AXIS)
+        if ((timeDescriptor.getState()==VariableModel.X_AXIS)||aggregateItems)
         {
             dbTableModel.transpose();
             dbTableModel.sortRows(0);
             dbTableModel.transpose();
         }
-        else if (timeDescriptor.getState() == VariableModel.Y_AXIS)
+        if ((timeDescriptor.getState()==VariableModel.Y_AXIS)||aggregateItems)
         {
             dbTableModel.sortRows(0);
         }
@@ -358,8 +426,9 @@ public class QueryGenerator
         {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)v.getValue();
 
-            //use aggregated org values in database
-            if ((v.getState() == v.FIXED) || (node.isLeaf()))
+            //get all required leaf nodes
+            //would need to be modified to use aggregated values in database
+            if (/*(v.getState() == v.FIXED) || */(node.isLeaf()))
             {
                 whereClause = generateWhereClause(varName, node);
             }
@@ -447,14 +516,15 @@ public class QueryGenerator
     }
 
     private static void convertColumnHeaderIDsToNames(VariableModel vm,
-                                                      DatabaseTableModel tm)
+                                                      DatabaseTableModel tm,
+                                                      int columnStart)
     {
         String varName = vm.getName();
 
         if (!varName.equalsIgnoreCase("time"))
         {
             Vector oldColumnHeaders = new Vector();
-            for (int column = 1; column < tm.getColumnCount(); column++)
+            for (int column = columnStart; column < tm.getColumnCount(); column++)
             {
                 oldColumnHeaders.add(tm.getColumnName(column));
             }
@@ -462,10 +532,10 @@ public class QueryGenerator
             Enumeration newColumnHeaders =
                 convertHeaderIDsToNames(vm, oldColumnHeaders.elements());
 
-            int columnCount = 1;
+            int columnCount = columnStart;
             while (newColumnHeaders.hasMoreElements())
             {
-                String name = newColumnHeaders.nextElement().toString();
+                Object name = newColumnHeaders.nextElement();
                 if (tm.getColumnCount() <= columnCount)
                 {
                     if (tm.getRowCount() == 0)
@@ -481,7 +551,8 @@ public class QueryGenerator
     }
 
     private static void convertRowHeaderIDsToNames(VariableModel vm,
-                                                   DatabaseTableModel tm)
+                                                   DatabaseTableModel tm,
+                                                   int rowHeaderColumn)
     {
         String varName = vm.getName();
 
@@ -490,7 +561,7 @@ public class QueryGenerator
             Vector oldRowHeaders = new Vector();
             for (int row = 0; row < tm.getRowCount(); row++)
             {
-                oldRowHeaders.add(tm.getValueAt(row, 0));
+                oldRowHeaders.add(tm.getValueAt(row, rowHeaderColumn));
             }
 
             Enumeration newRowHeaders =
@@ -509,7 +580,7 @@ public class QueryGenerator
                     }
                 }
                 Object header = newRowHeaders.nextElement();
-                tm.setValueAt(header, rowCount++, 0);
+                tm.setValueAt(header, rowCount++, rowHeaderColumn);
             }
         }
     }
@@ -524,7 +595,11 @@ public class QueryGenerator
             DefaultMutableTreeNode tn = (DefaultMutableTreeNode)vm.getValue();
             if (tn.isLeaf())
             {
-                newHeaderObjects.add(tn);
+                while (oldHeaders.hasMoreElements())
+                {
+                    String oldHeader = oldHeaders.nextElement().toString();
+                    newHeaderObjects.add(tn);
+                }
             }
             else
             {
@@ -603,6 +678,7 @@ public class QueryGenerator
      *                     with tree elements.
      * @param combiner     the object used to combine two values into one.
      */
+    /*
     private void aggregateTreeRows(DefaultMutableTreeNode node,
                                    int headerColumn,
                                    DatabaseTableModel.Combiner combiner)
@@ -614,6 +690,24 @@ public class QueryGenerator
             dbTableModel.aggregateRows(getLeafList(tn).elements(),
                                        tn.getUserObject().toString(),
                                        headerColumn, combiner);
+        }
+    }
+    */
+
+    private void aggregateItems(DefaultMutableTreeNode node, int itemColumn)
+    {
+        if (!node.isLeaf())
+        {
+            Vector childVector = new Vector();
+            for (int i = 0; i < node.getChildCount(); i++)
+            {
+                DefaultMutableTreeNode tn =
+                    (DefaultMutableTreeNode)node.getChildAt(i);
+                childVector.add(tn);
+                aggregateItems(tn, itemColumn);
+            }
+            dbTableModel.aggregateRows(childVector, node, itemColumn,
+                                       new WeightedAverageCombiner());
         }
     }
 
@@ -711,10 +805,18 @@ public class QueryGenerator
     private class FurthestFromOneCombiner
         implements DatabaseTableModel.Combiner
     {
+        public Vector prepare(Vector row, int headerColumn)
+        {
+            return row;
+        }
+
         public Object combine(Object obj1, Object obj2)
         {
+            if ((obj1 == null) ||
+                (obj1.toString().equals(DatabaseTableModel.NO_VALUE)))
+                return obj2;
             Object combinedObject = null;
-            if (obj1 instanceof Float)
+            if ((obj1 instanceof Float) && (obj2 instanceof Float))
             {
                 float f1 = ((Float)obj1).floatValue();
                 float f2 = ((Float)obj2).floatValue();
@@ -730,18 +832,26 @@ public class QueryGenerator
             return combinedObject;
         }
 
-        public Object finalize(Object obj, int numRowsCombined)
+        public Vector finalize(Vector row)
         {
-            return obj;
+            return row;
         }
     };
 
     private class AdditiveCombiner implements DatabaseTableModel.Combiner
     {
+        public Vector prepare(Vector row, int headerColumn)
+        {
+            return row;
+        }
+
         public Object combine(Object obj1, Object obj2)
         {
+            if ((obj1 == null) ||
+                (obj1.toString().equals(DatabaseTableModel.NO_VALUE)))
+                return obj2;
             Object combinedObject = null;
-            if (obj1 instanceof Float)
+            if ((obj1 instanceof Float) && (obj2 instanceof Float))
             {
                 float f1 = ((Float)obj1).floatValue();
                 float f2 = ((Float)obj2).floatValue();
@@ -755,21 +865,79 @@ public class QueryGenerator
             return combinedObject;
         }
 
-        public Object finalize(Object obj, int numRowsCombined)
+        public Vector finalize(Vector row)
         {
-            return obj;
+            return row;
         }
     };
 
     private class AverageCombiner extends AdditiveCombiner
     {
-        public Object finalize(Object obj, int numRowsCombined)
+        private int numRowsCombined = 0;
+
+        public Vector prepare(Vector row, int headerColumn)
         {
-            if (obj instanceof Float)
+            numRowsCombined++;
+            return row;
+        }
+
+        public Vector finalize(Vector row)
+        {
+            for (int i = 0; i < row.size(); i++)
             {
-                return new Float((((Number)obj).floatValue())/numRowsCombined);
+                Object obj = row.elementAt(i);
+                if (obj instanceof Float)
+                {
+                    row.setElementAt(
+                       new Float((((Number)obj).floatValue())/numRowsCombined),
+                       i);
+                }
             }
-            return obj;
+            numRowsCombined = 0;
+            return row;
+        }
+    }
+
+    private class WeightedAverageCombiner extends AdditiveCombiner
+    {
+        private float totalWeight = 0;
+
+        public Vector prepare(Vector row, int headerColumn)
+        {
+            DefaultMutableTreeNode headerNode =
+                (DefaultMutableTreeNode)row.elementAt(headerColumn);
+            String weightString =
+              ((Hashtable)headerNode.getUserObject()).get("WEIGHT").toString();
+            float weight = Float.parseFloat(weightString);
+            totalWeight += weight;
+            for (int i = 0; i < row.size(); i++)
+            {
+                Object obj = row.elementAt(i);
+                if (obj instanceof Float)
+                {
+                    row.setElementAt(
+                       new Float((((Number)obj).floatValue())*weight), i);
+                }
+            }
+
+            return row;
+        }
+
+        public Vector finalize(Vector row)
+        {
+            for (int i = 0; i < row.size(); i++)
+            {
+                Object obj = row.elementAt(i);
+                if (obj instanceof Float)
+                {
+                    row.setElementAt(
+                       new Float((((Number)obj).floatValue())/totalWeight),
+                       i);
+                }
+            }
+
+            totalWeight = 0;
+            return row;
         }
     }
 

@@ -123,7 +123,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
      */
     public boolean supportsPlaf()
     {
-        return plaf;
+        //return plaf;
+        return true;
     }
 
     /**
@@ -195,15 +196,11 @@ public class StoplightPanel extends JPanel implements CougaarUI
         // stoplight settings panel
         viewPanel = new CViewFeatureSelectionControl(BoxLayout.Y_AXIS);
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
-        metricSelector.addPropertyChangeListener("selectedItem",
-                                                 new PropertyChangeListener(){
-                public void propertyChange(PropertyChangeEvent e)
-                {
-                    String newSelectedMetric = e.getNewValue().toString();
-                }
-            });
 
         // item view panel
+        JPanel itemPanel = new JPanel(new GridBagLayout());
+        //itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
+        itemPanel.setBorder(BorderFactory.createTitledBorder("Items"));
         final String descriptionString =  "Description";
         final String nsnString = "NSN";
         CRadioButtonSelectionControl itemDisplayPanel =
@@ -211,8 +208,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
                                                           nsnString},
                                            BoxLayout.Y_AXIS);
         itemDisplayPanel.setSelectedItem(descriptionString);
-        itemDisplayPanel.setBorder(
-            BorderFactory.createTitledBorder("Item Labels"));
         itemDisplayPanel.addPropertyChangeListener("selectedItem",
                                                 new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e)
@@ -226,6 +221,39 @@ public class StoplightPanel extends JPanel implements CougaarUI
                     //stoplightTableModel.fireTableChangedEvent(
                     //    new TableModelEvent(stoplightTableModel,
                     //                        TableModelEvent.HEADER_ROW));
+                }
+            });
+        itemPanel.add(itemDisplayPanel);
+        final JCheckBox aggregateItems = new JCheckBox("Aggregate");
+        //aggregateItems.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        aggregateItems.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent e)
+                {
+                    boolean newSelection = aggregateItems.isSelected();
+                    if (newSelection != queryGenerator.getAggregateItems())
+                    {
+                        queryGenerator.setAggregateItems(newSelection);
+                        updateView();
+                    }
+                }
+            });
+        itemPanel.add(aggregateItems);
+        aggregateItems.setEnabled(
+            stoplightMetrics.contains(metricSelector.getSelectedItem()));
+        metricSelector.addPropertyChangeListener("selectedItem",
+                                                 new PropertyChangeListener(){
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    String newSelectedMetric = e.getNewValue().toString();
+                    if (stoplightMetrics.contains(newSelectedMetric))
+                    {
+                        aggregateItems.setEnabled(true);
+                    }
+                    else
+                    {
+                        aggregateItems.setSelected(false);
+                        aggregateItems.setEnabled(false);
+                    }
                 }
             });
 
@@ -346,8 +374,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         gbc.weighty=0;
         JPanel topControlPanel = new JPanel(gbl);
         gbc.fill=GridBagConstraints.BOTH;
-        gbl.setConstraints(itemDisplayPanel, gbc);
-        topControlPanel.add(itemDisplayPanel);
+        gbl.setConstraints(itemPanel, gbc);
+        topControlPanel.add(itemPanel);
         gbl.setConstraints(viewPanel, gbc);
         topControlPanel.add(viewPanel);
         gbc.weightx=1;

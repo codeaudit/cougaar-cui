@@ -154,7 +154,8 @@ public class LinePlotPanel extends JPanel implements CougaarUI
 
         // demo kludge
         rangeButton.setSelectedItem(new RangeModel(-15, 50));
-        orgTreeButton.setSelectedItem("2-BDE-3ID-HHC");
+        orgTreeButton.setSelectedItem("3-69-ARBN");
+        itemTreeButton.setSelectedItem("MEAL READY-TO-EAT");
         //rangeButton.roundAndSetSliderRange(DBInterface.minTimeRange,
         //                                   DBInterface.maxTimeRange);
 
@@ -180,6 +181,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         // create a new query generator to update databaseTableModel based
         // on (and triggered by) changes to variable controls.
         queryGenerator = new QueryGenerator(databaseTableModel);
+        queryGenerator.setAggregateItems(true); // always on in this UI
         variableManager =
             new VariableInterfaceManager(variables, useMenuButtons);
         variableManager.addVariableListener(
