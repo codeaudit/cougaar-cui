@@ -25,8 +25,8 @@ import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoDecoder;
 
 public class BJDBMaintainerBean implements SessionBean
 {
-    private static final String HACK_FOR_SAFETY_LEVEL = "Demand";
-    private static final String SAFETY_LEVEL = "Safety Level";
+    private static final String HACK_FOR_TARGET_LEVEL = "Demand";
+    private static final String TARGET_LEVEL = "Target Level";
 
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
@@ -120,8 +120,8 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         org_string = myDecoder.getOrgFromXML ();
         metric_string = myDecoder.getMetricFromXML ();
 
-        boolean run_safety_level_hack = false;
-        int safety_level_metric_id = 0;
+        boolean run_target_level_hack = false;
+        int target_level_metric_id = 0;
 
         int index = 0;
 
@@ -133,19 +133,20 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
             stmt = connection.createStatement();
             createPreparedStatements();
 
-            if (metric_string.compareTo(HACK_FOR_SAFETY_LEVEL) == 0) {
+            if (metric_string.compareTo(HACK_FOR_TARGET_LEVEL) == 0) {
                 System.out.println ("******************************");
-                System.out.println ("Running hack for safety level!");
+                System.out.println ("Running hack for target level!");
                 System.out.println ("******************************");
-                run_safety_level_hack = true;
-                safety_level_metric_id = getMetricID (SAFETY_LEVEL);
-                System.out.println ("metric string is " + SAFETY_LEVEL);
-                System.out.println ("metric id is " + safety_level_metric_id);
+                run_target_level_hack = true;
+                target_level_metric_id = getMetricID (TARGET_LEVEL);
+                System.out.println ("metric string is " + TARGET_LEVEL);
+                System.out.println ("metric id is " + target_level_metric_id);
             }
 
             int metric_id = getMetricID (metric_string);
 
             int org_id = getOrgID (org_string);
+            float medical_multiplier = getOrgTargetLevelMultiplier (org_id);
 
             System.out.println ("Org is " + org_string);
             System.out.println ("metric string is " + metric_string);
@@ -154,11 +155,12 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
             while (!myDecoder.doneXMLDecoding ()) {
 
                 AggInfoStructure myStruct = myDecoder.getNextDataAtom();
+                String item_string = myStruct.getItem();
 
-                System.out.print ("Item " + myStruct.getItem());
+                System.out.print ("Item " + item_string);
                 System.out.print (", Rate " + myStruct.getRate());
 
-                int item_id = getItemID (myStruct.getItem());
+                int item_id = getItemID (item_string);
 
                 // If item not in table, skip it
                 if (item_id == -1)
@@ -184,9 +186,16 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
                 System.out.println ("");
                 System.out.print ("" + index);
 
-                if (run_safety_level_hack) {
-                    float multiplier = getOrgSafetyLevelMultiplier (org_id);
-                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, safety_level_metric_id, rate_float * multiplier);
+                if (run_target_level_hack) {
+                    float this_multiplier = 1.0f;
+
+                    if ((item_string.startsWith ("NSN/6505")) ||
+                        (item_string.startsWith ("NSN/6510")) ||
+                        (item_string.startsWith ("NSN/6515"))) {
+                      this_multiplier = medical_multiplier;
+                    }
+
+                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, target_level_metric_id, rate_float * this_multiplier);
                 }
 
                 index++;
@@ -435,7 +444,7 @@ System.out.print ("insert"+time_index);
         return (time_in_days);
     }
 
-    private float getOrgSafetyLevelMultiplier (int org_id) {
+    private float getOrgTargetLevelMultiplier (int org_id) {
 
         float multiplier = 1.0f;
         try
