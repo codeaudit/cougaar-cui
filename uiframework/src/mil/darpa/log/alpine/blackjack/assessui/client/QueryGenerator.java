@@ -10,6 +10,7 @@
 package mil.darpa.log.alpine.blackjack.assessui.client;
 
 import java.awt.Component;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -277,15 +278,58 @@ public class QueryGenerator
             dbTableModel.removeColumn(1);
         }
 
-        // sort columns and rows
-        if (debug) System.out.println("Sorting time");
-        if ((timeDescriptor.getState()==VariableModel.X_AXIS)||aggregateItems)
+        // sort columns and rows (sort items by NSN)
+        Comparator itemCompare = new Comparator() {
+                public int compare(Object o1, Object o2)
+                {
+                    Vector v1 = (Vector)o1;
+                    Vector v2 = (Vector)o2;
+                    String s1 = convert(v1.elementAt(0));
+                    String s2 = convert(v2.elementAt(0));
+
+                    try {
+                        Float f1 = new Float(s1);
+                        Float f2 = new Float(s2);
+                        return f1.compareTo(f2);
+                    }
+                    catch(Exception e){}
+                    return s1.compareTo(s2);
+                }
+
+                private String convert(Object o)
+                {
+                    try
+                    {
+                        DefaultMutableTreeNode tn = (DefaultMutableTreeNode)o;
+                        String s = ((Hashtable)
+                            tn.getUserObject()).get("ITEM_ID").toString();
+                        if (s.startsWith("NSN/"))
+                            s = s.substring(4);
+                        return s;
+                    } catch (Exception e) {}
+
+                    return o.toString();
+                }
+            };
+
+        if (debug) System.out.println("Sorting columns");
+        dbTableModel.transpose();
+        if (itemDescriptor.getState() == VariableModel.X_AXIS)
         {
-            dbTableModel.transpose();
-            dbTableModel.sortRows(0);
-            dbTableModel.transpose();
+            dbTableModel.sortRows(itemCompare);
         }
-        if ((timeDescriptor.getState()==VariableModel.Y_AXIS)||aggregateItems)
+        else
+        {
+            dbTableModel.sortRows(0);
+        }
+        dbTableModel.transpose();
+
+        if (debug) System.out.println("Sorting rows");
+        if (itemDescriptor.getState() == VariableModel.Y_AXIS)
+        {
+            dbTableModel.sortRows(itemCompare);
+        }
+        else
         {
             dbTableModel.sortRows(0);
         }

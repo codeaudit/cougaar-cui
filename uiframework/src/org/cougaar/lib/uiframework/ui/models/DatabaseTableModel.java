@@ -508,6 +508,11 @@ public class DatabaseTableModel implements TableModel
         }
     }
 
+    /**
+     * Sort rows based on given column.
+     *
+     * @param sortColumn column on which to sort
+     */
     public void sortRows(final int sortColumn)
     {
         Comparator c = new Comparator() {
@@ -528,6 +533,17 @@ public class DatabaseTableModel implements TableModel
                 }
             };
 
+        sortRows(c);
+    }
+
+    /**
+     * Sort rows using given comparator.  The two objects passed to the
+     * comparator will be two Vectors each representing a row.
+     *
+     * @param c comparator to use to compare rows.
+     */
+    public void sortRows(Comparator c)
+    {
         Collections.sort(dataRows, c);
     }
 
