@@ -26,7 +26,7 @@ import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoDecoder;
 public class BJDBMaintainerBean implements SessionBean
 {
     private static final String HACK_FOR_SAFETY_LEVEL = "Demand";
-    private static final String SAFETY_LEVEL = "SafetyLevel";
+    private static final String SAFETY_LEVEL = "Safety Level";
 
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
