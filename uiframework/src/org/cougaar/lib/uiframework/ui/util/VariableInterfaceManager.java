@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -34,6 +34,7 @@ import org.cougaar.lib.uiframework.ui.components.CComponentMenu;
 import org.cougaar.lib.uiframework.ui.components.CMenuButton;
 import org.cougaar.lib.uiframework.ui.components.CPullrightButton;
 import org.cougaar.lib.uiframework.ui.components.CRLabel;
+import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
 
 /**
@@ -610,16 +611,31 @@ public class VariableInterfaceManager
         VariableModel yAxis =
             (VariableModel)getDescriptors(VariableModel.Y_AXIS).nextElement();
 
-        currentSettings.append(yAxis + " [" + yAxis.getValue() + "] vs ");
-        currentSettings.append(xAxis + " [" + xAxis.getValue() + "] where ");
+        currentSettings.append(yAxis);
+        currentSettings.append(" [" + getValueString(yAxis) + "] vs ");
+        currentSettings.append(xAxis);
+        currentSettings.append(" [" + getValueString(xAxis) + "] where ");
         Enumeration vds = getDescriptors(VariableModel.FIXED);
         while(vds.hasMoreElements())
         {
             VariableModel v = (VariableModel)vds.nextElement();
-            currentSettings.append(v + " = " + v.getValue());
+            currentSettings.append(v + " = " + getValueString(v));
             if (vds.hasMoreElements()) currentSettings.append(" and ");
         }
 
         return currentSettings.toString();
+    }
+
+    private String getValueString(VariableModel vm)
+    {
+        Object value = vm.getValue();
+
+        if (value instanceof RangeModel)
+        {
+            RangeModel rm = (RangeModel)value;
+            return rm.getMin() + "-" + rm.getMax();
+        }
+
+        return value.toString();
     }
 }
