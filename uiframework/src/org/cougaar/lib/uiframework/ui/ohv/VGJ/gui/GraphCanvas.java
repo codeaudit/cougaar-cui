@@ -42,7 +42,7 @@
    import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.NodePropertiesDialog;
    import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.EdgePropertiesDialog;
    import org.cougaar.lib.uiframework.ui.ohv.util.RuntimeParameters;
-   import org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJOrgTree;
+   import org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJCommunityTree;
 
 
    import java.awt.image.*;
@@ -1812,11 +1812,18 @@
 	   String dblClickEdit=RuntimeParameters
 	      .getLoudSystemProperty("double.click.edit.node",
 				      "false");
+	   String dblClickExpand=RuntimeParameters
+	      .getLoudSystemProperty("double.click.expand.node",
+				      "true");
+	   System.out.println("dblclk ed,ex: "+dblClickEdit+" , "+dblClickExpand);
 	   
          Node which = selectedNode_;
 	 String nodeLabel = which.getLabel();
 	 // get node label
-	 OrgHierVGJOrgTree.showOrgGraph(nodeLabel);
+	 // OrgHierVGJOrgTree.showOrgGraph(nodeLabel);
+	 if (dblClickExpand.equalsIgnoreCase("true")) {
+	     OrgHierVGJCommunityTree.showOrgGraph(nodeLabel);
+	 }
 	 if (dblClickEdit.equalsIgnoreCase("true")) {
 	     setNodeProperties(false);
 	 }

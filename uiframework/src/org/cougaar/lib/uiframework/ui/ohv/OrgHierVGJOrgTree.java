@@ -300,7 +300,7 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 
     private void updateOrgGraph() {
 	System.out.println("vgjorgtree ota updating model");
-	OrgHierModel ohm = OrgHierApp.updateModel();
+	ohm = OrgHierApp.updateModel();
 	showOrgGraph(name);
     }
     private void showOrgGraph() {

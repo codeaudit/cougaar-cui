@@ -876,17 +876,35 @@
          }
          else if(shape_ == OVAL) {
             // mod
-            int shadow_offset=4;
+            int shadow_offset=0;
+            int shadow_offsety=4;
             int myx= (int)(x - w / 2) ;
             int myy= (int)(y - h / 2) ;
 
 	    if (getDrillDownOn()) {
+		graphics.setColor(color_);
+		graphics.fillOval(myx+shadow_offset*3, myy+shadow_offsety*3,
+                                 (int)w, (int)h);
 		graphics.setColor(Color.darkGray);
-		graphics.fillOval(myx+shadow_offset, myy+shadow_offset,
+		graphics.drawOval(myx+shadow_offset*3, myy+shadow_offsety*3,
+                                 (int)w, (int)h);
+		graphics.setColor(color_);
+		graphics.fillOval(myx+shadow_offset*2, myy+shadow_offsety*2,
+                                 (int)w, (int)h);
+		graphics.setColor(Color.darkGray);
+		graphics.drawOval(myx+shadow_offset*2, myy+shadow_offsety*2,
+                                 (int)w, (int)h);
+		graphics.setColor(color_);
+		graphics.fillOval(myx+shadow_offset, myy+shadow_offsety,
+                                 (int)w, (int)h);
+		graphics.setColor(Color.darkGray);
+		graphics.drawOval(myx+shadow_offset, myy+shadow_offsety,
                                  (int)w, (int)h);
 	    }
 
             graphics.setColor(color_);
+
+
             /*
             long idx=1; int offset=500;
             graphics.setColor(Color.black);
@@ -916,6 +934,8 @@
             graphics.fillOval((int)(x - w / 2), (int)(y - h / 2),
                                  (int)w, (int)h);
             */
+            graphics.setColor(Color.darkGray);
+	    graphics.drawOval(myx, myy, (int)w, (int)h);
             graphics.setColor(Color.black);
             // end mod
 

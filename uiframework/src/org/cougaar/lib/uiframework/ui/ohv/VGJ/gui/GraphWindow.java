@@ -240,8 +240,8 @@
          // let's try this
          p1.setLayout(new FlowLayout());      // mod
 
-         p1.addButton("Show", 1, -1, 1.0, 1.0, 0, 0);        // mod
-         smallPanel.addButton("Show", 1, -1, 1.0, 1.0, 0, 0);        // mod
+         p1.addButton("Update", 1, -1, 1.0, 1.0, 0, 0);        // mod
+         smallPanel.addButton("Update", 1, -1, 1.0, 1.0, 0, 0);        // mod
 
          p.addLineLabel("Mouse Action:", 0);
          CheckboxGroup mode_group = new CheckboxGroup();
@@ -610,9 +610,9 @@
                viewingPanel_.scrollTo((int)x, (int)y);
                portScroller_.setOffset(x, y);
             }
-            else if(((String)what).equals("Show"))
+            else if(((String)what).equals("Update"))
             {
-                System.out.println("Show button pressed. "+myAction);
+                System.out.println("Update button pressed. "+myAction);
                 if (myAction!=null) {
                   System.out.println("Performing action.");
                   myAction.execute();

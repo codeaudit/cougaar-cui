@@ -58,7 +58,7 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
  **/
 
   public class OrgHierVGJCommunityTree  implements OrgHierModelViewer {
-    private OrgHierModel ohm; 
+    static private OrgHierModel ohm; 
     private String textTree; 
     private String delim="\n"; 
     private Stack branchStack = new Stack(); 
@@ -193,19 +193,7 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
       System.out.println("community show_init numberofnodes: "+mygraph.numberOfNodes());
 
       setDrillDownAttributes(vgj, mygraph);
-//       StringTokenizer st = new StringTokenizer(drillDownOrgs,";");
-//       String orgstr;
-//       while (st.hasMoreTokens()) {
-// 	  orgstr=st.nextToken();
-// 	  System.out.println("community show_init ddOrg: ["+orgstr+"]");
-// 	  vgj.drillDownNode(mygraph, orgstr, true);
-//       }
-
-// 	    vgj.drillDownNode(mygraph, "CENTCOM-HHC", true);
-// 	    vgj.drillDownNode(mygraph, "DLAHQ", true);
-// 	    vgj.drillDownNode(mygraph, "3ID-HHC", true);
-//       System.out.println("afdd community show_init numberofnodes: "+mygraph.numberOfNodes());
-	    showLiveClusters(vgj, mygraph);
+      showLiveClusters(vgj, mygraph);
       System.out.println("af slc community show_init numberofnodes: "+mygraph.numberOfNodes());
 
 
@@ -222,15 +210,26 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
           public void execute()
           {
             System.out.println("in community OrgTreeAction.execute -- show org graph");
-            showOrgGraph();
+            updateOrgGraph();
             System.out.println("out OrgTreeAction.execute");
           }
           public String getId() { return "Show Community"; }
       };
+
+    private void updateOrgGraph() {
+      System.out.println("vgjorgtree ota updating model");
+      ohm = OrgHierApp.updateModel();
+      showOrgGraph();
+    }
     private void showOrgGraph() {
       // selOrg = getSelectedOrg();
       String selOrg = vgj.getSelectedNodeLabel();
-            System.out.println("selected node: "+selOrg);
+      showOrgGraph(selOrg);
+    }
+
+    public static void showOrgGraph(String forOrg) {
+	String selOrg=forOrg;
+      System.out.println("show org graph for selected node: "+selOrg);
       if (selOrg==null) {
         System.err.println("==========================");
         System.err.println("Select an Organization !!!");
@@ -239,10 +238,9 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
         System.err.println("Select an Organization !!!");
         System.err.println("==========================");
       } else {
-         //loadInit(selOrg);
       // create and show vgjOrgTree (use my model)
 	  System.out.println("vgjcommunitytree ota updating model");
-	  OrgHierModel ohm = OrgHierApp.updateModel();
+	  // OrgHierModel ohm = OrgHierApp.updateModel();
         OrgHierVGJOrgTree ohvt=new OrgHierVGJOrgTree(ohm, selOrg);
         ohvt.show();
       }
