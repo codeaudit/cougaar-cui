@@ -530,6 +530,7 @@ public class DatabaseTableModel implements TableModel
                                 String aggHeader, int aggregatedHeaderColumn,
                                 Combiner c)
     {
+        int aggCount = 1;
         Vector aggregateRow = modelRow;
 
         for (int rowIndex = 1; rowIndex < dataRows.size(); rowIndex++)
@@ -552,8 +553,17 @@ public class DatabaseTableModel implements TableModel
             {
                 dataRows.removeElementAt(rowIndex--);
                 aggregateRow = combine(aggregateRow, row, c);
+                aggCount++;
             }
          }
+
+         // finalize each cell of combined row using combiner
+         for (int i = 0; i < aggregateRow.size(); i++)
+         {
+            aggregateRow.setElementAt(
+                c.finalize(aggregateRow.elementAt(i), aggCount) , i);
+         }
+
          aggregateRow.setElementAt(aggHeader, aggregatedHeaderColumn);
 
          return aggregateRow;
@@ -572,6 +582,7 @@ public class DatabaseTableModel implements TableModel
     public void aggregateRows(Enumeration rowList, String aggHeader,
                               int headerColumn, Combiner combiner)
     {
+        int aggCount = 0;
         Vector aggregateRow = null;
         while (rowList.hasMoreElements())
         {
@@ -586,7 +597,16 @@ public class DatabaseTableModel implements TableModel
             {
                 aggregateRow = combine(aggregateRow, row, combiner);
             }
+            aggCount++;
         }
+
+         // finalize each cell of combined row using combiner
+         for (int i = 0; i < aggregateRow.size(); i++)
+         {
+            aggregateRow.setElementAt(
+                combiner.finalize(aggregateRow.elementAt(i), aggCount) , i);
+         }
+
         aggregateRow.set(headerColumn, aggHeader);
         dataRows.add(aggregateRow);
 
@@ -646,6 +666,16 @@ public class DatabaseTableModel implements TableModel
          * @return the combined object
          */
         public Object combine(Object obj1, Object obj2);
+
+        /**
+         * Operation to perform on aggregated value after all rows have been
+         * combined.  (needed for averaging)
+         *
+         * @param obj the aggregated object
+         * @param numRowsCombined number of rows that this value represents.
+         * @return finalized aggregated value
+         */
+        public Object finalize(Object obj, int numRowsCombined);
     }
 
     /**
