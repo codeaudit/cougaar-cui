@@ -20,6 +20,7 @@ public class CRowHeaderTable extends JTable
     private static final int MIN_CELL_CHARACTER_WIDTH = 4;
     private int minCellWidth = 0;
     private HeaderCellRenderer headerCellRenderer = new HeaderCellRenderer();
+    private JTable cornerHeader = createCornerHeader();
     private JTable rowHeader = createRowHeader();
     protected int rowStart = 1;
     protected int columnStart = 1;
@@ -83,11 +84,14 @@ public class CRowHeaderTable extends JTable
 
         if (e.getFirstRow() == TableModelEvent.HEADER_ROW)
         {
-            // Remove repeated header column
+            // Remove repeated header columns
             TableColumnModel cm = getColumnModel();
-            if (cm.getColumnCount() > 0)
+            for (int i = 0; i < columnStart + 1; i++)
             {
-                cm.removeColumn(cm.getColumn(0));
+                if (cm.getColumnCount() > 0)
+                {
+                    cm.removeColumn(cm.getColumn(0));
+                }
             }
         }
     }
@@ -120,6 +124,7 @@ public class CRowHeaderTable extends JTable
             {
                 JScrollPane sp = (JScrollPane)c;
                 sp.setRowHeaderView(rowHeader);
+                sp.setCorner(JScrollPane.UPPER_LEFT_CORNER, cornerHeader);
 
                 sp.addComponentListener(new ComponentAdapter() {
                         public void componentResized(ComponentEvent e)
@@ -140,7 +145,7 @@ public class CRowHeaderTable extends JTable
         TableModel tm = new AbstractTableModel() {
                 public int getColumnCount()
                 {
-                    return 1;
+                    return columnStart + 1;
                 }
                 public int getRowCount()
                 {
@@ -156,6 +161,27 @@ public class CRowHeaderTable extends JTable
         return newRowHeader;
     }
 
+    private JTable createCornerHeader()
+    {
+        TableModel tm = new AbstractTableModel() {
+                public int getColumnCount()
+                {
+                    return columnStart + 1;
+                }
+                public int getRowCount()
+                {
+                    return 1;
+                }
+                public Object getValueAt(int row, int column)
+                {
+                    return getModel().getColumnName(column);
+                }
+            };
+        JTable newCornerHeader = new JTable(tm);
+        newCornerHeader.setDefaultRenderer(Object.class, headerCellRenderer);
+        return newCornerHeader;
+    }
+
     /**
      * Returns the cell renderer to use for the given table cell.
      *
@@ -164,7 +190,7 @@ public class CRowHeaderTable extends JTable
      */
     public TableCellRenderer getCellRenderer(int row, int column)
     {
-        if ((row < rowStart) || (column < columnStart))
+        if (row < rowStart)
         {
             return headerCellRenderer;
         }
@@ -214,18 +240,15 @@ public class CRowHeaderTable extends JTable
                     for (int column = 0; column < headCount; column++)
                     {
                         totalWidth +=
-                            sizeColumnBasedonContents(rowHeader, column);
+                            sizeRowHeaderColumnBasedonContents(column);
                     }
                     totalWidth += 10;
                     rowHeader.setPreferredScrollableViewportSize(
                         new Dimension(totalWidth,
                                       rowHeader.getPreferredSize().height));
-
-                    // Added Row Headers are sized to show contents
-                    for (int i = 0; i < columnStart; i++)
-                    {
-                        sizeColumnBasedonContents(CRowHeaderTable.this, i);
-                    }
+                    cornerHeader.setPreferredScrollableViewportSize(
+                        new Dimension(totalWidth,
+                                      cornerHeader.getPreferredSize().height));
 
                     // Set data cell widths
                     // (only use horizontal scroll bar if needed)
@@ -277,6 +300,7 @@ public class CRowHeaderTable extends JTable
         return (versionNumber >= 47.0);
     }
 
+    /* not currently being used (but might be useful later)
     private static int sizeColumnBasedonContents(JTable table,int columnIndex)
     {
         TableModel tm = table.getModel();
@@ -319,6 +343,42 @@ public class CRowHeaderTable extends JTable
         }
 
         int targetWidth = Math.max(headerWidth, maxCellWidth);
+        column.setMinWidth(targetWidth);
+        column.setMaxWidth(targetWidth + 25);
+
+        return targetWidth;
+    }
+    */
+
+    private int sizeRowHeaderColumnBasedonContents(int columnIndex)
+    {
+        TableModel tm = cornerHeader.getModel();
+        TableCellRenderer cr = cornerHeader.getCellRenderer(0, columnIndex);
+
+        Component comp =
+            cr.getTableCellRendererComponent(null, tm.getValueAt(0, columnIndex),
+                                             false, false, 0, 0);
+        int headerWidth = comp.getPreferredSize().width;
+
+        JTable table = rowHeader;
+        tm = table.getModel();
+        int maxCellWidth = 0;
+        for (int row = 0; row < tm.getRowCount(); row++)
+        {
+            comp = table.getDefaultRenderer(tm.getColumnClass(columnIndex)).
+                    getTableCellRendererComponent(
+                        table, tm.getValueAt(row, columnIndex),
+                        false, false, row, columnIndex);
+            int cellWidth = comp.getPreferredSize().width+table.getRowMargin();
+            maxCellWidth = Math.max(maxCellWidth, cellWidth);
+        }
+
+        int targetWidth = Math.max(headerWidth, maxCellWidth);
+
+        TableColumn column = table.getColumnModel().getColumn(columnIndex);
+        column.setMinWidth(targetWidth);
+        column.setMaxWidth(targetWidth + 25);
+        column = cornerHeader.getColumnModel().getColumn(columnIndex);
         column.setMinWidth(targetWidth);
         column.setMaxWidth(targetWidth + 25);
 
