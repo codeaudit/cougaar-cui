@@ -80,11 +80,11 @@ public class CStoplightTable extends CRowHeaderTable
      */
     public TableCellRenderer getCellRenderer(int row, int column)
     {
-        Object value = getModel().getValueAt(row, column);
-        if ((value instanceof Float) || (value instanceof Integer))
+        if ((row >= rowStart) && (column >= columnStart))
         {
             return stoplightCellRenderer;
         }
+
         return super.getCellRenderer(row, column);
     }
 
@@ -204,7 +204,10 @@ public class CStoplightTable extends CRowHeaderTable
                                                 hasFocus, row, column);
             if (showValue)
             {
-                setValue(valueFormat.format(value));
+                if (value instanceof Number)
+                {
+                    setValue(valueFormat.format(value));
+                }
             }
             else
             {
@@ -216,23 +219,35 @@ public class CStoplightTable extends CRowHeaderTable
 
         private void colorRenderer(Object value)
         {
-            Comparable compValue = (Comparable)value;
-
             if (showColor)
             {
-                if ((compValue.compareTo(new Float(thresholds.getGreenMin())) >= 0) &&
-                    (compValue.compareTo(new Float(thresholds.getGreenMax())) <= 0))
+                if (value instanceof Number)
                 {
-                    setBackground(Color.green);
-                }
-                else if ((compValue.compareTo(new Float(thresholds.getYellowMin())) >= 0) &&
-                         (compValue.compareTo(new Float(thresholds.getYellowMax())) <= 0))
-                {
-                    setBackground(Color.yellow);
+                    Comparable compValue = (Comparable)value;
+                    Float greenMin = new Float(thresholds.getGreenMin());
+                    Float greenMax = new Float(thresholds.getGreenMax());
+                    Float yellowMin = new Float(thresholds.getYellowMin());
+                    Float yellowMax = new Float(thresholds.getYellowMax());
+
+                    if ((compValue.compareTo(greenMin) >= 0) &&
+                        (compValue.compareTo(greenMax) <= 0))
+                    {
+                        setBackground(Color.green);
+                    }
+                    else if ((compValue.compareTo(yellowMin) >= 0) &&
+                             (compValue.compareTo(yellowMax) <= 0))
+                    {
+                        setBackground(Color.yellow);
+                    }
+                    else
+                    {
+                        setBackground(Color.red);
+                    }
                 }
                 else
                 {
-                    setBackground(Color.red);
+                    // Color.lightGray = 192, 192, 192
+                    setBackground(new Color(230, 230, 230));
                 }
             }
             else

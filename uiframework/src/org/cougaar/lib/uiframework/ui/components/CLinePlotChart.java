@@ -251,7 +251,8 @@ public class CLinePlotChart extends Graph2D
                 {
                     Object testValue = tm.getValueAt(rowStart, columnStart);
                     if ((testValue instanceof Float) ||
-                        (testValue instanceof Double))
+                        (testValue instanceof Double) ||
+                        (testValue.toString().equals("N/A")))
                     {
                         break search;
                     }
@@ -281,8 +282,9 @@ public class CLinePlotChart extends Graph2D
                     {
                         data[pointLocation] = column;
                     }
-                    data[pointLocation + 1] =
-                        ((Number)tm.getValueAt(row, column)).doubleValue();
+                    Object value = tm.getValueAt(row, column);
+                    data[pointLocation + 1] = (value instanceof Number) ?
+                        ((Number)value).doubleValue():0;
                 }
                 plot(data, numberOfDataPoints, 1,
                      (String)tm.getValueAt(row, 0));

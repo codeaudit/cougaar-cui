@@ -14,8 +14,8 @@ import javax.swing.table.*;
 public class CRowHeaderTable extends JTable
 {
     private TableCellRenderer headerCellRenderer = new HeaderCellRenderer();
-    private int rowStart = 1;
-    private int columnStart = 1;
+    protected int rowStart = 1;
+    protected int columnStart = 1;
 
     /**
      * Default constructor.  Create new row header table.
