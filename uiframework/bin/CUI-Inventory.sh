@@ -25,10 +25,18 @@
 # </copyright>
 
 
-source $COUGAAR_INSTALL_PATH/bin/setlibpath.sh
-source $COUGAAR_INSTALL_PATH/bin/setarguments.sh
+if [ -z "$COUGAAR_INSTALL_PATH" ]; then
+    if [ "$CIP" ]; then
+	COUGAAR_INSTALL_PATH="$CIP";
+    else
+	s=`echo "$0" | sed -e 's,/bin/.*,,'`
+	if [ x$s != x ] ; then
+	    COUGAAR_INSTALL_PATH=$s
+	else
+	    echo "Error: Could not find COUGAAR_INSTALL_PATH!";
+	    exit;
+	fi
+    fi
+fi
 
-MYCLASSES="org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI l 4 "
-MYPROPERTIES="$MYPROPERTIES -Dorg.cougaar.log.displaytimes=%COUGAAR_INSTALL_PATH%/CUI-InvDisplayTimes.log"
-
-exec java $MYPROPERTIES -classpath $LIBPATHS $BOOTSTRAPPER $MYCLASSES $*
+exec /bin/sh $COUGAAR_INSTALL_PATH/bin/boost org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI $*

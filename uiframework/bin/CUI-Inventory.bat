@@ -1,4 +1,4 @@
-@ECHO OFF
+@echo OFF
 
 REM "<copyright>"
 REM " "
@@ -25,18 +25,14 @@ REM " "
 REM "</copyright>"
 
 
-set CLASSPATH=
+REM calls setlibpath.bat which sets the path to the required jar files.
+CALL "%COUGAAR_INSTALL_PATH%\bin\setlibpath.bat"
+CALL "%COUGAAR_INSTALL_PATH%\bin\setarguments.bat"
 
-set LIBPATHS=.
-set LIBPATHS=%LIBPATHS%;%COUGAAR_INSTALL_PATH%\lib\core.jar
-set LIBPATHS=%LIBPATHS%;%COUGAAR_INSTALL_PATH%\lib\glm.jar
-
-set LIBPATHS=%LIBPATHS%;%COUGAAR_INSTALL_PATH%\lib\uiframework.jar
-set LIBPATHS=%LIBPATHS%;.\bin
-rem set LIBPATHS=%LIBPATHS%;%COUGAAR_INSTALL_PATH%\lib\classes
-
-
+REM produces the inventory chart display
+set MYCLASSES=org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI
+set BS=org.cougaar.bootstrap.Bootstrapper
 @ECHO ON
 
-java -Djava.compiler=NONE -Dorg.cougaar.log.displaytimes=%COUGAAR_INSTALL_PATH%\CUI-InvDisplayTimes.log -classpath %LIBPATHS% org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI l 4
-REM java -classpath %LIBPATHS% org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI l 4
+java.exe %MYPROPERTIES% %MYMEMORY% -classpath %LIBPATHS% %BS% %MYCLASSES% %1
+
