@@ -114,25 +114,35 @@ public class QueryGenerator
         VariableModel yAxis = (VariableModel)vim.
                     getDescriptors(VariableModel.Y_AXIS).nextElement();
 
-        StringBuffer query =
-            new StringBuffer("SELECT * FROM assessmentData WHERE (");
-
-        // filter data needed based on org, item, metric, time
-        if (debug) System.out.println("Generating Org where clause");
-        query.append(generateWhereClause(vim.getDescriptor("Org")));
-        if (debug) System.out.println("Generating Item where clause");
-        query.append(" AND "+generateWhereClause(vim.getDescriptor("Item")));
-        if (debug) System.out.println("Generating Metric where clause");
-        query.append(" AND "+generateWhereClause(vim.getDescriptor("Metric")));
-        if (debug) System.out.println("Generating Time where clause");
-        query.append(" AND "+generateWhereClause(vim.getDescriptor("Time")));
-        query.append(")");
-
-        // order result set
-        query.append(" ORDER BY unitsOfTime, org, item, metric");
-
-        System.out.println(query);
-        dbTableModel.setDBQuery(query.toString(), 4, 1);
+        // Create query(s) that aggregate over organizations
+        VariableModel orgDesc = vim.getDescriptor("Org");
+        TreeNode selectedOrgNode = (TreeNode)orgDesc.getValue();
+        if ((orgDesc.getState() == VariableModel.FIXED) ||
+            (selectedOrgNode.isLeaf()))
+        {
+            String query =
+                generateQueryUsingRootNode(vim, "Org", selectedOrgNode);
+            System.out.println(query);
+            dbTableModel.setDBQuery(query, 4, 1);
+        }
+        else
+        {
+            for (int i = 0; i < selectedOrgNode.getChildCount(); i++)
+            {
+                String query =
+                    generateQueryUsingRootNode(vim, "Org",
+                                               selectedOrgNode.getChildAt(i));
+                System.out.println("query #" + i + ": " + query);
+                if (i == 0)
+                {
+                    dbTableModel.setDBQuery(query, 4, 1);
+                }
+                else
+                {
+                    dbTableModel.appendDBQuery(query, 4, 1);
+                }
+            }
+        }
 
         // aggregation across a time range must be done at the client (here)
         // other aggregation has already been taken care of before DB table.
@@ -203,6 +213,37 @@ public class QueryGenerator
             new TableModelEvent(dbTableModel, TableModelEvent.HEADER_ROW));
     }
 
+
+    private String
+        generateQueryUsingRootNode(VariableInterfaceManager vim,
+                                   String varName, TreeNode tn)
+    {
+        String id = ((Hashtable)
+                        ((DefaultMutableTreeNode)
+                            tn).getUserObject()).get("ID").toString();
+
+        StringBuffer query = new StringBuffer("SELECT ");
+        query.append(id);
+        query.append(
+            " AS \"ORG\", item, unitsOfTime, metric, sum(assessmentValue)" +
+            " AS \"ASSESSMENTVALUE\" FROM assessmentData WHERE (");
+
+        // filter data needed based on org, item, metric, time
+        if (debug) System.out.println("Generating Org where clause");
+        query.append(generateWhereClause("Org", getLeafList(tn).elements()));
+        if (debug) System.out.println("Generating Item where clause");
+        query.append(" AND "+generateWhereClause(vim.getDescriptor("Item")));
+        if (debug) System.out.println("Generating Metric where clause");
+        query.append(" AND "+generateWhereClause(vim.getDescriptor("Metric")));
+        if (debug) System.out.println("Generating Time where clause");
+        query.append(" AND "+generateWhereClause(vim.getDescriptor("Time")));
+        query.append(")");
+
+        query.append(" GROUP BY item, metric, unitsOfTime");
+
+        return query.toString();
+    }
+
     /**
      * Generate a SQL where clause to constrain a result set based on the
      * contents of the given variable descriptor.
@@ -229,6 +270,8 @@ public class QueryGenerator
         else if (v.getValue() instanceof DefaultMutableTreeNode)
         {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)v.getValue();
+
+            //use aggregated org values in database
             if ((v.getState() == v.FIXED) || (node.isLeaf()))
             {
                 whereClause = generateWhereClause(varName, node);
