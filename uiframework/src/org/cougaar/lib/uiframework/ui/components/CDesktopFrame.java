@@ -84,17 +84,17 @@ public class CDesktopFrame extends CFrame
      * @param constParamClasses array of classes that describe constructor
      *                          parameters that will be used for creating new
      *                          instances of the CougaarUI.
-     * @param constParams       creates array of objects that will be passed
+     * @param config            creates array of objects that will be passed
      *                          into constructor when creating new instances
      *                          of the CougaarUI.
      */
      public void addTool(String name, char mnemonic, Class cougaarUIClass,
                          Class[] constParamClasses,
-                         ParameterCreator constParams)
+                         Configurator config)
      {
         createMenuItem(viewMenu, name, mnemonic, "",
                        new CreateViewAction(name, cougaarUIClass,
-                                            constParamClasses, constParams));
+                                            constParamClasses, config));
      }
 
     /**
@@ -301,15 +301,15 @@ public class CDesktopFrame extends CFrame
         private String title;
         private Class viewClass;
         private Class[] constParamClasses;
-        private ParameterCreator constParams;
+        private Configurator config;
         protected CreateViewAction(String title, Class viewClass,
                                    Class[] constParamClasses,
-                                   ParameterCreator constParams)
+                                   Configurator config)
         {
             super("CreateViewAction");
             this.viewClass = viewClass;
             this.constParamClasses = constParamClasses;
-            this.constParams = constParams;
+            this.config = config;
             this.title = title;
         }
 
@@ -326,10 +326,14 @@ public class CDesktopFrame extends CFrame
                             Constructor c =
                                 viewClass.getConstructor(constParamClasses);
                             CougaarUI cougaarUI = (CougaarUI)
-                                c.newInstance((constParams !=  null) ?
-                                              constParams.createParameters() :
+                                c.newInstance((config !=  null) ?
+                                              config.createConstParameters() :
                                               null);
                             createInnerFrame(title, cougaarUI);
+                            if (config != null)
+                            {
+                                config.configure(cougaarUI);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -397,8 +401,9 @@ public class CDesktopFrame extends CFrame
         return selectedFrame;
     }
 
-    protected interface ParameterCreator
+    protected interface Configurator
     {
-        public Object[] createParameters();
+        public Object[] createConstParameters();
+        public void configure(CougaarUI ui);
     }
 }

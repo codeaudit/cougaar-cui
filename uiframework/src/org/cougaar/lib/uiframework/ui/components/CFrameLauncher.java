@@ -92,14 +92,14 @@ public class CFrameLauncher extends CFrame
      * @param constParamClasses array of classes that describe constructor
      *                          parameters that will be used for creating new
      *                          instances of the CougaarUI.
-     * @param constParams       creates array of objects that will be passed
+     * @param config            creates array of objects that will be passed
      *                          into constructor when creating new instances of
      *                          the CougaarUI.
      */
      public void addTool(final String name, char mnemonic,
                          final Class cougaarUIClass,
                          final Class[] constParamClasses,
-                         final ParameterCreator constParams)
+                         final Configurator config)
      {
         JButton launcher = new JButton(name);
         mainPanel.add(launcher);
@@ -115,17 +115,16 @@ public class CFrameLauncher extends CFrame
                         Constructor c =
                             cougaarUIClass.getConstructor(constParamClasses);
                         CougaarUI cougaarUI = (CougaarUI)
-                            c.newInstance((constParams != null) ?
-                                          constParams.createParameters() :
+                            c.newInstance((config != null) ?
+                                          config.createConstParameters() :
                                           null);
                         CFrame frame = new CFrame();
                         cougaarUI.install(frame);
-                        //frame.getLookAndFeelPulldown().setEnabled(false);
+                        if (config != null)
+                        {
+                            config.configure(cougaarUI);
+                        }
                         frame.setTitle(name);
-                        //frame.getLookAndFeelPulldown().
-                        //    setEnabled(cougaarUI.supportsPlaf());
-                        //frame.getLookAndFeelPulldown().setVisible(false);
-                        //frame.getThemesPulldown().setVisible(false);
                         frame.setVisible(true);
                         launchedFrames.add(frame);
                     }
@@ -169,8 +168,9 @@ public class CFrameLauncher extends CFrame
         }
     }
 
-    protected interface ParameterCreator
+    protected interface Configurator
     {
-        public Object[] createParameters();
+        public Object[] createConstParameters();
+        public void configure(CougaarUI ui);
     }
 }
