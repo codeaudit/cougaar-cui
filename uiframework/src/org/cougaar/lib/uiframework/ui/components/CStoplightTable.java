@@ -200,6 +200,7 @@ public class CStoplightTable extends CRowHeaderTable
                                       boolean isSelected, boolean hasFocus,
                                       int row, int column)
         {
+            setHorizontalAlignment(JLabel.CENTER);
             colorRenderer(value);
             super.getTableCellRendererComponent(table, value, isSelected,
                                                 hasFocus, row, column);
