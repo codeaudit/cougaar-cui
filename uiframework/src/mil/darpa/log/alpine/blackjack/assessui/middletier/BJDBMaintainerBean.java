@@ -6,6 +6,7 @@ import java.util.Vector;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,6 +30,7 @@ public class BJDBMaintainerBean implements SessionBean
     private static final String C_TIME_YEAR = "java:comp/env/CTimeYear";
     private static final String C_TIME_MONTH = "java:comp/env/CTimeMonth";
     private static final String C_TIME_DAY = "java:comp/env/CTimeDay";
+    private static final String C_TIME_ZONE = "java:comp/env/CTimeZone";
     private Connection connection = null;
     private Statement stmt = null;
 
@@ -45,20 +47,38 @@ public class BJDBMaintainerBean implements SessionBean
             String c_time_year_string = (String)ic.lookup(C_TIME_YEAR);
             String c_time_month_string = (String)ic.lookup(C_TIME_MONTH);
             String c_time_day_string = (String)ic.lookup(C_TIME_DAY);
+            String c_time_zone_string = (String)ic.lookup(C_TIME_ZONE);
+
+            if (c_time_zone_string == null) {
+              c_time_zone_string = "GMT";
+            }
 
             if ((c_time_year_string != null) &&
                 (c_time_month_string != null)&& 
                 (c_time_day_string != null)) {
+
+                TimeZone tz = TimeZone.getTimeZone(c_time_zone_string);
+
+                GregorianCalendar gc = new GregorianCalendar (tz);
 
 System.out.println ("c_time_year is " + c_time_year_string);
 System.out.println ("c_time_month is " + c_time_month_string);
 System.out.println ("c_time_day is " + c_time_day_string);
 
                 // Month is offset from zero, others are not
+                // Last three are hour, minute, second
+
+                gc.set (Integer.parseInt (c_time_year_string),
+                        Integer.parseInt (c_time_month_string) - 1,
+                        Integer.parseInt (c_time_day_string),
+                        0, 0, 0);
+
+/*
                 GregorianCalendar gc =
                   new GregorianCalendar (Integer.parseInt (c_time_year_string),
                                    Integer.parseInt (c_time_month_string) - 1,
                                          Integer.parseInt (c_time_day_string));
+*/
 
                 c_time_sec_int = gc.getTime().getTime() / 1000;
             }
@@ -398,9 +418,8 @@ System.out.print ("insert"+time_index);
         // Normalize the times
         time_sec_int = time_sec_int - c_time_sec_int;
 
-        // 24 hours * 60 minutes * 60 seconds = 86400 seconds in a day, and
-        // then truncate to the whole day after adding a small fudge factor
-        int time_in_days = (int) (time_sec_int / 86400.0 + 0.001);
+        // 24 hours * 60 minutes * 60 seconds = 86400 seconds in a day
+        int time_in_days = (int) (time_sec_int / (long) 86400);
 
         return (time_in_days);
     }
