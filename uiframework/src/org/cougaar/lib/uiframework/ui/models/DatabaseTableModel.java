@@ -424,6 +424,22 @@ public class DatabaseTableModel implements TableModel
     }
 
     /**
+     * Insert a new column into model. (filled with nulls)
+     *
+     * @param columnIndex where to insert new column
+     */
+    public synchronized void insertColumn(int columnIndex)
+    {
+        for (int row = 0; row < dataRows.size(); row++)
+        {
+            Vector dataRow = (Vector)dataRows.elementAt(row);
+            dataRow.insertElementAt("N/A", columnIndex);
+        }
+        fireTableChangedEvent(
+            new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+    }
+
+    /**
      * transpose the contents of this model.
      * Rows become columns and columns become rows.
      */
