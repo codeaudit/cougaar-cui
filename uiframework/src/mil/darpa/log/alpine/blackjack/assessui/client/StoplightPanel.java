@@ -52,6 +52,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private CViewFeatureSelectionControl viewPanel = null;
     private QueryGenerator queryGenerator = null;
     private static final Vector stoplightMetrics = new Vector();
+    private UILaunchPopup uiLaunchPopup = new UILaunchPopup();
 
     /**
      * Create a new stoplight panel
@@ -307,6 +308,15 @@ public class StoplightPanel extends JPanel implements CougaarUI
                         doubleClickTableHandler(event);
                     }
                 }
+                public void mouseReleased(MouseEvent event)
+                {
+                    if (event.isPopupTrigger())
+                    {
+                        configurePopup(event);
+                        uiLaunchPopup.show(
+                            stoplightChart, event.getX(), event.getY());
+                    }
+                }
             };
         stoplightChart.addMouseListener(doubleClickTableListener);
         stoplightChart.getTableHeader().
@@ -367,10 +377,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
     private void doubleClickTableHandler(MouseEvent e)
     {
-        int row = stoplightChart.getSelectedRow();
-        int column = stoplightChart.
-            convertColumnIndexToModel(stoplightChart.getSelectedColumn());
-
         if (e.getSource().equals(stoplightChart.getTableHeader()))
         {
             TableColumnModel columnModel = stoplightChart.getColumnModel();
@@ -386,7 +392,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
         if (e.getSource().equals(stoplightChart.getRowHeader()))
         {
-            row = stoplightChart.getRowHeader().getSelectedRow();
+            int row = stoplightChart.getRowHeader().getSelectedRow();
             Object value = stoplightTableModel.getValueAt(row, 0);
             ((VariableModel)variableManager.
                 getDescriptors(VariableModel.Y_AXIS).nextElement()).
@@ -396,86 +402,63 @@ public class StoplightPanel extends JPanel implements CougaarUI
         }
 
         // Launch line plot chart preconfigured based on double-clicked cell
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        JFrame myFrame = findJFrame();
-        JFrame linePlotFrame;
-        if (myFrame instanceof CDesktopFrame)
-        {
-            linePlotFrame = myFrame;
-        }
-        else
-        {
-            linePlotFrame = new CFrame(UIConstants.LINEPLOT_UI_NAME, plaf);
-        }
-        LinePlotPanel lpp = new LinePlotPanel(plaf, useMenuButtons);
-        VariableInterfaceManager linePlotVIM =
-            lpp.getVariableInterfaceManager();
+        configurePopup(e);
+        uiLaunchPopup.launchUI(UIConstants.LINEPLOT_UI_NAME);
+    }
 
-        linePlotVIM.getDescriptor("Metric").
-            setValue(UIConstants.STOPLIGHT_UI_NAME + " Components");
-        linePlotVIM.setYAxis("Metric");
+    /**
+     * Configure UILaunchPopup based on mouse position
+     */
+    private void configurePopup(MouseEvent e)
+    {
+        int row = stoplightChart.rowAtPoint(e.getPoint());
+        int column = stoplightChart.convertColumnIndexToModel(
+            stoplightChart.columnAtPoint(e.getPoint()));
 
-        // set stoplight's fixed variable values in line plot
+        uiLaunchPopup.setInvoker(stoplightChart);
+
+        // set stoplight's fixed variable values in new UI
         Enumeration fixedDescs =
             variableManager.getDescriptors(VariableModel.FIXED);
         while (fixedDescs.hasMoreElements())
         {
             VariableModel v =(VariableModel)fixedDescs.nextElement();
             String vName = v.getName();
-            if (!vName.equals("Metric"))
-            {
-                linePlotVIM.getDescriptor(vName).setValue(v.getValue());
-            }
+            uiLaunchPopup.setConfigProperty(vName, v.getValue());
         }
 
-        // set stoplight's y variable value in line plot
+        // set stoplight's y variable value in new UI
         VariableModel yDesc = (VariableModel)variableManager.
             getDescriptors(VariableModel.Y_AXIS).nextElement();
         String yDescName = yDesc.getName();
-        VariableModel lpDesc = linePlotVIM.getDescriptor(yDescName);
         Object selectedYValue = stoplightTableModel.getValueAt(row, 0);
         if (yDescName.equals("Time"))
         {
             int selectedTime = Integer.parseInt(selectedYValue.toString());
-            lpDesc.setValue(
+            uiLaunchPopup.setConfigProperty(yDescName,
                 new RangeModel(selectedTime - 10, selectedTime + 10));
         }
         else
         {
-            lpDesc.setValue(selectedYValue);
+            uiLaunchPopup.setConfigProperty(yDescName, selectedYValue);
         }
 
         // set stoplight's x variable value in line plot
         VariableModel xDesc = (VariableModel)variableManager.
             getDescriptors(VariableModel.X_AXIS).nextElement();
         String xDescName = xDesc.getName();
-        lpDesc = linePlotVIM.getDescriptor(xDescName);
         Object selectedXValue = stoplightTableModel.getColumnName(column);
         if (xDescName.equals("Time"))
         {
             int selectedTime = Integer.parseInt(selectedXValue.toString());
-            lpDesc.setValue(new RangeModel(Math.max(0, selectedTime - 10),
-                                           selectedTime + 10));
+            uiLaunchPopup.setConfigProperty(xDescName,
+                new RangeModel(selectedTime - 10, selectedTime + 10));
         }
         else
         {
-            lpDesc.setValue(selectedXValue);
+            uiLaunchPopup.setConfigProperty(xDescName, selectedXValue);
         }
-
-        if (linePlotFrame instanceof CDesktopFrame)
-        {
-            CDesktopFrame cfc = (CDesktopFrame)linePlotFrame;
-            cfc.createInnerFrame(UIConstants.LINEPLOT_UI_NAME +
-                                 (plaf?" (PLAF)":""), lpp);
-        }
-        else
-        {
-            lpp.install(linePlotFrame);
-            linePlotFrame.setVisible(true);
-        }
-        setCursor(Cursor.getDefaultCursor());
     }
-
 
     /**
      * Returns the variable interface manager for this UI.  This can be used

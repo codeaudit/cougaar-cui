@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Attic/XmlLayerBase.java,v $
- * $Revision: 1.6 $
- * $Date: 2001-03-07 22:01:29 $
+ * $Revision: 1.7 $
+ * $Date: 2001-03-11 16:12:51 $
  * $Author: pfischer $
  *
  * **********************************************************************
@@ -44,8 +44,7 @@ import com.bbn.openmap.event.*;
 import org.cougaar.lib.uiframework.ui.components.*;
 import org.cougaar.lib.uiframework.ui.util.*;
 import mil.darpa.log.alpine.blackjack.assessui.client.UIConstants;
-import mil.darpa.log.alpine.blackjack.assessui.client.LinePlotPanel;
-import mil.darpa.log.alpine.blackjack.assessui.client.StoplightPanel;
+import mil.darpa.log.alpine.blackjack.assessui.client.UILaunchPopup;
 
 /**
  * Layer objects are components which can be added to the MapBean to
@@ -59,6 +58,7 @@ import mil.darpa.log.alpine.blackjack.assessui.client.StoplightPanel;
 
 public class XmlLayerBase extends Layer implements MapMouseListener {
 
+    private UILaunchPopup uiLaunchPopup = new UILaunchPopup();
     protected OMGraphicList graphics;
     // OMGraphicList omList = new OMGraphicList();
 
@@ -185,49 +185,6 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	return services;
     }
 
-    CFrame cframe;
-
-    protected void launchUI(final String uiName, final String org) {
-        Cursor wait = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-        final Component root = XmlLayerBase.this.getTopLevelAncestor();
-        XmlLayerBase.this.getParent().setCursor(wait);
-        root.setCursor(wait);
-        (new Thread() {
-            public void run()
-            {
-	        try {
-	            cframe = new CFrame();
-                    VariableInterfaceManager vim = null;
-                    if (uiName.equals(UIConstants.STOPLIGHT_UI_NAME))
-                    {
-	                StoplightPanel slp = new StoplightPanel(false);
-                        cframe.getContentPane().add(slp);
-                        vim = slp.getVariableInterfaceManager();
-                    }
-                    else
-                    {
-                        LinePlotPanel lpp = new LinePlotPanel(false);
-                        cframe.getContentPane().add(lpp);
-                        vim = lpp.getVariableInterfaceManager();
-                    }
-	            vim.getDescriptor("Org").setValue(org);
-	            cframe.setVisible(true);
-	        } catch (Exception ex) {
-	            fireRequestMessage(
-                        "Warning:  Attempt to display chart failed for " +
-                        "organization: ["
-                        + org + "].\n  Check connection to database.  Check" +
-                        " that database has data for the organization.");
-	            ex.printStackTrace();
-	        } finally {
-                    Cursor defaultc = Cursor.getDefaultCursor();
-                    root.setCursor(defaultc);
-                    XmlLayerBase.this.getParent().setCursor(defaultc);
-                }
-            }
-        }).start();
-    }
-
     OMGraphic findClosest(int x, int y, float limit) {
         return myState.findClosest(x,y,limit);
     }
@@ -241,7 +198,9 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
 	if(omgr != null){
 	    if(e.getClickCount() >= 2){
-	    	launchUI(UIConstants.STOPLIGHT_UI_NAME, getOrgName(omgr));
+                uiLaunchPopup.setInvoker(XmlLayerBase.this.getParent());
+                uiLaunchPopup.setConfigProperty("Org", getOrgName(omgr));
+                uiLaunchPopup.launchUI(UIConstants.STOPLIGHT_UI_NAME);
 	    }
 	} else {
 	    return false;
@@ -359,16 +318,6 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
         return false;
     }
 
-    private class OrgPopupListener implements ActionListener {
-        private String org;
-        public OrgPopupListener(String org) {
-            this.org = org;
-        }
-        public void actionPerformed(final ActionEvent e) {
-            launchUI(((JMenuItem)e.getSource()).getText(), org);
-        }
-    }
-
     /**
      * Invoked when a mouse button has been released on a component.
      * @param e MouseEvent
@@ -379,18 +328,9 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	if(omgr != null){
             if (e.isPopupTrigger())
             {
-                ActionListener orgListener =
-                    new OrgPopupListener(getOrgName(omgr));
-                final JPopupMenu popup = new JPopupMenu();
-                JMenuItem stoplight =
-                    new JMenuItem(UIConstants.STOPLIGHT_UI_NAME);
-                stoplight.addActionListener(orgListener);
-                popup.add(stoplight);
-                JMenuItem lineplot =
-                    new JMenuItem(UIConstants.LINEPLOT_UI_NAME);
-                lineplot.addActionListener(orgListener);
-                popup.add(lineplot);
-                popup.show(XmlLayerBase.this, e.getX(), e.getY());
+                uiLaunchPopup.setConfigProperty("Org", getOrgName(omgr));
+                uiLaunchPopup.show(
+                    XmlLayerBase.this.getParent(), e.getX(), e.getY());
             }
 	} else {
 	    return false;
