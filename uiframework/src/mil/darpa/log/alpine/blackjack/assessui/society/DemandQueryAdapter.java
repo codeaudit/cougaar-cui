@@ -121,7 +121,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             continue;
           }
 
-          item = getItemId (type_id_pg.getTypeIdentification());
+          item = type_id_pg.getTypeIdentification();
 
 /*
           if (index < 5) {
@@ -168,24 +168,5 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
     send_xml = false;
   } /* end of returnVal */
-
-  private String getItemId(String id) {
-
-    String itemType;
-    String itemId;
-
-    if (id.startsWith("NSN/")) {
-      itemType = "NSN";
-      itemId = id.substring(itemType.length() + 1); // Mind the '/'
-      return itemId;
-    }
-    else if (id.startsWith("CAGEPN/")) {
-      itemType = "CAGEPN";
-      itemId = id.substring(itemType.length() + 1); // Mind the '/'
-      return itemId;
-    }
-    else
-      return id;
-  } /* end of getItemId */
 
 }

@@ -88,7 +88,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
           continue;
         }
 
-        item = getItemId (type_id_pg.getTypeIdentification());
+        item = type_id_pg.getTypeIdentification();
 
         UID object_name = a1.getUID();
 
@@ -200,24 +200,5 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 */
 
   } /* end of writeStructureToXML */
-
-  private String getItemId(String id) {
-
-    String itemType;
-    String itemId;
-
-    if (id.startsWith("NSN/")) {
-      itemType = "NSN";
-      itemId = id.substring(itemType.length() + 1); // Mind the '/'
-      return itemId;
-    }
-    else if (id.startsWith("CAGEPN/")) {
-      itemType = "CAGEPN";
-      itemId = id.substring(itemType.length() + 1); // Mind the '/'
-      return itemId;
-    }
-    else
-      return id;
-  } /* end of getItemId */
 
 }
