@@ -130,5 +130,13 @@
                 </a>
             </list>
         </list>
+        <list>
+            <a name="UID">
+                <val>PAKISTAN-REFUGEES</val>
+            </a>
+            <a name="SAFETY_LEVEL">
+                <val>3.0</val>
+            </a>
+        </list>
     </list>
 </structure>
