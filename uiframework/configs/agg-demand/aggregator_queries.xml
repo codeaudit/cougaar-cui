@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+<!--
+  <source ignore="false">
+    <name>3-15-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+
+what went wrong?
+  <source ignore="false">
+    <name>3-7-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+what went wrong?
+
+  <source ignore="false">
+    <name>1-64-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+  <source ignore="false">
+    <name>1-23-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+  <source ignore="false">
+    <name>5-20-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+  <source ignore="false">
+    <name>2-3-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+  <source ignore="false">
+    <name>3-69-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+  <source ignore="false">
+    <name>4-64-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+  <source ignore="false">
+    <name>2-7-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+-->
+  <source ignore="false">
+    <name>4-64-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+<!--
+  <source ignore="false">
+    <name>3-FSB</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+  <source ignore="false">
+    <name>2-BDE-3ID-HHC</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_DEMAND</pspquery>
+  </source>
+-->
+<!--
+  <source ignore="false">
+    <name>3-15-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>3-7-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>1-64-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>1-23-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>5-20-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>2-3-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>3-69-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>4-64-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>2-7-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>3-FSB</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+  <source ignore="false">
+    <name>2-BDE-3ID-HHC</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_INVENTORY</pspquery>
+  </source>
+-->
+<!--
+-->
+</xml>
