@@ -48,8 +48,9 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
     private Graph mygraph;
     private String name;
     
-    public OrgHierVGJOrgTree(Collection col, String name) { init(new OrgHierModel(col), name);}
-    //public OrgHierVGJOrgTree(OrgHierModel ohm) {init(ohm);}
+    public OrgHierVGJOrgTree(Collection col, String name) { 
+	init(new OrgHierModel(col), name);
+    }
     public OrgHierVGJOrgTree(OrgHierModel ohm, String name) {init(ohm, name);}
     private void init(OrgHierModel ohm, String name) {
 	String rootId;
@@ -65,7 +66,8 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
     
     public void showRelationshipsAtTime(long time) { 
 	OrgHierRelationship ohr; 
-	//out.println("Here are the relationships at time: "+model.getRelationshipsAtTime(time));
+	//out.println("Here are the relationships at time: "
+	//               +model.getRelationshipsAtTime(time));
 	
 	Collection rels=ohm.getRelationshipsAtTime(time);
 	String timeStr=""+time;
@@ -81,12 +83,10 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 	out.println("Here is the DYNAMIC OrgHierVGJOrgTree: "); 
 	out.println(textTree); 
 	
-	// from supkpr 
-	    String rootString="Command Hierarchy"; 
-	    VGJ vgj=VGJ.create();
-	    Graph mygraph=new Graph(true);
+	String rootString="Command Hierarchy"; 
+	VGJ vgj=VGJ.create();
+	Graph mygraph=new Graph(true);
 
-	//	int noneID = vgj.getNodeID(mygraph, "NONE");
 	int noneID = vgj.getNodeID(mygraph, rootString);
 	System.out.println("noneID is "+noneID);
 
@@ -129,8 +129,6 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
  
       int idx=0; 
  
-      //String init_filename="C:\\dev\\ui\\kr\\sfp\\stg\\data\\dbjadsup_init.gml"; 
-      // String init_filename="C:\\dev\\ui\\kr\\sfp\\stg\\data\\"+name+"_init.gml";
       String loadClusterInitPath=RuntimeParameters
 	      .getLoudSystemProperty("org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJOrgTree.LoadClusterInitPath",
 				      "C:\\data\\default\\ohv\\init");
@@ -145,32 +143,29 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 
       mygraph=new Graph();
       gw.loadFile(init_filename, mygraph);
-      out.println(idx++);
-	    //Graph mygraph=gw.getGraphCopy();
-      out.println(idx++); 
+      // out.println(idx++);
  
       vgj.syncWith(mygraph);
 
       vgj.setGraph(mygraph);
       vgj.setCanvasTitle(name+" Community");
 
-      out.println(idx++);
+      // out.println(idx++);
       showNewGraph(vgj);
-	    updateSuperiorRelationships();
-      out.println(idx++);
-	    System.out.println("Leaving vgj tree.");
+      updateSuperiorRelationships();
+      //out.println(idx++);
+      System.out.println("Leaving vgj tree.");
 
       // end from supkpr
       out.println("Finished showing the OrgHierVGJOrgTree.");
     }
 
 
-	// ota from communityTree .. needs showOrgGraph
     private   OrgTreeAction ota = new OrgTreeAction() {
 	  public void execute()
 	  {
 	    System.out.println("in community OrgTreeAction.execute -- show org graph");
-//	      showOrgGraph();
+	      showOrgGraph();
 	    System.out.println("out OrgTreeAction.execute");
 	  }
 	  public String getId() { return "Show Community"; }
@@ -192,7 +187,6 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 	      showGraph(vgj);
 	out.println(idx++);
 
-      // end from supkpr
 	out.println("Finished updateSuperiorRelationships.");
 
       }
@@ -203,14 +197,6 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 
 
     public void showSuperiorRelationships(VGJ vgj, Graph mygraph) {
-	/*
-      Set roots=ohm.generateRoots();
-      for (Iterator riter=roots.iterator(); riter.hasNext(); ) { 
-	rootId=(String)riter.next();
-	textTree+=getBranchDFS(rootId, 1); 
-      }
-      */ 
- 
       Set sups=ohm.getSuperiors();
 
       HashSet hs;
@@ -225,7 +211,6 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 		      System.out.println("getTreeVGJ vgj.addSuperior(mygraph, sup, sub); sup: "+sup
 					 +" sub: "+sub);
 		  }
-		  // vgj.addSuperior(mygraph, sup, sub);
 		  vgj.addSuperiorLink(mygraph, sup, sub);
 	      }
 	  }
@@ -290,6 +275,26 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
     }
     public long getStartTime() { return ohm.getStartTime(); }
     public long getEndTime() { return ohm.getEndTime(); }
+
+
+    private void showOrgGraph() {
+      // selOrg = getSelectedOrg();
+      String selOrg = vgj.getSelectedNodeLabel();
+            System.out.println("selected node: "+selOrg);
+      if (selOrg==null) {
+        System.err.println("==========================");
+        System.err.println("Select an Organization !!!");
+        System.err.println("Select an Organization !!!");
+        System.err.println("Select an Organization !!!");
+        System.err.println("Select an Organization !!!");
+        System.err.println("==========================");
+      } else {
+         //loadInit(selOrg);
+      // create and show vgjOrgTree (use my model)
+        OrgHierVGJOrgTree ohvt=new OrgHierVGJOrgTree(ohm, selOrg);
+        ohvt.show();
+      }
+    }
  
   } 
 
