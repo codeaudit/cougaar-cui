@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import org.cougaar.lib.uiframework.ui.util.SelectableHashtable;
 
 /**
  * This is a JTable with an arbitrary number of column and row headers.  The
@@ -322,9 +325,7 @@ public class CRowHeaderTable extends JTable
         return targetWidth;
     }
 
-    private class HeaderCellRenderer
-        extends DefaultTableCellRenderer implements ListCellRenderer
-
+    private class HeaderCellRenderer extends DefaultTableCellRenderer
     {
         public Component
             getTableCellRendererComponent(JTable table, Object value,
@@ -337,21 +338,38 @@ public class CRowHeaderTable extends JTable
             setToolTipText(dispValue);
             if (row < rowStart)
             {
-                setHorizontalAlignment(JLabel.CENTER);
+                 setHorizontalAlignment(JLabel.CENTER);
             }
             else
             {
-                setHorizontalAlignment(JLabel.LEFT);
+                 setHorizontalAlignment(JLabel.LEFT);
             }
 
-            return this;
-        }
+            // This special case statement is not generic and should be moved
+            // to a domain specific class when time becomes available to
+            // rework design.
+            if (column <= columnStart)
+            {
+                if (value instanceof DefaultMutableTreeNode)
+                {
+                    Object userObject =
+                        ((DefaultMutableTreeNode)value).getUserObject();
+                    if (userObject instanceof SelectableHashtable)
+                    {
+                        SelectableHashtable sht =
+                            (SelectableHashtable)userObject;
+                        String selectedProperty = sht.getSelectedProperty();
+                        String tooltipProperty =
+                            selectedProperty.equals("UID") ? "ITEM_ID" : "UID";
+                        Object tooltip = sht.get(tooltipProperty);
+                        if (tooltip != null)
+                        {
+                            setToolTipText(tooltip.toString());
+                        }
+                    }
+                }
+            }
 
-        public Component getListCellRendererComponent( JList list,
-            Object value, int index, boolean isSelected, boolean cellHasFocus)
-        {
-            prepareComponent();
-            setText((value == null) ? "" : value.toString());
             return this;
         }
 
