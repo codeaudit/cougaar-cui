@@ -16,6 +16,7 @@ import org.cougaar.lib.uiframework.ui.components.CRowHeaderTable;
 import org.cougaar.lib.uiframework.ui.components.CTreeButton;
 import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
+import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 import org.cougaar.lib.uiframework.ui.util.TableSorter;
 import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 
@@ -25,7 +26,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
  * sections of data out of a database that holds a 4 dimensional data table.
  * The dimensions are: Item, Organization, Metric, and Time.
  */
-public class LinePlotPanel extends JPanel
+public class LinePlotPanel extends JPanel implements CougaarUI
 {
     private DatabaseTableModel databaseTableModel = new DatabaseTableModel();
     private CLinePlotChart chart = new CLinePlotChart(databaseTableModel);
@@ -50,6 +51,29 @@ public class LinePlotPanel extends JPanel
         createComponents(plaf);
     }
 
+    /**
+     * Add this panel to the passed in JFrame.  This method is required to
+     * implement the CougaarUI interface.
+     *
+     * @param frame frame to which the panel should be added
+     */
+    public void install(JFrame frame)
+    {
+        frame.getContentPane().add(this);
+    }
+
+    /**
+     * Add this panel to the passed in JInternalFrame.  This method is required
+     * to implement the CougaarUI interface.
+     *
+     * @param frame frame to which the panel should be added
+     */
+    public void install(JInternalFrame frame)
+    {
+        frame.getContentPane().add(this);
+    }
+
+    /**
     /**
      * When look and feel or theme is changed, this method is called.  It sets
      * the font scheme based on metal L&F properties.

@@ -27,13 +27,13 @@ public class BJAssessmentDesktop extends CDesktopFrame
 
         boolean plaf = Boolean.getBoolean("PLAF"); // will be used in future
         addTool("Stoplight View", 'S', StoplightPanel.class,
-                new Object[]{new Boolean(false)});
+                new Class[]{boolean.class}, new Object[]{new Boolean(false)});
         addTool("Lineplot View", 'S', LinePlotPanel.class,
-                new Object[]{new Boolean(false)});
+                new Class[]{boolean.class}, new Object[]{new Boolean(false)});
         addTool("Stoplight View (PLAF)", 't', StoplightPanel.class,
-                new Object[]{new Boolean(true)});
+                new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         addTool("Lineplot View (PLAF)", 'i', LinePlotPanel.class,
-                new Object[]{new Boolean(true)});
+                new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         setVisible(true);
     }
 

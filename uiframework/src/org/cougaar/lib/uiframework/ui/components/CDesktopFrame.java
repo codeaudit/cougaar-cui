@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
+import org.cougaar.lib.uiframework.ui.util.CougaarUI;
+
 /**
  * This is a top level application frame used to launch stoplight, line plot,
  * and other Cougaar tools in inner frames.
@@ -35,30 +37,39 @@ public class CDesktopFrame extends CFrame
     /**
      * Add a new tool to the view pulldown menu
      *
-     * @param name       name to use for pulldown option
-     * @param mnemonic   character to use for pulldown option mnemonic
-     * @param panelClass class of the JPanel to use to create new instances of
-     *                   the panel
+     * @param name              name to use for pulldown option
+     * @param mnemonic          character to use for pulldown option mnemonic
+     * @param cougaarUIClass    class that implements the CougaarUI interface.
+     *                          Used to create new instances of UI in reaction
+     *                          to user selections.
+     * @param constParamClasses array of classes that describe constructor
+     *                          parameters that will be used for creating new
+     *                          instances of the CougaarUI.
+     * @param constParams       array of objects that will be passed into
+     *                          constructor when creating new instances of the
+     *                          CougaarUI.
      */
-     public void addTool(String name, char mnemonic, Class panelClass,
-                         Object[] constParams)
+     public void addTool(String name, char mnemonic, Class cougaarUIClass,
+                         Class[] constParamClasses, Object[] constParams)
      {
         createMenuItem(viewMenu, name, mnemonic, "",
-                       new CreateViewAction(panelClass, constParams, name));
+                       new CreateViewAction(name, cougaarUIClass,
+                                            constParamClasses, constParams));
      }
 
     /**
      * Creates a new inner frame to parent the given JPanel and adds it to the
      * desktop.
      *
-     * @param title title for new inner frame
-     * @param panel main panel for new inner frame
+     * @param title     title for new inner frame
+     * @param cougaarUI cougaarUI to use in new inner frame
      */
-    public void createInnerFrame(String title, JPanel panel)
+    public void createInnerFrame(String title, CougaarUI cougaarUI)
     {
         final JInternalFrame f =
             new JInternalFrame(title, true, true, true, true);
-        f.getContentPane().add(panel, BorderLayout.CENTER);
+        //f.getContentPane().add(panel, BorderLayout.CENTER);
+        cougaarUI.install(f);
         f.setSize(800, 500);
         desktopPane.add(f, JLayeredPane.PALETTE_LAYER);
         f.setVisible(true);
@@ -165,14 +176,17 @@ public class CDesktopFrame extends CFrame
     }
 
     private class CreateViewAction extends AbstractAction {
-	private Class viewClass;
-        private Object[] constParams;
         private String title;
-        protected CreateViewAction(Class viewClass, Object[] constParams,
-                                   String title)
+	private Class viewClass;
+        private Class[] constParamClasses;
+        private Object[] constParams;
+        protected CreateViewAction(String title, Class viewClass,
+                                   Class[] constParamClasses,
+                                   Object[] constParams)
         {
             super("CreateViewAction");
 	    this.viewClass = viewClass;
+            this.constParamClasses = constParamClasses;
             this.constParams = constParams;
             this.title = title;
         }
@@ -181,10 +195,9 @@ public class CDesktopFrame extends CFrame
         {
             try
             {
-                Class[] paramTypes = {boolean.class};
-	        Constructor c = viewClass.getConstructor(paramTypes);
-                JPanel panel = (JPanel)c.newInstance(constParams);
-                createInnerFrame(title, panel);
+	        Constructor c = viewClass.getConstructor(constParamClasses);
+                CougaarUI cougaarUI = (CougaarUI)c.newInstance(constParams);
+                createInnerFrame(title, cougaarUI);
             }
             catch (Exception ex)
             {

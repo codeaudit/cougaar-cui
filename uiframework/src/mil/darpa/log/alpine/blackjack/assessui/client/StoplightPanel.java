@@ -23,6 +23,7 @@ import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
 import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.models.StoplightThresholdModel;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
+import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 import org.cougaar.lib.uiframework.ui.util.Selector;
 import org.cougaar.lib.uiframework.ui.util.TableSorter;
 import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
@@ -33,7 +34,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
  * sections of data out of a database that holds a 4 dimensional data table.
  * The dimensions are: Item, Organization, Metric, and Time.
  */
-public class StoplightPanel extends JPanel
+public class StoplightPanel extends JPanel implements CougaarUI
 {
     private boolean plaf = false;
     private final Object[] metrics = DBInterface.metrics;
@@ -53,6 +54,28 @@ public class StoplightPanel extends JPanel
         super(new BorderLayout());
         this.plaf = plaf;
         createComponents();
+    }
+
+    /**
+     * Add this panel to the passed in JFrame.  This method is required to
+     * implement the CougaarUI interface.
+     *
+     * @param frame frame to which the panel should be added
+     */
+    public void install(JFrame frame)
+    {
+        frame.getContentPane().add(this);
+    }
+
+    /**
+     * Add this panel to the passed in JInternalFrame.  This method is required
+     * to implement the CougaarUI interface.
+     *
+     * @param frame frame to which the panel should be added
+     */
+    public void install(JInternalFrame frame)
+    {
+        frame.getContentPane().add(this);
     }
 
     /**
@@ -356,7 +379,7 @@ public class StoplightPanel extends JPanel
         }
         else
         {
-            linePlotFrame.getContentPane().add(lpp);
+            lpp.install(linePlotFrame);
             linePlotFrame.setVisible(true);
         }
     }
@@ -396,7 +419,7 @@ public class StoplightPanel extends JPanel
             (System.getProperty("DBUSER") == null) ||
             (System.getProperty("DBPASSWORD") == null))
         {
-            System.out.println("You need to set the following property" +
+            System.out.println("You need to set the following system property"+
                                " variables:  DBTYPE, DBURL, DBUSER, and " +
                                "DBPASSWORD");
             return;
@@ -407,7 +430,7 @@ public class StoplightPanel extends JPanel
         StoplightPanel slp = new StoplightPanel(plaf);
         slp.getVariableInterfaceManager().getDescriptor("Metric").
             setValue("Supply as Proportion of Demand");
-        frame.getContentPane().add(slp);
+        slp.install(frame);
         frame.setVisible(true);
     }
 }

@@ -19,20 +19,20 @@ import org.cougaar.lib.uiframework.ui.util.DBDatasource;
  */
 public class DBInterface extends DBDatasource
 {
+    /** Item tree from database */
+    public static DefaultMutableTreeNode
+        itemTree = createTree(getTableName("item"));
+
+    /** Organization tree from database */
+    public static DefaultMutableTreeNode
+        orgTree = createTree(getTableName("org"));
+
     /** Array of strings that represent blackjack metric types */
     public static final Object[]
         metrics = lookupValues("assessmentMetrics", "name").toArray();
 
     /** Tree that represents blackjack metric groupings */
     public static DefaultMutableTreeNode metricTree = makeMetricTree();
-
-    /** item tree */
-    public static DefaultMutableTreeNode
-        itemTree = createTree(getTableName("item"));
-
-    /** org tree */
-    public static DefaultMutableTreeNode
-        orgTree = createTree(getTableName("org"));
 
     /**
      * Gets tree representation of data in specified table.  Table must follow
