@@ -300,6 +300,7 @@ public class CLinePlotChart extends Graph2D
 
         // Make this adjustable later
         yaxis_left.minimum = 0;
+        yaxis_left.maximum = yaxis_left.maximum + yaxis_left.maximum * 0.1;
 
         revalidate();
         repaint();
