@@ -11,7 +11,7 @@ package mil.darpa.log.alpine.blackjack.assessui.util;
 
 import java.io.*;
 
-import com.ibm.xml.parser.*;
+import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -29,9 +29,9 @@ public class AggInfoDecoder {
 
     StringReader sr = new StringReader (new_xml_string);
     InputSource is = new InputSource (sr);
-    Parser p = new Parser (".");
 
     try {
+      DOMParser p = new DOMParser();
       p.parse (is);
       dom = p.getDocument();
     }
