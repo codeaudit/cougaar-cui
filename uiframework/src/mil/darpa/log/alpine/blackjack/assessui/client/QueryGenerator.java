@@ -22,7 +22,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 public class QueryGenerator
 {
     private static final boolean debug = false;
-    private static final String INV_SAF_METRIC = "Inventory Over Target Level";
+    public static final String INV_SAF_METRIC = "Inventory Over Target Level";
     private static final String NO_DATA = "No Data Available";
 
     private VariableInterfaceManager variableManagerKludgeHelper = null;
@@ -242,6 +242,8 @@ public class QueryGenerator
         {
             query = generateRatioQuery(vim, "Org", orgNode,
                                        "Inventory", "Target Level");
+            //query = generateRatioQuery(vim, "Org", orgNode,
+            //                           "Target Level", "Demand");
         }
         else
         {
