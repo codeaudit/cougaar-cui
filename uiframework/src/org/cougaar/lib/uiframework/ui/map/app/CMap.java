@@ -16,9 +16,9 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.5 $
- * $Date: 2001-03-07 23:02:42 $
- * $Author: krotherm $
+ * $Revision: 1.6 $
+ * $Date: 2001-03-11 18:45:45 $
+ * $Author: pfischer $
  *
  * ***********************************************************************/
 
@@ -919,13 +919,42 @@ public class CMap implements Serializable, CougaarUI {
 	omts.add(mycb);
     //	================================
     /* add this in for timesControl    */
-
-    final CLabeledSlider ls = new CLabeledSlider("C", 10, 0, 1000);
+    JPanel timePanel = new JPanel();
+    timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.X_AXIS));
+    final CLabeledSlider ls = new CLabeledSlider("C+", 10, 0, 1000);
     ls.setLabelWidth(ls.getMinimumLabelWidth(ls.getLabel()));
     ls.setShowTicks(true);
-    ls.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Time"));
     ls.setPreferredSize(new Dimension(350, ls.getPreferredSize().height));
+    timePanel.add(ls);
+    timePanel.add(Box.createHorizontalStrut(5));
+    Dimension buttonSize = new Dimension(20, 15);
+    Insets buttonInsets = new Insets(0, 0, 0, 0);
+    JButton stepDownButton = new JButton("<");
+    stepDownButton.setMargin(buttonInsets);
+    stepDownButton.setPreferredSize(buttonSize);
+    timePanel.add(stepDownButton);
+    JButton stepUpButton = new JButton(">");
+    stepUpButton.setMargin(buttonInsets);
+    stepUpButton.setPreferredSize(buttonSize);
+    timePanel.add(stepUpButton);
+    timePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Time"));
     updateTimeRange(ls);
+    updateTime(0);
+
+    stepDownButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                ls.setValue(ls.getValue() - 1);
+            }
+        });
+
+    stepUpButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                ls.setValue(ls.getValue() + 1);
+            }
+        });
+
     // For constant updating as slider is adjusted
     ls.addPropertyChangeListener("value", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent e) {
@@ -934,7 +963,7 @@ public class CMap implements Serializable, CougaarUI {
             }
         });
 
-    omts.add(ls);
+    omts.add(timePanel);
     //	================================
 
    /*  End of times control */
@@ -1032,10 +1061,12 @@ public class CMap implements Serializable, CougaarUI {
         } else {
             System.out.println("cannot set slider range based on time layer" +
                               " -- using default range 0 to 500");
-            ls.roundAndSetSliderRange(0, 500);
+            minTime = 0;
+            maxTime = 500;
         }
 
         ls.roundAndSetSliderRange((float)minTime, (float)maxTime);
+        ls.setFidelity(Math.round(ls.getMaxValue() - ls.getMinValue()));
     }
 
     private void updateTime(long newValue) {
