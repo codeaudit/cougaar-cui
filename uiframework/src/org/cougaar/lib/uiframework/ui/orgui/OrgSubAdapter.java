@@ -9,6 +9,7 @@ import org.cougaar.domain.glm.ldm.asset.Organization;
 import org.cougaar.domain.planning.ldm.plan.RelationshipImpl;
 import org.cougaar.domain.planning.ldm.plan.RelationshipSchedule;
 
+import org.cougaar.lib.aggagent.dictionary.GenericLogic;
 import org.cougaar.lib.aggagent.dictionary.glquery.samples.CustomQueryBaseAdapter;
 
 /**
@@ -28,6 +29,9 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
   // store the results until requested by the container
   private Vector subordinates = new Vector();
 
+  // the event to which the current response corresponds
+  private String event = null;
+
   /**
    *  Given a collection of Organization assets found on the logplan, find the
    *  one that represents the host Cluster and store the useful parts of its
@@ -40,6 +44,11 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
    *  @param eventType the type of event being reported
    */
   public void execute (Collection matches, String eventType) {
+    // cache the event type for future reference
+    event = eventType;
+    if (!event.equals(GenericLogic.collectionType_ADD))
+      return;
+
     for (Iterator i = matches.iterator(); i.hasNext(); ) {
       Organization org = (Organization) i.next();
       if (org.isSelf()) {
@@ -66,6 +75,10 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
    *  @param out the OutputStream to which output is directed.
    */
   public void returnVal (OutputStream out) {
+    // if this is not an ADD, ignore it--this works with standard polling
+    if (!event.equals(GenericLogic.collectionType_ADD))
+      return;
+
     PrintStream ps = new PrintStream(out);
     ps.println(XML_HEADER);
     ps.println("<OrgRelations>");

@@ -46,6 +46,8 @@ public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
   // a couple of constants
   private static String SUBORDINATE = "ADMINISTRATIVESUBORDINATE";
   private static String SUPERIOR = "ADMINISTRATIVESUPERIOR";
+  private static String SUBORDINATE_OUT = "AdministrativeSubordinate";
+  private static String SUPERIOR_OUT = "AdministrativeSuperior";
 
   // XML headers included at the top of each response
   // for validating parsers:
@@ -83,7 +85,7 @@ public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
     for (Enumeration e = table.elements(); e.hasMoreElements(); ) {
       TPRelations rels = (TPRelations) e.nextElement();
       String org = rels.getOrgName();
-      Iterator i = rels.getAllRelatives(SUBORDINATE);
+      Iterator i = rels.getAllRelatives(SUPERIOR);
       if (i.hasNext()) {
         while (i.hasNext())
           snippets.add(clusterTag(org, i.next().toString()));
@@ -103,19 +105,19 @@ public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
   }
 
   // Generate the XML for a single relationship between two Organizations
-  private String clusterTag (String org, String subordinate) {
+  private String clusterTag (String org, String superior) {
     StringBuffer buf = new StringBuffer();
     buf.append("<Cluster ID=\"");
     buf.append(org);
     buf.append("\">");
-    if (subordinate != null) {
+    if (superior != null) {
       buf.append("<other>");
-      buf.append(subordinate);
+      buf.append(superior);
       buf.append("</other><relationship>");
-      buf.append(SUBORDINATE);
+      buf.append(SUPERIOR_OUT);
       buf.append("</relationship>");
     }
-    buf.append("</cluster>");
+    buf.append("</Cluster>");
     return buf.toString();
   }
 

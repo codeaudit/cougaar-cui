@@ -32,6 +32,14 @@ public class OrgSubPlugIn extends SimplePlugIn {
   private static String SUBORDINATE = "ADMINISTRATIVESUBORDINATE";
   private static String SUPERIOR = "ADMINISTRATIVESUPERIOR";
 
+  // name of the table wrapper on the logplan
+  private static String TABLE_NAME = "OrgRelTable";
+
+  // XML tag names recognized by this class
+  private static String RELS = "Relations";
+  private static String ORG_RELS = "OrgRelations";
+  private static String RELATIONSHIP = "OrgRelationship";
+
   // store the information in a hashtable keyed by organization
   private Hashtable table = null;
 
@@ -39,8 +47,9 @@ public class OrgSubPlugIn extends SimplePlugIn {
   private static class RelationDomSeeker implements UnaryPredicate {
     public boolean execute (Object obj) {
       if (obj instanceof PlanObject) {
-        Document doc = ((PlanObject) obj).getDocument();
-        return doc.getDocumentElement().getNodeName().equals("OrgRelations");
+        String root =
+          ((PlanObject) obj).getDocument().getDocumentElement().getNodeName();
+        return root.equals(ORG_RELS) || root.equals(RELS);
       }
       return false;
     }
@@ -77,29 +86,54 @@ public class OrgSubPlugIn extends SimplePlugIn {
       }
       if (table == null) {
         table = new Hashtable();
-        publishAdd(new TableWrapper("OrgRelTable", table));
+        publishAdd(new TableWrapper(TABLE_NAME, table));
       }
     }
 
     if (relSubs.hasChanged()) {
       for (Enumeration e = relSubs.getAddedList(); e.hasMoreElements(); ) {
         PlanObject po = (PlanObject) e.nextElement();
-        NodeList rels = po.getDocument().getDocumentElement().getChildNodes();
-        for (int i = 0; i < rels.getLength(); i++) {
-          Node child = rels.item(i);
-          if (child.getNodeType() == Node.ELEMENT_NODE &&
-              child.getNodeName().equals("OrgRelationship"))
-          {
-            String superior = findChildValue("superior", child);
-            String subordinate = findChildValue("subordinate", child);
-            long start = Long.parseLong(findChildValue("start", child));
-            long end = Long.parseLong(findChildValue("end", child));
-            insertRelation(
-              superior, SUBORDINATE, subordinate, start, end);
-            insertRelation(
-              subordinate, SUPERIOR, superior, start, end);
-          }
-        }
+        visitRoot(po.getDocument().getDocumentElement());
+      }
+    }
+  }
+
+  private void visitRoot (Node n) {
+    String name = n.getNodeName();
+    if (name.equals(RELS))
+      visitRels(n);
+    else if (name.equals(ORG_RELS))
+      visitOrgRels(n);
+    else
+      System.out.println("OrgSubPlugIn::visitRoot:  unrecognized root \"" +
+        name + "\"");
+  }
+
+  private void visitRels (Node n) {
+    NodeList orgs = n.getChildNodes();
+    for (int i = 0; i < orgs.getLength(); i++) {
+      Node child = orgs.item(i);
+      if (child.getNodeType() == Node.ELEMENT_NODE &&
+          child.getNodeName().equals(ORG_RELS))
+      {
+        visitOrgRels(child);
+      }
+    }
+  }
+
+  private void visitOrgRels (Node n) {
+    NodeList rels = n.getChildNodes();
+    for (int i = 0; i < rels.getLength(); i++) {
+      Node child = rels.item(i);
+      if (child.getNodeType() == Node.ELEMENT_NODE &&
+          child.getNodeName().equals(RELATIONSHIP))
+      {
+        String superior = findChildValue("superior", child);
+        String subordinate = findChildValue("subordinate", child);
+        long start = Long.parseLong(findChildValue("start", child));
+        long end = Long.parseLong(findChildValue("end", child));
+        insertRelation(superior, SUBORDINATE, subordinate, start, end);
+        insertRelation(subordinate, SUPERIOR, superior, start, end);
       }
     }
   }
