@@ -58,7 +58,7 @@ public class NChartUIComponent extends ComponentFactory implements CougaarDeskto
         selector = new NChartUI(6, f);
       //selector.install(f);
     }
-    catch(Exception e)
+    catch(RuntimeException e)
     {
     	
     }

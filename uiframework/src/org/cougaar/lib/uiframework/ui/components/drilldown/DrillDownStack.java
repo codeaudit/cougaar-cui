@@ -205,7 +205,7 @@ public class DrillDownStack extends JPanel
 
     public String toString()
     {
-      return(getClass().getName() + "@" + hashCode() + " " + drillDown);
+      return(this.getClass().getName() + "@" + this.hashCode() + " " + drillDown);
     }
   }
 
