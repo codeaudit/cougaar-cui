@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+    <a name="hierarchy">
+        <val>Item</val>
+    </a>
+    <list>
+        <a name="UID">
+            <val>All Items</val>
+        </a>
+        <list>
+            <a name="UID">
+                <val>Drug</val>
+            </a>
+            <list>
+                <a name="UID">
+                    <val>Drug 1</val>
+                </a>
+            </list>
+            <list>
+                <a name="UID">
+                    <val>Drug 2</val>
+                </a>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-001</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-002</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-003</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-003</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-003</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-003</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-003</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-004</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-005</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-006</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-007</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-008</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-009</val>
+                    </a>
+                </list>
+                <list>
+                    <a name="UID">
+                        <val>Drug 002-010</val>
+                    </a>
+                </list>
+            </list>
+        </list>
+        <list>
+            <a name="UID">
+                <val>MedSurg</val>
+            </a>
+            <list>
+                <a name="UID">
+                    <val>MedSurg 1</val>
+                </a>
+            </list>
+            <list>
+                <a name="UID">
+                    <val>MedSurg 2</val>
+                </a>
+            </list>
+            <list>
+                <a name="UID">
+                    <val>MedSurg 3</val>
+                </a>
+            </list>
+        </list>
+    </list>
+</structure>
