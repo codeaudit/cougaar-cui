@@ -48,7 +48,9 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private JLabel title = new JLabel("", JLabel.CENTER);
     private CStoplightTable stoplightChart;
     private JPanel thresholdsPanel = null;
+    private CViewFeatureSelectionControl viewPanel = null;
     private QueryGenerator queryGenerator = null;
+    private static final Vector stoplightMetrics = new Vector();
 
     /**
      * Create a new stoplight panel
@@ -118,6 +120,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
      */
     private void createComponents()
     {
+        stoplightMetrics.add("Supply as Proportion of Demand");
+
         //DefaultMutableTreeNode root =
         //    DBInterface.createTree(DBInterface.getTableName("item"));
         DefaultMutableTreeNode root = DBInterface.itemTree;
@@ -171,9 +175,17 @@ public class StoplightPanel extends JPanel implements CougaarUI
                 }
             });
 
-        final CViewFeatureSelectionControl viewPanel =
-            new CViewFeatureSelectionControl(BoxLayout.X_AXIS);
+        // stoplight settings panel
+        viewPanel = new CViewFeatureSelectionControl(BoxLayout.X_AXIS);
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
+        metricSelector.addPropertyChangeListener("selectedItem",
+                                                 new PropertyChangeListener(){
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    String newSelectedMetric = e.getNewValue().toString();
+                    updateStoplightViewOptions(newSelectedMetric);
+                }
+            });
 
         if (plaf)
         {
@@ -237,6 +249,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         stoplightPanel.add(scrolledStoplightChart, BorderLayout.CENTER);
         stoplightPanel.setBorder(BorderFactory.createEtchedBorder());
         stoplightChart.setViewFeatureSelectionControl(viewPanel);
+        updateStoplightViewOptions(
+            metricSelector.getSelectedItem().toString());
 
         // associate threshold control with stoplight chart
         if (plaf)
@@ -298,6 +312,18 @@ public class StoplightPanel extends JPanel implements CougaarUI
         add(titlePanel, BorderLayout.NORTH);
         add(stoplightPanel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    private void updateStoplightViewOptions(String newSelectedMetric)
+    {
+        if (stoplightMetrics.contains(newSelectedMetric))
+        {
+            viewPanel.setSelectedItem(CViewFeatureSelectionControl.COLOR);
+        }
+        else
+        {
+            viewPanel.setSelectedItem(CViewFeatureSelectionControl.VALUE);
+        }
     }
 
     private void updateView()
