@@ -37,7 +37,7 @@ public class BJDBMaintainerInterface extends HttpServlet
             e.printStackTrace();
         }
         PrintWriter out = response.getWriter();
-        out.println("updateXML: " + updateXML);
+        out.println("Got updateXML string!");
         updateDatabase(updateXML);
         out.close();
     }
@@ -58,8 +58,8 @@ public class BJDBMaintainerInterface extends HttpServlet
         }
         response.setContentType(CONTENT_TYPE);
         PrintWriter out = response.getWriter();
-        out.println("<?xml version=\"1.0\"?>");
-        out.println("updateXML: " + updateXML);
+//        out.println("<?xml version=\"1.0\"?>");
+        out.println("Got updateXML string!");
         updateDatabase(updateXML);
         out.close();
     }
