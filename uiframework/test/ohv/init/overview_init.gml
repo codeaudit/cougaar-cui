@@ -1,29 +1,6 @@
 graph [
    directed 1
    node [
-      id 1
-      label "FUTURE"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x 62.0
-            y 77.0
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         group 18
-         shape "Oval"
-      ]
-   ]
-   node [
       id 2
       label "DLAHQ"
       graphics [
@@ -32,8 +9,8 @@ graph [
             Location ""
          ]
          center [
-            x -444.5
-            y 81.0
+            x -110.5
+            y 51.0
             z 0.0
          ]
          width 100.0
@@ -48,15 +25,15 @@ graph [
    ]
    node [
       id 4
-      label "INDUSTRIAL-BASE"
+      label "TRANSCOM"
       graphics [
          Image [
             Type "URL"
             Location ""
          ]
          center [
-            x -125.5
-            y 77.0
+            x 117.0
+            y 51.0
             z 0.0
          ]
          width 100.0
@@ -146,8 +123,8 @@ graph [
             Location ""
          ]
          center [
-            x -210.0
-            y 206.5
+            x -329.0
+            y 52.5
             z 0.0
          ]
          width 100.0
@@ -160,16 +137,16 @@ graph [
       ]
    ]
    node [
-      id 20
-      label "JTF-HHC"
+      id 1
+      label "NCA"
       graphics [
          Image [
-            Type "URL"
+            Type ""
             Location ""
          ]
          center [
-            x -300.0
-            y 80.5
+            x -110.0
+            y 207.0
             z 0.0
          ]
          width 100.0
@@ -178,28 +155,7 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 5
-      label "10-TCBN-HHC"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x 220.0
-            y 79.0
-            z 0.0
-         ]
-         width 105.30000000000001
-         height 67.5
-         depth 97.5
-      ]
-      vgj [
-         labelPosition "center"
+         group 17
          shape "Oval"
       ]
    ]

@@ -1,571 +1,19 @@
 graph [
    directed 1
    node [
-      id 1
-      label "3-DISCOM-HHC"
+      id 53
+      label "TheaterFort"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x -227.4000000000528
-            y -1.0
+            x -36.993200000000115
+            y -110.49999999951905
             z 0.0
          ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 2
-      label "703-MSB"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -227.4000000000528
-            y -81.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 3
-      label "2-BDE-3ID-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 137.6999999999476
-            y -2.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 4
-      label "3-FSB"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 40.16999999999471
-            y -82.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 5
-      label "2-7-INFBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 170.6999999999471
-            y -82.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 6
-      label "3-69-ARBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 105.16999999999472
-            y -82.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 7
-      label "4-64-ARBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 235.6999999999471
-            y -82.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 8
-      label "3ID-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 7.5317
-            y 79.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 9
-      label "1-BDE-3ID-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -65.93000000000524
-            y -1.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 10
-      label "24-SPTGP-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -471.4000000000575
-            y -1.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 11
-      label "3-BDE-2ID-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 392.6999999999471
-            y 6.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         group 0
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 12
-      label "CENTCOM-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 53.65999999999923
-            y 250.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 13
-      label "PAKISTAN-REFUGEES"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 131.59999999999727
-            y 160.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 14
-      label "JTF-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 7.5317
-            y 159.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 15
-      label "1-64-ARBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -11.783000000000529
-            y -108.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 16
-      label "3-7-INFBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -162.4000000000528
-            y -81.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 17
-      label "3-15-INFBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -69.93000000000528
-            y -86.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 18
-      label "26-FSB"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -121.93000000000528
-            y -110.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 19
-      label "21-MED-CSHOSP"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -390.4000000000523
-            y -81.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 20
-      label "180-TCBN-HHD"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -587.4000000000523
-            y -66.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 21
-      label "10-TCBN-HHC"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -520.4000000000523
-            y -81.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 22
-      label "553-CSB-HHD"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -457.4000000000523
-            y -116.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 23
-      label "24-CSB-HHD"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -299.4000000000528
-            y -82.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 54
-      label "418-TKCO-POL"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -593.4000000000523
-            y -198.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 55
-      label "296-SPTBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 452.6999999999471
-            y -110.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         group 0
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 56
-      label "126-MEDTM-FSURG"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 348.6999999999471
-            y -114.0
-            z 0.0
-         ]
-         width 60.0
+         width 50.0
          height 35.0
          depth 10.0
       ]
@@ -577,64 +25,731 @@ graph [
    ]
    node [
       id 57
-      label "2-3-INFBN"
+      label "TRANSCOM"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x 396.6999999999471
-            y -82.0
+            x -34.493200000000115
+            y 158.50000000048095
             z 0.0
          ]
-         width 60.0
+         width 50.0
          height 35.0
          depth 10.0
       ]
       vgj [
          labelPosition "center"
-         group 0
+         group 11
          shape "Oval"
       ]
    ]
    node [
       id 58
-      label "1-23-INFBN"
+      label "GlobalSeaAmmo"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x 306.6999999999471
-            y -82.0
+            x 68.00679999999988
+            y 65.50000000048095
             z 0.0
          ]
-         width 60.0
+         width 50.0
          height 35.0
          depth 10.0
       ]
       vgj [
          labelPosition "center"
-         group 0
+         group 11
          shape "Oval"
       ]
    ]
    node [
       id 59
-      label "5-20-INFBN"
+      label "GlobalAir"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x 486.6999999999471
-            y -74.0
+            x 173.00679999999988
+            y 65.50000000048095
             z 0.0
          ]
-         width 60.0
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 8
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 60
+      label "GlobalSea"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 348.0067999999999
+            y 65.50000000048095
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 7
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 61
+      label "DoverWing"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 103.00679999999988
+            y -110.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 4
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 62
+      label "DoverAirSquadron"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 101.00679999999988
+            y -217.4999999995191
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 4
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 67
+      label "OrganicAir"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 173.00679999999988
+            y -22.499999999519048
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 6
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 68
+      label "McChordWing"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 173.00679999999988
+            y -110.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 3
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 69
+      label "WestoverWing"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 243.00679999999988
+            y -110.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 2
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 70
+      label "CharlestonWing"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 313.0067999999999
+            y -110.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 1
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 75
+      label "McChordAirSquadron"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 173.00679999999988
+            y -198.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 3
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 77
+      label "SavannahPort"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 243.00679999999988
+            y -22.499999999519048
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 7
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 78
+      label "BeaumontPort"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 317.0067999999999
+            y -45.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 7
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 79
+      label "SunnyPointPort"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 383.0067999999999
+            y -22.499999999519048
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 7
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 80
+      label "MassawaPort"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 449.0067999999999
+            y -37.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 7
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 81
+      label "CharlestonAirSquadron"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 313.0067999999999
+            y -198.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 1
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 82
+      label "WestoverAirSquadron"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 243.00679999999988
+            y -223.4999999995191
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 2
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 24
+      label "CONUSGround"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -456.9932000000001
+            y 65.50000000048095
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 25
+      label "FortEustisITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -586.9932000000001
+            y -21.499999999519048
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 26
+      label "FortHoodITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -558.9932000000001
+            y -59.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 27
+      label "FortCarsonITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -496.9932000000001
+            y -35.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 28
+      label "FortSamHoustonITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -450.9932000000001
+            y -63.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 29
+      label "AmmoDepotITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -396.9932000000001
+            y -35.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 30
+      label "FortLewisITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -340.9932000000001
+            y -55.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 31
+      label "FortBraggITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -300.9932000000001
+            y -31.499999999519048
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 32
+      label "FortStewartITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -230.99320000000012
+            y -41.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 33
+      label "FortBenningITO"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -190.99320000000012
+            y -13.499999999519048
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 10
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 43
+      label "McGuireWing"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 33.006799999999885
+            y -110.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 5
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 44
+      label "6thAMSMcGuire"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 33.006799999999885
+            y -198.49999999951905
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 5
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 45
+      label "TheaterMCC"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -36.993200000000115
+            y 65.50000000048095
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 9
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 46
+      label "TheaterAir"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -106.99320000000012
+            y -22.499999999519048
+            z 0.0
+         ]
+         width 50.0
+         height 35.0
+         depth 10.0
+      ]
+      vgj [
+         labelPosition "center"
+         group 9
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 47
+      label "TheaterGround"
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x -36.993200000000115
+            y -22.499999999519048
+            z 0.0
+         ]
+         width 50.0
          height 35.0
          depth 10.0
       ]
@@ -645,205 +760,283 @@ graph [
       ]
    ]
    node [
-      id 60
-      label "89-TKCO-CGO"
+      id 48
+      label "TheaterSea"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x -541.4000000000528
-            y -156.0
+            x 33.006799999999885
+            y -22.499999999519048
             z 0.0
          ]
-         width 60.0
+         width 50.0
          height 35.0
          depth 10.0
       ]
       vgj [
          labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 61
-      label "416-TKCO-POL"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -495.4000000000528
-            y -184.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 68
-      label "HNS"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -66.93000000000002
-            y 88.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 69
-      label "HOST-NATION-REFINERY"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -172.4000000000002
-            y 92.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 70
-      label "DFSP"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 165.6999999999997
-            y 88.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 71
-      label "APS-3"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x 91.16999999999997
-            y 86.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 81
-      label "110-QMCO-POLSPLY"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -292.4000000000528
-            y -161.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 88
-      label "147-MEDLOGBN"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -422.4000000000528
-            y -161.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 89
-      label "61-ASMEDBN-MEDCO"
-      graphics [
-         Image [
-            Type ""
-            Location ""
-         ]
-         center [
-            x -355.4000000000528
-            y -188.0
-            z 0.0
-         ]
-         width 60.0
-         height 35.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
+         group 9
          shape "Oval"
       ]
    ]
    node [
       id 0
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 9
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 1
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 6
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 2
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 6
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 3
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 6
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 4
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 6
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 5
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 6
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 6
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 8
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 7
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 11
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 8
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 11
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 9
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 11
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 10
+      label ""
+      graphics [
+         Image [
+            Type ""
+            Location ""
+         ]
+         center [
+            x 0.0
+            y 0.0
+            z 0.0
+         ]
+         width 130.0
+         height 90.0
+         depth 130.0
+      ]
+      vgj [
+         labelPosition "below"
+         group 11
+         shape "Oval"
+      ]
+   ]
+   node [
+      id 11
       label ""
       graphics [
          Image [
