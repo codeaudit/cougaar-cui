@@ -92,10 +92,10 @@ public class CFrame extends JFrame implements Printable
     protected JMenu fileMenu = null;
     protected JMenu lafMenu = null;
     protected JMenuItem metalMenuItem = null;
-    private JMenu themesMenu = null;
-    private ButtonGroup lafMenuGroup = new ButtonGroup();
-    private ButtonGroup themesMenuGroup = new ButtonGroup();
-    private Component printTarget;
+    private   JMenu themesMenu = null;
+    private   ButtonGroup lafMenuGroup = new ButtonGroup();
+    private   ButtonGroup themesMenuGroup = new ButtonGroup();
+    private   Component printTarget;
 
    // Graphically print the component to the printer
     protected synchronized void printComponent(Component c)
@@ -109,6 +109,26 @@ public class CFrame extends JFrame implements Printable
         }catch (Exception printException) {
             printException.printStackTrace();
         }
+    }
+
+    /**
+     * Gets the Look and Feel pulldown menu
+     *
+     * @return the Look and Feel pulldown menu
+     */
+    public JMenu getLookAndFeelPulldown()
+    {
+        return lafMenu;
+    }
+
+    /**
+     * Gets the Themes pulldown menu
+     *
+     * @return the Themes pulldown menu
+     */
+    public JMenu getThemesPulldown()
+    {
+        return themesMenu;
     }
 
     /**
