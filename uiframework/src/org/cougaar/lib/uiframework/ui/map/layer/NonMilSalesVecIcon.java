@@ -23,8 +23,8 @@ import com.bbn.openmap.layer.location.*;
 public class NonMilSalesVecIcon extends VecIcon
 {
 
-    float basepixyf=.2f;
-    float basepixxf=.1f;
+    float basepixyf=.1f;
+    float basepixxf=.05f;
     float pixyf=basepixyf;
     float pixxf=basepixxf;
     float lw=3;
@@ -84,10 +84,11 @@ public class NonMilSalesVecIcon extends VecIcon
 
         OMFixedText cewiText = new OMFixedText ( lat+(pixxf/2),
                                                  lon+(pixyf/3),
-                                                 (float) 0.1,
+                                                 0.05f,
                                                  0,
                                                  0,
                                                  "CA",
+                                                 new Font ("SansSerif", Font.BOLD, 1),
                                                  OMText.JUSTIFY_LEFT);
 
         ogl.add(cewiText);
