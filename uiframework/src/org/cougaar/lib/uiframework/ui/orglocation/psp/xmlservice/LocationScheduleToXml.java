@@ -75,9 +75,8 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
   /**
    *  Write as an XML stream the schedule recently found in the execute method.
    *  @param out the stream to which XML output is directed
-   *  @param xsl the optional xsl transform, which is ignored
    */
-  public void returnVal (OutputStream out, StringBuffer xsl) {
+  public void returnVal (OutputStream out) {
     if (locSchedule != null) {
       PrintStream ps = new PrintStream(out);
       ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
