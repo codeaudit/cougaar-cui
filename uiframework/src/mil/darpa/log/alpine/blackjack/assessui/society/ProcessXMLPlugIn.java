@@ -9,7 +9,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 
-import org.cougaar.lib.aggagent.ldm.PlanObject;
+import org.cougaar.lib.aggagent.ldm.XMLPlanObject;
 
 import org.cougaar.core.plugin.SimplePlugIn;
 import org.cougaar.core.cluster.IncrementalSubscription;
@@ -18,25 +18,25 @@ import org.cougaar.util.UnaryPredicate;
 
 import org.w3c.dom.*;
 
-class DocumentPredicate implements UnaryPredicate {
+class XMLStringPredicate implements UnaryPredicate {
   public boolean execute (Object o) {
     boolean ret = false;
-    if (o instanceof PlanObject) {
+    if (o instanceof XMLPlanObject) {
       ret = true;
     }
     return ret;
   }
 }
 
-public class ProcessDOMPlugIn extends SimplePlugIn {
+public class ProcessXMLPlugIn extends SimplePlugIn {
 
-  private IncrementalSubscription documents;
+  private IncrementalSubscription strings;
   private StringBuffer xml_output;
 
   private String http_address;
 
   protected void setupSubscriptions() {
-    documents = (IncrementalSubscription) subscribe (new DocumentPredicate());
+    strings = (IncrementalSubscription) subscribe (new XMLStringPredicate());
 
     http_address = getStringParameter ("httpaddress=", getParameters().elements(), "http://192.233.51.155:8000/BJAssessment/DBMaintainer");
 
@@ -45,63 +45,28 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
 
   protected void execute() {
 
-    Enumeration doc_enum = documents.elements();
+    Enumeration string_enum = strings.elements();
 
-    while (doc_enum.hasMoreElements()) {
+    while (string_enum.hasMoreElements()) {
 
-      PlanObject po = (PlanObject) doc_enum.nextElement();
+      XMLPlanObject xml_po = (XMLPlanObject) string_enum.nextElement();
 
-      Document dom = po.getDocument();
+      String xml_string = xml_po.getDocument();
 
-      if (dom != null) {
+      if (xml_string != null) {
 
-        NodeList nl = dom.getElementsByTagName (AggInfoEncoder.getDataSetXMLString());
+        xml_output = new StringBuffer(xml_string);
 
-        if (nl.getLength() > 0) {
+        SendXMLOutputString ();
 
-          xml_output = new StringBuffer(AggInfoEncoder.getStartXMLString());
-          CreateXMLOutputString (dom.getDocumentElement());
+        System.out.println ("*****Done with transmit of XML to EJB*****");
 
-          SendXMLOutputString ();
+        // Remove the object from the log plan
+        publishRemove (xml_po);
 
-          System.out.println ("*****Done with transmit of XML to EJB*****");
-
-          // Remove the object from the log plan
-          publishRemove (po);
-
-        } /* end of if */
       } /* end of if */
     } /* end of while */
   } /* end of execute */
-
-  private void CreateXMLOutputString (Node mynode) {
-
-    int index;
-
-    if (mynode.getNodeType() == Node.TEXT_NODE)
-      xml_output.append(mynode.getNodeValue());
-    else {
-      xml_output.append("<");
-      xml_output.append(mynode.getNodeName());
-      xml_output.append(">");
-    }
-
-    NodeList mylist = mynode.getChildNodes();
-    index = 0;
-
-    while (index < mylist.getLength()) {
-      CreateXMLOutputString (mylist.item (index));
-      index++;
-    }
-
-    if (mynode.getNodeType() != Node.TEXT_NODE)
-    {
-      xml_output.append("</");
-      xml_output.append(mynode.getNodeName());
-      xml_output.append(">");
-    }
-
-  } /* end of CreateXMLOutputString */
 
   private void SendXMLOutputString () {
 

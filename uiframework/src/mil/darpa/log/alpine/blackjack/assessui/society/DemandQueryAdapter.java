@@ -1,16 +1,8 @@
-/*
- * <copyright>
- * Copyright 1997-2001 Defense Advanced Research Projects
- * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
- * Raytheon Systems Company (RSC) Consortium).
- * This software to be used only in accordance with the
- * COUGAAR licence agreement.
- * </copyright>
- */
 package mil.darpa.log.alpine.blackjack.assessui.society;
 
 import java.util.*;
 import java.io.*;
+import java.lang.System;
 
 import org.cougaar.core.society.UID;
 
@@ -43,14 +35,23 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
   private AggInfoEncoder myEncoder = new AggInfoEncoder();
   private AggInfoStructure myStructure;
 
+  private long c_time_msec = 0L;
+  private static long dayMillis = 24L * 60L * 60L * 1000L;
+
   public void execute (Collection matches, String eventName) {
 
     Iterator iter = matches.iterator();
     int index;
+    String org = null;
+    UID cluster_object_name = null;
 
     index = 0;
     output_xml = null;
     send_xml = false;
+
+    extractCDateFromSociety ();
+
+    System.out.print ("(0d)");
 
     while (iter.hasNext()) {
 
@@ -59,7 +60,6 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
       if (o instanceof Task) {
 
         Task t = (Task) o;
-        String org = null;
         String item = null;
         String start_time = null;
         String end_time = null;
@@ -77,7 +77,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           }
 
           time_long = time_double.longValue ();
-          start_time = String.valueOf (time_long);
+          start_time = String.valueOf (convertMSecToCDate(time_long));
 
           // Pull out the end time and put it in a string
 
@@ -88,7 +88,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           }
 
           time_long = time_double.longValue ();
-          end_time = String.valueOf (time_long);
+          end_time = String.valueOf (convertMSecToCDate(time_long));
 
           // Find the organization in the "For" preposition
 
@@ -108,7 +108,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             continue;
           }
 
-          UID cluster_object_name = pe.getUID();
+          cluster_object_name = pe.getUID();
 
           if (cluster_object_name == null) {
 //            System.out.println ("WARNING: no UID for plan element of demand task");
@@ -172,7 +172,9 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           send_xml = true;
 
           index++;
-          System.out.print ("d");
+
+          if ((index % 500) == 0)
+            System.out.print ("(" + index + "d)");
 
         } /* if verb is "ProjectSupply" */
       } /* if o is Task */
@@ -180,13 +182,48 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
     System.out.println ("");
     System.out.println ("**************************************************************************");
-    System.out.println ("DemandQueryAdapter sending " + index + " records");
+    System.out.println ("DemandQueryAdapter: " + index + " records for org " + cluster_object_name.getOwner());
     System.out.println ("**************************************************************************");
 
     if (send_xml) {
       myEncoder.encodeEndOfXML(output_xml);
     }
   } /* end of execute */
+
+  private void extractCDateFromSociety () {
+
+    String cdate_property = System.getProperty("org.cougaar.core.cluster.startTime");
+    String timezone_property = System.getProperty("user.timezone");
+
+    TimeZone tz = TimeZone.getTimeZone(timezone_property);
+
+    GregorianCalendar gc = new GregorianCalendar (tz);
+
+    StringTokenizer st = new StringTokenizer (cdate_property, "/");
+
+    String c_time_month_string = st.nextToken();
+    String c_time_day_string = st.nextToken();
+    String c_time_year_string = st.nextToken();
+
+    // Month is offset from zero, others are not
+    // Last three are hour, minute, second
+
+    gc.set (Integer.parseInt (c_time_year_string),
+            Integer.parseInt (c_time_month_string) - 1,
+            Integer.parseInt (c_time_day_string),
+            0, 0, 0);
+
+    c_time_msec = gc.getTime().getTime();
+
+    // This was needed to ensure that the milliseconds were set to 0
+    c_time_msec = c_time_msec / 1000;
+    c_time_msec *= 1000;
+
+  } /* end of extractCDateFromSociety */
+
+  private int convertMSecToCDate (long current_time_msec) {
+    return (int) ((current_time_msec - c_time_msec) / dayMillis);
+  }
 
   public void returnVal (OutputStream out) {
 

@@ -15,6 +15,7 @@ import org.cougaar.core.society.UID;
 
 import org.cougaar.domain.glm.plugins.TaskUtils;
 import org.cougaar.domain.glm.ldm.asset.Inventory;
+import org.cougaar.domain.glm.ldm.asset.InventoryLevelsPG;
 import org.cougaar.domain.glm.ldm.asset.ScheduledContentPG;
 import org.cougaar.domain.glm.ldm.plan.QuantityScheduleElementImpl;
 import org.cougaar.domain.glm.ldm.plan.RateScheduleElementImpl;
@@ -28,9 +29,9 @@ import org.cougaar.domain.planning.ldm.plan.Schedule;
 import org.cougaar.domain.planning.ldm.asset.Asset;
 import org.cougaar.domain.planning.ldm.asset.TypeIdentificationPG;
 
-public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
+public class CriticalLevelQueryAdapter extends CustomQueryBaseAdapter {
 
-  private static final String METRIC = "Inventory";
+  private static final String METRIC = "Critical Level";
 
   private StringBuffer output_xml;
   private boolean send_xml;
@@ -46,7 +47,6 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
     Iterator iter = matches.iterator();
     int index;
-    int inventory_count = 1;
 
     index = 0;
     xml_count = 0;
@@ -57,7 +57,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
     extractCDateFromSociety ();
 
-    System.out.print ("(0i)");
+    System.out.print ("(0c)");
 
 try {
 
@@ -74,9 +74,13 @@ try {
         String end_time = null;
         long start_time_long = 0;
         long end_time_long = 0;
-        Double time_double = new Double(0.0);
+        Double mydouble = new Double(0.0);
         String rate = null;
+        double rate_double = 0.0;
 
+        long first_inventory_time = 0;
+
+        // Get the org id
         UID inventory_object_name = in.getUID();
 
         if (inventory_object_name == null) {
@@ -86,6 +90,9 @@ try {
 
         org = inventory_object_name.getOwner();
 
+//        System.out.print ("(" + index + ") org: " + org + ";");
+
+        // Find the item id
         ScheduledContentPG scheduled_content =
                                     in.getScheduledContentPG();
 
@@ -96,72 +103,129 @@ try {
         Schedule s1 = scheduled_content.getSchedule();
 
         if (a1 == null) {
-//          System.out.println ("WARNING: no asset in scheduledContentPG");
+          System.out.println ("WARNING: no asset in scheduledContentPG");
           continue;
         }
 
         if (s1 == null) {
-//          System.out.println ("WARNING: no schedule in scheduledContentPG");
+          System.out.println ("WARNING: no schedule in scheduledContentPG");
           continue;
         }
 
-        TypeIdentificationPG type_id_pg = a1.getTypeIdentificationPG();
-
-        if (type_id_pg == null) {
-//          System.out.println ("WARNING: no typeIdentificationPG for asset");
-          continue;
-        }
-
-        item = type_id_pg.getTypeIdentification();
+        // Find the first day of inventory
 
         Enumeration schedule_list = s1.getAllScheduleElements();
 
-//        System.out.print ("" + inventory_count + "org " + org + ", item " + item + "...");
-
-        inventory_count++;
-
         while (schedule_list.hasMoreElements()) {
           ScheduleElementImpl element;
-          Double mydouble;
+          double temp_rate;
 
           element = (ScheduleElementImpl) schedule_list.nextElement();
-
-          // Pull out the start time and put it in a string
-
-          time_double = new Double (element.getStartTime());
-
-          start_time_long = time_double.longValue ();
-          start_time = String.valueOf (convertMSecToCDate(start_time_long));
-
-          // Pull out the end time and put it in a string
-
-          time_double = new Double (element.getEndTime());
-
-          end_time_long = time_double.longValue ();
-          end_time = String.valueOf (convertMSecToCDate(end_time_long));
 
           if (element instanceof QuantityScheduleElementImpl) {
               QuantityScheduleElementImpl q_element = (QuantityScheduleElementImpl) element;
               mydouble = new Double(q_element.getQuantity());
 
               if (mydouble.isNaN())
-                rate = "0.0";
+                temp_rate = 0.0;
               else
-                rate = "" + q_element.getQuantity();
+                temp_rate = q_element.getQuantity();
           }
           else if (element instanceof RateScheduleElementImpl) {
               RateScheduleElementImpl r_element = (RateScheduleElementImpl) element;
               mydouble = new Double(r_element.getRate());
 
               if (mydouble.isNaN())
-                rate = "0.0";
+                temp_rate = 0.0;
               else
-                rate = "" + r_element.getRate();
+                temp_rate = r_element.getRate();
           }
           else {
               System.out.println ("Not sure what kind of ScheduleElementImpl this is.");
               continue;
           }
+
+          if (temp_rate > 0.0) {
+              // Pull out the start time
+
+              mydouble = new Double (element.getStartTime());
+
+              start_time_long = mydouble.longValue ();
+              first_inventory_time = convertMSecToCDate(start_time_long);
+
+              // And, get out of the loop
+              break;
+          }
+
+        }
+
+        TypeIdentificationPG type_id_pg = a1.getTypeIdentificationPG();
+
+        if (type_id_pg == null) {
+          System.out.println ("WARNING: no typeIdentificationPG for asset");
+          continue;
+        }
+
+        item = type_id_pg.getTypeIdentification();
+
+//        System.out.print ("item: " + item + ";");
+
+        // Work on getting the target level information
+
+        InventoryLevelsPG invLevPG = in.getInventoryLevelsPG();
+
+        if (invLevPG == null)
+          continue;
+
+        Schedule reorder_schedule = invLevPG.getReorderLevelSchedule();
+
+        if (reorder_schedule == null) {
+          System.out.println ("WARNING: no reorder schedule in InventoryLevelsPG");
+          continue;
+        }
+
+        Enumeration reorder_list = reorder_schedule.getAllScheduleElements();
+
+        QuantityScheduleElementImpl reorder_element = null;
+
+        while (reorder_list.hasMoreElements()) {
+
+          reorder_element = (QuantityScheduleElementImpl) reorder_list.nextElement();
+
+          mydouble = new Double(reorder_element.getQuantity());
+
+          if (mydouble.isNaN())
+            rate_double = 0.0;
+          else
+            rate_double = reorder_element.getQuantity();
+
+          // Skip the record if the reorder level is zero.  The unit is
+          // meaningless at that point
+          if (rate_double == 0.0)
+             continue;
+
+          // critical level is 80% of the reorder level
+          rate_double = rate_double * .80;
+
+          rate = "" + rate_double;
+
+          // Pull out the start time and put it in a string
+
+          mydouble = new Double (reorder_element.getStartTime());
+
+          start_time_long = mydouble.longValue ();
+          start_time = String.valueOf (convertMSecToCDate(start_time_long));
+
+          // If there isn't any inventory yet, skip this record
+          if (convertMSecToCDate(start_time_long) < first_inventory_time)
+              continue;
+
+          // Pull out the end time and put it in a string
+
+          mydouble = new Double (reorder_element.getEndTime());
+
+          end_time_long = mydouble.longValue ();
+          end_time = String.valueOf (convertMSecToCDate(end_time_long));
 
           // One more record parsed
           index++;
@@ -201,7 +265,7 @@ try {
 
     System.out.println ("");
     System.out.println ("**************************************************************************");
-    System.out.println ("InventoryQueryAdapter: " + index + " records, " + xml_count + " xml records for org " + org);
+    System.out.println ("CriticalLevelQueryAdapter: " + index + " records, " + xml_count + " xml records for org " + org);
     System.out.println ("**************************************************************************");
 
     if (send_xml) {
@@ -240,7 +304,7 @@ try {
     send_xml = true;
 
     if ((xml_count % 500) == 0)
-      System.out.print ("(" + xml_count + "i)");
+      System.out.print ("(" + xml_count + "c)");
 
   } /* end of writeStructureToXML */
 

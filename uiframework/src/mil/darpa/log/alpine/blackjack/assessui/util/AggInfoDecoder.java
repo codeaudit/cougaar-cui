@@ -1,17 +1,8 @@
-/*
- * <copyright>
- * Copyright 1997-2001 Defense Advanced Research Projects
- * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
- * Raytheon Systems Company (RSC) Consortium).
- * This software to be used only in accordance with the
- * COUGAAR licence agreement.
- * </copyright>
- */
 package mil.darpa.log.alpine.blackjack.assessui.util;
 
 import java.io.*;
 
-import org.apache.xerces.parsers.DOMParser;
+import com.ibm.xml.parser.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -29,9 +20,9 @@ public class AggInfoDecoder {
 
     StringReader sr = new StringReader (new_xml_string);
     InputSource is = new InputSource (sr);
+    Parser p = new Parser (".");
 
     try {
-      DOMParser p = new DOMParser();
       p.parse (is);
       dom = p.getDocument();
     }

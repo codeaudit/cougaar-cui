@@ -1,22 +1,8 @@
-/*
- * <copyright>
- * Copyright 1997-2001 Defense Advanced Research Projects
- * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
- * Raytheon Systems Company (RSC) Consortium).
- * This software to be used only in accordance with the
- * COUGAAR licence agreement.
- * yo
- * </copyright>
- */
 package mil.darpa.log.alpine.blackjack.assessui.middletier;
 
 import java.io.*;
 import java.lang.Integer;
 import java.util.Vector;
-import java.util.GregorianCalendar;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,27 +16,31 @@ import javax.ejb.SessionContext;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoEncoder;
 import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoStructure;
-import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoDecoder;
+
+// For SAX processing
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.XMLReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class BJDBMaintainerBean implements SessionBean
 {
-    private static final String HACK_FOR_TARGET_LEVEL = "Demand";
-    private static final String TARGET_LEVEL = "Target Level";
-
     private static final int NUM_RECORDS_BEFORE_COMMIT = 100;
 
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
     private static final String DB_PASSWORD = "java:comp/env/DBPassword";
-    private static final String C_TIME_YEAR = "java:comp/env/CTimeYear";
-    private static final String C_TIME_MONTH = "java:comp/env/CTimeMonth";
-    private static final String C_TIME_DAY = "java:comp/env/CTimeDay";
-    private static final String C_TIME_ZONE = "java:comp/env/CTimeZone";
     private Connection connection = null;
     private Statement stmt = null;
 
-    private static long c_time_sec_int;
+    XMLReader xr;
+    AggInfoSAXHandler handler;
+
+    String table_name_string;
 
     public void ejbCreate() throws CreateException
     {
@@ -60,42 +50,6 @@ public class BJDBMaintainerBean implements SessionBean
             DataSource ds = (DataSource)ic.lookup(DB_NAME);
             String username = (String)ic.lookup(DB_USER);
             String password = (String)ic.lookup(DB_PASSWORD);
-            String c_time_year_string = (String)ic.lookup(C_TIME_YEAR);
-            String c_time_month_string = (String)ic.lookup(C_TIME_MONTH);
-            String c_time_day_string = (String)ic.lookup(C_TIME_DAY);
-            String c_time_zone_string = (String)ic.lookup(C_TIME_ZONE);
-
-            if (c_time_zone_string == null) {
-              c_time_zone_string = "GMT";
-            }
-
-            if ((c_time_year_string != null) &&
-                (c_time_month_string != null)&&
-                (c_time_day_string != null)) {
-
-                TimeZone tz = TimeZone.getTimeZone(c_time_zone_string);
-
-                GregorianCalendar gc = new GregorianCalendar (tz);
-
-System.out.println ("c_time_year is " + c_time_year_string);
-System.out.println ("c_time_month is " + c_time_month_string);
-System.out.println ("c_time_day is " + c_time_day_string);
-
-                // Month is offset from zero, others are not
-                // Last three are hour, minute, second
-
-                gc.set (Integer.parseInt (c_time_year_string),
-                        Integer.parseInt (c_time_month_string) - 1,
-                        Integer.parseInt (c_time_day_string),
-                        0, 0, 0);
-
-                c_time_sec_int = gc.getTime().getTime() / 1000;
-            }
-            else {
-                c_time_sec_int = 0;
-            }
-
-System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
             connection = ds.getConnection(username, password);
             connection.setAutoCommit (false);
@@ -120,133 +74,43 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
     public void updateDatabase(String updateXML) throws RemoteException
     {
-        System.out.println("Entered updateDabase");
-
-        AggInfoDecoder myDecoder = new AggInfoDecoder ();
-
-        String metric_string;
-        String org_string;
-
-        myDecoder.startXMLDecoding (updateXML);
-
-        org_string = myDecoder.getOrgFromXML ();
-        metric_string = myDecoder.getMetricFromXML ();
-
-        boolean run_target_level_hack = false;
-        int target_level_metric_id = 0;
-
-        int index = 0;
-
-        int start_time_in_days;
-        int end_time_in_days;
-        float rate_float;
+        table_name_string = "";
+        String myParser = "org.apache.xerces.parsers.SAXParser";
 
         try {
-            stmt = connection.createStatement();
-            createPreparedStatements();
-
-            int metric_id = getMetricID (metric_string);
-
-            int org_id = getOrgID (org_string);
-            float medical_multiplier = getOrgTargetLevelMultiplier (org_id);
-
-            System.out.println ("Org is " + org_string);
-            System.out.println ("metric string is " + metric_string);
-
-            if (metric_string.compareTo(HACK_FOR_TARGET_LEVEL) == 0) {
-                System.out.println ("**Also running hack for target level!**");
-                run_target_level_hack = true;
-                target_level_metric_id = getMetricID (TARGET_LEVEL);
-            }
-
-            while (!myDecoder.doneXMLDecoding ()) {
-
-                AggInfoStructure myStruct = myDecoder.getNextDataAtom();
-                String item_string = myStruct.getItem();
-
-//                System.out.print ("" + index);
-//                System.out.print ("Item " + item_string);
-//                System.out.print (", Rate " + myStruct.getRate());
-
-                int item_id = getItemID (item_string);
-
-                // If item not in table, skip it
-                if (item_id == -1)
-                    continue;
-
-                if (myStruct.getTime() != null) {
-                    rate_float = Float.parseFloat (myStruct.getValue());
-
-                    start_time_in_days = convertTimeToDays (myStruct.getTime());
-                    end_time_in_days = start_time_in_days + 1;
-                }
-                else {
-                    rate_float = Float.parseFloat (myStruct.getRate());
-
-                    start_time_in_days = convertTimeToDays (myStruct.getStartTime());
-                    end_time_in_days = convertTimeToDays (myStruct.getEndTime());
-                }
-
-                putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
-
-                if (run_target_level_hack) {
-                    float this_multiplier = 1.0f;
-
-                    if ((item_string.startsWith ("NSN/6505")) ||
-                        (item_string.startsWith ("NSN/6510")) ||
-                        (item_string.startsWith ("NSN/6515"))) {
-                      this_multiplier = medical_multiplier;
-                    }
-
-                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, target_level_metric_id, rate_float * this_multiplier);
-                }
-
-                index++;
-
-                if (index % NUM_RECORDS_BEFORE_COMMIT == 0) {
-                    // Save the work in the database
-                    connection.commit();
-                    System.out.print ("(" + index + ")");
-                }
-            } /* end of while */
-
-            System.out.println ("");
-            System.out.println ("*****Done, processed " + index + " records");
-
-            // Save the work in the database
-            connection.commit();
+            xr = XMLReaderFactory.createXMLReader(myParser);
         }
-        catch(SQLException e)
-        {
-            System.out.println ("SQL error code " + e.getErrorCode());
-            System.out.println (e.getMessage());
-            throw new EJBException(e);
+        catch (Exception e) {
+            System.out.println ("Could not create an XML reader");
+            e.printStackTrace();
         }
-        finally {
-            try
-            {
-                if (stmt != null) stmt.close();
-                if (updateAssessmentData != null)
-                    updateAssessmentData.close();
-                if (insertAssessmentData != null)
-                    insertAssessmentData.close();
-            }
-            catch(SQLException e) {}
+
+        // Create a SAX handler and then tell the xml reader parser
+        // to call the handler's functions when certain conditions occur
+
+        handler = new AggInfoSAXHandler();
+        xr.setContentHandler (handler);
+        xr.setErrorHandler (handler);
+
+        StringReader sr = new StringReader (updateXML);
+        InputSource is = new InputSource (sr);
+
+        try {
+            xr.parse (is);
         }
-    }
+        catch (Exception e) {
+            System.out.println ("Could not parse XML string");
+        }
+    } /* end of updateDatabase */
 
     private PreparedStatement updateAssessmentData = null;
-    private PreparedStatement insertAssessmentData = null;
 
-    private void createPreparedStatements () {
+    private void createPreparedStatements (String table_name_value) {
         try {
             updateAssessmentData =
-                connection.prepareStatement("UPDATE assessmentData " +
-                    "SET assessmentValue = ? WHERE org = ? AND item = ? " +
-                    "AND metric = ? AND unitsOfTime >= ? AND unitsOfTime < ?");
-            insertAssessmentData =
-                connection.prepareStatement("INSERT INTO assessmentData " +
-                    "VALUES (?, ?, ?, ?, ?)");
+                connection.prepareStatement("UPDATE " + table_name_value +
+                    " SET assessmentValue = ? WHERE org = ? AND item = ? " +
+                    "AND unitsOfTime >= ? AND unitsOfTime < ?");
         }
         catch(SQLException e)
         {
@@ -266,10 +130,11 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         try
         {
             // See if the metric_field_name is in the table already
-            ResultSet rs = stmt.executeQuery("SELECT id FROM assessmentMetrics WHERE name = '" + metric_field_name + "'");
+            ResultSet rs = stmt.executeQuery("SELECT id, table_name FROM assessmentMetrics WHERE name = '" + metric_field_name + "'");
 
             if (rs.next()) { // get the id value
                 metric_id = rs.getInt ("ID");
+                table_name_string = rs.getString ("TABLE_NAME");
             }
             else {
 
@@ -286,6 +151,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
                 }
 
                 stmt.executeUpdate("INSERT INTO assessmentMetrics VALUES (" + metric_id + ", '" + metric_field_name + "')");
+                table_name_string = "";
 
             }
             return metric_id;
@@ -379,11 +245,11 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         }
     }
 
-    private void putValuesInTable (int org_id,
+    private void putValuesInTable (String table_name_value,
+                                  int org_id,
                                   int item_id,
                                   int start_time,
                                   int end_time,
-                                  int metric_id,
                                   float rate) {
         int rc;
         int rows_to_update = end_time - start_time;
@@ -392,49 +258,28 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         {
 //System.out.print (" update(" + start_time + " to " + end_time + ")");
             // The effective update is
-            // UPDATE assessmentData SET assessmentValue = rate
-            // WHERE org = org_id AND item = item_id AND metric = metric_id
+            // UPDATE table_name_value SET assessmentValue = rate
+            // WHERE org = org_id AND item = item_id
             // AND unitsOfTime >= start_time AND unitsOfTime < end_time
 
             updateAssessmentData.setFloat(1,rate);
             updateAssessmentData.setInt(2,org_id);
             updateAssessmentData.setInt(3,item_id);
-            updateAssessmentData.setInt(4,metric_id);
-            updateAssessmentData.setInt(5,start_time);
-            updateAssessmentData.setInt(6,end_time);
+            updateAssessmentData.setInt(4,start_time);
+            updateAssessmentData.setInt(5,end_time);
             rc = updateAssessmentData.executeUpdate();
 
-            System.out.print ("u" + rows_to_update);
+//            System.out.print ("u" + rows_to_update);
 
-            // If all the updates were not successful, do an insert
-            // (rc will contain the number of rows updated by the
-            // executeUpdate command.)
+            // If none of the rows were updated, call the stored
+            // procedure to insert the rows
             if (rc != rows_to_update) {
-                int num_tobeinserted = rows_to_update - rc;
-//                for (int time_index = start_time; time_index < end_time; time_index++) {
-                for (int time_index = end_time - 1;
-                  time_index >= start_time && num_tobeinserted != 0;
-                  time_index--) {
-//System.out.print ("insert"+time_index);
-                    try
-                    {
-//                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + rate + ")");
-                        insertAssessmentData.setInt(1,org_id);
-                        insertAssessmentData.setInt(2,item_id);
-                        insertAssessmentData.setInt(3,time_index);
-                        insertAssessmentData.setInt(4,metric_id);
-                        insertAssessmentData.setFloat(5,rate);
-                        rc = insertAssessmentData.executeUpdate();
-
-                        num_tobeinserted--;
-                        System.out.print ("+");
-                    }
-                    catch (SQLException e)
-                    {
-                        System.out.print ("_");
-                    }
-                }
+//                System.out.print ("sp" + (end_time - start_time));
+                stmt.execute ("call new_" + table_name_value + "(" + org_id +
+                 ", " + item_id + ", " + start_time + ", " + (end_time - 1) +
+                 ", " + rate + ")");
             }
+
         }
         catch(SQLException e)
         {
@@ -449,54 +294,174 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         }
     }
 
-    private int convertTimeToDays (String time_msecs) {
-
-        // Convert milliseconds to seconds
-        long time_msec_long = Long.parseLong (time_msecs);
-
-        long time_sec_int = (long) (time_msec_long / 1000);
-
-        // Normalize the times
-        time_sec_int = time_sec_int - c_time_sec_int;
-
-        // 24 hours * 60 minutes * 60 seconds = 86400 seconds in a day
-        int time_in_days = (int) (time_sec_int / (long) 86400);
-
-        return (time_in_days);
-    }
-
-    private float getOrgTargetLevelMultiplier (int org_id) {
-
-        float multiplier = 1.0f;
-        try
-        {
-            // The effective query is
-            // SELECT id FROM assessmentOrgs WHERE name = org_field_name
-
-            ResultSet rs = stmt.executeQuery ("SELECT SAFETY_LEVEL FROM assessmentOrgs WHERE id = " + org_id);
-
-            if (rs.next()) { // get the id value
-                multiplier = rs.getFloat ("SAFETY_LEVEL");
-            }
-            else {
-                multiplier = 0.0f;
-            }
-
-            return multiplier;
-        }
-        catch(SQLException e)
-        {
-            System.out.println ("SQL error code " + e.getErrorCode());
-            System.out.println (e.getMessage());
-            throw new EJBException(e);
-        }
-        catch(Exception e)
-        {
-            throw new EJBException(e);
-        }
-    }
-
     public void ejbActivate() {}
     public void ejbPassivate() {}
     public void setSessionContext(SessionContext parm1) {}
+
+    // Declare an inner class that extends the default sax handler
+    // so methods can be overridden to handle the tags the way that
+    // the ui code needs to
+
+    public class AggInfoSAXHandler extends DefaultHandler {
+
+        private final int INT_BLANK = -1;
+        private final float FLOAT_BLANK = -1.0f;
+
+        int index = 0;
+
+        int org_id = INT_BLANK;
+        int metric_id = INT_BLANK;
+
+        String current_string = "";
+
+        int item_id = INT_BLANK;
+        int start_time_in_days = INT_BLANK;
+        int end_time_in_days = INT_BLANK;
+        float rate_float = FLOAT_BLANK;
+
+        // Called immediately before the document is parsed
+        public void startDocument () {
+            System.out.println ("*****Beginning SAX Parsing of document*****");
+
+            org_id = INT_BLANK;
+            metric_id = INT_BLANK;
+
+            current_string = "";
+
+            item_id = INT_BLANK;
+            start_time_in_days = INT_BLANK;
+            end_time_in_days = INT_BLANK;
+            rate_float = FLOAT_BLANK;
+
+            index = 0;
+
+            try {
+                stmt = connection.createStatement();
+            }
+            catch(SQLException e)
+            {
+                System.out.println ("SQL error code " + e.getErrorCode());
+                System.out.println (e.getMessage());
+                throw new EJBException(e);
+            }
+
+        } /* end of startDocument */
+
+        // Called immediately after the document has been parsed
+        public void endDocument () {
+            System.out.println ("");
+            System.out.println ("*****Done, processed " + index + " records*****");
+
+            try
+            {
+                connection.commit();
+                if (stmt != null) stmt.close();
+                if (updateAssessmentData != null)
+                    updateAssessmentData.close();
+            }
+            catch(SQLException e) {}
+        }
+
+        // Called when the beginning of a tag has been parsed
+        public void startElement (String uri, String name,
+                                  String qName, Attributes atts) {
+        }
+
+        // Called when the end of a tag has been parsed.  This is
+        // where the majority of the work is performed
+        public void endElement (String uri, String name, String qName) {
+
+            if (name.compareTo(AggInfoEncoder.getDataAtomXMLString()) == 0) {
+
+                // If there are records to insert
+                if ((item_id != INT_BLANK) &&
+                    (start_time_in_days != end_time_in_days) &&
+                    (rate_float != FLOAT_BLANK)) {
+
+                    try {
+
+                        putValuesInTable (table_name_string, org_id, item_id, start_time_in_days, end_time_in_days, rate_float);
+
+                        index++;
+
+                        if (index % NUM_RECORDS_BEFORE_COMMIT == 0) {
+                            // Save the work in the database
+                            connection.commit();
+                            System.out.print ("(" + index + ")");
+                        }
+                    }
+                    catch(SQLException e)
+                    {
+                        System.out.println ("SQL error code " + e.getErrorCode());
+                        System.out.println (e.getMessage());
+                        throw new EJBException(e);
+                    }
+                }
+
+                // Reset all the fields
+                item_id = INT_BLANK;
+                start_time_in_days = INT_BLANK;
+                end_time_in_days = INT_BLANK;
+                rate_float = FLOAT_BLANK;
+            } /* end of if data atom tag */
+
+            // Find out if this is an item string
+            else if (name.compareTo(AggInfoStructure.getItemXMLString()) == 0) {
+                item_id = getItemID(current_string);
+            }
+
+            // Find out if this is a start time string
+            else if (name.compareTo(AggInfoStructure.getStartTimeXMLString()) == 0) {
+                start_time_in_days = Integer.parseInt (current_string);
+            }
+
+            // Find out if this is an end time string
+            else if (name.compareTo(AggInfoStructure.getEndTimeXMLString()) == 0) {
+                end_time_in_days = Integer.parseInt (current_string);
+            }
+
+            // Find out if this is a rate string
+            else if (name.compareTo(AggInfoStructure.getRateXMLString()) == 0) {
+                rate_float = Float.parseFloat(current_string);
+            }
+
+            // Find out if this is a metric string
+            else if (name.compareTo(AggInfoEncoder.getMetricXMLString()) == 0) {
+                metric_id = getMetricID (current_string);
+                System.out.println ("metric is " + current_string +
+                                    ", metric id is " + metric_id);
+                System.out.println ("Inserting into table "+table_name_string);
+                createPreparedStatements(table_name_string);
+            }
+
+            // Find out if this is an organization string
+            else if (name.compareTo(AggInfoEncoder.getOrgXMLString()) == 0) {
+                org_id = getOrgID (current_string);
+                System.out.println ("org is " + current_string + ", org_id is " + org_id);
+            }
+
+            // Find out if this is a value string
+            else if (name.compareTo(AggInfoStructure.getValueXMLString()) == 0) {
+                rate_float = Float.parseFloat(current_string);
+            }
+
+            // Find out if this is a time string
+            else if (name.compareTo(AggInfoStructure.getTimeXMLString()) == 0) {
+                start_time_in_days = Integer.parseInt (current_string);
+                end_time_in_days = start_time_in_days + 1;
+            }
+
+            current_string = "";
+        }
+
+        // Called to return the string that is between a start and
+        // an end tag
+        public void characters (char ch[], int start, int length) {
+            String new_st = new String (ch, start, length);
+
+            current_string = current_string.concat (new_st);
+        }
+
+    } /* end of AggInfoSAXHandler */
+
 }

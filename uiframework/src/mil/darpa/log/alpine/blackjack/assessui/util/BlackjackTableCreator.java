@@ -131,10 +131,77 @@ public class BlackjackTableCreator
         {
             try
             {
-                stmt.executeUpdate("DROP TABLE assessmentData");
-                stmt.executeUpdate("DROP PROCEDURE add_new_data_rows");
+                stmt.executeUpdate("DROP TABLE assessmentDemandData");
             }
             catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP TABLE assessmentInventoryData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP TABLE assessmentTargetLevelData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP TABLE assessmentCriticalData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP TABLE assessmentDueOutData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP TABLE assessmentDueInData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP PROCEDURE new_assessmentDemandData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP PROCEDURE new_assessmentInventoryData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP PROCEDURE new_assessmentTargetLevelData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP PROCEDURE new_assessmentCriticalData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP PROCEDURE new_assessmentDueOutData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+            try
+            {
+                stmt.executeUpdate("DROP PROCEDURE new_assessmentDueInData");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+
+/*
             stmt.executeUpdate("CREATE TABLE assessmentData " +
                                 "(org             INTEGER     NOT NULL," +
                                  "item            INTEGER     NOT NULL," +
@@ -142,8 +209,51 @@ public class BlackjackTableCreator
                                  "metric          INTEGER     NOT NULL," +
                                  "assessmentValue FLOAT," +
                             "primary key (org, item, metric, unitsOfTime))");
+*/
+            stmt.executeUpdate("CREATE TABLE assessmentDemandData " +
+                                "(org             INTEGER     NOT NULL," +
+                                 "item            INTEGER     NOT NULL," +
+                                 "unitsOfTime     INTEGER     NOT NULL," +
+                                 "assessmentValue FLOAT," +
+                            "primary key (org, item, unitsOfTime))");
+
+            stmt.executeUpdate("CREATE TABLE assessmentInventoryData " +
+                                "(org             INTEGER     NOT NULL," +
+                                 "item            INTEGER     NOT NULL," +
+                                 "unitsOfTime     INTEGER     NOT NULL," +
+                                 "assessmentValue FLOAT," +
+                            "primary key (org, item, unitsOfTime))");
+
+            stmt.executeUpdate("CREATE TABLE assessmentTargetLevelData " +
+                                "(org             INTEGER     NOT NULL," +
+                                 "item            INTEGER     NOT NULL," +
+                                 "unitsOfTime     INTEGER     NOT NULL," +
+                                 "assessmentValue FLOAT," +
+                            "primary key (org, item, unitsOfTime))");
+
+            stmt.executeUpdate("CREATE TABLE assessmentCriticalData " +
+                                "(org             INTEGER     NOT NULL," +
+                                 "item            INTEGER     NOT NULL," +
+                                 "unitsOfTime     INTEGER     NOT NULL," +
+                                 "assessmentValue FLOAT," +
+                            "primary key (org, item, unitsOfTime))");
+
+            stmt.executeUpdate("CREATE TABLE assessmentDueOutData " +
+                                "(org             INTEGER     NOT NULL," +
+                                 "item            INTEGER     NOT NULL," +
+                                 "unitsOfTime     INTEGER     NOT NULL," +
+                                 "assessmentValue FLOAT," +
+                            "primary key (org, item, unitsOfTime))");
+
+            stmt.executeUpdate("CREATE TABLE assessmentDueInData " +
+                                "(org             INTEGER     NOT NULL," +
+                                 "item            INTEGER     NOT NULL," +
+                                 "unitsOfTime     INTEGER     NOT NULL," +
+                                 "assessmentValue FLOAT," +
+                            "primary key (org, item, unitsOfTime))");
 
             // Create a stored procedure for adding new rows
+/*
             stmt.executeUpdate("create procedure ADD_NEW_DATA_ROWS " +
                    "(orgid integer, itemid integer, start_time integer, " +
                    "end_time integer, metricid integer, value float) " +
@@ -160,6 +270,103 @@ public class BlackjackTableCreator
                    "(orgid, itemid, time_num, metricid, value); " +
                    "end loop; " +
                    "end;");
+*/
+            stmt.executeUpdate("create procedure new_assessmentDemandData " +
+                   "(orgid integer, itemid integer, start_time integer, " +
+                   "end_time integer, value float) " +
+                   "as " +
+                   "time_num integer; " +
+                   "begin " +
+                   "delete from assessmentDemandData where org = orgid and " +
+                   "item = itemid and " +
+                   "unitsoftime >= start_time and unitsoftime <= end_time; " +
+                   "for time_num in start_time..end_time loop " +
+                   "insert into assessmentDemandData " +
+                   "(org, item, unitsoftime, assessmentvalue) " +
+                   "values " +
+                   "(orgid, itemid, time_num, value); " +
+                   "end loop; " +
+                   "end;");
+            stmt.executeUpdate("create procedure new_assessmentInventoryData " +
+                   "(orgid integer, itemid integer, start_time integer, " +
+                   "end_time integer, value float) " +
+                   "as " +
+                   "time_num integer; " +
+                   "begin " +
+                   "delete from assessmentInventoryData where org = orgid and " +
+                   "item = itemid and " +
+                   "unitsoftime >= start_time and unitsoftime <= end_time; " +
+                   "for time_num in start_time..end_time loop " +
+                   "insert into assessmentInventoryData " +
+                   "(org, item, unitsoftime, assessmentvalue) " +
+                   "values " +
+                   "(orgid, itemid, time_num, value); " +
+                   "end loop; " +
+                   "end;");
+            stmt.executeUpdate("create procedure new_assessmentTargetLevelData " +
+                   "(orgid integer, itemid integer, start_time integer, " +
+                   "end_time integer, value float) " +
+                   "as " +
+                   "time_num integer; " +
+                   "begin " +
+                   "delete from assessmentTargetLevelData where org = orgid and " +
+                   "item = itemid and " +
+                   "unitsoftime >= start_time and unitsoftime <= end_time; " +
+                   "for time_num in start_time..end_time loop " +
+                   "insert into assessmentTargetLevelData " +
+                   "(org, item, unitsoftime, assessmentvalue) " +
+                   "values " +
+                   "(orgid, itemid, time_num, value); " +
+                   "end loop; " +
+                   "end;");
+            stmt.executeUpdate("create procedure new_assessmentCriticalData " +
+                   "(orgid integer, itemid integer, start_time integer, " +
+                   "end_time integer, value float) " +
+                   "as " +
+                   "time_num integer; " +
+                   "begin " +
+                   "delete from assessmentCriticalData where org = orgid and " +
+                   "item = itemid and " +
+                   "unitsoftime >= start_time and unitsoftime <= end_time; " +
+                   "for time_num in start_time..end_time loop " +
+                   "insert into assessmentCriticalData " +
+                   "(org, item, unitsoftime, assessmentvalue) " +
+                   "values " +
+                   "(orgid, itemid, time_num, value); " +
+                   "end loop; " +
+                   "end;");
+            stmt.executeUpdate("create procedure new_assessmentDueOutData " +
+                   "(orgid integer, itemid integer, start_time integer, " +
+                   "end_time integer, value float) " +
+                   "as " +
+                   "time_num integer; " +
+                   "begin " +
+                   "delete from assessmentDueOutData where org = orgid and " +
+                   "item = itemid and " +
+                   "unitsoftime >= start_time and unitsoftime <= end_time; " +
+                   "for time_num in start_time..end_time loop " +
+                   "insert into assessmentDueOutData " +
+                   "(org, item, unitsoftime, assessmentvalue) " +
+                   "values " +
+                   "(orgid, itemid, time_num, value); " +
+                   "end loop; " +
+                   "end;");
+            stmt.executeUpdate("create procedure new_assessmentDueInData " +
+                   "(orgid integer, itemid integer, start_time integer, " +
+                   "end_time integer, value float) " +
+                   "as " +
+                   "time_num integer; " +
+                   "begin " +
+                   "delete from assessmentDueInData where org = orgid and " +
+                   "item = itemid and " +
+                   "unitsoftime >= start_time and unitsoftime <= end_time; " +
+                   "for time_num in start_time..end_time loop " +
+                   "insert into assessmentDueInData " +
+                   "(org, item, unitsoftime, assessmentvalue) " +
+                   "values " +
+                   "(orgid, itemid, time_num, value); " +
+                   "end loop; " +
+                   "end;");
         }
 
         if (createOrgTable)
@@ -173,7 +380,6 @@ public class BlackjackTableCreator
                                 "(id     INTEGER      NOT NULL," +
                                  "parent INTEGER      NOT NULL," +
                                  "name   CHAR(40)     NOT NULL," +
-                                 "safety_level FLOAT  NOT NULL," +
                                  "primary key (id)            )");
 
             stmt.executeUpdate ("create index assessmentOrgs_name_index on assessmentOrgs (name)");
@@ -208,6 +414,7 @@ public class BlackjackTableCreator
             stmt.executeUpdate("CREATE TABLE assessmentMetrics " +
                                 "(id     INTEGER      NOT NULL," +
                                  "name   CHAR(50)     NOT NULL," +
+                                 "table_name   CHAR(50)," +
                                 "primary key (id))");
         }
 
@@ -234,7 +441,6 @@ public class BlackjackTableCreator
         config.setIdKey("id");
         config.setParentKey("parent");
         config.addContentKey("UID", "name");
-        config.addContentKey("SAFETY_LEVEL", "safety_level");
         //config.addContentKey("annotation", "note");
         config.setPrimaryKeys(new String[] {"keynum"});
 
@@ -259,14 +465,25 @@ public class BlackjackTableCreator
         if (createMetricTable)
         {
             String[] metrics = {"Demand", "Inventory",
-                                "DueOut", "Target Level", "DueIn",
+                                "Target Level", "Critical Level",
+                                "DueOut", "DueIn",
                                 "Inventory Over Target Level",
+                                "Inventory Over Critical Level",
                                 "Cumulative Resupply Over Cumulative Demand"};
+            String[] table_names = {"assessmentDemandData",
+                                    "assessmentInventoryData",
+                                    "assessmentTargetLevelData",
+                                    "assessmentCriticalData",
+                                    "assessmentDueOutData",
+                                    "assessmentDueInData",
+                                    "",
+                                    "",
+                                    ""};
 
             for (int i=0; i < metrics.length; i++)
             {
                 stmt.executeUpdate("INSERT INTO assessmentMetrics VALUES ("
-                                    + (i+1) + ", '" + metrics[i] + "')");
+             + (i+1) + ", '" + metrics[i] + "', '" + table_names[i] + "')");
             }
 
             con.commit();
@@ -391,41 +608,37 @@ public class BlackjackTableCreator
 
             PreparedStatement prepStmt = null;
             prepStmt = con.prepareStatement(
-                "INSERT INTO assessmentData VALUES (?, ?, ?, ?, ?)");
+                "INSERT INTO assessmentData VALUES (?, ?, ?, ?)");
             for (int org=0; org<orgSize; org++)
             {
                 long start = (new Date()).getTime();
                 for (int item=0; item<(itemSize+1); item++)
                     for (int time=startTime; time<(endTime+1); time++)
-                        for (int metric=0; metric<metricSize; metric++)
+                        // access db does not support prepared statements
+                        if (accessdb)
                         {
-                            // access db does not support prepared statements
-                            if (accessdb)
+                            stmt.executeUpdate(
+                                "INSERT INTO assessmentDemandData VALUES"
+                                + " (" + org + ", " + item + ", " +
+                                time + ", " +
+                                (randomdata ?
+                                String.valueOf(rand.nextFloat() * 2)
+                                : "NULL") + ")");
+                        }
+                        else
+                        {
+                            prepStmt.setInt(1, org);
+                            prepStmt.setInt(2, item);
+                            prepStmt.setInt(3, time);
+                            if (randomdata)
                             {
-                                stmt.executeUpdate(
-                                    "INSERT INTO assessmentData VALUES"
-                                    + " (" + org + ", " + item + ", " +
-                                    time + ", " + metric + ", " +
-                                    (randomdata ?
-                                    String.valueOf(rand.nextFloat() * 2)
-                                    : "NULL") + ")");
+                                prepStmt.setFloat(4, rand.nextFloat() * 2);
                             }
                             else
                             {
-                                prepStmt.setInt(1, org);
-                                prepStmt.setInt(2, item);
-                                prepStmt.setInt(3, time);
-                                prepStmt.setInt(4, metric);
-                                if (randomdata)
-                                {
-                                    prepStmt.setFloat(5, rand.nextFloat() * 2);
-                                }
-                                else
-                                {
-                                    prepStmt.setNull(5, Types.FLOAT);
-                                }
-                                prepStmt.executeUpdate();
+                                prepStmt.setNull(4, Types.FLOAT);
                             }
+                            prepStmt.executeUpdate();
                         }
                 con.commit();
                 long secondsPassed = ((new Date()).getTime() - start)/1000;
