@@ -31,4 +31,24 @@ public class SelectableHashtable extends Hashtable
     {
         return get(selectedProperty).toString();
     }
+
+    /**
+     * Set the name of the property to use for toString.
+     *
+     * @param selectedProperty new name of the property to use for toString.
+     */
+    public void setSelectedProperty(String selectedProperty)
+    {
+        this.selectedProperty = selectedProperty;
+    }
+
+    /**
+     * Get the current name of the property being used for toString.
+     *
+     * @return the current name of the property being used for toString.
+     */
+    public String getSelectedProperty()
+    {
+        return selectedProperty;
+    }
 }
