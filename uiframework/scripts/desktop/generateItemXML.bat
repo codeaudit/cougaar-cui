@@ -20,21 +20,27 @@ REM "</copyright>"
 
 echo off
 
-echo *************************************************************
-echo * To use, first place classes12.zip (Oracle JDBC driver),   *
-echo * core.jar, cuimap.jar, glm.jar, tops.jar, LocationInfo.jar *
-echo * and xerces.jar (XML parser) in ..\..\lib.                 *
-echo *************************************************************
+echo *******************************************************************
+echo * To use, set COUGAAR_INSTALL_PATH.  Set DEVELOPMENT_PATH only if *
+echo * you wish to override classes in the cougaar distribution.       *
+echo *******************************************************************
+set COUGAAR_INSTALL_PATH=c:\alpine\aggregationAgent\cougaar
+echo COUGAAR_INSTALL_PATH is set to %COUGAAR_INSTALL_PATH%
 
 set LIB_PATH=c:\alpine\lib
 rem set LIB_PATH=..\..\lib
 rem set LIB_PATH=s:\alp70\alp\lib
 
-set CP=..\..\classes
-set CP=%CP%;C:\alpine\aggregationAgent\aggagent\classes
-set CP=%CP%;C:\alpine\aggregationAgent\blackjack\classes
-set CP=%CP%;%LIB_PATH%\classes12.zip
-set CP=%CP%;%LIB_PATH%\xerces.jar
+set DEVELOPMENT_PATH=..\..\classes
+set DEVELOPMENT_PATH=%DEVELOPMENT_PATH%;C:\alpine\aggregationAgent\blackjack\classes
+set LIB_PATH=%COUGAAR_INSTALL_PATH%\lib
+set SYS_PATH=%COUGAAR_INSTALL_PATH%\sys
+
+set CP=%DEVELOPMENT_PATH%
+set CP=%CP%;%SYS_PATH%\xerces.jar
+set CP=%CP%;%LIB_PATH%\uiframework.jar
+set CP=%CP%;%LIB_PATH%\blackjack.jar
+set CP=%CP%;%SYS_PATH%\classes12.zip
 
 rem set DBTYPE="oracle"
 set DBTYPE="access"
