@@ -3,7 +3,7 @@ package org.cougaar.lib.uiframework.ui.map.query;
 
 import java.net.*;
 import java.io.*;
-
+import com.bbn.openmap.Environment;
 import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
 import org.cougaar.lib.uiframework.transducer.elements.*;
 
@@ -236,8 +236,13 @@ public class TimedLocationQuery {
       root.addAttribute(att);
       att.addAttribute(new Attribute("latitude"));
       att.addAttribute(new Attribute("longitude"));
-      att.addAttribute(new Attribute("startTime"));
-      att.addAttribute(new Attribute("thruTime"));
+
+      String usequerytimes=Environment.get("xml.usequerytimes");
+      System.out.println("xml.usequerytimes is "+usequerytimes);
+      if (usequerytimes!=null&&usequerytimes.equalsIgnoreCase("true")) {
+	  att.addAttribute(new Attribute("startTime"));
+	  att.addAttribute(new Attribute("thruTime"));
+      }
 
       // attatch a place for the dimensions
       att = new Attribute("dimensions");

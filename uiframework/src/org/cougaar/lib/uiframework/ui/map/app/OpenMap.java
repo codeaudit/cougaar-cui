@@ -16,8 +16,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/OpenMap.java,v $
- * $Revision: 1.4 $
- * $Date: 2001-02-26 15:37:27 $
+ * $Revision: 1.5 $
+ * $Date: 2001-03-07 23:02:43 $
  * $Author: krotherm $
  *
  * ***********************************************************************/
@@ -42,6 +42,7 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.BufferedMapBean;
+import com.bbn.openmap.*; // for layerhandler in 3.7
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.*;
 import com.bbn.openmap.proj.*;
@@ -1118,10 +1119,11 @@ public class OpenMap implements Serializable, CougaarUI {
 	id.setMap(map);
 	id.setFloatable(false);
 
-	DistanceMouseMode distMode =
-	    new DistanceMouseMode(true, id, DistanceMouseMode.DISTANCE_MILE);
-	// Add the distance mouse mode to the mouse delegator
-	md.addMouseMode(distMode);
+	// Won't compile under OM 3.7, so we remove it for now
+// 	DistanceMouseMode distMode =
+// 	    new DistanceMouseMode(true, id, DistanceMouseMode.DISTANCE_MILE);
+// 	// Add the distance mouse mode to the mouse delegator
+// 	md.addMouseMode(distMode);
 
 	// Get the wholine to not update lat lons if something else
 	// is displayed.

@@ -16,9 +16,9 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.4 $
- * $Date: 2001-03-01 17:15:49 $
- * $Author: pfischer $
+ * $Revision: 1.5 $
+ * $Date: 2001-03-07 23:02:42 $
+ * $Author: krotherm $
  *
  * ***********************************************************************/
 
@@ -40,6 +40,8 @@ import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
+// By not explicitly stating LayerHandler in the following import we can compile/run with either 3.6.2 or 3.7
+import com.bbn.openmap.*; // for layerhandler in 3.7
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.event.*;
@@ -902,7 +904,7 @@ public class CMap implements Serializable, CougaarUI {
     void addToolPanelControls() {
 	ToolPanel tp = getToolPanel();
 
-	String[] choices = {"Eritrea", "Pakistan", "World"};
+	String[] choices = {"Eritrea", "Pakistan", "CONUS", "World"};
 	ActionListener cbl = new ActionListener() {
 		public void actionPerformed(ActionEvent e)
 		{
@@ -1074,6 +1076,10 @@ public class CMap implements Serializable, CougaarUI {
 	    lat=30.2f;
 	    lon=70.2f;
 	    zoom=9000000f;
+	} else if (location.equalsIgnoreCase("CONUS")) {
+	    lat=40f;
+	    lon=-100f;
+	    zoom=25000000f;
 	} else if (location.equalsIgnoreCase("World")) {
 	    lat=0f;
 	    lon=0f;
@@ -1125,10 +1131,12 @@ public class CMap implements Serializable, CougaarUI {
 	id.setMap(map);
 	id.setFloatable(false);
 
-	DistanceMouseMode distMode =
-	    new DistanceMouseMode(true, id, DistanceMouseMode.DISTANCE_MILE);
-	// Add the distance mouse mode to the mouse delegator
-	md.addMouseMode(distMode);
+	// Removed the following to make this compatible with OM v3.7
+	// Will probably put it back when upgrading to OM 4.0
+// 	DistanceMouseMode distMode =
+// 	    new DistanceMouseMode(true, id, DistanceMouseMode.DISTANCE_MILE);
+// 	// Add the distance mouse mode to the mouse delegator
+// 	md.addMouseMode(distMode);
 
 	// Get the wholine to not update lat lons if something else
 	// is displayed.
