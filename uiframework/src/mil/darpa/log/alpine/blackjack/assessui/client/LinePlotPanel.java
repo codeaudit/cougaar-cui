@@ -308,9 +308,11 @@ public class LinePlotPanel extends JPanel implements CougaarUI
 
     private void updateView()
     {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         queryGenerator.generateQuery(variableManager);
         titledBorder.setTitle(variableManager.toString());
         repaint();
+        setCursor(Cursor.getDefaultCursor());
     }
 
     /**

@@ -302,9 +302,11 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
     private void updateView()
     {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         queryGenerator.generateQuery(variableManager);
         updateThresholdExtents();
         title.setText(variableManager.toString());
+        setCursor(Cursor.getDefaultCursor());
     }
 
     private void doubleClickTableHandler(MouseEvent e)
@@ -338,6 +340,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         }
 
         // Launch line plot chart preconfigured based on double-clicked cell
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         JFrame myFrame = findJFrame();
         JFrame linePlotFrame;
         if (myFrame instanceof CDesktopFrame)
@@ -414,6 +417,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
             lpp.install(linePlotFrame);
             linePlotFrame.setVisible(true);
         }
+        setCursor(Cursor.getDefaultCursor());
     }
 
 
