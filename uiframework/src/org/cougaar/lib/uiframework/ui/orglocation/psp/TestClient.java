@@ -119,8 +119,14 @@ public class TestClient {
       conn.setDoInput(true);
       conn.setDoOutput(true);
 
-      // send the request
-      PrettyPrinter pp = new PrettyPrinter(conn.getOutputStream());
+      // send the request to the screen
+      PrettyPrinter pp = new PrettyPrinter(System.out);
+      System.out.println("Query is:");
+      query.generateXml(pp);
+      pp.flush();
+      System.out.println();
+      // send the request to the server
+      pp = new PrettyPrinter(conn.getOutputStream());
       query.generateXml(pp);
       pp.flush();
       pp.close();
