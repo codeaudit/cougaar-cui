@@ -29,11 +29,14 @@ public class SqlTableMap {
   // primary id field referenced by the child-parent links
   private String idKey = null;
 
-  // alternate name for id field in case of name collision
-  private String idKeyAlternateName = null;
-
   // field in which the parent link is stored
   private String parentKey = null;
+
+  // join two or more tables together according to these conditions, if any
+  private String joinConditions = null;
+
+  // in case of a join, specify which one is the major table
+  private String primaryTableName = null;
 
   // Names of the fields that comprise the content of a node and the attributes
   // they represent.
@@ -48,6 +51,24 @@ public class SqlTableMap {
    */
   public void setDbTable (String s) {
     dbTable = s;
+  }
+
+  /**
+   *  Specify the name of the DB table that contains parent-child relationships
+   *  and primary IDs.  For example, when joining tables "fred" and "john",
+   *  where "fred" contains the parent-child relationships, call:
+   *  <pre>
+   *    setDbTable("fred f, john j");
+   *    setPrimaryTableName("f");
+   *    setJoinConditions("f.id = j.id");
+   *  </pre>
+   *  Setting this parameter is unnecessary when only one table is used or when
+   *  there are no column name conflicts among the tables being joined.
+   *
+   *  @param s the query-local name of the primary table
+   */
+  public void setPrimaryTableName (String s) {
+    primaryTableName = s;
   }
 
   /**
@@ -73,15 +94,6 @@ public class SqlTableMap {
   }
 
   /**
-   *  Specify an alternate name for the id key, in case the id is to be treated
-   *  as a data field.  The alternate name should be any valid SQL identifier
-   *  other than the name of a column in the DB table.
-   */
-  public void setIdKeyAlternateName (String s) {
-    idKeyAlternateName = s;
-  }
-
-  /**
    *  Set the name of the field indicating which row in the table contains the
    *  parent of the current row.  It does this by referencing the parent's
    *  unique ID field (see setIdKey).
@@ -89,6 +101,22 @@ public class SqlTableMap {
    */
   public void setParentKey (String s) {
     parentKey = s;
+  }
+
+  /**
+   *  <p>
+   *  Set the conditions that join multiple tables together.  If this variable
+   *  is not null, then these conditions are added to the "where" clause of
+   *  the query produced by the createQuery method (q.v.).
+   *  </p><p>
+   *  <b>Note:</b>  Altering contents of the database using the createDelete
+   *  and createInsert methods is not encouraged in cases where two or more
+   *  tables are joined.  All kinds of bad things can happen.
+   *  </p>
+   *  @param s the new joining conditions for the DB tables.
+   */
+  public void setJoinConditions (String s) {
+    joinConditions = s;
   }
 
   /**
@@ -140,6 +168,9 @@ public class SqlTableMap {
    *  @return an SQL query in String form
    */
   public String createDelete (String[] id) {
+    if (joinConditions != null)
+      throw new Error("Can't delete from joined tables");
+
     SqlDelete del = new SqlDelete();
     del.setTable(dbTable);
     if (id != null && primaryKeys != null)
@@ -160,15 +191,28 @@ public class SqlTableMap {
    *  @return an SQL query in String form
    */
   public String createQuery (String[] id) {
+    // create an SqlQuery ...
     SqlQuery q = new SqlQuery();
-    q.addTable(dbTable);
-    StringBuffer fullIdKey = new StringBuffer(idKey);
-    if (idKeyAlternateName != null) {
-      fullIdKey.append(" ");
-      fullIdKey.append(idKeyAlternateName);
+
+    // include the table designation, if necessary, for id and parent fields
+    StringBuffer fullId = new StringBuffer();
+    StringBuffer fullParent = new StringBuffer();
+    if (primaryTableName != null) {
+      fullId.append(primaryTableName);
+      fullParent.append(primaryTableName);
+      fullId.append(".");
+      fullParent.append(".");
     }
-    q.addSelection(fullIdKey);
-    q.addSelection(parentKey);
+    fullId.append(idKey);
+    fullParent.append(parentKey);
+
+    // include the join conditions for the tables, if necessary
+    if (joinConditions != null)
+      q.addCondition(joinConditions);
+
+    q.addTable(dbTable);
+    q.addSelection(fullId);
+    q.addSelection(fullParent);
     for (Enumeration e = colNames.elements(); e.hasMoreElements(); )
       q.addSelection(e.nextElement());
 
@@ -190,6 +234,9 @@ public class SqlTableMap {
   public String createInsert (
       String[] rootId, long id, long parent, ListElement le)
   {
+    if (joinConditions != null)
+      throw new Error("Can't insert into joined tables");
+
     int i = -1;
     SqlInsert ins = new SqlInsert(dbTable);
     ins.addNumber(idKey, id);

@@ -153,10 +153,6 @@ public class MappedTransducer extends SqlTransducer {
         for (i = 0; i < fieldVals.length; i++)
           fieldVals[i] = rs.getString(i + 3);
 
-        for (int j = 0; j < fieldVals.length; j++)
-          System.out.print(";" + fieldVals[j]);
-        System.out.println();
-
         // check for an existing stand-in; if none exists, create a new node
         ListElement elt = (ListElement) stand_ins.remove(id);
         if (elt == null) {
@@ -244,7 +240,7 @@ public class MappedTransducer extends SqlTransducer {
         if (argv.length == 2)
           toFile(argv[1]);
         else if (argv.length > 2)
-          indexToFile(argv[2], argv[1]);
+          indexToFile(argv[2], argv[1], false);
       }
       else if (argv[0].equalsIgnoreCase("from") && argv.length > 0) {
         if (argv.length == 2)
@@ -258,15 +254,22 @@ public class MappedTransducer extends SqlTransducer {
         else
           killIndex(argv[1]);
       }
+      else if (argv[0].equalsIgnoreCase("extra")) {
+        if (argv.length == 3)
+          indexToFile(argv[2], argv[1], true);
+        else
+          System.out.println("You dumb ass.");
+      }
     }
     catch (Exception problem) {
       problem.printStackTrace();
     }
   }
 
-  private static void indexToFile (String id, String fileName) throws Exception
+  private static void indexToFile (String id, String fileName, boolean extra)
+      throws Exception
   {
-    writeToFile(restoreFromDb(new String[] {id}), fileName);
+    writeToFile(restoreFromDb(new String[] {id}, extra), fileName);
   }
 
   private static void indexFromFile (String id, String fileName)
@@ -276,7 +279,7 @@ public class MappedTransducer extends SqlTransducer {
   }
 
   private static void killIndex (String id) throws Exception {
-    MappedTransducer mt = makeTransducer();
+    MappedTransducer mt = makeTransducer(false);
     mt.openConnection();
 
     String[] keys = null;
@@ -288,7 +291,7 @@ public class MappedTransducer extends SqlTransducer {
   }
 
   private static void toFile (String fileName) throws Exception {
-    writeToFile(restoreFromDb(null), fileName);
+    writeToFile(restoreFromDb(null, false), fileName);
   }
 
   private static void fromFile (String fileName) throws Exception {
@@ -318,8 +321,8 @@ public class MappedTransducer extends SqlTransducer {
     fout.close();
   }
 
-  private static Structure restoreFromDb (String[] keys) {
-    MappedTransducer mt = makeTransducer();
+  private static Structure restoreFromDb (String[] keys, boolean extra) {
+    MappedTransducer mt = makeTransducer(extra);
     mt.openConnection();
     Structure s = mt.readFromDb(keys);
     mt.closeConnection();
@@ -327,27 +330,45 @@ public class MappedTransducer extends SqlTransducer {
   }
 
   private static void saveInDb (Structure s, String[] keys) {
-    MappedTransducer mt = makeTransducer();
+    MappedTransducer mt = makeTransducer(false);
     mt.openConnection();
     mt.writeToDb(keys, s);
     mt.closeConnection();
   }
 
-  private static MappedTransducer makeTransducer () {
+  private static MappedTransducer makeTransducer (boolean extra) {
     MappedTransducer mt = new MappedTransducer(
-      "oracle.jdbc.driver.OracleDriver", makeConfig());
+      "oracle.jdbc.driver.OracleDriver", makeConfig(extra));
     mt.setDbParams("jdbc:oracle:thin:@delta.alpine.bbn.com:1521:fgi",
       "gdonovan", "gdonovan");
     return mt;
   }
 
-  private static SqlTableMap makeConfig () {
+  private static SqlTableMap makeConfig (boolean extra) {
     SqlTableMap ret = new SqlTableMap();
-    ret.setDbTable("stuff_n_note");
+    StringBuffer table = new StringBuffer("stuff_n_note");
+    StringBuffer stuff = new StringBuffer();
+    StringBuffer note = new StringBuffer();
+
+    if (extra) {
+      table.append(" s, extra e");
+      stuff.append("s.");
+      note.append("s.");
+    }
+
+    stuff.append("stuff");
+    note.append("note");
+
+    ret.setDbTable(table.toString());
     ret.setIdKey("id");
     ret.setParentKey("parent");
-    ret.addContentKey("content", "stuff");
-    ret.addContentKey("annotation", "note");
+    ret.addContentKey("content", stuff.toString());
+    ret.addContentKey("annotation", note.toString());
+    if (extra) {
+      ret.addContentKey("extra_field", "e.extra");
+      ret.setPrimaryTableName("s");
+      ret.setJoinConditions("s.id = e.id");
+    }
     ret.setPrimaryKeys(new String[] {"keynum"});
     return ret;
   }
