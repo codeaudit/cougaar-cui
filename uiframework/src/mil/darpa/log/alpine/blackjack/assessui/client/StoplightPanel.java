@@ -23,6 +23,7 @@ import javax.swing.tree.*;
 import org.cougaar.lib.uiframework.ui.components.CComboSelector;
 import org.cougaar.lib.uiframework.ui.components.CDesktopFrame;
 import org.cougaar.lib.uiframework.ui.components.CFrame;
+import org.cougaar.lib.uiframework.ui.components.CNodeSelector;
 import org.cougaar.lib.uiframework.ui.components.CRangeButton;
 import org.cougaar.lib.uiframework.ui.components.CMThumbSliderThresholdControl;
 import org.cougaar.lib.uiframework.ui.components.CRadioButtonSelectionControl;
@@ -54,6 +55,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private boolean useMenuButtons = true;
     private final Object[] metrics = DBInterface.metrics;
     private final static int spacing = 5;
+    private CTreeButton itemTreeButton = null;
     private DatabaseTableModel stoplightTableModel = new DatabaseTableModel();
     private VariableInterfaceManager variableManager;
     private JLabel title = new JLabel("", JLabel.CENTER);
@@ -139,14 +141,13 @@ public class StoplightPanel extends JPanel implements CougaarUI
      */
     private void createComponents()
     {
-        stoplightMetrics.add("Supply as Proportion of Demand");
-        stoplightMetrics.add(
-            mil.darpa.log.alpine.blackjack.assessui.client.QueryGenerator.INV_SAF_METRIC);
+        stoplightMetrics.add(QueryGenerator.INV_SAF_METRIC);
+        //stoplightMetrics.add(QueryGenerator.RES_DEM_METRIC);
 
         //DefaultMutableTreeNode root =
         //    DBInterface.createTree(DBInterface.getTableName("item"));
         DefaultMutableTreeNode root = DBInterface.itemTree;
-        CTreeButton itemTreeButton = new CTreeButton(root, root);
+        itemTreeButton = new CTreeButton(root, root);
 
         //root = DBInterface.createTree(DBInterface.getTableName("org"));
         root = DBInterface.orgTree;
@@ -409,6 +410,9 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
     private void populateMenuBar(JMenuBar mb)
     {
+        //
+        // Item Menu
+        //
         JMenu itemMenu = new JMenu("Items");
         itemMenu.setMnemonic('I');
 
@@ -479,7 +483,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
             });
 
         // refresh item weights
-        /* not ready yet
         final JMenuItem refreshItemWeights =
             new JMenuItem("Refresh Item Weights");
         refreshItemWeights.setMnemonic('R');
@@ -488,15 +491,30 @@ public class StoplightPanel extends JPanel implements CougaarUI
                 public void actionPerformed(ActionEvent e)
                 {
                     DBInterface.itemTree = DBInterface.createItemTree();
-                    updateView();
+                    itemTreeButton.setRoot(DBInterface.itemTree);
                 }
             });
-        */
 
         mb.add(itemMenu, 1);
 
+        //
+        // View Menu
+        //
         JMenu viewMenu = viewPanel.convertToMenu("View");
         viewMenu.setMnemonic('V');
+
+        // refresh view
+        viewMenu.add(new JSeparator());
+        JMenuItem refreshView = new JMenuItem("Refresh");
+        refreshView.setMnemonic('R');
+        viewMenu.add(refreshView);
+        refreshView.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    updateView();
+                }
+            });
+
         mb.add(viewMenu, 1);
     }
 

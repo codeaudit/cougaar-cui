@@ -71,6 +71,17 @@ public class CTreeButton extends CPullrightButton implements Selector
     }
 
     /**
+     * Set a new root for this tree button.  Sets equivilant selection
+     * in new tree if possible.
+     *
+     * @param root new root for this tree button
+     */
+    public void setRoot(DefaultMutableTreeNode root)
+    {
+        ns.setRoot(root);
+    }
+
+    /**
      * Set whether the root node of JTree should be shown.
      *
      * @param visible true if root node should be shown.

@@ -101,6 +101,20 @@ public class CNodeSelector extends JPanel implements Selector
     }
 
     /**
+     * Set a new root for this tree.  Sets equivilant selection
+     * in new tree if possible.
+     *
+     * @param root new root for this tree
+     */
+    public void setRoot(DefaultMutableTreeNode root)
+    {
+        String oldSelectedItem = getSelectedItem().toString();
+        DefaultTreeModel dtm = (DefaultTreeModel)nsc.getModel();
+        dtm.setRoot(root);
+        setSelectedItem(oldSelectedItem);
+    }
+
+    /**
      * Not needed when compiling/running under jdk1.3
      */
     protected void firePropertyChange(String propertyName, Object oldValue,

@@ -102,6 +102,13 @@ public class DBDatasource
      */
     public static Structure restoreFromDb (SqlTableMap config)
     {
+        // access can't deal with multiple concurent connections
+        if (DBTYPE.equalsIgnoreCase("access") && dbConnection != null)
+        {
+            try { dbConnection.close(); } catch(SQLException e) {}
+            dbConnection = null;
+        }
+
         MappedTransducer mt = makeTransducer(config);
         mt.openConnection();
         Structure s = mt.readFromDb(null);
