@@ -16,8 +16,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/CMap.java,v $
- * $Revision: 1.6 $
- * $Date: 2001-03-11 18:45:45 $
+ * $Revision: 1.7 $
+ * $Date: 2001-03-11 20:03:17 $
  * $Author: pfischer $
  *
  * ***********************************************************************/
@@ -543,6 +543,8 @@ public class CMap implements Serializable, CougaarUI {
 	// map listens for LayerEvents
 	layerHandler.addLayerListener(map);
 	menu.setupListeners(map);
+
+        // Need to be able to access timeSlider from XmlLayerBase
     }
 
     // end -- kwr
@@ -964,6 +966,11 @@ public class CMap implements Serializable, CougaarUI {
         });
 
     omts.add(timePanel);
+
+    // make accessable from XMLLayerBase
+    XmlLayerBase xlb = findXMLLayerBase();
+    xlb.setTimeSlider(ls);
+
     //	================================
 
    /*  End of times control */
@@ -1039,7 +1046,6 @@ public class CMap implements Serializable, CougaarUI {
     tp.add(omts);
     tp.setFloatable(false);// cannot detach
     setToolPanel(tp);
-
     }
 
     private void updateTimeRange(CLabeledSlider ls) {
@@ -1090,6 +1096,21 @@ public class CMap implements Serializable, CougaarUI {
         for(idx=0; idx<layers.length; idx++) {
             if (layers[idx] instanceof TimedXmlLayer) {
                 myLayer=(TimedXmlLayer)layers[idx];
+                break;
+            }
+        }
+
+        return myLayer;
+    }
+
+    private XmlLayerBase findXMLLayerBase() {
+        LayerHandler layerHandler = getLayerHandler();
+        Layer[] layers=layerHandler.getLayers();
+        XmlLayerBase myLayer=null;
+        int idx;
+        for(idx=0; idx<layers.length; idx++) {
+            if (layers[idx] instanceof XmlLayerBase) {
+                myLayer=(XmlLayerBase)layers[idx];
                 break;
             }
         }
