@@ -61,7 +61,7 @@ public class CNodeSelector extends JPanel implements Selector
         nsc = new CNodeSelectionControl(root);
         JScrollPane scrolledNSC = new JScrollPane(nsc);
         add(scrolledNSC, BorderLayout.CENTER);
-        setPreferredSize(new Dimension(220, 200));
+        setPreferredSize(new Dimension(400, 200));
 
         nsc.addTreeSelectionListener(new TreeSelectionListener() {
                 public void valueChanged(TreeSelectionEvent e)
