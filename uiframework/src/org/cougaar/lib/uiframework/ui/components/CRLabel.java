@@ -155,7 +155,7 @@ public class CRLabel extends JComponent
                 pheight = height;
                 break;
             case DOWN_UP:
-                // This might be needed to further differenciate java versions
+                // This might be needed to further differentiate java versions
                 // for special case code below.
                 // String vmVersion = System.getProperty("java.vm.version");
                 float versionNumber =
