@@ -1,8 +1,8 @@
 echo off
 
 echo *************************************************************
-echo * To use, first place class122.zip (Oracle JDBC driver),    *
-echo * core.jar, openmap.jar, and                                *
+echo * To use, first place classes12.zip (Oracle JDBC driver),   *
+echo * core.jar, cuimap.jar, glm.jar and                         *
 echo * xml4j_2_0_11.jar (IMB XML parser) in ..\..\lib.           *
 echo *************************************************************
 
@@ -14,12 +14,11 @@ rem set LIB_PATH=s:\alp70\alp\lib
 set DATA_PATH=.\data
 
 set CP=..\..\classes
-rem set CP=%CP%;%LIB_PATH%\class122.zip
 set CP=%CP%;%LIB_PATH%\classes12.zip
 set CP=%CP%;%LIB_PATH%\xml4j_2_0_11.jar
 set CP=%CP%;%LIB_PATH%\core.jar
-rem set CP=%CP%;%LIB_PATH%\openmap.jar
 set CP=%CP%;%LIB_PATH%\cuimap.jar
+set CP=%CP%;%LIB_PATH%\glm.jar
 set CP=%CP%;%DATA_PATH%
 
 set DBTYPE="oracle"
@@ -44,6 +43,7 @@ rem set DBPASSWORD="blackjack"
 set DBPASSWORD="blackjacka"
 
 java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentLauncher
+rem d:\jdk1.3\bin\java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentLauncher
 rem java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentDesktop
 
 del marker.txt
