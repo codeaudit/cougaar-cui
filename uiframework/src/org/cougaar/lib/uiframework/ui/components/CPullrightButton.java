@@ -14,7 +14,7 @@ import org.cougaar.lib.uiframework.ui.util.Selector;
  *
  * This bean has bounded property:  "selectedItem".
  */
-public class CPullrightButton extends JButton
+public class CPullrightButton extends JButton implements Selector
 {
     private Selector selectorControl = null;
     private JPopupMenu pullright = null;
