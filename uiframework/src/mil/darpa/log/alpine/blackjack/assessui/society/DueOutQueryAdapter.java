@@ -30,7 +30,7 @@ public class DueOutQueryAdapter extends CustomQueryBaseAdapter {
 
   private static final String METRIC = "DueOuts";
 
-  private String output_xml;
+  private StringBuffer output_xml;
   private boolean send_xml = false;
   private int xml_count;
   private AggInfoEncoder myEncoder = new AggInfoEncoder();
@@ -180,11 +180,21 @@ try {
               if (nextStructure == null) {
                 nextStructure = new AggInfoStructure (org, item, start_time, end_time, quantity);
               }
+              else if ((item.compareTo (nextStructure.getItem()) == 0) &&
+                       (start_time.compareTo (nextStructure.getStartTime()) == 0) &&
+                       (end_time.compareTo (nextStructure.getEndTime()) == 0)) {
+                  System.out.print (" adding to previous " + nextStructure.getRate());
+                  double temp_quantity = Double.parseDouble (nextStructure.getRate());
+                  temp_quantity += Double.parseDouble (quantity);
+                  quantity = String.valueOf (temp_quantity);
+                  System.out.print (" now " + quantity);
+              }
               // If the rates are the same, and the start time of the new record
               // is the same as the end time of the old record, then combine
               // the records
               else if ((quantity.compareTo (nextStructure.getRate ()) == 0) &&
-                       (start_time.compareTo (nextStructure.getEndTime()) == 0)) {
+                       (start_time.compareTo (nextStructure.getEndTime()) == 0) &&
+                       (item.compareTo (nextStructure.getItem()) == 0)) {
                 nextStructure.setEndTime (end_time);
               }
               // Output the record and start a new one
@@ -217,7 +227,7 @@ catch (Exception e) {
     System.out.println ("DueOuts sending " + index + " records, amounts to " + xml_count + " xml records");
     System.out.println ("**************************************************************************");
 
-    output_xml += myEncoder.encodeEndOfXML();
+    myEncoder.encodeEndOfXML(output_xml);
   } /* end of execute */
 
   public void returnVal (OutputStream out) {
@@ -226,7 +236,7 @@ catch (Exception e) {
 
     if (send_xml)
     {
-      p.println (output_xml);
+      p.println (output_xml.toString());
       p.flush ();
     }
 
@@ -239,9 +249,7 @@ catch (Exception e) {
   } /* end of returnVal */
 
   private void writeStructureToXML (AggInfoStructure new_structure) {
-    String output_string = myEncoder.encodeDataAtom (new_structure);
-
-    output_xml += output_string;
+    myEncoder.encodeDataAtom (output_xml, new_structure);
 
     xml_count++;
 

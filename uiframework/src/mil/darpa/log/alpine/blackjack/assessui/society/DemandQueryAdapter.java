@@ -29,7 +29,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
   private static final String METRIC = "Demand";
 
-  private String output_xml;
+  private StringBuffer output_xml;
   private boolean send_xml = false;
   private AggInfoEncoder myEncoder = new AggInfoEncoder();
   private AggInfoStructure myStructure;
@@ -163,9 +163,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
           myStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
 
-          String output_string = myEncoder.encodeDataAtom(myStructure);
-
-          output_xml += output_string;
+          myEncoder.encodeDataAtom(output_xml, myStructure);
 
           send_xml = true;
 
@@ -179,7 +177,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
     System.out.println ("DemandQueryAdapter sending " + index + " records");
     System.out.println ("**************************************************************************");
 
-    output_xml += myEncoder.encodeEndOfXML();
+    myEncoder.encodeEndOfXML(output_xml);
   } /* end of execute */
 
   public void returnVal (OutputStream out) {
@@ -188,7 +186,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
     if (send_xml)
     {
-      p.println (output_xml);
+      p.println (output_xml.toString());
       p.flush ();
 //      System.out.println (output_xml);
     }

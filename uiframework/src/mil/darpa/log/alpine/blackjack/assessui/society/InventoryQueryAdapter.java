@@ -28,7 +28,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
   private static final String METRIC = "Inventory";
 
-  private String output_xml;
+  private StringBuffer output_xml;
   private boolean send_xml = false;
   private int xml_count;
   private AggInfoEncoder myEncoder = new AggInfoEncoder();
@@ -112,7 +112,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
           element = (QuantityScheduleElementImpl) schedule_list.nextElement();
 
-          rate = new String ("" + element.getQuantity());
+          rate = "" + element.getQuantity();
 
           looping++;
           System.out.print (" " + looping + " ");
@@ -165,7 +165,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
     System.out.println ("Inventory sending " + index + " records, amounts to " + xml_count + " xml records");
     System.out.println ("**************************************************************************");
 
-    output_xml += myEncoder.encodeEndOfXML();
+    myEncoder.encodeEndOfXML(output_xml);
   } /* end of execute */
 
   public void returnVal (OutputStream out) {
@@ -174,7 +174,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
     if (send_xml)
     {
-      p.println (output_xml);
+      p.println (output_xml.toString());
       p.flush ();
     }
 
@@ -187,9 +187,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
   } /* end of returnVal */
 
   private void writeStructureToXML (AggInfoStructure new_structure) {
-    String output_string = myEncoder.encodeDataAtom (new_structure);
-
-    output_xml += output_string;
+    myEncoder.encodeDataAtom (output_xml, new_structure);
 
     xml_count++;
 

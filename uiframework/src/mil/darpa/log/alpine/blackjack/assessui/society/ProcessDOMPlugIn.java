@@ -31,7 +31,7 @@ class DocumentPredicate implements UnaryPredicate {
 public class ProcessDOMPlugIn extends SimplePlugIn {
 
   private IncrementalSubscription documents;
-  private String xml_output;
+  private StringBuffer xml_output;
 
   private String http_address;
 
@@ -59,7 +59,7 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
 
         if (nl.getLength() > 0) {
 
-          xml_output = AggInfoEncoder.getStartXMLString();
+          xml_output = new StringBuffer(AggInfoEncoder.getStartXMLString());
           CreateXMLOutputString (dom.getDocumentElement());
 
           SendXMLOutputString ();
@@ -81,9 +81,12 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
     int index;
 
     if (mynode.getNodeType() == Node.TEXT_NODE)
-      xml_output += mynode.getNodeValue();
-    else
-      xml_output += "<" + mynode.getNodeName() + ">";
+      xml_output.append(mynode.getNodeValue());
+    else {
+      xml_output.append("<");
+      xml_output.append(mynode.getNodeName());
+      xml_output.append(">");
+    }
 
     NodeList mylist = mynode.getChildNodes();
     index = 0;
@@ -95,7 +98,9 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
 
     if (mynode.getNodeType() != Node.TEXT_NODE)
     {
-      xml_output += "</" + mynode.getNodeName() + ">";
+      xml_output.append("</");
+      xml_output.append(mynode.getNodeName());
+      xml_output.append(">");
     }
 
   } /* end of CreateXMLOutputString */
@@ -111,7 +116,7 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
       con.setUseCaches(false);
       con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
       DataOutputStream out = new DataOutputStream(con.getOutputStream());
-      String content = "updateXML=" + xml_output;
+      String content = "updateXML=" + xml_output.toString();
 
       System.out.println ("***************************************");
       System.out.println ("Sending XML to EJB");
