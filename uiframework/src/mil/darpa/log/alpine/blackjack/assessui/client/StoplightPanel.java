@@ -123,6 +123,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private void createComponents()
     {
         stoplightMetrics.add("Supply as Proportion of Demand");
+        //stoplightMetrics.add("Inventory Over Safety Level");
 
         //DefaultMutableTreeNode root =
         //    DBInterface.createTree(DBInterface.getTableName("item"));
