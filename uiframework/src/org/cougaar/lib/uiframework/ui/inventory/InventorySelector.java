@@ -951,7 +951,7 @@ System.out.println("java.version: " + System.getProperty("java.version"));
         objectOutputStream = new ObjectOutputStream(ostream);
         objectOutputStream.writeObject(clusterContainer);
         objectOutputStream.flush();
-        System.err.println("save object " + clusterContainer);
+        System.err.println("save object " + clusterContainer.getClass().getName());
         System.err.println("\n\nSaved File Name:  " + cacheFileName + "\n\n");
       }
       else

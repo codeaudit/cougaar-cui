@@ -149,7 +149,7 @@ public class InventoryQuery implements Query, PropertyChangeListener
       try {
         ObjectInputStream p = new ObjectInputStream(is);
         inventory = (UISimpleInventory)p.readObject();
-        System.out.println("inventory = " + inventory);
+        // System.out.println("inventory = " + inventory);
         if(buildFile)
         {
           //System.out.println(assetName);
