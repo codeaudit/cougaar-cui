@@ -12,8 +12,7 @@ package org.cougaar.lib.uiframework.ui.components;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -43,6 +42,7 @@ public class CRowHeaderTable extends JTable
     public CRowHeaderTable()
     {
         super();
+        init();
     }
 
     /**
@@ -53,9 +53,52 @@ public class CRowHeaderTable extends JTable
     public CRowHeaderTable(TableModel tm)
     {
         super(tm);
+        init();
+    }
+
+    private void init()
+    {
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         findDataStart();
         resetMinCellWidth();
+        JTableHeader th = getTableHeader();
+
+        // jdk1.2.2 - jdk1.3 special case
+        if (usingJdk13orGreater())
+        {
+            try
+            {
+                // Without using reflection, the following line is:
+                // th.setDefaultRenderer(headerCellRenderer)
+                // Will not compile under jdk1.2.2 (thus the use of reflection)
+                th.getClass().getMethod("setDefaultRenderer",
+                  new Class[] {TableCellRenderer.class}).
+                    invoke(th, new Object[] {headerCellRenderer});
+            }
+            catch (Exception e) {e.printStackTrace();}
+        }
+        else
+        {
+            // jdk1.2  (this is much easier in jdk1.3)
+            final TableColumnModel tcm = getColumnModel();
+            for (int i=0; i <tcm.getColumnCount(); i++)
+            {
+                tcm.getColumn(i).setHeaderRenderer(headerCellRenderer);
+            }
+            tcm.addColumnModelListener(
+                new TableColumnModelListener() {
+                    public void columnAdded(TableColumnModelEvent e)
+                    {
+                        tcm.getColumn(e.getToIndex()).
+                            setHeaderRenderer(headerCellRenderer);
+                    }
+                    public void columnMarginChanged(ChangeEvent e) {}
+                    public void columnMoved(TableColumnModelEvent e) {}
+                    public void columnRemoved(TableColumnModelEvent e) {}
+                    public void columnSelectionChanged(ListSelectionEvent e) {}
+                });
+        }
+
         resizeRowHeadersToFit();
     }
 
@@ -348,7 +391,6 @@ public class CRowHeaderTable extends JTable
                     for (int i = 0; i < columnCount; i++)
                     {
                         TableColumn c = getColumnModel().getColumn(i);
-                        c.setHeaderRenderer(headerCellRenderer);
                         c.setPreferredWidth(dataWidth);
                         c.setMinWidth(dataWidth);
                     }
@@ -629,18 +671,18 @@ public class CRowHeaderTable extends JTable
 
         private void prepareComponent()
         {
-	          if (CRowHeaderTable.this != null)
+            if (CRowHeaderTable.this != null)
             {
                 JTableHeader header = getTableHeader();
-	              if (header != null)
+                if (header != null)
                 {
                     setForeground(header.getForeground());
                     setBackground(header.getBackground());
-	                  setFont(header.getFont());
-	              }
+                          setFont(header.getFont());
+                }
             }
             setOpaque(true);
-	          setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+            setBorder(UIManager.getBorder("TableHeader.cellBorder"));
         }
     }
 }
