@@ -10,6 +10,7 @@
 package mil.darpa.log.alpine.blackjack.assessui.client;
 
 import java.awt.Component;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -78,67 +79,6 @@ public class QueryGenerator
     public boolean getAggregateItems()
     {
         return aggregateItems;
-    }
-
-    /**
-     * Queries for metric values for a particular set of organizations.
-     * Query results are returned in a hashtable where [key = org string] and
-     * [value = metric value].  Sample usage of this method is provided in main
-     * function of this class.
-     *
-     * @param orgs set of organization strings for which metrics will be
-     *             returned
-     * @param item string representing the item of iterest
-     *             (or grouping of items)
-     * @param time time at which returned metrics are calculated.
-     * @param metric the metric for which values will be returned
-     *
-     * @return query results in a hashtable where [key = org string] and
-     *               [value = metric value]
-     */
-    // made non-static for demo kludge
-    public Hashtable getOrgMetrics(Enumeration orgs, String item,
-                                          int time, String metric)
-    {
-        DatabaseTableModel tm = new DatabaseTableModel();
-        StringBuffer query =
-            new StringBuffer("SELECT * FROM ");
-
-        // select from the correct metric table
-        query.append(
-            DBInterface.lookupValue(DBInterface.getTableName("metric"),
-                                    "name", "table_name", metric));
-
-        // filter data needed based on org, item, time
-        query.append(" WHERE (");
-        query.append(generateWhereClause("org", orgs));
-        query.append(" AND " + generateWhereClause("item", item));
-        query.append(" AND "+generateWhereClause("time",String.valueOf(time)));
-        query.append(")");
-
-        // fill table model with needed data
-        System.out.println(query);
-        tm.setDBQuery(query.toString());
-
-        // transform table based on needed x and y axis
-        String xColumnName = DBInterface.getColumnName("org");
-        String yColumnName = DBInterface.getColumnName("time");
-        tm.setXY(tm.getColumnIndex(xColumnName),
-                 new int[]{tm.getColumnIndex(yColumnName)},
-                 tm.getColumnIndex("assessmentValue"));
-
-        // convert org id headers (this might be broken now)
-        convertColumnHeaderIDsToNames(
-            new VariableModel("org", null, false, 0, false, 0), tm, 1);
-
-        // create hashtable that contains needed org name -> value pairs
-        Hashtable ht = new Hashtable();
-        for (int i = 1; i < tm.getColumnCount(); i++)
-        {
-            ht.put(tm.getColumnName(i), tm.getValueAt(0, i));
-        }
-
-        return ht;
     }
 
     /**
@@ -607,7 +547,16 @@ public class QueryGenerator
         {
             DefaultMutableTreeNode n =
                 (DefaultMutableTreeNode)neededValues.nextElement();
-            neededIDsVector.add(((Hashtable)n.getUserObject()).get("ID"));
+            int id = Integer.parseInt(
+                ((Hashtable)n.getUserObject()).get("ID").toString());
+            neededIDsVector.add(new Integer(id));
+        }
+
+        Collections.sort(neededIDsVector);
+        for (int i = 0; i < neededIDsVector.size(); i++)
+        {
+            int id = ((Integer)neededIDsVector.elementAt(i)).intValue();
+            neededIDsVector.setElementAt(new RangeModel(id, id), i);
         }
 
         // demo kludge
@@ -621,9 +570,54 @@ public class QueryGenerator
         }
         else
         {
-            whereClause.append(
-                createDelimitedList(neededIDsVector.elements(),
-                                    columnName + " = ", "", " OR "));
+            // find ranges of ids to compare against
+            int runCount = 1;
+            for (int run = 0; run < runCount; run++)
+            {
+                for (int i1 = 0; i1 < neededIDsVector.size(); i1++)
+                {
+                    for (int i2 = i1; i2 < neededIDsVector.size(); i2++)
+                    {
+                        RangeModel r1 = (RangeModel)neededIDsVector.elementAt(i1);
+                        RangeModel r2 = (RangeModel)neededIDsVector.elementAt(i2);
+
+                        if (r1.getMin() - 1 == r2.getMax())
+                        {
+                            r1.setMin(r2.getMin());
+                            neededIDsVector.remove(i2);
+                            i2--;
+                        }
+                        else if (r1.getMax() + 1 == r2.getMin())
+                        {
+                            r1.setMax(r2.getMax());
+                            neededIDsVector.remove(i2);
+                            i2--;
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < neededIDsVector.size(); i++)
+            {
+                RangeModel r = (RangeModel)neededIDsVector.elementAt(i);
+
+                if (r.getMin() == r.getMax())
+                {
+                    whereClause.append(columnName + " = " + r.getMin());
+                }
+                else
+                {
+                    whereClause.append("(");
+                    whereClause.append(columnName + " >= " + r.getMin());
+                    whereClause.append(" AND ");
+                    whereClause.append(columnName + " <= " + r.getMax());
+                    whereClause.append(")");
+                }
+
+                if (i < neededIDsVector.size() - 1)
+                {
+                    whereClause.append(" OR ");
+                }
+            }
         }
         whereClause.append(")");
 
@@ -907,48 +901,6 @@ public class QueryGenerator
             }
         }
         return leafList;
-    }
-
-    /**
-     * Example use of static getOrgMetrics method
-     *
-     * @param args ignored
-     */
-    public static void main(String[] args)
-    {
-        /*
-        if ((System.getProperty("DBTYPE") == null) ||
-            (System.getProperty("DBURL") == null) ||
-            (System.getProperty("DBUSER") == null) ||
-            (System.getProperty("DBPASSWORD") == null))
-        {
-            System.out.println("You need to set the following property" +
-                               " variables:  DBTYPE, DBURL, DBUSER, and " +
-                               "DBPASSWORD");
-            return;
-        }
-
-        // create some type of enumeration of organization strings
-        Vector orgsOfInterest = new Vector();
-        orgsOfInterest.add("All Units");
-        orgsOfInterest.add("11INBR");
-        orgsOfInterest.add("06INBN");
-        orgsOfInterest.add("09ATBN");
-        orgsOfInterest.add("22MTBN");
-        orgsOfInterest.add("10ARBR");
-
-        for (int time = 0; time < 29; time++)
-        {
-            // call static method in query generator to get a hashtable that
-            // contains a value for each org of interest
-            Hashtable ht =
-                QueryGenerator.getOrgMetrics(orgsOfInterest.elements(),
-                                             "All Items", time, "Demand");
-            System.out.println("\n Demand values for all items at time C+" +
-                               time);
-            printHashtable(ht);
-        }
-        */
     }
 
     private class FurthestFromOneCombiner
