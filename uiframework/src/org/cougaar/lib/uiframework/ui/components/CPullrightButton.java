@@ -221,14 +221,14 @@ public class CPullrightButton extends JButton implements Selector
         {
             super("Select Node");
             setInvoker(parent);
-            setBorderPainted(true);
-            add(control);
+            PullrightMenu.this.setBorderPainted(true);
+            PullrightMenu.this.add(control);
         }
 
         public void cancel()
         {
             firePopupMenuCanceled();
-            setVisible(false);
+            PullrightMenu.this.setVisible(false);
         }
 
         /**

@@ -626,7 +626,7 @@ public class CRowHeaderTable extends JTable
             prepareComponent();
             String dispValue = (value == null) ? "" : value.toString();
             setText(dispValue);
-            setToolTipText(dispValue);
+            HeaderCellRenderer.this.setToolTipText(dispValue);
             if (row < rowStart)
             {
                  setHorizontalAlignment(JLabel.CENTER);
@@ -660,7 +660,7 @@ public class CRowHeaderTable extends JTable
                         Object tooltip = sht.get(tooltipProperty);
                         if (tooltip != null)
                         {
-                            setToolTipText(tooltip.toString());
+                            HeaderCellRenderer.this.setToolTipText(tooltip.toString());
                         }
                     }
                 }
@@ -676,13 +676,13 @@ public class CRowHeaderTable extends JTable
                 JTableHeader header = getTableHeader();
                 if (header != null)
                 {
-                    setForeground(header.getForeground());
-                    setBackground(header.getBackground());
-                          setFont(header.getFont());
+                    HeaderCellRenderer.this.setForeground(header.getForeground());
+                    HeaderCellRenderer.this.setBackground(header.getBackground());
+                          HeaderCellRenderer.this.setFont(header.getFont());
                 }
             }
-            setOpaque(true);
-            setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+            HeaderCellRenderer.this.setOpaque(true);
+            HeaderCellRenderer.this.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
         }
     }
 }

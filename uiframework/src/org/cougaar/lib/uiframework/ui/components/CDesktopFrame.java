@@ -154,11 +154,11 @@ public class CDesktopFrame extends CFrame
             if ((UIManager.getLookAndFeel() instanceof MetalLookAndFeel) &&
                 (currentTheme.getName().startsWith("Cougaar")))
             {
-                setBackground(Color.gray);
+                CDesktopPane.this.setBackground(Color.gray);
             }
             else
             {
-                setBackground(null);
+                CDesktopPane.this.setBackground(null);
             }
             super.updateUI();
         }

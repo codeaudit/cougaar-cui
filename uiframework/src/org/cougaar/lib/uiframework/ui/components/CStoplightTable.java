@@ -267,7 +267,7 @@ public class CStoplightTable extends CRowHeaderTable
             this.column = column;
 
             colorRenderer(value);
-            setFont(table.getFont());
+            StoplightCellRenderer.this.setFont(table.getFont());
             if ((showValue) && (value instanceof Number))
             {
                 setText(valueFormat.format(value));
@@ -286,9 +286,9 @@ public class CStoplightTable extends CRowHeaderTable
             {
                 // enforce black fonts
                 // (otherwise L&F themes could make unreadable)
-                if (getForeground() != Color.black)
+                if (StoplightCellRenderer.this.getForeground() != Color.black)
                 {
-                    setForeground(Color.black);
+                    StoplightCellRenderer.this.setForeground(Color.black);
                 }
 
                 if (value instanceof Number)
@@ -302,40 +302,40 @@ public class CStoplightTable extends CRowHeaderTable
                     if ((compValue.compareTo(greenMin) >= 0) &&
                         (compValue.compareTo(greenMax) <= 0))
                     {
-                        if (getBackground() != Color.green)
+                        if (StoplightCellRenderer.this.getBackground() != Color.green)
                         {
-                            setBackground(Color.green);
+                            StoplightCellRenderer.this.setBackground(Color.green);
                         }
                     }
                     else if ((compValue.compareTo(yellowMin) >= 0) &&
                              (compValue.compareTo(yellowMax) <= 0))
                     {
-                        if (getBackground() != Color.yellow)
+                        if (StoplightCellRenderer.this.getBackground() != Color.yellow)
                         {
-                            setBackground(Color.yellow);
+                            StoplightCellRenderer.this.setBackground(Color.yellow);
                         }
                     }
                     else
                     {
-                        if (getBackground() != Color.red)
+                        if (StoplightCellRenderer.this.getBackground() != Color.red)
                         {
-                            setBackground(Color.red);
+                            StoplightCellRenderer.this.setBackground(Color.red);
                         }
                     }
                 }
                 else
                 {
-                    if (getBackground() != naGrey)
+                    if (StoplightCellRenderer.this.getBackground() != naGrey)
                     {
-                        setBackground(naGrey);
+                        StoplightCellRenderer.this.setBackground(naGrey);
                     }
                 }
             }
             else
             {
                 // Use default colors from theme / L&F
-                setForeground(null);
-                setBackground(null);
+                StoplightCellRenderer.this.setForeground(null);
+                StoplightCellRenderer.this.setBackground(null);
             }
         }
     }
