@@ -13,10 +13,12 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
 import javax.swing.plaf.metal.*;
 import javax.swing.table.TableModel;
 import javax.swing.tree.*;
 
+import org.cougaar.lib.uiframework.ui.components.CChartLegend;
 import org.cougaar.lib.uiframework.ui.components.CFrame;
 import org.cougaar.lib.uiframework.ui.components.CGraphFeatureSelectionControl;
 import org.cougaar.lib.uiframework.ui.components.CLinePlotChart;
@@ -43,9 +45,9 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     private boolean useMenuButtons = true;
     private DatabaseTableModel databaseTableModel = new DatabaseTableModel();
     private CLinePlotChart chart = new CLinePlotChart(databaseTableModel);
+    private CChartLegend legend = new CChartLegend();
     private final static int spacing = 5;
     private VariableInterfaceManager variableManager;
-    private TitledBorder titledBorder;
     private QueryGenerator queryGenerator;
 
     /**
@@ -89,6 +91,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     public void install(JFrame frame)
     {
         frame.getContentPane().add(this);
+        populateMenuBar(frame.getJMenuBar());
     }
 
     /**
@@ -100,6 +103,10 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     public void install(JInternalFrame frame)
     {
         frame.getContentPane().add(this);
+        JMenuBar mb = new JMenuBar();
+        mb.add(new JMenu());
+        populateMenuBar(mb);
+        frame.setJMenuBar(mb);
     }
 
     /**
@@ -112,21 +119,6 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     {
         //return plaf;
         return true;
-    }
-
-    /**
-    /**
-     * When look and feel or theme is changed, this method is called.  It sets
-     * the font scheme based on metal L&F properties.
-     */
-    public void updateUI()
-    {
-        super.updateUI();
-
-        if (titledBorder != null)
-        {
-            titledBorder.setTitleFont(MetalLookAndFeel.getWindowTitleFont());
-        }
     }
 
     /**
@@ -231,12 +223,11 @@ public class LinePlotPanel extends JPanel implements CougaarUI
                   getControl());
         independentVariablesPanel.add(ivBox);
 
-        // Graph Feature Selection Control
-        CGraphFeatureSelectionControl featureSelectionControl =
-            new CGraphFeatureSelectionControl();
-        featureSelectionControl.setBorder(
-            BorderFactory.createTitledBorder("Graph Features"));
-        chart.setGraphFeatureSelectionControl(featureSelectionControl);
+        // Legend
+        //legend.setBorder(
+        //    BorderFactory.createTitledBorder("Legend"));
+        legend.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        chart.setLegend(legend);
 
         // line plot panel
         //chart.getXAxis().setTitleText("Time (C+)");
@@ -253,12 +244,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         linePlotPanel.add(chart, BorderLayout.CENTER);
         linePlotPanel.add(yAxisPanel, BorderLayout.WEST);
         linePlotPanel.add(xAxisPanel, BorderLayout.SOUTH);
-        titledBorder =
-           BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                            variableManager.toString());
-        titledBorder.setTitleJustification(TitledBorder.CENTER);
-        titledBorder.setTitleFont(MetalLookAndFeel.getWindowTitleFont());
-        linePlotPanel.setBorder(titledBorder);
+        chart.setTitle(variableManager.toString());
 
         // generate initial query based on initial variable settings
         updateView();
@@ -286,8 +272,10 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         gbl.setConstraints(independentVariablesPanel, gbc);
         controlPanel.add(independentVariablesPanel);
         independentVariablesPanel.setPreferredSize(new Dimension(0, 0));
-        gbl.setConstraints(featureSelectionControl, gbc);
-        controlPanel.add(featureSelectionControl);
+        //gbl.setConstraints(featureSelectionControl, gbc);
+        //controlPanel.add(featureSelectionControl);
+        gbl.setConstraints(legend, gbc);
+        controlPanel.add(legend);
         final JSplitPane chartPanel =
             new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                            linePlotPanel, tablePanel);
@@ -324,11 +312,62 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         }
     }
 
+    private void populateMenuBar(JMenuBar mb)
+    {
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic('V');
+
+        final JMenuItem adjustXScale = new JCheckBoxMenuItem("Adjust X Scale");
+        adjustXScale.setMnemonic('X');
+        viewMenu.add(adjustXScale);
+        chart.setShowXRangeScroller(adjustXScale.isSelected());
+        adjustXScale.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e)
+                {
+                    chart.setShowXRangeScroller(adjustXScale.isSelected());
+                    if (e.getStateChange() == ItemEvent.SELECTED)
+                    {
+                        chart.resetTotalRange();
+                    }
+                }
+            });
+
+        final JMenuItem adjustYScale = new JCheckBoxMenuItem("Adjust Y Scale");
+        adjustYScale.setMnemonic('Y');
+        viewMenu.add(adjustYScale);
+        chart.setShowYRangeScroller(adjustYScale.isSelected());
+        adjustYScale.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e)
+                {
+                    chart.setShowYRangeScroller(adjustYScale.isSelected());
+                    if (e.getStateChange() == ItemEvent.SELECTED)
+                    {
+                        chart.resetYRangeScroller();
+                    }
+                }
+            });
+
+        viewMenu.add(new JSeparator());
+
+        final JMenuItem showGrid = new JCheckBoxMenuItem("Show Grid", true);
+        showGrid.setMnemonic('S');
+        viewMenu.add(showGrid);
+        chart.setShowGrid(showGrid.isSelected());
+        showGrid.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e)
+                {
+                    chart.setShowGrid(showGrid.isSelected());
+                }
+            });
+
+        mb.add(viewMenu, 1);
+    }
+
     private void updateView()
     {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         queryGenerator.generateQuery(variableManager);
-        titledBorder.setTitle(variableManager.toString());
+        chart.setTitle(variableManager.toString());
         repaint();
         setCursor(Cursor.getDefaultCursor());
     }

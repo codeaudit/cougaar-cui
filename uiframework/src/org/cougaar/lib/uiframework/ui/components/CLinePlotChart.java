@@ -13,6 +13,7 @@ import java.io.File;
 import java.net.URL;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.*;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -24,30 +25,25 @@ import org.cougaar.lib.uiframework.ui.components.graph.DataSet;
 import org.cougaar.lib.uiframework.ui.components.graph.Graph2D;
 import org.cougaar.lib.uiframework.ui.components.graph.Markers;
 import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
+import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.models.TestFunctionTableModel;
 
 /**
  * Line plot chart that can get it's data from a table model.  Each row of the
  * table model is graphed as a line.
  */
-public class CLinePlotChart extends Graph2D
+public class CLinePlotChart extends CChart
 {
     private TableModel tm;
-    private Axis    xaxis;
-    private Axis    yaxis_left;
-    private Axis    yaxis_right;
+    private CChartLegend legend = null;
     private int plotCount = 0;
-    private Object[] plotColor;
-    private final static Object[] defaultColors = {Color.red, Color.blue,
-                                                   Color.black, Color.orange,
-                                                   Color.magenta, Color.gray};
 
     /**
      * Default constructor.  Creates empty line chart
      */
     public CLinePlotChart()
     {
-        super();
+        super("TITLE", null, null, false);
         this.tm = new TestFunctionTableModel();
         init();
     }
@@ -59,20 +55,27 @@ public class CLinePlotChart extends Graph2D
      */
     public CLinePlotChart(TableModel tm)
     {
-        super();
+        super("TITLE", null, null, false);
         this.tm = tm;
 
         init();
     }
 
     /**
-     * Get a reference to the x axis.
+     * Associate a legend with this chart
      *
-     * @return a reference to the x axis.
+     * @param legend to associate with this chart
      */
-    public Axis getXAxis()
+    public void setLegend(CChartLegend legend)
     {
-        return xaxis;
+        this.legend = legend;
+
+        legend.addPropertyChangeListener(new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    repaint();
+                }
+            });
     }
 
     /**
@@ -83,41 +86,6 @@ public class CLinePlotChart extends Graph2D
     {
         super.updateUI();
 
-        if (UIManager.get("Graph.dataSeries1") == null)
-        {
-            setDataBackground(Color.white);
-            plotColor = defaultColors;
-        }
-        else
-        {
-            setDataBackground(MetalLookAndFeel.getControl());
-            Vector plotColors = new Vector();
-            int i = 1;
-            Object nextResource = null;
-            while ((nextResource =
-                    UIManager.get("Graph.dataSeries" + i++)) != null)
-            {
-                plotColors.add(nextResource);
-            }
-            plotColor = plotColors.toArray();
-        }
-
-        Color color;
-        if ((color = (Color)UIManager.get("Graph.grid")) != null)
-            gridcolor = color;
-
-        if (xaxis != null)
-        {
-            xaxis.setLabelFont(MetalLookAndFeel.getSubTextFont()); // tick labels
-            xaxis.setTitleFont(MetalLookAndFeel.getControlTextFont());
-        }
-
-        if (yaxis_left != null)
-        {
-            yaxis_left.setLabelFont(MetalLookAndFeel.getSubTextFont()); // tick labels
-            yaxis_left.setTitleFont(MetalLookAndFeel.getControlTextFont());
-        }
-
         regeneratePlots();
     }
 
@@ -126,87 +94,19 @@ public class CLinePlotChart extends Graph2D
      */
     private void init()
     {
-        URL markerURL;
-
-        /*
-        **      Get the passed parameters
-        */
-
-        String mfile    = "marker.txt";
-
-        /*
-        **      Create the Graph instance and modify the default behaviour
-        */
-        drawzero = true;
-        drawgrid = true;
-        borderTop = 10;
-
-        /*
-        **      Load a file containing Marker definitions
-        */
-        try
-        {
-           markerURL = (new File(mfile)).toURL();
-           setMarkers(new Markers(markerURL));
-        } catch(Exception e)
-        {
-            try
-            {
-                markerURL = new URL("file:///D:/Alpine/Assessment/" + mfile);
-                setMarkers(new Markers(markerURL));
-            }
-            catch (Exception e2)
-            {
-                System.out.println("Failed to create Marker URL!");
-            }
-        }
-
-        // create xaxis
-        xaxis = createAxis(Axis.BOTTOM);
-
-        // create yaxis
-        yaxis_left = createAxis(Axis.LEFT);
-
-        /*
-        **      Attach the second data set to the Right Axis
-        */
-        /*
-        yaxis_right = graph.createAxis(Axis.RIGHT);
-        yaxis_right.attachDataSet(data2);
-        yaxis_right.setTitleText("y=x^3");
-        yaxis_right.setTitleFont(new Font("TimesRoman",Font.PLAIN,20));
-        yaxis_right.setLabelFont(new Font("Helvetica",Font.PLAIN,15));
-        yaxis_right.setTitleColor(new Color(100,100,255) );
-        */
-
         tm.addTableModelListener(new TableModelListener() {
                 public void tableChanged(TableModelEvent e)
                 {
-                    regeneratePlots();
+                    SwingUtilities.invokeLater(new Runnable() {
+                            public void run()
+                            {
+                                regeneratePlots();
+                            }
+                        });
                 }
             });
 
         updateUI();
-    }
-
-    /**
-     * Associates a control to this graph that is used to select graph features
-     *
-     * @param gfc control to associate with graph
-     */
-    public void
-       setGraphFeatureSelectionControl(final CGraphFeatureSelectionControl gfc)
-    {
-        gfc.setShowGrid(drawgrid);
-
-        gfc.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e)
-                {
-                    drawgrid = gfc.getShowGrid();
-                    revalidate();
-                    repaint();
-                }
-            });
     }
 
     /**
@@ -221,29 +121,24 @@ public class CLinePlotChart extends Graph2D
     public void plot(double[] data, int np, float markerScale,
                      String legendText)
     {
-        DataSet dataSet = loadDataSet(data,np);
+        // refuse to plot more than 8 lines
+        if (plotCount >= 8) return;
 
-        Color color = (Color)plotColor[(plotCount % plotColor.length)];
-        dataSet.linecolor = color;
-        dataSet.marker    = (plotCount % 8 ) + 1;
-        dataSet.markerscale = markerScale;
-        dataSet.markercolor = color;
-        dataSet.legend(200,50 + (15 * plotCount), legendText);
-        dataSet.legendColor(color);
-        dataSet.legendFont(MetalLookAndFeel.getSubTextFont());
-        plotCount++;
-
-        /*
-        **      Attach all data set to the Xaxis
-        */
-        xaxis.attachDataSet(dataSet);
-        //xaxis.setTitleText("Xaxis");
-
-        /*
-        **      Attach all data set to the Left Y Axis
-        */
-        yaxis_left.attachDataSet(dataSet);
-        //yaxis_left.setTitleText("y=6x10{^4}x^2");
+        DataSet dataSet = null;
+        try
+        {
+            dataSet = new DataSet(data,np);
+            dataSet.dataGroup = "Legend";
+            dataSet.dataName = legendText;
+            attachDataSet(dataSet);
+            if (legend != null)
+                legend.addDataSet(dataSet);
+            plotCount++;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -253,7 +148,10 @@ public class CLinePlotChart extends Graph2D
     {
         if (tm == null) return;
 
-        detachDataSets();
+        detachAllDataSets();
+        if (legend != null)
+            legend.removeAllDataSets();
+        plotCount = 0;
 
         // find start of data (i.e. lose headers)
         int columnStart = 1;
@@ -275,7 +173,6 @@ public class CLinePlotChart extends Graph2D
             }
         }
 
-        plotCount = 0;
         int numberOfDataPoints = tm.getColumnCount() - columnStart;
         if (numberOfDataPoints <= 0) return;
         double[] data = new double[numberOfDataPoints * 2];
@@ -306,12 +203,14 @@ public class CLinePlotChart extends Graph2D
             }
         }
 
-        // Make this adjustable later
-        yaxis_left.minimum = 0;
-        yaxis_left.maximum = yaxis_left.maximum + yaxis_left.maximum * 0.1;
+        // Must set the total range of the slider
+        resetTotalRange();
+        resetRange();
 
         revalidate();
         repaint();
+        legend.revalidate();
+        legend.repaint();
     }
 
     /**
