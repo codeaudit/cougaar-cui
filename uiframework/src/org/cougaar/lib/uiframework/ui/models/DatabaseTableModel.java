@@ -92,7 +92,7 @@ public class DatabaseTableModel implements TableModel
      * @param columnIndex the index of the column to set
      * @param name        the name of the column
      */
-    public void setColumnName(int columnIndex, String name)
+    public void setColumnName(int columnIndex, Object name)
     {
         setValueAt(name, -1, columnIndex);
     }
@@ -381,14 +381,21 @@ public class DatabaseTableModel implements TableModel
      * @param valueColumn the column index of which the values should be used
      *                    as data cells after transformation
      */
-    public synchronized void setXY(int xColumn, int yColumn, int valueColumn)
+    public synchronized void setXY(int xColumn, int[] yColumn, int valueColumn)
     {
         if (dataRows.size() > 0)
         {
             // determine new column headers and mapped data points
             Vector columnHeaders = new Vector();
-            columnHeaders.addElement(" "); // column header for row headers
-            Vector rowHeaders = new Vector();
+            for (int i = 0; i < yColumn.length; i++)
+            {
+                columnHeaders.addElement(" "); // column header for row headers
+            }
+            Vector[] rowHeaders = new Vector[yColumn.length];
+            for (int i = 0; i < rowHeaders.length; i++)
+            {
+                rowHeaders[i] = new Vector();
+            }
             Vector dataPoints = new Vector();
             for (int rowIndex = 1; rowIndex < dataRows.size(); rowIndex++)
             {
@@ -404,12 +411,37 @@ public class DatabaseTableModel implements TableModel
                     transformedColumnIndex = columnHeaders.size() - 1;
                 }
 
-                Object newRowHeader = origRowVector.elementAt(yColumn);
-                transformedRowIndex = rowHeaders.indexOf(newRowHeader) + 1;
+                // Find row (if it exists)
+                Object[] newRowHeader = new Object[rowHeaders.length];
+                for (int i = 0; i < newRowHeader.length; i++)
+                {
+                    newRowHeader[i] = origRowVector.elementAt(yColumn[i]);
+                }
+                for (int row = 0; row < rowHeaders[0].size(); row++)
+                {
+                    boolean found = true;
+                    for (int i = 0; i < newRowHeader.length; i++)
+                    {
+                        if (!newRowHeader[i].equals(rowHeaders[i].elementAt(row)))
+                        {
+                            found = false;
+                        }
+                    }
+                    if (found)
+                    {
+                        transformedRowIndex = row + 1;
+                        break;
+                    }
+                }
+
+                // row not found, new row needs to be created
                 if (transformedRowIndex == 0)
                 {
-                    rowHeaders.addElement(newRowHeader);
-                    transformedRowIndex = rowHeaders.size();
+                    for (int i = 0; i < rowHeaders.length; i++)
+                    {
+                        rowHeaders[i].addElement(newRowHeader[i]);
+                    }
+                    transformedRowIndex = rowHeaders[0].size();
                 }
 
                 dataPoints.addElement(
@@ -434,7 +466,10 @@ public class DatabaseTableModel implements TableModel
                 if (dp.rowIndex == newRows.size())
                 {
                     Vector newRow = new Vector();
-                    newRow.addElement(rowHeaders.elementAt(dp.rowIndex-1));
+                    for (int x = 0; x < rowHeaders.length; x++)
+                    {
+                        newRow.addElement(rowHeaders[x].elementAt(dp.rowIndex-1));
+                    }
                     newRows.addElement(newRow);
                 }
                 Vector targetRow = (Vector)newRows.elementAt(dp.rowIndex);
@@ -467,6 +502,7 @@ public class DatabaseTableModel implements TableModel
             }
 
             dataRows = newRows;
+
             fireTableChangedEvent(
                 new TableModelEvent(this, TableModelEvent.HEADER_ROW));
         }
@@ -673,8 +709,7 @@ public class DatabaseTableModel implements TableModel
                                 String aggHeader, int aggregatedHeaderColumn,
                                 Combiner c)
     {
-        int aggCount = 1;
-        Vector aggregateRow = modelRow;
+        Vector aggregateRow = c.prepare(modelRow, aggregatedHeaderColumn);
 
         for (int rowIndex = 1; rowIndex < dataRows.size(); rowIndex++)
         {
@@ -694,18 +729,16 @@ public class DatabaseTableModel implements TableModel
             }
             if (matches)
             {
+                // prepare row using combiner
+                row = c.prepare(row, aggregatedHeaderColumn);
+
                 dataRows.removeElementAt(rowIndex--);
                 aggregateRow = combine(aggregateRow, row, c);
-                aggCount++;
             }
          }
 
-         // finalize each cell of combined row using combiner
-         for (int i = 0; i < aggregateRow.size(); i++)
-         {
-            aggregateRow.setElementAt(
-                c.finalize(aggregateRow.elementAt(i), aggCount) , i);
-         }
+         // finalize combined row using combiner
+         aggregateRow = c.finalize(aggregateRow);
 
          aggregateRow.setElementAt(aggHeader, aggregatedHeaderColumn);
 
@@ -722,39 +755,77 @@ public class DatabaseTableModel implements TableModel
      *                     aggregated header should be set
      * @param combiner     the object used to combine two values into one.
      */
-    public void aggregateRows(Enumeration rowList, String aggHeader,
+    public void aggregateRows(Vector rowList, Object aggHeader,
                               int headerColumn, Combiner combiner)
     {
-        int aggCount = 0;
+        if (headerColumn == 1)
+        {
+            Vector primaryHeaderVector = new Vector();
+            for (int row = 0; row < getRowCount(); row++)
+            {
+                Object primaryHeader = getValueAt(row, 0);
+                if (!primaryHeaderVector.contains(primaryHeader))
+                {
+                    primaryHeaderVector.add(primaryHeader);
+                }
+            }
+            for (int i = 0; i < primaryHeaderVector.size(); i++)
+            {
+                Object primaryHeader = primaryHeaderVector.elementAt(i);
+                aggregateRows(primaryHeader, rowList.elements(), aggHeader,
+                              headerColumn, combiner);
+            }
+        }
+        else
+        {
+            aggregateRows(null, rowList.elements(), aggHeader, headerColumn,
+                          combiner);
+        }
+    }
+
+    private void aggregateRows(Object primaryHeader, Enumeration rowList,
+                              Object aggHeader, int headerColumn,
+                              Combiner combiner)
+    {
         Vector aggregateRow = null;
         while (rowList.hasMoreElements())
         {
             String rowID = rowList.nextElement().toString();
-            Vector row = findRow(rowID, headerColumn);
-            dataRows.remove(row);
-            if (aggregateRow == null)
+            RowHeaderDescriptor[] rhd = (primaryHeader == null) ?
+                new RowHeaderDescriptor[]
+                    {new RowHeaderDescriptor(headerColumn, rowID)} :
+                new RowHeaderDescriptor[]
+                    {new RowHeaderDescriptor(0, primaryHeader),
+                     new RowHeaderDescriptor(headerColumn, rowID)};
+            Vector row = findRow(rhd);
+            if (row != null)
             {
-                aggregateRow = row;
+                // prepare row using combiner
+                row = combiner.prepare(row, headerColumn);
+
+                dataRows.remove(row);
+                if (aggregateRow == null)
+                {
+                    aggregateRow = row;
+                }
+                else
+                {
+                    aggregateRow = combine(aggregateRow, row, combiner);
+                }
             }
-            else
-            {
-                aggregateRow = combine(aggregateRow, row, combiner);
-            }
-            aggCount++;
         }
 
-         // finalize each cell of combined row using combiner
-         for (int i = 0; i < aggregateRow.size(); i++)
-         {
-            aggregateRow.setElementAt(
-                combiner.finalize(aggregateRow.elementAt(i), aggCount) , i);
-         }
+        if (aggregateRow != null)
+        {
+            // finalize combined row using combiner
+            aggregateRow = combiner.finalize(aggregateRow);
 
-        aggregateRow.set(headerColumn, aggHeader);
-        dataRows.add(aggregateRow);
+            aggregateRow.set(headerColumn, aggHeader);
+            dataRows.add(aggregateRow);
 
-        fireTableChangedEvent(
-            new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+            fireTableChangedEvent(
+                new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+        }
     }
 
     /**
@@ -763,12 +834,24 @@ public class DatabaseTableModel implements TableModel
      * @rowID        the row header to search for
      * @headerColumn the index of the column to use as row header column
      */
-    private Vector findRow(String rowID, int headerColumn)
+    private Vector findRow(RowHeaderDescriptor[] hd)
     {
         for (int i = 0; i < dataRows.size(); i++)
         {
             Vector row = (Vector)dataRows.elementAt(i);
-            if (row.elementAt(headerColumn).toString().equals(rowID))
+
+            boolean found = true;
+            for (int x = 0; x < hd.length; x++)
+            {
+                if (!row.elementAt(hd[x].headerColumn).toString().
+                    equals(hd[x].value.toString()))
+                {
+                    found = false;
+                    break;
+                }
+            }
+
+            if (found)
             {
                 return row;
             }
@@ -786,13 +869,15 @@ public class DatabaseTableModel implements TableModel
      */
     private Vector combine(Vector row1, Vector row2, Combiner combiner)
     {
+        if (row1 == null) return row2;
+        if (row2 == null) return row1;
+
         Vector combinedRow = new Vector();
         for (int i = 0; i < row1.size(); i++)
         {
             combinedRow.add(
                 combiner.combine(row1.elementAt(i), row2.elementAt(i)));
         }
-
         return combinedRow;
     }
 
@@ -801,6 +886,16 @@ public class DatabaseTableModel implements TableModel
      */
     public static interface Combiner
     {
+        /**
+         * method is called on each row to be aggregated before aggregation.
+         *
+         * @param row row to be aggregated
+         * @param headerColumn index of column that holds descriptions
+         *                      of the items being combined
+         * @return prepared row
+         */
+        public Vector prepare(Vector row, int headerColumn);
+
         /**
          * combines values into one value
          *
@@ -814,11 +909,27 @@ public class DatabaseTableModel implements TableModel
          * Operation to perform on aggregated value after all rows have been
          * combined.  (needed for averaging)
          *
-         * @param obj the aggregated object
-         * @param numRowsCombined number of rows that this value represents.
-         * @return finalized aggregated value
+         * @param row the aggregated row
+         * @return finalized aggregated row
          */
-        public Object finalize(Object obj, int numRowsCombined);
+        public Vector finalize(Vector row);
+    }
+
+    private class RowHeaderDescriptor
+    {
+        public int headerColumn;
+        public Object value;
+
+        RowHeaderDescriptor(int headerColumn, Object value)
+        {
+            this.headerColumn = headerColumn;
+            this.value = value;
+        }
+
+        public String toString()
+        {
+            return headerColumn + ", " + value;
+        }
     }
 
     /**
