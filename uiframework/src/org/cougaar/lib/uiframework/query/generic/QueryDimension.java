@@ -89,7 +89,7 @@ public abstract class QueryDimension {
    *  @param seq the sequence of points for which values were requested
    *  @param inheritedMode the traversal mode of the parent node
    *  @return a ListElement as one part of the prototype for the result set
-   *  @throw QueryException if the query does not conform to the dimension
+   *  @throws QueryException if the query does not conform to the dimension
    */
   protected ListElement recursiveVisit (
       DimNode d_node, ListElement q_node, VisitSeq seq, String inheritedMode)

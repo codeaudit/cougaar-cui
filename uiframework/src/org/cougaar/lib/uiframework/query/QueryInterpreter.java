@@ -43,7 +43,7 @@ public interface QueryInterpreter {
    *
    *  @param q a Structure containing the query
    *  @return a Structure containing the results
-   *  @throw QueryException if a problem is encountered in processing the query
+   *  @throws QueryException if a problem is encountered in processing the query
    */
   public Structure query (Structure q) throws QueryException;
 }
