@@ -76,6 +76,7 @@ public class OMCGMIcons
         if (nextTok.equals ("V"))
         {
           // this is a VISIO generated CGM file
+//          System.out.println (idkey + " is a visio generated CGM file.");
 
           try
           {
@@ -91,7 +92,12 @@ public class OMCGMIcons
           {
             omcgmVal = new OMCGM(fileName);
             omcgmVal = new OMCGMbyVisio (omcgmVal);
-            //omcgmVal.omcgmdisp.setChangeFill(true);
+
+            iconsByName.put(idkey, omcgmVal);
+
+            line = br.readLine();
+
+            continue;
           }
 
         }
@@ -105,10 +111,27 @@ public class OMCGMIcons
 
       catch ( java.util.NoSuchElementException nsee)
       {
-        omcgmVal = new OMCGM (fileName);
+        try
+        {
+          omcgmVal = new OMCGM (fileName);
             //omcgmVal.omcgmdisp.setChangeFill(true);
+        }
+        catch (FileNotFoundException fnf)
+        {
+          System.err.println ("CGM file not found: " + fileName);
+          line = br.readLine();
+          continue;
+        }
 
       }
+
+      catch (FileNotFoundException fnf)
+      {
+        System.err.println ("CGM file not found: " + fileName);
+        line = br.readLine();
+        continue;
+      }
+
       //omcgmVal.omcgmdisp.setFillColor(Color.red);
       iconsByName.put(idkey, omcgmVal);
 
@@ -119,7 +142,14 @@ public class OMCGMIcons
 
   public OMCGM get (String idkey)
   {
-    return ((OMCGM) iconsByName.get(idkey)).makeAnother();
+    OMCGM orig = (OMCGM) iconsByName.get(idkey);
+    OMCGM ret;
+    if (orig instanceof OMCGMbyVisio)
+      ret = ( (OMCGMbyVisio) orig).makeAnother();
+    else
+      ret = orig.makeAnother();
+
+    return ret;
   }
 
 }

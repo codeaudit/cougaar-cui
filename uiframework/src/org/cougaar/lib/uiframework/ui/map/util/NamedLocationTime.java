@@ -24,6 +24,13 @@ import org.cougaar.lib.uiframework.ui.map.layer.Unit;
 import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
 
+// for getNamedLocationsAtTimeInterpolate (...)
+import com.bbn.openmap.omGraphics.OMGraphic;
+import org.cougaar.lib.uiframework.ui.map.layer.VecIcon;
+import org.cougaar.lib.uiframework.ui.map.layer.InterpolateIconPos;
+import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.*;
+
+
 public class NamedLocationTime extends ScheduleElementImpl  {
     private static String NAME = "name";
     private static String VALUES = "values";
@@ -268,6 +275,26 @@ public class NamedLocationTime extends ScheduleElementImpl  {
         }
     //}
       return transitionTimes;
+    }
+
+
+    public static Collection getNamedLocationsAtTimeInterpolate (ScheduleImpl sched, long time)
+    {
+//      Collection intersectCol = sched.getScheduleElementsWithTime(time);
+//      return intersectCol;
+      Vector intersectCol = new Vector();
+      Collection transitionCol = InterpolateIconPos.findTransitionNLTs ( (Collection) intersectCol, sched, time);
+      return transitionCol;
+    }
+
+    public void setLatitude (float latVal)
+    {
+      lat = latVal;
+    }
+
+    public void setLongitude (float lonVal)
+    {
+      lon = lonVal;
     }
 
     public static void main(String[] argv) {

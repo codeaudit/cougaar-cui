@@ -1,12 +1,3 @@
-/*
- * <copyright>
- * Copyright 1997-2001 Defense Advanced Research Projects
- * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
- * Raytheon Systems Company (RSC) Consortium).
- * This software to be used only in accordance with the
- * COUGAAR licence agreement.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.map.layer.cgmicon;
 
 import java.awt.Graphics;
@@ -25,7 +16,6 @@ public class CGMVecIcon extends VecIcon
 
   public CGMVecIcon()
   {
-
   }
 
   public CGMVecIcon (OMCGM cgm, float lat, float lon, int sc)
@@ -72,6 +62,11 @@ public class CGMVecIcon extends VecIcon
        newMe.cgmIcon.cgmFileName = new String (this.cgmIcon.cgmFileName);
        newMe.cgmIcon.omcgmdisp = (OpenMapCGMDisplay) (this.cgmIcon.omcgmdisp.makeAnother());
 
+      newMe.setVisible(this.isVisible());
+
+      newMe.locationNumber = locationNumber;
+      newMe.assetBarGraphic = assetBarGraphic;
+
        return newMe;
 
      }
@@ -86,6 +81,11 @@ public class CGMVecIcon extends VecIcon
 
    }
 
+   public void setEchelon (int echelon)
+   {
+     cgmIcon.setEchelon (echelon);
+   }
+
    public boolean generate (Projection proj)
    {
      return super.generate(proj) & cgmIcon.generate(proj) ;
@@ -97,6 +97,11 @@ public class CGMVecIcon extends VecIcon
     cgmIcon.render(g);
   }
 
+  public void updateScale ()
+  {
+    cgmIcon.updateScale();
+  }
+  
     protected void initSymbol() {}
     protected void initBoundingBox() {}
   

@@ -1,12 +1,3 @@
-/*
- * <copyright>
- * Copyright 1997-2001 Defense Advanced Research Projects
- * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
- * Raytheon Systems Company (RSC) Consortium).
- * This software to be used only in accordance with the
- * COUGAAR licence agreement.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.components;
 
 import java.awt.*;
@@ -25,34 +16,34 @@ import javax.swing.event.*;
  */
 public class CLabeledSlider extends JPanel
 {
-    private int fidelity = 1000;
+    protected int fidelity = 1000;
 
     /** the spacing between major tick marks on slider */
-    private int majorTickSpacing = fidelity/10;
+    protected int majorTickSpacing = fidelity/10;
 
     /** the static label */
-    private JLabel label;
+    protected JLabel label;
 
     /** the dynamic label */
-    private JLabel valueLabel;
+    protected JLabel valueLabel;
 
     /** the slider */
-    private JSlider slider;
+    protected JSlider slider;
 
     /** panel that holds the static and dynamic labels */
-    private JPanel labelPanel;
+    protected JPanel labelPanel;
 
     /** format used to format the dynamic value label */
-    private DecimalFormat labelFormat;
+    protected DecimalFormat labelFormat;
 
     /** minimum value of slider */
-    private float minValue = 0f;
+    protected float minValue = 0f;
 
     /** maximum value of slider */
-    private float maxValue = 0f;
+    protected float maxValue = 0f;
 
     /** the floating point value that corresponds to 1 unit on the slider */
-    private float unit =  0f;
+    protected float unit =  0f;
 
     /**
      * default constructor.  Creates new labeled slider with "No Name" as label
@@ -274,7 +265,7 @@ public class CLabeledSlider extends JPanel
      * @param minValue   The minimum value of the slider
      * @param maxValue   The maximum value of the slider
      */
-    private void init(String labelString, int labelWidth, float minValue,
+    protected void init(String labelString, int labelWidth, float minValue,
                       float maxValue)
     {
         labelPanel = new JPanel(new BorderLayout());
@@ -398,7 +389,7 @@ public class CLabeledSlider extends JPanel
      * @param i slider's integer value
      * @return "value" float value
      */
-    private float fromSlider(int i)
+    protected float fromSlider(int i)
     {
         return minValue + (unit * i);
     }

@@ -12,9 +12,9 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/VecIcon.java,v $
- * $Revision: 1.3 $
- * $Date: 2001-03-22 16:59:12 $
- * $Author: krotherm $
+ * $Revision: 1.6 $
+ * $Date: 2001-10-26 21:39:15 $
+ * $Author: mdavis $
  * 
  * **********************************************************************
  */
@@ -41,6 +41,12 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.location.*;
 
 public class VecIcon extends OMGraphic {
+    public static long maxNumber = -1;
+
+    public long locationNumber = -1;
+
+    public AssetBarGraphic assetBarGraphic = null;
+
     float basepixyf=.2f;
     float basepixxf=.1f;
     float pixyf=basepixyf;
@@ -53,7 +59,7 @@ public class VecIcon extends OMGraphic {
     OMPoly bbox;
     OMGraphicList ogl=new OMGraphicList();
     static String msg="Generic Default";
-    float lat1, lon1; 
+    float lat1, lon1;
     float lat2, lon2; 
     Color bgc, fgc;
 
@@ -92,13 +98,25 @@ public class VecIcon extends OMGraphic {
     protected void initScale(int scale) { 
 	this.scale=scale; pixyf=scale*basepixyf; pixxf=scale*basepixxf; 
     }
-    protected void initLabel() {
+    public void initLabel() {
 	initLabel(defaultLabel);
     }
-    protected void initLabel(String str) {
-	label=new OMText(lat1+(pixxf/2), lon1, 3, 1, str, 
+    public void initLabel(String str) {
+	label=new OMText(lat1+(pixxf/2), lon1, 3, 1, str,
 				OMText.JUSTIFY_RIGHT);
+  label.setShowBounds(true);
+  label.setBoundsFillColor(Color.white);
 	ogl.add(label);
+    }
+
+    public void changeLocation (float lat, float lon)
+    {
+      initLocation (lat, lon);
+      if (label != null)
+      {
+        label.setLat(lat);
+        label.setLon(lon);
+      }
     }
 
     public void initLocation(float lat, float lon) {
@@ -149,8 +167,23 @@ public class VecIcon extends OMGraphic {
     int getScale() { return scale; }
     void setColor(Color bc) { 	bbox.setFillColor(bc); }
 
+    public float getLatLocation () { return lat1; }
+    public float getLonLocation () { return lon1; }
+
     // OMGraphic requirements
     public float distance(int x, int y) { return ogl.distance(x,y); }
-    public void render(Graphics g) { ogl.render(g); }
-    public boolean generate(Projection  x) { return ogl.generate(x); }
+    public void render(Graphics g)
+    {
+      ogl.render(g);
+      if (assetBarGraphic != null)
+      {
+        assetBarGraphic.render(g, label.getPolyBounds().getBounds());
+      }
+    }
+
+    public boolean generate(Projection  x)
+    {
+//      return(ogl.generate(x) && assetBarGraphic.generate(x));
+      return(ogl.generate(x));
+    }
 } // end-class

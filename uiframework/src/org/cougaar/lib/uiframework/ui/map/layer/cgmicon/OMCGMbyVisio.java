@@ -1,12 +1,3 @@
-/*
- * <copyright>
- * Copyright 1997-2001 Defense Advanced Research Projects
- * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
- * Raytheon Systems Company (RSC) Consortium).
- * This software to be used only in accordance with the
- * COUGAAR licence agreement.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.map.layer.cgmicon;
 
 import java.util.Vector;
@@ -41,6 +32,8 @@ public class OMCGMbyVisio extends OMCGM
   public boolean generate (Projection proj)
   {
 
+    oldProjection = proj;  // I'm sure this is a strict OpenMap no no
+
     /**
      * Establish new x and y origin based on projection.
      *
@@ -52,7 +45,7 @@ public class OMCGMbyVisio extends OMCGM
 
     if (proj == null)
     {
-      System.err.println ("omgraphic: OMCGM: null projection in generate!");
+      System.err.println ("omgraphic: OMCGMbyVisio: null projection in generate!");
       return false;
     }
 
@@ -95,11 +88,151 @@ public class OMCGMbyVisio extends OMCGM
       ogl.generate(proj);
     }
 
-
     setNeedToRegenerate(false);
 
     return true;
 
   }
+
+   public void updateScale ()
+   {
+
+     // set our new origin so that as we scale we don't appear to move
+//     System.out.println ("\npermScale is: " + permScale);
+
+//     System.out.print ( "changing degLat from: " + degLat );
+//     System.out.println ( " \tchanging degLon from: " + degLon);
+
+     // degL.. + degL..Offset will give us the original position of the icon,
+     // from there we offset appropriately
+     float origLonPos = degLon + degLonOffset;
+     float origLatPos = degLat + degLatOffset;
+
+     float newLat = 0.0f, newLon = 0.0f;
+     if (permScale > 1.0f)
+     {
+       // get the new positions
+       newLat = origLatPos - (LAT_OFFSET * permScale);
+       newLon = origLonPos - (LON_OFFSET * permScale);
+     }
+
+     else if (permScale < 1.0)
+     {
+       // get the new positions
+       newLat = origLatPos + (LAT_OFFSET * permScale);
+       newLon = origLonPos + (LON_OFFSET * permScale);
+     }
+
+     else
+     {
+       // permScale = 1.0f exactly
+       newLat = origLatPos;
+       newLon = origLonPos;
+     }
+
+
+     // openmap works from -180.0 to +180.0
+     if (newLon < -180.0f)
+       newLon = 360.0f + newLon; // put it on the other side of the 180 degree line
+     else if (newLon > 180.0f)
+       newLon = newLon - 360.0f;
+
+     if (newLat < -180.0f)
+       newLat = 360.0f + newLat;
+     else if (newLat > 180.0f)
+       newLat = newLat - 360.0f;
+
+     // prepare for next round of calculations
+     degLatOffset = origLatPos - newLat;
+     degLonOffset = origLonPos - newLon;
+
+     degLat = newLat;
+     degLon = newLon;
+
+//     System.out.print ("\tto: " + degLat);
+//     System.out.println (" \t\tto: " + degLon);
+
+     setLocation (degLat, degLon, DECIMAL_DEGREES);
+
+     generate (oldProjection);
+
+     LatLonPoint llp1 = new LatLonPoint (latOrigin, lonOrigin);
+     float toLat = latOrigin + (permScale * 0.3f);
+     if (toLat > 180.0f)
+       toLat -= 360.0f;
+     else if (toLat < -180.0f)
+       toLat += 360.0f;
+
+     float toLon = lonOrigin + (permScale * 0.3f);
+     if (toLon > 180.0f)
+       toLon -= 360.0f;
+     else if (toLon < -180.0f)
+       toLon += 360.0f;
+
+     LatLonPoint llp2 = new LatLonPoint (toLat, toLon);
+
+     Vector xys = oldProjection.forwardLine(llp1, llp2, LineType.Straight, -1);
+
+      int x[] = (int[]) xys.elementAt(0);
+      int y[] = (int[]) xys.elementAt(1);
+
+//        System.out.println ("x range: " + (x[1] - x[0]) );
+//        System.out.println ("y range: " + (y[0] - y[1]) );
+/*
+      xrange = x[1] - x[0];
+      yrange = y[0] - y[1];
+
+      omcgmdisp.scale( xrange, yrange);
+*/
+
+   // Visio makes the icons too big scale them down further
+    double adjuster;
+
+    adjuster = (double) x[1] - (double) x[0];
+    int adjustedX = (int) ((adjuster * VISIO_SCALE_FACTOR) + 0.5);
+
+    adjuster = (double) y[0] - (double) y[1];
+    int adjustedY = (int) ((adjuster * VISIO_SCALE_FACTOR) + 0.5);
+
+//        System.out.println ("adjusted x range: " + adjustedX );
+//        System.out.println ("adjusted y range: " + adjustedY );
+
+    omcgmdisp.scale( adjustedX, adjustedY);
+
+      if (unitSize != null)
+      {
+        drawUnitSizeDesignation (unitSize, latOrigin, lonOrigin);
+        ogl.generate(oldProjection);
+      }
+
+   }
+
+
+
+  public OMCGM makeAnother()
+  {
+
+     try
+     {
+
+       OMCGMbyVisio mycopy = new OMCGMbyVisio();
+       if (this.unitSize != null)
+         mycopy.unitSize = new String (this.unitSize);
+       mycopy.cgmFileName = new String (this.cgmFileName);
+       mycopy.omcgmdisp = (OpenMapCGMDisplay) (this.omcgmdisp.makeAnother());
+
+       return mycopy;
+
+     }
+
+     catch (Throwable ioexc)
+     {
+       System.err.println (ioexc.toString());
+       ioexc.printStackTrace();
+     }
+
+     return null;
+
+   }
 
 } 

@@ -12,9 +12,9 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Unit.java,v $
- * $Revision: 1.2 $
- * $Date: 2001-02-23 21:56:55 $
- * $Author: krotherm $
+ * $Revision: 1.3 $
+ * $Date: 2001-06-25 18:27:44 $
+ * $Author: mdavis $
  * 
  * **********************************************************************
  */
@@ -49,21 +49,24 @@ public class Unit {
 	String label;
 	OMGraphic graphic;
 	Hashtable data;
-	
 
-	Unit(String str, OMGraphic omg, Hashtable ht) {
-	    label=str;
+	public Unit (String str, OMGraphic omg, Hashtable ht)
+  {
+ 	    label=str;
 	    graphic=omg;
 	    data=ht;
 	}
-	Float getData(String metric) { 
+
+	Float getData(String metric)
+  {
 	    Float ret=null;
 	    Object fl=data.get(metric);
 	    if (fl!=null && fl instanceof Float) ret=(Float)fl;
 	    return ret;
 	}
-	OMGraphic getGraphic() { return graphic; }
-	void setColor(Color c) { 
+
+	void setColor(Color c)
+  {
 	    // yuk yuk yuk
 	    if (graphic instanceof VecIcon) {
 		((VecIcon)graphic).setColor(c); 
@@ -71,6 +74,7 @@ public class Unit {
 		((InfantryVecIcon)graphic).setColor(c); 
 	    }
 	}
-	String getLabel() { return label; }
+	public OMGraphic getGraphic() { return graphic; }
+	public String getLabel() { return label; }
     }
 
