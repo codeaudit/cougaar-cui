@@ -151,17 +151,18 @@ public class QueryHelper implements ActionListener,
 
     try {
       ConnectionHelper connection =
-        new ConnectionHelper(clusterURL, PSP_package, PSP_id);
-     System.out.println("connection");
+	new ConnectionHelper(clusterURL, "inventory");
+	//        new ConnectionHelper(clusterURL, PSP_package, PSP_id);
+      //System.out.println("connection");
       connection.sendData(request);
-      System.out.println("senddata");
+      //System.out.println("senddata");
       is = connection.getInputStream();
-      System.out.println("is");
+      //System.out.println("is");
     } catch (Exception e) {
       displayErrorString(e.toString());
       System.out.println("caught exception");
     }
-    System.out.println("try read reply");
+    //System.out.println("try read reply");
     query.readReply(is);
 
   }
