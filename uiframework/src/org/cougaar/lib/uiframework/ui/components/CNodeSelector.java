@@ -153,7 +153,10 @@ public class CNodeSelector extends JPanel implements Selector
             DefaultMutableTreeNode node =
                 findNode((DefaultMutableTreeNode)nsc.getModel().getRoot(),
                          selectedItem.toString());
-            nsc.setSelectionPath(new TreePath(node.getPath()));
+            if (node != null)
+            {
+                nsc.setSelectionPath(new TreePath(node.getPath()));
+            }
         }
     }
 
