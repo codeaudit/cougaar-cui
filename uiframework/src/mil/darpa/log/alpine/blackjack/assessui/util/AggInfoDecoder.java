@@ -130,23 +130,18 @@ public class AggInfoDecoder {
     AggInfoStructure myStruct3 = new AggInfoStructure ("DEPT4B", "LAMPS", "2", "5");
     AggInfoStructure myStruct4 = new AggInfoStructure ("DEPT4B", "LAMPS", "1", "5", "2");
 
-    String line1 = myEncoder.encodeStartOfXML("DEMAND");
-    String line2 = myEncoder.encodeDataAtom(myStruct);
-    String line3 = myEncoder.encodeDataAtom(myStruct2);
-    String line4 = myEncoder.encodeDataAtom(myStruct3);
-    String line5 = myEncoder.encodeDataAtom(myStruct4);
-    String line6 = myEncoder.encodeEndOfXML();
+    StringBuffer line = myEncoder.encodeStartOfXML("DEMAND");
+    myEncoder.encodeDataAtom(line, myStruct);
+    myEncoder.encodeDataAtom(line, myStruct2);
+    myEncoder.encodeDataAtom(line, myStruct3);
+    myEncoder.encodeDataAtom(line, myStruct4);
+    myEncoder.encodeEndOfXML(line);
 
-    System.out.print (line1);
-    System.out.print (line2);
-    System.out.print (line3);
-    System.out.print (line4);
-    System.out.print (line5);
-    System.out.print (line6);
+    System.out.print (line.toString());
 
     String metric = null;
 
-    metric = myDecoder.startXMLDecoding (line1 + line2 + line3 + line4 + line5 + line6);
+    metric = myDecoder.startXMLDecoding (line.toString());
 
 //    myDecoder.startXMLDecoding ("<?XML bull?>\n<data-set>\n</data-set>");
 //    myDecoder.startXMLDecoding ("/ata-set>");

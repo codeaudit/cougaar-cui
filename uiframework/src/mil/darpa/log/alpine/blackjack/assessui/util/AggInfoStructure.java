@@ -11,12 +11,26 @@ public class AggInfoStructure {
   private String rate;
 
   static private final String org_xml_string = "org";
+  static private final String begin_org_xml_string = "<org>";
+  static private final String end_org_xml_string = "</org>";
   static private final String item_xml_string = "item";
+  static private final String begin_item_xml_string = "<item>";
+  static private final String end_item_xml_string = "</item>";
   static private final String time_xml_string = "time";
+  static private final String begin_time_xml_string = "<time>";
+  static private final String stop_time_xml_string = "</time>";
   static private final String start_time_xml_string = "start_time";
+  static private final String begin_start_time_xml_string = "<start_time>";
+  static private final String end_start_time_xml_string = "</start_time>";
   static private final String end_time_xml_string = "end_time";
+  static private final String begin_end_time_xml_string = "<end_time>";
+  static private final String end_end_time_xml_string = "</end_time>";
   static private final String value_xml_string = "value";
+  static private final String begin_value_xml_string = "<value>";
+  static private final String end_value_xml_string = "</value>";
   static private final String rate_xml_string = "rate";
+  static private final String begin_rate_xml_string = "<rate>";
+  static private final String end_rate_xml_string = "</rate>";
 
   public AggInfoStructure (String new_org,
 			 String new_item,
@@ -54,11 +68,11 @@ public class AggInfoStructure {
   }
 
   static public String getOrgStartXMLString () {
-    return "<" + org_xml_string + ">";
+    return begin_org_xml_string;
   }
 
   static public String getOrgEndXMLString () {
-    return "</" + org_xml_string + ">";
+    return end_org_xml_string;
   }
 
   public String getItem () {
@@ -70,11 +84,11 @@ public class AggInfoStructure {
   }
 
   static public String getItemStartXMLString () {
-    return "<" + item_xml_string + ">";
+    return begin_item_xml_string;
   }
 
   static public String getItemEndXMLString () {
-    return "</" + item_xml_string + ">";
+    return end_item_xml_string;
   }
 
   public String getTime () {
@@ -86,11 +100,11 @@ public class AggInfoStructure {
   }
 
   static public String getTimeStartXMLString () {
-    return "<" + time_xml_string + ">";
+    return begin_time_xml_string;
   }
 
   static public String getTimeEndXMLString () {
-    return "</" + time_xml_string + ">";
+    return stop_time_xml_string;
   }
 
   public String getStartTime () {
@@ -102,11 +116,11 @@ public class AggInfoStructure {
   }
 
   static public String getStartTimeStartXMLString () {
-    return "<" + start_time_xml_string + ">";
+    return begin_start_time_xml_string;
   }
 
   static public String getStartTimeEndXMLString () {
-    return "</" + start_time_xml_string + ">";
+    return end_start_time_xml_string;
   }
 
   public String getEndTime () {
@@ -122,15 +136,19 @@ public class AggInfoStructure {
   }
 
   static public String getEndTimeStartXMLString () {
-    return "<" + end_time_xml_string + ">";
+    return begin_end_time_xml_string;
   }
 
   static public String getEndTimeEndXMLString () {
-    return "</" + end_time_xml_string + ">";
+    return end_end_time_xml_string;
   }
 
   public String getValue () {
     return value;
+  }
+
+  public void setValue (String new_value) {
+    value = new_value;
   }
 
   static public String getValueXMLString () {
@@ -138,15 +156,19 @@ public class AggInfoStructure {
   }
 
   static public String getValueStartXMLString () {
-    return "<" + value_xml_string + ">";
+    return begin_value_xml_string;
   }
 
   static public String getValueEndXMLString () {
-    return "</" + value_xml_string + ">";
+    return end_value_xml_string;
   }
 
   public String getRate () {
     return rate;
+  }
+
+  public void setRate (String new_rate) {
+    rate = new_rate;
   }
 
   static public String getRateXMLString () {
@@ -154,11 +176,11 @@ public class AggInfoStructure {
   }
 
   static public String getRateStartXMLString () {
-    return "<" + rate_xml_string + ">";
+    return begin_rate_xml_string;
   }
 
   static public String getRateEndXMLString () {
-    return "</" + rate_xml_string + ">";
+    return end_rate_xml_string;
   }
 
 }

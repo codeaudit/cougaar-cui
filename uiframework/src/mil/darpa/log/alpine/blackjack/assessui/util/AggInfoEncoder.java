@@ -11,19 +11,17 @@ public class AggInfoEncoder {
   private static final String start_begin_xml_string = "<xml_begin>";
   private static final String end_begin_xml_string = "</xml_begin>";
   private static final String data_set_xml_string = "data-set";
+  private static final String begin_data_set_xml_string = "<data-set>";
+  private static final String end_data_set_xml_string = "</data-set>";
   private static final String data_atom_xml_string = "data-atom";
+  private static final String begin_data_atom_xml_string = "<data-atom>";
+  private static final String end_data_atom_xml_string = "</data-atom>";
   private static final String metric_xml_string = "metric";
+  private static final String start_metric_xml_string = "<metric>";
+  private static final String end_metric_xml_string = "</metric>";
 
-  public static String getStartXMLString() {
+  public static String getStartXMLString () {
     return start_xml_string;
-  }
-
-  public static String getStartBeginXMLString() {
-    return start_begin_xml_string;
-  }
-
-  public static String getEndBeginXMLString() {
-    return end_begin_xml_string;
   }
 
   public static String getDataSetXMLString () {
@@ -31,11 +29,11 @@ public class AggInfoEncoder {
   }
 
   public static String getStartDataSetXMLString () {
-    return "<" + data_set_xml_string + ">";
+    return begin_data_set_xml_string;
   }
 
   public static String getEndDataSetXMLString () {
-    return "</" + data_set_xml_string + ">";
+    return end_data_set_xml_string;
   }
 
   public static String getDataAtomXMLString () {
@@ -43,11 +41,11 @@ public class AggInfoEncoder {
   }
 
   public static String getStartDataAtomXMLString () {
-    return "<" + data_atom_xml_string + ">";
+    return begin_data_atom_xml_string;
   }
 
   public static String getEndDataAtomXMLString () {
-    return "</" + data_atom_xml_string + ">";
+    return end_data_atom_xml_string;
   }
 
   public static String getMetricXMLString () {
@@ -55,84 +53,89 @@ public class AggInfoEncoder {
   }
 
   public static String getStartMetricXMLString () {
-    return "<" + metric_xml_string + ">";
+    return start_metric_xml_string;
   }
 
   public static String getEndMetricXMLString () {
-    return "</" + metric_xml_string + ">";
+    return end_metric_xml_string;
   }
 
-  public String encodeStartOfXML (String metric) {
+  public StringBuffer encodeStartOfXML (String metric) {
     if (state != start_state) {
       System.out.println ("Must finish previous XML before starting another one");
       return null;
     }
 
-    String ret = new String();
+    StringBuffer ret = new StringBuffer();
 
-    ret = ret + getStartXMLString();
+    ret.append (start_xml_string);
 
-    ret = ret + getStartBeginXMLString();
+    ret.append (start_begin_xml_string);
 
-    ret = ret + getStartMetricXMLString();
-    ret = ret + metric;
-    ret = ret + getEndMetricXMLString();
+    ret.append (start_metric_xml_string);
+    ret.append (metric);
+    ret.append (end_metric_xml_string);
 
-    ret = ret + getStartDataSetXMLString();
+    ret.append (begin_data_set_xml_string);
 
     state = atom_state;
 
     return ret;
   }
 
-  public String encodeDataAtom (AggInfoStructure next_structure) {
+  public void encodeDataAtom (StringBuffer ret, AggInfoStructure next_structure) {
 
      if (state != atom_state) {
        System.out.println ("Need to have written a start of XML message first");
-       return null;
      }
 
-     String ret = new String();
+     ret.append (begin_data_atom_xml_string);
+     ret.append (AggInfoStructure.getOrgStartXMLString());
+     ret.append (next_structure.getOrg());
+     ret.append (AggInfoStructure.getOrgEndXMLString());
 
-     ret = ret + getStartDataAtomXMLString();
-     ret = ret + AggInfoStructure.getOrgStartXMLString() + next_structure.getOrg() + AggInfoStructure.getOrgEndXMLString();
-     ret = ret + AggInfoStructure.getItemStartXMLString() + next_structure.getItem() + AggInfoStructure.getItemEndXMLString();
+     ret.append (AggInfoStructure.getItemStartXMLString());
+     ret.append (next_structure.getItem());
+     ret.append (AggInfoStructure.getItemEndXMLString());
 
      if (next_structure.getTime() != null) {
-       ret = ret + AggInfoStructure.getTimeStartXMLString() + next_structure.getTime() + AggInfoStructure.getTimeEndXMLString();
+       ret.append (AggInfoStructure.getTimeStartXMLString());
+       ret.append (next_structure.getTime());
+       ret.append (AggInfoStructure.getTimeEndXMLString());
      }
      else {
-       ret = ret + AggInfoStructure.getStartTimeStartXMLString() + next_structure.getStartTime() + AggInfoStructure.getStartTimeEndXMLString();
-       ret = ret + AggInfoStructure.getEndTimeStartXMLString() + next_structure.getEndTime() + AggInfoStructure.getEndTimeEndXMLString();
+       ret.append (AggInfoStructure.getStartTimeStartXMLString());
+       ret.append (next_structure.getStartTime());
+       ret.append (AggInfoStructure.getStartTimeEndXMLString());
+       ret.append (AggInfoStructure.getEndTimeStartXMLString());
+       ret.append (next_structure.getEndTime());
+       ret.append (AggInfoStructure.getEndTimeEndXMLString());
      }
 
      if (next_structure.getValue() != null) {
-       ret = ret + AggInfoStructure.getValueStartXMLString() + next_structure.getValue() + AggInfoStructure.getValueEndXMLString();
+       ret.append (AggInfoStructure.getValueStartXMLString());
+       ret.append (next_structure.getValue());
+       ret.append (AggInfoStructure.getValueEndXMLString());
      }
      else {
-       ret = ret + AggInfoStructure.getRateStartXMLString() + next_structure.getRate() + AggInfoStructure.getRateEndXMLString();
+       ret.append (AggInfoStructure.getRateStartXMLString());
+       ret.append (next_structure.getRate());
+       ret.append (AggInfoStructure.getRateEndXMLString());
      }
 
-     ret = ret + getEndDataAtomXMLString();
-
-     return ret;
+     ret.append (end_data_atom_xml_string);
   }
 
-  public String encodeEndOfXML () {
+  public void encodeEndOfXML (StringBuffer ret) {
 
     if (state != atom_state) {
        System.out.println ("Need to have written a start of XML message first");
-       return null;
     }
 
-    String ret = new String();
-
-    ret = ret + getEndDataSetXMLString();
-    ret = ret + getEndBeginXMLString();
+    ret.append (end_data_set_xml_string);
+    ret.append (end_begin_xml_string);
 
     state = start_state;
-
-    return ret;
   }
 
   public static void main (String args[]) {
@@ -141,11 +144,12 @@ public class AggInfoEncoder {
     AggInfoStructure myStruct3 = new AggInfoStructure ("DEPT8H", "COMPUTERS", "1", "5", "5");
     AggInfoEncoder myEncoder = new AggInfoEncoder();
 
-    System.out.print (myEncoder.encodeStartOfXML("DEMAND"));
-    System.out.print (myEncoder.encodeDataAtom(myStruct));
-    System.out.print (myEncoder.encodeDataAtom(myStruct2));
-    System.out.print (myEncoder.encodeDataAtom(myStruct3));
-    System.out.print (myEncoder.encodeEndOfXML());
+    StringBuffer buf = myEncoder.encodeStartOfXML("DEMAND");
+    myEncoder.encodeDataAtom(buf, myStruct);
+    myEncoder.encodeDataAtom(buf, myStruct2);
+    myEncoder.encodeDataAtom(buf, myStruct3);
+    myEncoder.encodeEndOfXML(buf);
+    System.out.println(buf.toString());
   }
 
 }
