@@ -13,6 +13,7 @@ import org.cougaar.lib.uiframework.ui.components.CComboSelector;
 import org.cougaar.lib.uiframework.ui.components.CComponentMenu;
 import org.cougaar.lib.uiframework.ui.components.CMenuButton;
 import org.cougaar.lib.uiframework.ui.components.CPullrightButton;
+import org.cougaar.lib.uiframework.ui.components.CRLabel;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
 
 /**
@@ -29,6 +30,8 @@ public class VariableInterfaceManager
 {
     private VariableModel[] variableDescriptors;
     private Vector variableListeners = new Vector();
+    private CRLabel xAxisLabel = new CRLabel("X Axis");
+    private CRLabel yAxisLabel = new CRLabel("Y Axis");
 
     /**
      * Create a new variable interface manager based on given parameters
@@ -144,6 +147,62 @@ public class VariableInterfaceManager
                     }
                 });
         }
+
+        // update axis variable labels when values change
+        updateAxisLabels();
+        addVariableListener(
+            new VariableInterfaceManager.VariableListener() {
+                public void variableChanged(VariableModel vm)
+                {
+                    updateAxisLabels();
+                }
+                public void variablesSwapped(VariableModel vm1,
+                                             VariableModel vm2)
+                {
+                    updateAxisLabels();
+                }
+            });
+
+        // Allow invocation of x and y controls from x and y labels
+        xAxisLabel.addMouseListener(
+            new LabelPopupListener(VariableModel.X_AXIS));
+        yAxisLabel.addMouseListener(
+            new LabelPopupListener(VariableModel.Y_AXIS));
+    }
+
+    private class LabelPopupListener extends MouseAdapter
+    {
+        private int varType;
+
+        public LabelPopupListener(int varType)
+        {
+            this.varType = varType;
+        }
+
+        public void mouseReleased(MouseEvent e)
+        {
+            if (e.isPopupTrigger())
+            {
+                VariableModel vm = (VariableModel)
+                    getDescriptors(varType).nextElement();
+                Selector s = getVariableSelector(vm.getControl());
+                if (e.getSource() instanceof Component)
+                {
+                    Component source = (Component)e.getSource();
+                    Point p = source.getLocationOnScreen();
+                    int x = p.x + e.getX() - 10;
+                    int y = p.y + e.getY() - 10;
+                    if (s instanceof CMenuButton)
+                    {
+                        ((CMenuButton)s).popupMenu(x, y);
+                    }
+                    else if (vm.getSelector() instanceof CPullrightButton)
+                    {
+                        ((CPullrightButton)vm.getSelector()).popupMenu(x, y);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -205,6 +264,16 @@ public class VariableInterfaceManager
         }
 
         return null;
+    }
+
+    public CRLabel getXAxisLabel()
+    {
+        return xAxisLabel;
+    }
+
+    public CRLabel getYAxisLabel()
+    {
+        return yAxisLabel;
     }
 
     /**
@@ -304,7 +373,17 @@ public class VariableInterfaceManager
 
     private static Selector getVariableSelector(JPanel panel)
     {
-        return (Selector)((Container)panel.getComponent(0)).getComponent(0);
+        Selector s = null;
+
+        if (panel.getComponentCount() > 0)
+        {
+            Container c = (Container)panel.getComponent(0);
+            if (c.getComponentCount() > 0)
+            {
+                s = (Selector)c.getComponent(0);
+            }
+        }
+        return s;
     }
 
     private class SelectionListener implements ActionListener
@@ -431,6 +510,34 @@ public class VariableInterfaceManager
         }
 
         return rootSelector;
+    }
+
+    private void updateAxisLabels()
+    {
+        SwingUtilities.invokeLater(new Runnable() {
+                public void run()
+                {
+                    updateAxisLabel(VariableModel.X_AXIS);
+                    updateAxisLabel(VariableModel.Y_AXIS);
+                }
+            });
+    }
+
+    private void updateAxisLabel(int axis)
+    {
+        CRLabel xLabel =
+            (axis == VariableModel.X_AXIS) ? xAxisLabel : yAxisLabel;
+        VariableModel vm = (VariableModel)getDescriptors(axis).nextElement();
+        Selector vs = getVariableSelector(vm.getControl());
+        Selector s = vm.getSelector();
+        CMenuButton mb = (CMenuButton)
+            ((vs instanceof CMenuButton) ? vs : null);
+        CPullrightButton pb = (CPullrightButton)
+            ((s instanceof CPullrightButton) ? s : null);
+        xLabel.setText((mb==null) ?
+                       (vm.getName() + ": " +
+                            ((pb==null) ? vm.getValue() : pb.getText())) :
+                        mb.getText());
     }
 
     /**

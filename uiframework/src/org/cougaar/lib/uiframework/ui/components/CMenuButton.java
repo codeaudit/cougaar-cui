@@ -35,12 +35,29 @@ public class CMenuButton extends JButton implements Selector
         addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {
-                    selectorMenu.setSelectedItem(selectedSelector, false);
-                    selectorMenu.setPreferredSize(new Dimension(getSize().width,
-                        selectorMenu.getPreferredSize().height));
-                    selectorMenu.show(CMenuButton.this, 0,getYPopupLocation());
+                    selectorMenu.setPreferredSize(
+                        new Dimension(getSize().width,
+                                      selectorMenu.getPreferredSize().height));
+                    Point p = getLocationOnScreen();
+                    popupMenu(p.x, p.y);
                }
             });
+    }
+
+    /**
+     * Pops up a popup menu in the name of this CMenuButton at the given
+     * location.
+     *
+     * @param x x location on screen to display popup
+     * @param y y location on screen to display popup (will be adjusted based
+     *            on current selection)
+     */
+    public void popupMenu(int x, int y)
+    {
+        selectorMenu.setSelectedItem(selectedSelector, false);
+        selectorMenu.setLocation(x, y + getYPopupLocation());
+        selectorMenu.setInvoker(this);
+        selectorMenu.setVisible(true);
     }
 
     /**

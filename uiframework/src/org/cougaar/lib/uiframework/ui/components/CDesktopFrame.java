@@ -89,7 +89,7 @@ public class CDesktopFrame extends CFrame
             new JInternalFrame(title, true, true, true, true);
         cougaarUI.install(f);
         f.putClientProperty("CougaarUI", cougaarUI);
-        f.setSize(800, 500);
+        f.setSize(850, 500);
         desktopPane.add(f, JLayeredPane.PALETTE_LAYER);
         f.setVisible(true);
 

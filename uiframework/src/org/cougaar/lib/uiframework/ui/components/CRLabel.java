@@ -32,7 +32,7 @@ public class CRLabel extends JComponent
      */
     public CRLabel()
     {
-        resetProperties();
+        updateUI();
     }
 
     /**
@@ -43,7 +43,7 @@ public class CRLabel extends JComponent
     public CRLabel(String text)
     {
         this.text = text;
-        resetProperties();
+        updateUI();
     }
 
     /**
@@ -57,7 +57,7 @@ public class CRLabel extends JComponent
     {
         this.text = text;
         this.orientation = orientation;
-        resetProperties();
+        updateUI();
     }
 
     /**
@@ -66,6 +66,9 @@ public class CRLabel extends JComponent
     public void updateUI()
     {
         super.updateUI();
+
+        setFont(UIManager.getFont("Label.font"));
+        setForeground(UIManager.getColor("Label.foreground"));
         resetProperties();
     }
 
@@ -115,10 +118,10 @@ public class CRLabel extends JComponent
 
     private void resetProperties()
     {
-        Font font = UIManager.getFont("Label.font");
-        FontMetrics fm = getFontMetrics(font);
-        int width = fm.stringWidth(text);
-        int height = fm.getHeight();
+        int padding = 2;
+        FontMetrics fm = getFontMetrics(getFont());
+        int width = fm.stringWidth(text) + padding;
+        int height = fm.getHeight() + padding;
         int pwidth = 0;
         int pheight = 0;
 
@@ -126,24 +129,24 @@ public class CRLabel extends JComponent
         {
             case LEFT_RIGHT:
                 startx = 0;
-                starty = height;
+                starty = height - padding;
                 pwidth = width;
                 pheight = height;
                 break;
             case UP_DOWN:
-                startx = 0;
+                startx = padding;
                 starty = 0;
                 pwidth = height;
                 pheight = width;
                 break;
             case RIGHT_LEFT:
                 startx = width;
-                starty = 0;
+                starty = padding;
                 pwidth = width;
                 pheight = height;
                 break;
             case DOWN_UP:
-                startx = height;
+                startx = height - padding;
                 starty = width;
                 pwidth = height;
                 pheight = width;
@@ -151,18 +154,15 @@ public class CRLabel extends JComponent
         }
 
         setPreferredSize(new Dimension(pwidth, pheight));
-        invalidate();
+        revalidate();
         repaint();
     }
 
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D)g;
         g2d.rotate(orientation * Math.PI / 2, startx, starty);
-        g2d.setFont(UIManager.getFont("Label.font"));
-        g2d.setColor(UIManager.getColor("Label.foreground"));
         g2d.drawString(text, startx, starty);
     }
 
@@ -178,7 +178,7 @@ public class CRLabel extends JComponent
         frame.getContentPane().add(c);
         for (int rot = 0; rot < 4; rot ++)
         {
-            CRLabel crLabel = new CRLabel("********** Long Label **********");
+            CRLabel crLabel = new CRLabel("########## Long Label ##########");
             crLabel.setOrientation(rot);
             c.add(crLabel);
         }

@@ -40,6 +40,20 @@ public class CPullrightButton extends JButton implements Selector
     }
 
     /**
+     * Pops up a popup menu in the name of this CPullrightButton at the given
+     * location.
+     *
+     * @param x x location on screen to display popup
+     * @param y y location on screen to display popup
+     */
+    public void popupMenu(int x, int y)
+    {
+        pullright.setLocation(x, y);
+        pullright.setInvoker(this);
+        pullright.setVisible(true);
+    }
+
+    /**
      * Set the control used for making selection
      *
      * @param selector the selection control
@@ -68,7 +82,8 @@ public class CPullrightButton extends JButton implements Selector
         addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {
-                    pullright.show(CPullrightButton.this, getSize().width, 0);
+                    Point p = getLocationOnScreen();
+                    popupMenu(p.x + getSize().width, p.y);
                 }
              });
      }
