@@ -471,6 +471,23 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
       public void colorNode(Graph mygraph, String nodeLabel, Color color) {
         colorNode(mygraph, nodeLabel, color, false);
       }
+      public boolean drillDownNode(Graph mygraph, String nodeLabel, boolean hasDrillDown) {
+            int id1;
+            int idx1;
+	    boolean prevVal=false;
+            if (nodeNames.hasNode(nodeLabel)) {
+              Node aNode;
+              id1 = nodeNames.getNodeID(mygraph, nodeLabel);
+              aNode = mygraph.getNodeFromId(id1);
+              idx1=aNode.getIndex();
+              prevVal=aNode.setDrillDownOn(hasDrillDown); 
+
+              System.err.print("drillDownNode "+nodeLabel+" ");
+              System.err.print("id "+id1+" idx "+idx1);
+              System.err.println(" newval "+hasDrillDown);
+            }
+	    return prevVal;
+      }
       public void colorNode(Graph mygraph, String nodeLabel, Color color, boolean create) {
             int id1;
             int idx1;
