@@ -737,10 +737,11 @@ public class DatabaseTableModel implements TableModel
             }
          }
 
-         // finalize combined row using combiner
-         aggregateRow = c.finalize(aggregateRow);
-
+         // set header to higher level node
          aggregateRow.setElementAt(aggHeader, aggregatedHeaderColumn);
+
+         // finalize combined row using combiner
+         aggregateRow = c.finalize(aggregateRow, aggregatedHeaderColumn);
 
          return aggregateRow;
     }
@@ -817,10 +818,13 @@ public class DatabaseTableModel implements TableModel
 
         if (aggregateRow != null)
         {
-            // finalize combined row using combiner
-            aggregateRow = combiner.finalize(aggregateRow);
-
+            // set header to higher level node
             aggregateRow.set(headerColumn, aggHeader);
+
+            // finalize combined row using combiner
+            aggregateRow = combiner.finalize(aggregateRow, headerColumn);
+
+            // add aggregated row to table
             dataRows.add(aggregateRow);
 
             fireTableChangedEvent(
@@ -910,9 +914,11 @@ public class DatabaseTableModel implements TableModel
          * combined.  (needed for averaging)
          *
          * @param row the aggregated row
+         * @param headerColumn index of column that holds descriptions
+         *                      of the items being combined
          * @return finalized aggregated row
          */
-        public Vector finalize(Vector row);
+        public Vector finalize(Vector row, int headerColumn);
     }
 
     private class RowHeaderDescriptor

@@ -369,11 +369,25 @@ public class QueryGenerator
     {
         String query = null;
 
-        query = "select t1.org, t1.item, t1.unitsOfTime, t1.metric, " +
-                "(t1.assessmentValue/t2.assessmentValue) as " +
+        if (DBInterface.DBTYPE.equalsIgnoreCase("oracle"))
+        {
+            // if numerator data does not exist, assume 0
+            query = "select t2.org, t2.item, t2.unitsOfTime, t2.metric, " +
+                "(NVL(t1.assessmentValue, 0)/t2.assessmentValue) as " +
                 "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1, (" +
-                denQuery + ") t2 where (t1.ORG=t2.ORG and" +
+                denQuery + ") t2 WHERE (t1.ORG (+) = t2.ORG and" +
+                " t1.UnitsOfTime (+) = t2.UnitsOfTime and t1.item (+) = t2.item)";
+        }
+        else
+        {
+            // if numerator data does not exist, NULL will be returned
+            // (could not get Access to assume 0 as with Oracle)
+            query = "select t2.org, t2.item, t2.unitsOfTime, t2.metric, " +
+                "(t1.assessmentValue/t2.assessmentValue) as " +
+                "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1 " +
+                "RIGHT OUTER JOIN (" +denQuery+ ") t2 ON (t1.ORG=t2.ORG and" +
                 " t1.UnitsOfTime=t2.UnitsOfTime and t1.item=t2.item)";
+        }
 
         return query;
     }
@@ -382,11 +396,19 @@ public class QueryGenerator
     {
         String query = null;
 
+        //Base query must be modified to get values for all time up to max day.
+        int startIndex = baseQuery.indexOf("unitsOfTime >=");
+        int endIndex = baseQuery.indexOf("AND ", startIndex) + 4;
+        String minTimeConstraint = baseQuery.substring(startIndex, endIndex);
+        baseQuery = baseQuery.substring(0, startIndex) +
+                    baseQuery.substring(endIndex);
+
         query = "select t1.org, t1.item, t1.unitsOfTime, t1.metric, " +
                 "sum(t2.assessmentValue) as " +
                 "\"ASSESSMENTVALUE\" from (" + baseQuery + ") t1, (" +
-                baseQuery + ") t2 where (t1.ORG=t2.ORG and" +
-                " t1.UnitsOfTime>=t2.UnitsOfTime and t1.item=t2.item and t1.metric=t2.metric) " +
+                baseQuery + ") t2 where (t1." + minTimeConstraint +
+                "t1.ORG=t2.ORG and t1.UnitsOfTime>=t2.UnitsOfTime and " +
+                "t1.item=t2.item and t1.metric=t2.metric) " +
                 "group by t1.unitsOfTime, t1.item, t1.org, t1.metric";
 
         return query;
@@ -740,7 +762,7 @@ public class QueryGenerator
                 aggregateItems(tn, itemColumn);
             }
             dbTableModel.aggregateRows(childVector, node, itemColumn,
-                                       new WeightedAverageCombiner());
+                                       new WeightedAverageCombiner(true));
         }
     }
 
@@ -865,7 +887,7 @@ public class QueryGenerator
             return combinedObject;
         }
 
-        public Vector finalize(Vector row)
+        public Vector finalize(Vector row, int headerColumn)
         {
             return row;
         }
@@ -898,7 +920,7 @@ public class QueryGenerator
             return combinedObject;
         }
 
-        public Vector finalize(Vector row)
+        public Vector finalize(Vector row, int headerColumn)
         {
             return row;
         }
@@ -934,6 +956,12 @@ public class QueryGenerator
     private class WeightedAverageCombiner extends AdditiveCombiner
     {
         private float totalWeight = 0;
+        private boolean assumeNullEqZero = false;
+
+        public WeightedAverageCombiner(boolean assumeNullEqZero)
+        {
+            this.assumeNullEqZero = assumeNullEqZero;
+        }
 
         public Vector prepare(Vector row, int headerColumn)
         {
@@ -956,8 +984,27 @@ public class QueryGenerator
             return row;
         }
 
-        public Vector finalize(Vector row)
+        public Vector finalize(Vector row, int headerColumn)
         {
+            if (assumeNullEqZero)
+            {
+                totalWeight = 0;
+
+                // find total weight under branch
+                DefaultMutableTreeNode headerNode =
+                    (DefaultMutableTreeNode)row.elementAt(headerColumn);
+                Enumeration branchChildren = headerNode.children();
+                while (branchChildren.hasMoreElements())
+                {
+                    DefaultMutableTreeNode node =
+                        (DefaultMutableTreeNode)branchChildren.nextElement();
+                    String weightString = ((Hashtable)
+                        node.getUserObject()).get("WEIGHT").toString();
+                    float weight = Float.parseFloat(weightString);
+                    totalWeight += weight;
+                }
+            }
+
             for (int i = 0; i < row.size(); i++)
             {
                 Object obj = row.elementAt(i);
