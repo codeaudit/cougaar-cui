@@ -91,7 +91,18 @@
       protected boolean isGroup_ = false;
       protected boolean groupActive_ = false;
       protected boolean inActiveGroup_ = false;
+
+       private boolean drillDownOn=false;
+
+       public boolean setDrillDownOn(boolean ddOn) { 
+	   boolean retcd=drillDownOn;
+	   drillDownOn=ddOn;
+	   return retcd;
+       }
    
+       public boolean getDrillDownOn() { 
+	   return drillDownOn;
+       }
    
    /**
    * A general purpose data field.
@@ -868,9 +879,12 @@
             int shadow_offset=4;
             int myx= (int)(x - w / 2) ;
             int myy= (int)(y - h / 2) ;
-            graphics.setColor(Color.darkGray);
-            graphics.fillOval(myx+shadow_offset, myy+shadow_offset,
+
+	    if (getDrillDownOn()) {
+		graphics.setColor(Color.darkGray);
+		graphics.fillOval(myx+shadow_offset, myy+shadow_offset,
                                  (int)w, (int)h);
+	    }
 
             graphics.setColor(color_);
             /*
