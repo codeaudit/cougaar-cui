@@ -405,7 +405,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         if (linePlotFrame instanceof CDesktopFrame)
         {
             CDesktopFrame cfc = (CDesktopFrame)linePlotFrame;
-            cfc.createInnerFrame( + (plaf?" (PLAF)":""), lpp);
+            cfc.createInnerFrame(UIConstants.LINEPLOT_UI_NAME +
+                                 (plaf?" (PLAF)":""), lpp);
         }
         else
         {

@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Attic/XmlLayerBase.java,v $
- * $Revision: 1.5 $
- * $Date: 2001-03-06 18:42:03 $
+ * $Revision: 1.6 $
+ * $Date: 2001-03-07 22:01:29 $
  * $Author: pfischer $
  *
  * **********************************************************************
@@ -43,6 +43,7 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.event.*;
 import org.cougaar.lib.uiframework.ui.components.*;
 import org.cougaar.lib.uiframework.ui.util.*;
+import mil.darpa.log.alpine.blackjack.assessui.client.UIConstants;
 import mil.darpa.log.alpine.blackjack.assessui.client.LinePlotPanel;
 import mil.darpa.log.alpine.blackjack.assessui.client.StoplightPanel;
 
@@ -197,7 +198,7 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	        try {
 	            cframe = new CFrame();
                     VariableInterfaceManager vim = null;
-                    if (uiName.equals("Stoplight"))
+                    if (uiName.equals(UIConstants.STOPLIGHT_UI_NAME))
                     {
 	                StoplightPanel slp = new StoplightPanel(false);
                         cframe.getContentPane().add(slp);
@@ -240,7 +241,7 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
 	if(omgr != null){
 	    if(e.getClickCount() >= 2){
-	    	launchUI("Stoplight", getOrgName(omgr));
+	    	launchUI(UIConstants.STOPLIGHT_UI_NAME, getOrgName(omgr));
 	    }
 	} else {
 	    return false;
@@ -381,10 +382,12 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
                 ActionListener orgListener =
                     new OrgPopupListener(getOrgName(omgr));
                 final JPopupMenu popup = new JPopupMenu();
-                JMenuItem stoplight = new JMenuItem("Stoplight");
+                JMenuItem stoplight =
+                    new JMenuItem(UIConstants.STOPLIGHT_UI_NAME);
                 stoplight.addActionListener(orgListener);
                 popup.add(stoplight);
-                JMenuItem lineplot = new JMenuItem("Line Plot");
+                JMenuItem lineplot =
+                    new JMenuItem(UIConstants.LINEPLOT_UI_NAME);
                 lineplot.addActionListener(orgListener);
                 popup.add(lineplot);
                 popup.show(XmlLayerBase.this, e.getX(), e.getY());
