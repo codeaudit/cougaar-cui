@@ -25,14 +25,14 @@ import org.cougaar.lib.uiframework.ui.orglocation.psp.xmlservice.LocationSchedul
 public class TestScheduleDoms extends SimplePlugIn {
   private LocationScheduleToXml formatter = new LocationScheduleToXml();
   // names of the organizations
-  private String[] orgnames = new String[] {"Fred" , "Joe", "Sam", "Herbie"};
+  private String[] orgnames = new String[] {"3ID", "3-69-ARBN", "3-FSB"};
 
   // parameters for choosing the time interval
   private long dateBase = DayBaseModel.baseTimeMillis = (new Date()).getTime();
   private long dateRange = 10 * 24 * 60 * 60 * 1000;  // ten days
 
   public void setupSubscriptions () {
-    wake();
+    wakeAfter(1000);
   }
 
   public void execute () {
@@ -43,6 +43,8 @@ public class TestScheduleDoms extends SimplePlugIn {
 
   // generate a new location schedule for each of the "organizations"
   private void generateRandomData () {
+    System.out.println();
+    System.out.println("TestScheduleDoms::generateRandomData");
     for (int i = 0; i < orgnames.length; i++) {
       String orgId = orgnames[i];
 
