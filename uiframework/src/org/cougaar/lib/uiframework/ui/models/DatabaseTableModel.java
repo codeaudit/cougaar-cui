@@ -440,6 +440,22 @@ public class DatabaseTableModel implements TableModel
     }
 
     /**
+     * Remove a column from model.
+     *
+     * @param columnIndex index of column to remove
+     */
+    public synchronized void removeColumn(int columnIndex)
+    {
+        for (int row = 0; row < dataRows.size(); row++)
+        {
+            Vector dataRow = (Vector)dataRows.elementAt(row);
+            dataRow.remove(columnIndex);
+        }
+        fireTableChangedEvent(
+            new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+    }
+
+    /**
      * Insert a new row into model. (filled with nulls)
      *
      * @param rowIndex where to insert new row
