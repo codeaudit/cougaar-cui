@@ -1,5 +1,5 @@
 
-REM "<copyright> "
+REM "<copyright>"
 REM " Copyright 2001-2003 BBNT Solutions, LLC"
 REM " under sponsorship of the Defense Advanced Research Projects Agency (DARPA)."
 REM ""
