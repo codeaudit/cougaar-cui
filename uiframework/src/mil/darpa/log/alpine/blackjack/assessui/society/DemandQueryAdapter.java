@@ -53,16 +53,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
         Double time_double = new Double(0.0);
         String rate = null;
 
-//        if (t.getVerb().equals("ProjectSupply") == true) {
         if (t.getVerb().equals(Constants.Verb.PROJECTSUPPLY) == true) {
-
-          Asset direct_object = t.getDirectObject();
-
-/*
-          if (index < 5) {
-            System.out.println ("**************************************************************************");
-          }
-*/
 
           Preference start_pref = t.getPreference (AspectType.START_TIME);
           if (start_pref != null) {
@@ -125,9 +116,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
           String output_string = myEncoder.encodeDataAtom(myStructure);
 
-//          if (index < 25) {
           output_xml += output_string;
-//          }
 
           send_xml = true;
 
@@ -139,9 +128,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
     System.out.println ("**************************************************************************");
     System.out.println ("**************************************************************************");
-    System.out.println ("**************************************************************************");
     System.out.println ("Sending " + index + " records, earliest start time is " + earliest_time);
-    System.out.println ("**************************************************************************");
     System.out.println ("**************************************************************************");
     System.out.println ("**************************************************************************");
 
