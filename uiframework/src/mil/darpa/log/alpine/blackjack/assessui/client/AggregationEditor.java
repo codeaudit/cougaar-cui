@@ -57,10 +57,10 @@ public class AggregationEditor extends JDialog
         return closeAction;
     }
 
-    private Hashtable copyAggregationSchemes(Hashtable orgAggSchemes)
+    private static Hashtable copyAggregationSchemes(Hashtable orgAggSchemes)
     {
         Hashtable newAggSchemes = new Hashtable();
-        Enumeration keys = DBInterface.aggregationSchemes.keys();
+        Enumeration keys = orgAggSchemes.keys();
         while (keys.hasMoreElements())
         {
             Object key = keys.nextElement();
