@@ -53,7 +53,8 @@
 	</a>
 	</a>
       <a name="name">
-        <val>31INBN</val>
+        <val>2-7-INFBN</val>
+<!--        <val>31INBN</val> -->
       </a>
     </list>
 
@@ -62,10 +63,10 @@
 	<a name="latitude"><val>16.7</val></a>
 	<a name="longitude"><val>38.2</val></a>
 	<a name="startDate"> <val>12</val></a>
-        <a name="thruDate"> <val>34</val></a>
+        <a name="thruDate"> <val>234</val></a> <!-- 32 -->
 	</a>
       <a name="name">
-        <val>3-7-INBN</val>
+        <val>1-23-INFBN</val>  <!-- 3-7-INBN -->
       </a>
     </list>
     <list>
@@ -85,7 +86,8 @@
 	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
 	</a>
       <a name="name">
-        <val>5-7-INBN</val>
+        <val>5-20-INFBN</val>
+        <!-- <val>5-7-INBN</val> -->
       </a>
     </list>
     <list>
@@ -117,7 +119,8 @@
 	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
 	</a>
       <a name="name">
-        <val>MCCGlobalMode</val>
+        <val>1-64-ARBN</val>
+        <!-- <val>MCCGlobalMode</val> -->
       </a>
     </list>
 
@@ -128,17 +131,17 @@
 	<a name="startDate"> <val>3</val></a><a name="thruDate"> <val>42</val></a>
 	</a>
       <a name="name">
-        <val>3ID</val>
+        <!-- <val>3ID</val> -->
+        <val>4-64-ARBN</val> 
       </a>
     </list>
     <list>
       <a name="values">
 	<a name="latitude"><val>16.3</val></a>
 	<a name="longitude"><val>38.2</val></a>
-	<a name="symbol"><val>Armored</val></a>
 	</a>
         <a name="name">
-          <val>1BDE</val>
+          <val>3-15-INFBN</val> <!-- 1BDE -->
         </a>
     </list>
     <list>
