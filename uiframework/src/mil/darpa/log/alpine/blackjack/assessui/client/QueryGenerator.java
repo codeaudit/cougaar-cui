@@ -2,6 +2,7 @@ package mil.darpa.log.alpine.blackjack.assessui.client;
 
 import java.awt.Component;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.event.TableModelEvent;
@@ -31,6 +32,60 @@ public class QueryGenerator
     public QueryGenerator(DatabaseTableModel dbTableModel)
     {
         this.dbTableModel = dbTableModel;
+    }
+
+    /**
+     * Queries for metric values for a particular set of organizations.
+     * Query results are returned in a hashtable where [key = org string] and
+     * [value = metric value].  Sample usage of this method is provided in main
+     * function of this class.
+     *
+     * @param orgs set of organization strings for which metrics will be
+     *             returned
+     * @param item string representing the item of iterest
+     *             (or grouping of items)
+     * @param time time at which returned metrics are calculated.
+     * @param metric the metric for which values will be returned
+     *
+     * @return query results in a hashtable where [key = org string] and
+     *               [value = metric value]
+     */
+    public static Hashtable getOrgMetrics(Enumeration orgs, String item,
+                                          int time, String metric)
+    {
+        DatabaseTableModel tm = new DatabaseTableModel();
+        StringBuffer query =
+            new StringBuffer("SELECT * FROM assessmentData WHERE (");
+
+        // filter data needed based on org, item, metric, time
+        query.append(generateWhereClause("org", orgs));
+        query.append(" AND " + generateWhereClause("item", item));
+        query.append(" AND " + generateWhereClause("metric", metric));
+        query.append(" AND "+generateWhereClause("time",String.valueOf(time)));
+        query.append(")");
+
+        // fill table model with needed data
+        System.out.println(query);
+        tm.setDBQuery(query.toString());
+
+        // transform table based on needed x and y axis
+        String xColumnName = DBInterface.getColumnName("org");
+        String yColumnName = DBInterface.getColumnName("time");
+        tm.setXY(tm.getColumnIndex(xColumnName),
+                 tm.getColumnIndex(yColumnName),
+                 tm.getColumnIndex("assessmentValue"));
+
+        // convert org id headers
+        convertColumnHeaderIDsToNames("org", tm);
+
+        // create hashtable that contains needed org name -> value pairs
+        Hashtable ht = new Hashtable();
+        for (int i = 1; i < tm.getColumnCount(); i++)
+        {
+            ht.put(tm.getColumnName(i), tm.getValueAt(0, i));
+        }
+
+        return ht;
     }
 
     /**
@@ -67,7 +122,6 @@ public class QueryGenerator
 
         StringBuffer query =
             new StringBuffer("SELECT * FROM assessmentData WHERE (");
-        boolean transpose = false;
 
         // filter data needed based on org, item, metric, time
         query.append(generateWhereClause(vim.getDescriptor("Org")));
@@ -106,48 +160,9 @@ public class QueryGenerator
                            dbTableModel.getColumnIndex(yColumnName),
                            dbTableModel.getColumnIndex("assessmentValue"));
 
-        //
         // convert column and row header ids to names
-        //
-        if (!xDescName.equalsIgnoreCase("Time"))
-        {
-            Vector oldColumnHeaders = new Vector();
-            for (int column = 1; column < dbTableModel.getColumnCount();
-                 column++)
-            {
-                oldColumnHeaders.add(dbTableModel.getColumnName(column));
-            }
-            Enumeration newColumnHeaders = DBInterface.
-                        lookupValues(DBInterface.getTableName(xColumnName),
-                                     "id", "name",
-                                     oldColumnHeaders.elements()).elements();
-
-            int columnCount = 1;
-            while (newColumnHeaders.hasMoreElements())
-            {
-                String name = newColumnHeaders.nextElement().toString().trim();
-                dbTableModel.setColumnName(columnCount++, name);
-            }
-        }
-
-        if (!yDescName.equalsIgnoreCase("Time"))
-        {
-            Vector oldRowHeaders = new Vector();
-            for (int row = 0; row < dbTableModel.getRowCount(); row++)
-            {
-                oldRowHeaders.add(dbTableModel.getValueAt(row, 0));
-            }
-            Enumeration newRowHeaders = DBInterface.
-                lookupValues(DBInterface.getTableName(yColumnName), "id",
-                             "name", oldRowHeaders.elements()).elements();
-            int rowCount = 0;
-            while (newRowHeaders.hasMoreElements())
-            {
-                dbTableModel.setValueAt(
-                    newRowHeaders.nextElement().toString().trim(),
-                    rowCount++, 0);
-            }
-        }
+        convertColumnHeaderIDsToNames(xDescName, dbTableModel);
+        convertRowHeaderIDsToNames(yDescName, dbTableModel);
 
         dbTableModel.fireTableChangedEvent(
             new TableModelEvent(dbTableModel, TableModelEvent.HEADER_ROW));
@@ -162,48 +177,132 @@ public class QueryGenerator
      */
     private String generateWhereClause(VariableModel v)
     {
-        StringBuffer whereClause =  new StringBuffer();
+        String whereClause = null;
         String varName = v.getName();
 
         if (varName.equals("Time")) // time is a special case
         {
             RangeModel timeRange = (RangeModel)v.getValue();
-            whereClause.append("(unitsOfTime >= ");
-            whereClause.append(timeRange.getMin());
-            whereClause.append(" AND unitsOfTime <= ");
-            whereClause.append(timeRange.getMax());
-            whereClause.append(")");
+            StringBuffer timeWhereClause = new StringBuffer();
+            timeWhereClause.append("(unitsOfTime >= ");
+            timeWhereClause.append(timeRange.getMin());
+            timeWhereClause.append(" AND unitsOfTime <= ");
+            timeWhereClause.append(timeRange.getMax());
+            timeWhereClause.append(")");
+            whereClause = timeWhereClause.toString();
         }
         else if (v.getValue() instanceof DefaultMutableTreeNode)
         {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)v.getValue();
             if ((v.getState() == v.FIXED) || (node.isLeaf()))
             {
-                whereClause.append(varName + " = " + DBInterface.
-                    lookupValue(DBInterface.getTableName(varName), "name",
-                                "id", node.toString()));
+                whereClause = generateWhereClause(varName, node.toString());
             }
             else
             {
                 Enumeration children = node.children();
-                Enumeration childIDs = DBInterface.
-                  lookupValues(DBInterface.getTableName(varName), "name",
-                               "id", children).elements();
-                whereClause.append("(");
-                whereClause.append(
-                   createDelimitedList(childIDs, varName + " = ", "", " OR "));
-                whereClause.append(")");
+                whereClause = generateWhereClause(varName, children);
             }
         }
         else
         {
-            whereClause.
-                append(varName + " = " + DBInterface.
-                       lookupValue(DBInterface.getTableName(varName),
-                                   "name", "id", v.getValue().toString()));
-
+            whereClause =generateWhereClause(varName, v.getValue().toString());
         }
+        return whereClause;
+    }
+
+    private static String generateWhereClause(String varName,
+                                              Enumeration neededValues)
+    {
+        StringBuffer whereClause =  new StringBuffer();
+        String columnName = DBInterface.getColumnName(varName);
+
+        whereClause.append("(");
+
+        Enumeration neededIDs;
+        if (varName.equalsIgnoreCase("time"))
+        {
+            neededIDs = neededValues;
+        }
+        else
+        {
+            neededIDs = DBInterface.
+                lookupValues(DBInterface.getTableName(varName), "name",
+                             "id", neededValues).elements();
+        }
+        whereClause.append(
+            createDelimitedList(neededIDs, columnName + " = ", "", " OR "));
+        whereClause.append(")");
+
         return whereClause.toString();
+    }
+
+    private static String generateWhereClause(String varName,
+                                              String neededValue)
+    {
+        StringBuffer whereClause = new StringBuffer();
+        String columnName = DBInterface.getColumnName(varName);
+
+        whereClause.append(columnName);
+        whereClause.append(" = ");
+        if (varName.equalsIgnoreCase("time"))
+        {
+            whereClause.append(neededValue);
+        }
+        else
+        {
+            whereClause.append(
+                DBInterface.lookupValue(DBInterface.getTableName(varName),
+                                       "name", "id", neededValue));
+        }
+
+        return whereClause.toString();
+    }
+
+    private static void convertColumnHeaderIDsToNames(String varName,
+                                                      DatabaseTableModel tm)
+    {
+        if (!varName.equalsIgnoreCase("time"))
+        {
+            Vector oldColumnHeaders = new Vector();
+            for (int column = 1; column < tm.getColumnCount(); column++)
+            {
+                oldColumnHeaders.add(tm.getColumnName(column));
+            }
+            Enumeration newColumnHeaders = DBInterface.
+                lookupValues(DBInterface.getTableName(varName), "id", "name",
+                             oldColumnHeaders.elements()).elements();
+
+            int columnCount = 1;
+            while (newColumnHeaders.hasMoreElements())
+            {
+                String name = newColumnHeaders.nextElement().toString().trim();
+                tm.setColumnName(columnCount++, name);
+            }
+        }
+    }
+
+    private static void convertRowHeaderIDsToNames(String varName,
+                                                   DatabaseTableModel tm)
+    {
+        if (!varName.equalsIgnoreCase("Time"))
+        {
+            Vector oldRowHeaders = new Vector();
+            for (int row = 0; row < tm.getRowCount(); row++)
+            {
+                oldRowHeaders.add(tm.getValueAt(row, 0));
+            }
+            Enumeration newRowHeaders = DBInterface.
+                lookupValues(DBInterface.getTableName(varName), "id",
+                             "name", oldRowHeaders.elements()).elements();
+            int rowCount = 0;
+            while (newRowHeaders.hasMoreElements())
+            {
+                tm.setValueAt(
+                    newRowHeaders.nextElement().toString().trim(),
+                    rowCount++, 0);
+            }
+        }
     }
 
     /**
@@ -274,5 +373,60 @@ public class QueryGenerator
             }
         }
         return leafList;
+    }
+
+    /**
+     * Example use of static getOrgMetrics method
+     *
+     * @param args ignored
+     */
+    public static void main(String[] args)
+    {
+        if ((System.getProperty("DBTYPE") == null) ||
+            (System.getProperty("DBURL") == null) ||
+            (System.getProperty("DBUSER") == null) ||
+            (System.getProperty("DBPASSWORD") == null))
+        {
+            System.out.println("You need to set the following property" +
+                               " variables:  DBTYPE, DBURL, DBUSER, and " +
+                               "DBPASSWORD");
+            return;
+        }
+
+        // create some type of enumeration of organization strings
+        Vector orgsOfInterest = new Vector();
+        orgsOfInterest.add("All Units");
+        orgsOfInterest.add("11INBR");
+        orgsOfInterest.add("06INBN");
+        orgsOfInterest.add("09ATBN");
+        orgsOfInterest.add("22MTBN");
+        orgsOfInterest.add("10ARBR");
+
+        for (int time = 0; time < 29; time++)
+        {
+            // call static method in query generator to get a hashtable that
+            // contains a value for each org of interest
+            Hashtable ht =
+                QueryGenerator.getOrgMetrics(orgsOfInterest.elements(),
+                                             "All Items", time, "Demand");
+            System.out.println("\n Demand values for all items at time C+" +
+                               time);
+            printHashtable(ht);
+        }
+    }
+
+    /**
+     * for debug
+     */
+    private static void printHashtable(Hashtable ht)
+    {
+        System.out.println("----------");
+        Enumeration htKeys = ht.keys();
+        while (htKeys.hasMoreElements())
+        {
+            Object key = htKeys.nextElement();
+            System.out.println(key + ": " + ht.get(key));
+        }
+        System.out.println("----------");
     }
 }
