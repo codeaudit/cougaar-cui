@@ -18,15 +18,15 @@ public class CSliderRangeControl extends CMultipleSliderControl
     private static String[] sliderLabels = {"From", "To"};
 
     /** Needed for tracking old values for bounded range property */
-    private RangeModel range = new RangeModel(0, 30);
+    private RangeModel range = new RangeModel(0, 1);
 
     /**
      * Default constructor.  Creates new slider range control with
-     * value range from 0 to 2.
+     * value range from 0 to 1.
      */
     public CSliderRangeControl()
     {
-        super(sliderLabels, 0, 30);
+        super(sliderLabels, 0, 1);
 
         init();
     }

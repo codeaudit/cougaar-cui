@@ -54,11 +54,11 @@ public class CRangeButton extends CPullrightButton implements Selector
      * @param max    the maximum value for the range
      * @param plaf   true if pluggable look and feel is required.
      */
-    private void init(final String prefix, int min , int max, boolean plaf)
+    private void init(final String prefix, int min, int max, boolean plaf)
     {
         this.prefix = prefix;
         RangeModel range = new RangeModel(min, max);
-        rs = new CRangeSelector(plaf);
+        rs = new CRangeSelector(plaf, min, max);
         rs.setSelectedItem(range);
         setSelectorControl(rs);
 

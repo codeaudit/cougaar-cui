@@ -28,7 +28,7 @@ public class CRangeSelector extends JPanel implements Selector
     public CRangeSelector()
     {
         super(new BorderLayout());
-        init();
+        init(0, 1);
     }
 
     /**
@@ -40,19 +40,35 @@ public class CRangeSelector extends JPanel implements Selector
     {
         super(new BorderLayout());
         this.plaf = plaf;
-        init();
+        init(0, 1);
     }
 
-    private void init()
+    /**
+     * Create a new Range Selector
+     *
+     * @param plaf true if pluggable look and feel must be supported
+     * @param minRangeValue minimum value for range
+     * @param maxRangeValue maximum value for range
+     */
+    public CRangeSelector(boolean plaf, float minRangeValue,
+                          float maxRangeValue)
+    {
+        this.plaf = plaf;
+        init(minRangeValue, maxRangeValue);
+    }
+
+    private void init(float minRangeValue, float maxRangeValue)
     {
         setLayout(new BorderLayout(10, 10));
         if (plaf)
         {
-            rangeControl = new CSliderRangeControl();
+            rangeControl =
+                new CSliderRangeControl(minRangeValue, maxRangeValue);
         }
         else
         {
-            rangeControl = new CMThumbSliderRangeControl();
+            rangeControl =
+                new CMThumbSliderRangeControl(minRangeValue, maxRangeValue);
         }
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
