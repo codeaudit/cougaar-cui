@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+<!--
+-->
+  <source ignore="false">
+    <name>1-23-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>5-20-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>2-3-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>296-SPTBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>1-37-FABN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>1-64-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>3-15-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>3-7-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>26-FSB</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>1-9-FABN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>11-ENGBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>2-7-INFBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>3-69-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>4-64-ARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>3-FSB</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>1-41-FABN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>10-ENGBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>703-MSB</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>1-7-MAR</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>2-7-MAR</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>3-7-MAR</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>3-11-MAR</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>1-TKBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>DET-3-AAVBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>CO-A-1-LARBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>DET-1-CEBN</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>92-ENGBN-CBTHVY</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>KARACHI-REFUGEE-CAMP</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>NAWABSHA-REFUGEE-CAMP</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>HYDERABAD-REFUGEE-CAMP</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>SUKKUR-REFUGEE-CAMP</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>MIRPURKHAS-REFUGEE-CAMP</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+  <source ignore="false">
+    <name>BELA-REFUGEE-CAMP</name>
+    <pspquery>alpine/demo/GENERIC.PSP?QUERY_TARGETLEVEL</pspquery>
+    <pollInterval>1200000</pollInterval>
+  </source>
+</xml>
