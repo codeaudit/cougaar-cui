@@ -92,8 +92,6 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             }
           }
 
-          // Is this right?
-          // Is this right?
           PlanElement pe = t.getPlanElement();
 
           if (pe == null) {
@@ -108,8 +106,12 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             continue;
           }
 
-          System.out.print ("demand cluster is " +
-                              cluster_object_name.getOwner() + ", ");
+          if (org.compareTo(cluster_object_name.getOwner()) != 0) {
+              System.out.print ("demand cluster " +
+                              cluster_object_name.getOwner());
+              System.out.println (" not the same as io " + org);
+              continue;
+          }
 
           // Find the item name in direct object's type identification
 
