@@ -16,7 +16,6 @@ import org.cougaar.domain.glm.ldm.asset.Inventory;
 import org.cougaar.domain.glm.ldm.asset.ScheduledContentPG;
 import org.cougaar.domain.glm.ldm.plan.QuantityScheduleElementImpl;
 
-import org.cougaar.domain.planning.ldm.measure.CountRate;
 import org.cougaar.domain.planning.ldm.measure.Rate;
 import org.cougaar.domain.planning.ldm.plan.AspectType;
 import org.cougaar.domain.planning.ldm.plan.Preference;
