@@ -3,6 +3,8 @@ package mil.darpa.log.alpine.blackjack.assessui.society;
 import java.util.*;
 import java.io.*;
 
+import org.cougaar.core.society.UID;
+
 import org.cougaar.lib.aggagent.dictionary.glquery.samples.CustomQueryBaseAdapter;
 import org.cougaar.domain.glm.ldm.Constants;
 
@@ -18,6 +20,7 @@ import org.cougaar.domain.planning.ldm.measure.CountRate;
 import org.cougaar.domain.planning.ldm.measure.FlowRate;
 import org.cougaar.domain.planning.ldm.measure.Rate;
 import org.cougaar.domain.planning.ldm.plan.AspectType;
+import org.cougaar.domain.planning.ldm.plan.PlanElement;
 import org.cougaar.domain.planning.ldm.plan.Preference;
 import org.cougaar.domain.planning.ldm.plan.PrepositionalPhrase;
 import org.cougaar.domain.planning.ldm.plan.Task;
@@ -89,6 +92,19 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             }
           }
 
+          // Is this right?
+          // Is this right?
+          PlanElement pe = t.getPlanElement();
+          UID cluster_object_name = pe.getUID();
+
+          if (cluster_object_name == null) {
+            System.out.println ("WARNING: no UID for plan element of demand task");
+            continue;
+          }
+
+          System.out.print ("demand cluster is " +
+                              cluster_object_name.getOwner() + ", ");
+
           // Find the item name in direct object's type identification
 
           Asset direct_object = t.getDirectObject();
@@ -124,6 +140,8 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             System.out.println ("WARNING: No rate for org " + org + ", item " + item);
             continue;
           }
+
+          System.out.println ("org is: " + org + ", item is: " + item);
 
 /*
           if (index < 5) {

@@ -53,6 +53,17 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
       if (o instanceof Inventory) {
 
         Inventory in = (Inventory) o;
+
+        UID inventory_object_name = in.getUID();
+
+        if (inventory_object_name == null) {
+          System.out.println ("WARNING: no UID for inventory asset");
+          continue;
+        }
+
+        System.out.println ("inventory asset is " +
+                            inventory_object_name.getOwner());
+
         String org = null;
         String item = null;
         String start_time = null;
