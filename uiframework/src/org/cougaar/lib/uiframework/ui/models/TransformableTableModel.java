@@ -78,6 +78,9 @@ public class TransformableTableModel implements TableModel
      */
     public String getColumnName(int columnIndex)
     {
+        if (dataRows.size() == 0)
+          return "";
+
         String name =
             ((Vector)dataRows.elementAt(0)).elementAt(columnIndex).toString();
         return name;
