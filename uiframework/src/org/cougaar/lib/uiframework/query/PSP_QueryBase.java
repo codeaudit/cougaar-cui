@@ -41,6 +41,20 @@ public abstract class PSP_QueryBase
   private XmlInterpreter xint = new XmlInterpreter();
 
   /**
+   *  If this flag is true, then this PSP_QueryBase will echo to System.out an
+   *  XML copy of every query it receives.  By default, it is false, but a
+   *  subclass instance can set it to true to aid in debugging.
+   */
+  protected boolean echo_queries = false;
+
+  /**
+   *  If this flag is true, then this PSP_QueryBase will echo to System.out an
+   *  XML copy of every result set it produces.  By default, it is false, but a
+   *  subclass instance can set it to true to aid in debugging.
+   */
+  protected boolean echo_results = false;
+
+  /**
    *  Cache a reference to a PlugInDelegate, as obtained through the
    *  PlanServiceContext supplied through the first call to execute.  This
    *  reference is used by the local QueryInterpreter for all of its access to
@@ -90,6 +104,15 @@ public abstract class PSP_QueryBase
       return;
     }
 
+    // maybe echo the received query for debugging purposes
+    if (echo_queries) {
+      System.out.println();
+      System.out.println("PSP_QueryBase::execute:  received query:");
+      PrettyPrinter pp = new PrettyPrinter(System.out);
+      query.generateXml(pp);
+      pp.flush();
+    }
+
     Structure result = null;
     try {
       result = getQueryInterpreter().query(query);
@@ -103,7 +126,16 @@ public abstract class PSP_QueryBase
       return;
     }
 
-    PrettyPrinter pp = new PrettyPrinter(new PrintWriter(out));
+    // maybe echo the generated response for debugging purposes
+    if (echo_results) {
+      System.out.println();
+      System.out.println("PSP_QueryBase::execute:  returning response:");
+      PrettyPrinter pp = new PrettyPrinter(System.out);
+      result.generateXml(pp);
+      pp.flush();
+    }
+
+    PrettyPrinter pp = new PrettyPrinter(out);
     result.generateXml(pp);
     pp.flush();
   }
@@ -114,8 +146,10 @@ public abstract class PSP_QueryBase
    *  the initialization can be performed in the implementation class's
    *  constructor.  This method, however, is called after the PlugInDelegate
    *  reference is available, which may be required for some initializations.
+   *  The default implementation does nothing.
    */
-  protected abstract void initQueryInterpreter ();
+  protected void initQueryInterpreter () {
+  }
 
   /**
    *  Provide a reference to the QueryInterpreter to be used by this PSP.  The
