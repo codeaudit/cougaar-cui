@@ -319,25 +319,7 @@ public class CRowHeaderTable extends JTable
         TableModel tm = table.getModel();
         TableColumn column = table.getColumnModel().getColumn(columnIndex);
 
-        TableCellRenderer cr = null;
-        if (usingJdk13orGreater())
-        {
-            JTableHeader th = table.getTableHeader();
-
-            try
-            {
-                // Without using reflection, the following line is:
-                // ct = th.getDefaultRenderer()
-                // Will not compile under jdk1.2.2 (thus the use of reflection)
-                cr = (TableCellRenderer)th.getClass().
-                    getMethod("getDefaultRenderer", null).invoke(th, null);
-            }
-            catch (Exception e) {e.printStackTrace();}
-        }
-        else
-        {
-            cr = column.getHeaderRenderer(); // jdk1.2
-        }
+        TableCellRenderer cr = getColumnHeader(table, columnIndex);
 
         Component comp =
             cr.getTableCellRendererComponent(null, column.getHeaderValue(),
@@ -396,7 +378,6 @@ public class CRowHeaderTable extends JTable
         column.setMinWidth(targetWidth);
         column.setPreferredWidth(targetWidth);
         column.setMaxWidth(targetWidth + 25);
-
         return targetWidth;
     }
 
@@ -462,6 +443,33 @@ public class CRowHeaderTable extends JTable
             }
             setOpaque(true);
 	    setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+        }
+
+        private TableCellRenderer getColumnHeader(JTable table,int columnIndex)
+        {
+            TableColumn column = table.getColumnModel().getColumn(columnIndex);
+
+            TableCellRenderer cr = null;
+            if (usingJdk13orGreater())
+            {
+                JTableHeader th = table.getTableHeader();
+
+                try
+                {
+                    // Without using reflection, the following line is:
+                    // ct = th.getDefaultRenderer()
+                    // Will not compile under jdk1.2.2 (thus the use of reflection)
+                    cr = (TableCellRenderer)th.getClass().
+                        getMethod("getDefaultRenderer", null).invoke(th, null);
+                }
+                catch (Exception e) {e.printStackTrace();}
+            }
+            else
+            {
+                cr = column.getHeaderRenderer(); // jdk1.2
+            }
+
+            return cr;
         }
     }
 }
