@@ -15,6 +15,7 @@ import org.cougaar.domain.planning.ldm.asset.Asset;
 import org.cougaar.domain.planning.ldm.asset.TypeIdentificationPG;
 
 import org.cougaar.domain.planning.ldm.measure.CountRate;
+import org.cougaar.domain.planning.ldm.measure.FlowRate;
 import org.cougaar.domain.planning.ldm.measure.Rate;
 import org.cougaar.domain.planning.ldm.plan.AspectType;
 import org.cougaar.domain.planning.ldm.plan.Preference;
@@ -34,7 +35,6 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
     Iterator iter = matches.iterator();
     int index;
-    long earliest_time = 0;
 
     index = 0;
 
@@ -66,11 +66,6 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
           time_long = time_double.longValue ();
           start_time = String.valueOf (time_long);
-
-          if (earliest_time == 0)
-            earliest_time = time_long;
-          else if (time_long < earliest_time)
-            earliest_time = time_long;
 
           // Pull out the end time and put it in a string
 
@@ -120,6 +115,10 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             CountRate cr = (CountRate) demand_rate;
             rate = new String ("" + cr.getEachesPerDay());
           }
+          else if ((demand_rate != null) && (demand_rate instanceof FlowRate)) {
+            FlowRate fr = (FlowRate) demand_rate;
+            rate = new String ("" + fr.getGallonsPerDay());
+          }
           else
           {
             System.out.println ("WARNING: No rate for org " + org + ", item " + item);
@@ -151,7 +150,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
     } /* while iter */
 
     System.out.println ("**************************************************************************");
-    System.out.println ("DemandQueryAdapter sending " + index + " records, earliest start time is " + earliest_time);
+    System.out.println ("DemandQueryAdapter sending " + index + " records");
     System.out.println ("**************************************************************************");
 
     output_xml += myEncoder.encodeEndOfXML();

@@ -39,7 +39,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
     Iterator iter = matches.iterator();
     int index;
-    long earliest_time = 0;
+    int inventory_count = 1;
 
     index = 0;
     xml_count = 0;
@@ -101,6 +101,12 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
         Enumeration schedule_list = s1.getAllScheduleElements();
 
+        System.out.print ("" + inventory_count + "org " + org + ", item " + item + "...");
+
+        inventory_count++;
+
+        int looping = 0;
+
         while (schedule_list.hasMoreElements()) {
           QuantityScheduleElementImpl element;
 
@@ -108,17 +114,15 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
           rate = new String ("" + element.getQuantity());
 
+          looping++;
+          System.out.print (" " + looping + " ");
+
           // Pull out the start time and put it in a string
 
           time_double = new Double (element.getStartTime());
 
           start_time_long = time_double.longValue ();
           start_time = String.valueOf (start_time_long);
-
-          if (earliest_time == 0)
-            earliest_time = start_time_long;
-          else if (start_time_long < earliest_time)
-            earliest_time = start_time_long;
 
           // Pull out the end time and put it in a string
 
@@ -148,6 +152,8 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
           }
         } /* end of while */
 
+        System.out.println ("");
+
       } /* if o is Inventory */
     } /* while iter */
 
@@ -156,7 +162,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
     }
 
     System.out.println ("**************************************************************************");
-    System.out.println ("Inventory sending " + index + " records, earliest start time is " + earliest_time + ", amounts to " + xml_count + " xml records");
+    System.out.println ("Inventory sending " + index + " records, amounts to " + xml_count + " xml records");
     System.out.println ("**************************************************************************");
 
     output_xml += myEncoder.encodeEndOfXML();
