@@ -9,8 +9,8 @@ graph [
             Location ""
          ]
          center [
-            x -179.5
-            y 93.0
+            x 0.0
+            y 47.0
             z 0.0
          ]
          width 100.0
@@ -19,21 +19,21 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 13
+         group 6
          shape "Oval"
       ]
    ]
    node [
       id 2
-      label "CSI"
+      label "MedicalICP"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x -9.5
-            y 33.0
+            x -252.0
+            y -55.0
             z 0.0
          ]
          width 100.0
@@ -42,21 +42,21 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 13
+         group 6
          shape "Oval"
       ]
    ]
    node [
       id 3
-      label "DSCCCBU"
+      label "FuelICP"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x -304.5
-            y -60.0
+            x 53.0
+            y -56.0
             z 0.0
          ]
          width 100.0
@@ -65,21 +65,21 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 13
+         group 6
          shape "Oval"
       ]
    ]
    node [
       id 4
-      label "Depot"
+      label "SubsistenceICP"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x -64.5
-            y -60.0
+            x -87.0
+            y -61.0
             z 0.0
          ]
          width 100.0
@@ -88,21 +88,21 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 13
+         group 6
          shape "Oval"
       ]
    ]
    node [
       id 5
-      label "Vendor"
+      label "SparePartsICP"
       graphics [
          Image [
             Type ""
             Location ""
          ]
          center [
-            x -178.5
-            y -64.0
+            x 192.0
+            y -53.0
             z 0.0
          ]
          width 100.0
@@ -111,12 +111,12 @@ graph [
       ]
       vgj [
          labelPosition "center"
-         group 13
+         group 6
          shape "Oval"
       ]
    ]
    node [
-      id 13
+      id 6
       label ""
       graphics [
          Image [
@@ -134,12 +134,12 @@ graph [
       ]
       vgj [
          labelPosition "below"
-         group 15
+         group 7
          shape "Oval"
       ]
    ]
    node [
-      id 15
+      id 7
       label ""
       graphics [
          Image [
@@ -157,28 +157,6 @@ graph [
       ]
       vgj [
          labelPosition "below"
-         shape "Oval"
-      ]
-   ]
-   node [
-      id 0
-      label "TEMP"
-      graphics [
-         Image [
-            Type "URL"
-            Location ""
-         ]
-         center [
-            x -396.5
-            y 48.0
-            z 0.0
-         ]
-         width 100.0
-         height 70.0
-         depth 10.0
-      ]
-      vgj [
-         labelPosition "center"
          shape "Oval"
       ]
    ]

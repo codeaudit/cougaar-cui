@@ -11,7 +11,7 @@ set BIN_BASE=%ORGHV_HOME%\classes
 set LIB_BASE=%ORGHV_HOME%\lib
 rem set LIB_BASE=%COUGAAR_INSTALL_PATH%
 
-set LIBPATH=
+set LIBPATH=.
 set LIBPATH=%LIBPATH%;%BIN_BASE%
 set LIBPATH=%LIBPATH%;%ORGHV_HOME%\configs
 set LIBPATH=%LIBPATH%;%ORGHV_HOME%\data
@@ -27,7 +27,8 @@ rem For class OrgHierApp:
 rem Usage requires parameters: URL APP or defaultTest APP where APP is testciv or testdlv
 rem The next-to-last word in the following command is the URL which supplies relational data
 
-set JAVA_CMD=java -Xms100m -Xmx300m -classpath %LIBPATH%  %APP% defaultTest testciv
+set JAVA_CMD=java -Xms100m -Xmx300m -classpath %LIBPATH%  %APP% defaultTest cview 
+echo testciv
 rem set JAVA_CMD=java -Xms100m -Xmx300m -classpath %LIBPATH% %APP% http://localhost:5555/$AGG/agg/demo/GENERIC.PSP?QUERY_ORG_HIERARCHY.PSP testciv
 
 if NOT EXIST %BIN_BASE% echo **** Error: No directory for bytecode: %BIN_BASE%
