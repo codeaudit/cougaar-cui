@@ -26,14 +26,21 @@ public class BJAssessmentDesktop extends CDesktopFrame
         super("BlackJack Assessment UI");
 
         boolean plaf = Boolean.getBoolean("PLAF"); // will be used in future
+
         addTool("Stoplight View", 'S', StoplightPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
-        addTool("Lineplot View", 'S', LinePlotPanel.class,
+        addTool("Lineplot View", 'L', LinePlotPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
         addTool("Stoplight View (PLAF)", 't', StoplightPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         addTool("Lineplot View (PLAF)", 'i', LinePlotPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
+        addTool("Stoplight View (Old Style)", 'o', StoplightPanel.class,
+                new Class[]{boolean.class, boolean.class},
+                new Object[]{new Boolean(false), new Boolean(false)});
+        addTool("Lineplot View (Old Style)", 'n', LinePlotPanel.class,
+                new Class[]{boolean.class, boolean.class},
+                new Object[]{new Boolean(false), new Boolean(false)});
         setVisible(true);
     }
 

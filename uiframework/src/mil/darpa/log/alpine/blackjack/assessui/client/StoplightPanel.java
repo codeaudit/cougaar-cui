@@ -11,6 +11,7 @@ import javax.swing.event.*;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.*;
 
+import org.cougaar.lib.uiframework.ui.components.CComboSelector;
 import org.cougaar.lib.uiframework.ui.components.CDesktopFrame;
 import org.cougaar.lib.uiframework.ui.components.CFrame;
 import org.cougaar.lib.uiframework.ui.components.CRangeButton;
@@ -37,6 +38,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 public class StoplightPanel extends JPanel implements CougaarUI
 {
     private boolean plaf = false;
+    private boolean useMenuButtons = true;
     private final Object[] metrics = DBInterface.metrics;
     private final static int spacing = 5;
     private DatabaseTableModel stoplightTableModel = new DatabaseTableModel();
@@ -46,13 +48,30 @@ public class StoplightPanel extends JPanel implements CougaarUI
     /**
      * Create a new stoplight panel
      *
-     * @param frame frame in which this panel will reside.
-     * @param plaf true if pluggable look and feel must be supported
+     * @param frame          frame in which this panel will reside.
+     * @param plaf           true if pluggable look and feel must be supported
      */
     public StoplightPanel(boolean plaf)
     {
         super(new BorderLayout());
         this.plaf = plaf;
+        createComponents();
+    }
+
+    /**
+     * Create a new stoplight panel
+     *
+     * @param frame          frame in which this panel will reside.
+     * @param plaf           true if pluggable look and feel must be supported
+     * @param useMenuButtons true if variable manager should use CMenuButtons
+     *                       for variable management; otherwise CComboSelectors
+     *                       will be used.
+     */
+    public StoplightPanel(boolean plaf, boolean useMenuButtons)
+    {
+        super(new BorderLayout());
+        this.plaf = plaf;
+        this.useMenuButtons = useMenuButtons;
         createComponents();
     }
 
@@ -90,41 +109,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
     }
 
     /**
-     * This private class is a JComboBox that implements the Selector
-     * interface.  This is required to use a JComboBox with the
-     * variable interface manager.
-     */
-    private class ComboSelector extends JComboBox implements Selector
-    {
-        Object selectedItem;
-
-        public ComboSelector(Object[] items)
-        {
-            super(items);
-
-            selectedItem = getSelectedItem();
-            addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        Object oldSelectedItem = selectedItem;
-                        selectedItem = getSelectedItem();
-                        firePropertyChange("selectedItem", oldSelectedItem,
-                                           selectedItem);
-                    }
-                });
-        }
-
-        /**
-          * Not needed when compiling/running under jdk1.3
-          */
-        protected void firePropertyChange(String propertyName, Object oldValue,
-                                          Object newValue)
-        {
-            super.firePropertyChange(propertyName, oldValue, newValue);
-        }
-    }
-
-    /**
      * Creates the components of the stoplight UI
      */
     private void createComponents()
@@ -138,7 +122,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         root = DBInterface.orgTree;
         CTreeButton orgTreeButton = new CTreeButton(  root, root);
 
-        ComboSelector metricSelector = new ComboSelector(metrics);
+        CComboSelector metricSelector = new CComboSelector(metrics);
 
         VariableModel[] variables =
         {
@@ -162,7 +146,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         // create a new query generator to update stoplightTableModel based
         // on (and triggered by) changes to variable controls.
         final QueryGenerator qg = new QueryGenerator(stoplightTableModel);
-        variableManager = new VariableInterfaceManager(variables);
+        variableManager =
+            new VariableInterfaceManager(variables, useMenuButtons);
         variableManager.addVariableListener(
             new VariableInterfaceManager.VariableListener() {
                 public void variableChanged(VariableModel vm)
@@ -329,7 +314,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         {
             linePlotFrame = new CFrame("Line Plot Chart", plaf);
         }
-        LinePlotPanel lpp = new LinePlotPanel(plaf);
+        LinePlotPanel lpp = new LinePlotPanel(plaf, useMenuButtons);
         VariableInterfaceManager linePlotVIM =
             lpp.getVariableInterfaceManager();
 

@@ -9,6 +9,10 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
+import org.cougaar.lib.uiframework.ui.components.CComboSelector;
+import org.cougaar.lib.uiframework.ui.components.CComponentMenu;
+import org.cougaar.lib.uiframework.ui.components.CMenuButton;
+import org.cougaar.lib.uiframework.ui.components.CPullrightButton;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
 
 /**
@@ -31,13 +35,18 @@ public class VariableInterfaceManager
      *
      * @param variables      variable descriptors for the variables that need
      *                       to be managed
+     * @param useMenuButtons true if variable manager should use CMenuButtons
+     *                       for variable management; otherwise CComboSelectors
+     *                       will be used.
      */
-    public VariableInterfaceManager(VariableModel[] variables)
+    public VariableInterfaceManager(VariableModel[] variables,
+                                    boolean useMenuButtons)
     {
         this.variableDescriptors = variables;
 
-        // Variable comboBox selection logic
+        // Variable selection logic
         ActionListener cbListener = new SelectionListener();
+        PropertyChangeListener varListener = new VariableSelectionListener();
 
         // Create a control for each variable
         for (int i = 0; i < variableDescriptors.length; i++)
@@ -58,19 +67,37 @@ public class VariableInterfaceManager
             JComponent variableLabel = null;
             if (v.isSwappable())
             {
-                JComboBox selector = createCombo();
-                selector.setSelectedItem(v);
-                selector.putClientProperty("ID", selector.getSelectedItem());
-                selector.addActionListener(cbListener);
-                selector.setMinimumSize(new Dimension(0,0));
+                JComponent selector;
+
+                if (useMenuButtons)
+                {
+                    CMenuButton mbSelector = createMenuButton();
+                    mbSelector.setSelectedItem(v);
+                    mbSelector.addPropertyChangeListener("selectedItem",
+                                                         varListener);
+                    selector = mbSelector;
+                }
+                else
+                {
+                    JComboBox cbSelector = createCombo();
+                    cbSelector.setSelectedItem(v);
+                    cbSelector.addActionListener(cbListener);
+                    cbSelector.setMinimumSize(new Dimension(0,0));
+                    selector = cbSelector;
+                }
+
+                selector.putClientProperty("ID", v);
                 JPanel selectorBox = new JPanel(new BorderLayout());
                 if (v.isHorizontal())
                 {
                     selectorBox.setLayout(
                         new BoxLayout(selectorBox, BoxLayout.X_AXIS));
                     selectorBox.add(selector);
-                    selectorBox.add(new JLabel(": "));
-                    selectorBox.add(Box.createGlue());
+                    if (!useMenuButtons)
+                    {
+                        selectorBox.add(new JLabel(": "));
+                        selectorBox.add(Box.createGlue());
+                    }
                 }
                 else
                 {
@@ -84,7 +111,8 @@ public class VariableInterfaceManager
                 variableLabel = new JLabel(v.getName() + ": ");
                 variableControl.add(variableLabel);
             }
-            if (v.getLabelWidth() != 0)
+
+            if ((v.getLabelWidth() != 0) && (!useMenuButtons))
             {
                 variableLabel.setPreferredSize(
                     new Dimension(v.getLabelWidth(),
@@ -92,7 +120,10 @@ public class VariableInterfaceManager
                 variableLabel.setMaximumSize(variableLabel.getPreferredSize());
             }
 
-            variableControl.add(v.getSelectComponent());
+            if (!v.isSwappable() || !useMenuButtons)
+            {
+                variableControl.add(v.getSelectComponent());
+            }
             v.setControl(variableControl);
 
             if (v.isHorizontal())
@@ -220,9 +251,10 @@ public class VariableInterfaceManager
         public void variablesSwapped(VariableModel vm1, VariableModel vm2);
     }
 
-    private JComboBox createCombo()
+    private CComboSelector createCombo()
     {
-        JComboBox combo = new JComboBox();
+        CComboSelector combo = new CComboSelector();
+
         for (int i = 0; i < variableDescriptors.length; i++)
         {
             if (variableDescriptors[i].isSwappable())
@@ -233,20 +265,46 @@ public class VariableInterfaceManager
         return combo;
     }
 
+    private CComponentMenu swappableComponentMenu = null;
+    private CMenuButton createMenuButton()
+    {
+        CMenuButton mb = new CMenuButton();
+
+        if (swappableComponentMenu == null)
+        {
+            swappableComponentMenu = new CComponentMenu();
+            for (int i = 0; i < variableDescriptors.length; i++)
+            {
+                if (variableDescriptors[i].isSwappable())
+                {
+                    Selector newSelector =
+                        getRootSelector(variableDescriptors[i]);
+
+                    swappableComponentMenu.
+                        addComponent(variableDescriptors[i].toString(),
+                                     (Component)newSelector);
+                }
+            }
+        }
+
+        mb.setSelectorMenu(swappableComponentMenu);
+        return mb;
+    }
+
     private void setLocation(VariableModel vDescriptor,
                              String variableName)
     {
         if (!vDescriptor.getName().equals(variableName))
         {
             JPanel vControl = vDescriptor.getControl();
-            JComboBox vCombo = getComboBox(vControl);
-            vCombo.setSelectedItem(getDescriptor(variableName));
+            Selector vSelector = getVariableSelector(vControl);
+            vSelector.setSelectedItem(getDescriptor(variableName));
         }
     }
 
-    private static JComboBox getComboBox(JPanel panel)
+    private static Selector getVariableSelector(JPanel panel)
     {
-        return (JComboBox)((Container)panel.getComponent(0)).getComponent(0);
+        return (Selector)((Container)panel.getComponent(0)).getComponent(0);
     }
 
     private class SelectionListener implements ActionListener
@@ -269,7 +327,8 @@ public class VariableInterfaceManager
 
                 if (oldValue != newValue)
                 {
-                    JComboBox relatedCB = getComboBox(newValue.getControl());
+                    JComboBox relatedCB =
+                        (JComboBox)getVariableSelector(newValue.getControl());
                     relatedCB.putClientProperty("REACT", new Boolean(false));
                     relatedCB.setSelectedItem(oldValue);
                     relatedCB.putClientProperty("ID", oldValue);
@@ -309,5 +368,68 @@ public class VariableInterfaceManager
             panel1.repaint();
             panel2.repaint();
         }
+    }
+
+    private class VariableSelectionListener implements PropertyChangeListener
+    {
+        public void propertyChange(final PropertyChangeEvent e)
+        {
+            CMenuButton source = (CMenuButton)e.getSource();
+            VariableModel vm = (VariableModel)source.getClientProperty("ID");
+
+            Boolean react = (Boolean)source.getClientProperty("REACT");
+            if ((react != null) && !react.booleanValue())
+            {
+                source.putClientProperty("REACT", new Boolean(true));
+            }
+            else
+            {
+                // find other JMenuButton that must be modified
+                // i.e. the one whose variable now matches this one.
+                Selector sourcesNewSelector = (Selector)e.getNewValue();
+
+                VariableModel otherVm = null;
+                for (int i = 0; i < variableDescriptors.length; i++)
+                {
+                    Selector otherVmsSelector =
+                        getRootSelector(variableDescriptors[i]);
+                    if (sourcesNewSelector == otherVmsSelector)
+                    {
+                        otherVm = variableDescriptors[i];
+                        break;
+                    }
+                }
+
+                source.putClientProperty("ID", otherVm);
+                final CMenuButton otherMb =
+                    (CMenuButton)getVariableSelector(otherVm.getControl());
+                otherMb.putClientProperty("REACT", new Boolean(false));
+                otherMb.setSelectedItem(e.getOldValue());
+                otherMb.putClientProperty("ID", vm);
+                vm.swapLocations(otherVm);
+
+                for (int i = 0; i < variableListeners.size(); i++)
+                {
+                    VariableListener vl = (VariableListener)
+                        variableListeners.elementAt(i);
+                    vl.variablesSwapped(vm, otherVm);
+                }
+           }
+        }
+    }
+
+    /**
+     * Unwrap CPullright buttons
+     */
+    private Selector getRootSelector(VariableModel vm)
+    {
+        Selector rootSelector = vm.getSelector();
+        if (rootSelector instanceof CPullrightButton)
+        {
+            rootSelector =
+                ((CPullrightButton)rootSelector).getSelectorControl();
+        }
+
+        return rootSelector;
     }
 }

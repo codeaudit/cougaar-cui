@@ -43,7 +43,7 @@ public class CPullrightButton extends JButton
      *
      * @param selector the selection control
      */
-     protected void setSelectorControl(final Selector selectorControl)
+     public void setSelectorControl(final Selector selectorControl)
      {
         this.selectorControl = selectorControl;
         setText(selectorControl.getSelectedItem().toString());
@@ -62,6 +62,16 @@ public class CPullrightButton extends JButton
                     pullright.show(CPullrightButton.this, getSize().width, 0);
                 }
              });
+     }
+
+    /**
+     * Get the control used for making selection
+     *
+     * @return the selection control
+     */
+     public Selector getSelectorControl()
+     {
+        return selectorControl;
      }
 
     /**

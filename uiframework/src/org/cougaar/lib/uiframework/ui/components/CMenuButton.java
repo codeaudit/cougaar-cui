@@ -6,6 +6,7 @@ import java.beans.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.util.Selector;
 
 /**
@@ -14,9 +15,15 @@ import org.cougaar.lib.uiframework.ui.util.Selector;
  * The button's label is updated with both the selector selected and the
  * selected value of the selected selector.
  */
-public class CMenuButton extends JButton
+public class CMenuButton extends JButton implements Selector
 {
-    private JPopupMenu popupMenu;
+    private CComponentMenu selectorMenu;
+
+    private String selectedLabel;
+    private JMenu selectedMenu;
+    private Selector selectedSelector;
+
+    private boolean enableNonselectedSelectorListening = true;
 
     /**
      * Default constructor.  Creates a new CMenuButton with no selectors.
@@ -25,17 +32,76 @@ public class CMenuButton extends JButton
     {
         super("Menu Button");
 
-        popupMenu = new JPopupMenu();
-        popupMenu.setInvoker(this);
+        setSelectorMenu(new CComponentMenu());
 
         addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {
-                    popupMenu.setPreferredSize(new Dimension(getSize().width,
-                        popupMenu.getPreferredSize().height));
-                    popupMenu.show(CMenuButton.this, 0, getSize().height);
+                    selectorMenu.setSelectedItem(selectedSelector, false);
+                    selectorMenu.setPreferredSize(new Dimension(getSize().width,
+                        selectorMenu.getPreferredSize().height));
+                    selectorMenu.show(CMenuButton.this, 0,getYPopupLocation());
                }
             });
+    }
+
+    /**
+     * When look and feel or theme is changed, this method is called.  It
+     * ensures that the associated popup menu's look and feel is updated as
+     * well.
+     */
+    public void updateUI()
+    {
+        super.updateUI();
+
+        if (selectorMenu != null)
+        {
+            SwingUtilities.updateComponentTreeUI(selectorMenu);
+        }
+    }
+
+    private int getYPopupLocation()
+    {
+        int menuItemHeight = selectedMenu.getPreferredSize().height;
+        int menuIndex = 0;
+
+        // find index of currently selected menu item
+        Component[] comps = selectedMenu.getParent().getComponents();
+        for (int i = 0; i < comps.length; i++)
+        {
+            if (comps[i] == selectedMenu)
+            {
+                menuIndex = i;
+                break;
+            }
+        }
+
+        return -menuIndex * menuItemHeight;
+    }
+
+    /**
+     * Set a remotely created selector menu to be associated with this menu
+     * button.  This method allows multiple menu buttons to share a single
+     * selector menu.
+     *
+     * @param selectorMenu the selector menu to associate with this menu button
+     */
+    public void setSelectorMenu(final CComponentMenu selectorMenu)
+    {
+        enableNonselectedSelectorListening = (this.selectorMenu == null);
+        this.selectorMenu = selectorMenu;
+
+        selectorMenu.addPropertyChangeListener(
+            "selectedItem", new SelectionUpdateListener(null));
+
+        Component[] comps = selectorMenu.getAddedComponents();
+        for (int i = 0; i < comps.length; i++)
+        {
+            final Selector s = (Selector)comps[i];
+            s.addPropertyChangeListener("selectedItem",
+                                        new SelectionUpdateListener(s));
+        }
+        updateSelection();
     }
 
     /**
@@ -44,35 +110,98 @@ public class CMenuButton extends JButton
      * @param label menu label for this selector
      * @param s the selector to add to the popup menu
      */
-    public void addSelector(final String label, final Selector s)
+    public void addSelector(String label, final Selector s)
     {
-        final JMenu menu = new JMenu(label);
-        menu.add((Component)s);
-        menu.enableInputMethods(false); // Swing bug workaround
-        popupMenu.add(menu);
-
-        menu.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e)
-                {
-                    updateSelection(label, s);
-                }
-            });
-
+        selectorMenu.addComponent(label, (Component)s);
         s.addPropertyChangeListener("selectedItem",
-                                    new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent e)
-                {
-                    updateSelection(label, s);
-                }
-            });
+                                    new SelectionUpdateListener(s));
+        updateSelection();
     }
 
-    private void updateSelection(String label, Selector s)
+    /**
+     * Sets the selected selector
+     *
+     * @param item the selector to set as selected
+     */
+    public void setSelectedItem(Object item)
     {
-        String variable = label;
-        String value = s.getSelectedItem().toString();
-        setText(variable + ": " + value);
-        popupMenu.setVisible(false);
+        selectorMenu.setSelectedItem(item);
+        updateSelection();
+    }
+
+    /**
+     * Gets the selected selector
+     *
+     * @return the selector that is currently selected
+     */
+    public Object getSelectedItem()
+    {
+        return selectedSelector;
+    }
+
+    private class SelectionUpdateListener implements PropertyChangeListener
+    {
+        private Selector s = null;
+
+        public SelectionUpdateListener(Selector s)
+        {
+            this.s = s;
+        }
+
+        public void propertyChange(PropertyChangeEvent e)
+        {
+            Object invoker = selectorMenu.getInvoker();
+            if ((invoker == CMenuButton.this) &&
+                (enableNonselectedSelectorListening ||
+                (e.getSource() instanceof CComponentMenu)))
+            {
+                if (s != null)
+                {
+                    selectorMenu.setSelectedItem(s);
+                }
+                updateSelection();
+            }
+            else if (e.getSource() == selectedSelector)
+            {
+                // My selector is being updated via setValue call
+               updateSelection();
+            }
+        }
+    }
+
+    private void updateSelection()
+    {
+        if (selectorMenu.getSelectedMenu() != null)
+        {
+            Selector oldSelectedSelector = selectedSelector;
+            selectedLabel = selectorMenu.getSelectedLabel();
+            selectedMenu = selectorMenu.getSelectedMenu();
+            selectedSelector = (Selector)selectorMenu.getSelectedItem();
+            Object selectedValue = selectedSelector.getSelectedItem();
+
+            String value;
+            if (selectedValue instanceof RangeModel)
+            {
+                RangeModel range = (RangeModel)selectedValue;
+                value = "C+" + range.getMin() + " to C+" + range.getMax();
+            }
+            else
+            {
+                value = selectedValue.toString();
+            }
+
+            setText(selectedLabel + ":   " + value);
+
+            selectedMenu.getPopupMenu().setVisible(false);
+            selectorMenu.setVisible(false);
+            selectorMenu.setInvoker(null);
+
+            if (oldSelectedSelector != selectedSelector)
+            {
+                firePropertyChange("selectedItem", oldSelectedSelector,
+                                   selectedSelector);
+            }
+        }
     }
 
     /**
@@ -84,12 +213,27 @@ public class CMenuButton extends JButton
     {
         JFrame frame = new JFrame();
         CMenuButton mb = new CMenuButton();
-        mb.addSelector("Item", new CNodeSelector());
+        Selector itemSelector = new CNodeSelector();
+        mb.addSelector("Item", itemSelector);
         mb.addSelector("Time", new CRangeSelector(false));
         mb.addSelector("Org", new CNodeSelector());
         mb.addSelector("Metric", new CNodeSelector());
+        mb.setSelectedItem(itemSelector);
+
+        mb.addPropertyChangeListener("selectedItem",
+                                     new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    System.out.println("Selected Item Changed");
+                    System.out.println("old value: " + e.getOldValue());
+                    System.out.println("new value: " + e.getNewValue());
+                }
+            });
+
         frame.getContentPane().add(mb, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
+
+        itemSelector.setSelectedItem("child2");
     }
 }

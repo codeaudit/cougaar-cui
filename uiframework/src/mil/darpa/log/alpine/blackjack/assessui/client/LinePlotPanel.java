@@ -29,6 +29,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 public class LinePlotPanel extends JPanel implements CougaarUI
 {
     private boolean plaf = true;
+    private boolean useMenuButtons = true;
     private DatabaseTableModel databaseTableModel = new DatabaseTableModel();
     private CLinePlotChart chart = new CLinePlotChart(databaseTableModel);
     private final static int spacing = 5;
@@ -49,6 +50,24 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     {
         super(new BorderLayout());
         this.plaf = plaf;
+
+        createComponents();
+    }
+
+    /**
+     * Creates new line plot panel in given frame.
+     *
+     * @param the frame in which panel will reside
+     * @param plaf true if pluggable look and feel must be supported
+     * @param useMenuButtons true if variable manager should use CMenuButtons
+     *                       for variable management; otherwise CComboSelectors
+     *                       will be used.
+     */
+    public LinePlotPanel(boolean plaf, boolean useMenuButtons)
+    {
+        super(new BorderLayout());
+        this.plaf = plaf;
+        this.useMenuButtons = useMenuButtons;
 
         createComponents();
     }
@@ -144,7 +163,8 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         // create a new query generator to update databaseTableModel based
         // on (and triggered by) changes to variable controls.
         final QueryGenerator qg = new QueryGenerator(databaseTableModel);
-        variableManager = new VariableInterfaceManager(variables);
+        variableManager =
+            new VariableInterfaceManager(variables, useMenuButtons);
         variableManager.addVariableListener(
             new VariableInterfaceManager.VariableListener() {
                 public void variableChanged(VariableModel vm)
