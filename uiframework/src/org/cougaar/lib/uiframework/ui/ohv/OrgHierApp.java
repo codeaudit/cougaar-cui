@@ -165,6 +165,25 @@ public class OrgHierApp {
     }
   }
 
+    public static OrgHierModel updateModel() {
+	return updateModel(System.getProperty("url.for.rels"));
+    }
+    public static OrgHierModel updateModel(String urlName) {
+	System.out.println("OrgHierApp updateModel with ["+urlName+"]");
+    OrgHierParser orgHierParser = new OrgHierParser(urlName);
+    Vector v = orgHierParser.parse();
+
+    System.out.println("Finished parsing.");
+
+    System.out.println();
+    System.out.println("OrgHierModel output: ");
+    OrgHierModel ohm=new OrgHierModel(v);
+    System.out.println("Start time: "+ohm.getStartTime());
+    System.out.println("Transition times: "+ohm.getTransitionTimes());
+    System.out.println("End time: "+ohm.getEndTime());
+    System.out.println("Finished OrgHierModel output.");
+    return ohm;
+  }
   public static void showCommunityView(String[] args) {
     System.out.println("Starting civ.");
     try {
@@ -185,19 +204,25 @@ public class OrgHierApp {
       xmlFile = System.getProperty("ui.orgView.aggURL");
     }
     System.out.println("Using URL: "+xmlFile);
-    OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
+    System.setProperty("url.for.rels", xmlFile);
 
-    Vector v = orgHierParser.parse();
+    OrgHierModel ohm=updateModel();
+    // OrgHierModel ohm=updateModel(xmlFile);
 
-    System.out.println("Finished parsing.");
 
-    System.out.println();
-    System.out.println("OrgHierModel output: ");
-    OrgHierModel ohm=new OrgHierModel(v);
-    System.out.println("Start time: "+ohm.getStartTime());
-    System.out.println("Transition times: "+ohm.getTransitionTimes());
-    System.out.println("End time: "+ohm.getEndTime());
-    System.out.println("Finished OrgHierModel output.");
+//     OrgHierParser orgHierParser = new OrgHierParser(xmlFile);
+
+//     Vector v = orgHierParser.parse();
+
+//     System.out.println("Finished parsing.");
+
+//     System.out.println();
+//     System.out.println("OrgHierModel output: ");
+//     OrgHierModel ohm=new OrgHierModel(v);
+//     System.out.println("Start time: "+ohm.getStartTime());
+//     System.out.println("Transition times: "+ohm.getTransitionTimes());
+//     System.out.println("End time: "+ohm.getEndTime());
+//     System.out.println("Finished OrgHierModel output.");
 
     System.out.println();
     System.out.println("OrgHierModelViewer output: ");

@@ -30,6 +30,8 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.gui.GraphWindow;
 import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
 import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
+import java.util.StringTokenizer;
+
 
 
  /**
@@ -79,6 +81,21 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 	ohtt.show(); 
     } 
     
+
+    public static void setDrillDownAttributes(VGJ vgj, Graph mygraph) {
+      String drillDownOrgs=RuntimeParameters
+              .getLoudSystemProperty("drillDownOrgs",
+                                      "CENTCOM-HHC;3ID-HHC");
+
+      StringTokenizer st = new StringTokenizer(drillDownOrgs,";");
+      String orgstr;
+      while (st.hasMoreTokens()) {
+	  orgstr=st.nextToken();
+	  System.out.println("org setddattr ddOrg: ["+orgstr+"]");
+	  vgj.drillDownNode(mygraph, orgstr, true);
+      }
+    }
+
     public void show_dynamic() { 
 	out.println("Here is the DYNAMIC OrgHierVGJOrgTree: "); 
 	out.println(textTree); 
@@ -149,6 +166,11 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 
       vgj.setGraph(mygraph);
       vgj.setCanvasTitle(name+" Community");
+
+      setDrillDownAttributes(vgj, mygraph);
+// 	    vgj.drillDownNode(mygraph, "CENTCOM-HHC", true);
+// 	    vgj.drillDownNode(mygraph, "DLAHQ", true);
+// 	    vgj.drillDownNode(mygraph, "3ID-HHC", true);
 
       // out.println(idx++);
       showNewGraph(vgj);
@@ -291,6 +313,8 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
       } else {
          //loadInit(selOrg);
       // create and show vgjOrgTree (use my model)
+	  System.out.println("vgjorgtree ota updating model");
+	  OrgHierModel ohm = OrgHierApp.updateModel();
         OrgHierVGJOrgTree ohvt=new OrgHierVGJOrgTree(ohm, selOrg);
         ohvt.show();
       }

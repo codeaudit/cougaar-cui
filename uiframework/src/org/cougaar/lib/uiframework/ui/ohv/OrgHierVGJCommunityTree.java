@@ -141,6 +141,12 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
       out.println("Finished showing the OrgHierVGJCommunityTree."); 
 
     } 
+
+
+    public static void setDrillDownAttributes(VGJ vgj, Graph mygraph) {
+	OrgHierVGJOrgTree.setDrillDownAttributes(vgj,  mygraph);
+    }
+
  
     private void show_initialized() {
       out.println("Here is the INITIALIZED OrgHierVGJCommunityTree: "); 
@@ -158,6 +164,11 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
       String loadClusterInitSuffix=RuntimeParameters
               .getLoudSystemProperty("org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJCommunityTree.LoadClusterInitSuffix",
                                       "_init.gml");
+//       String drillDownOrgs=RuntimeParameters
+//               .getLoudSystemProperty("drillDownOrgs",
+//                                       "CENTCOM-HHC;3ID-HHC");
+      
+ 
       // String init_filename="C:\\dev\\ui\\kr\\sfp\\stg\\data\\"+selOrg+"_init.gml";
       String init_filename=loadClusterInitPath+loadClusterInitName+loadClusterInitSuffix;
       // from supkpr
@@ -178,6 +189,27 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
 	    vgj.setGraph(mygraph);
       vgj.setCanvasTitle("Overview");
       out.println(idx++);
+
+      System.out.println("community show_init numberofnodes: "+mygraph.numberOfNodes());
+
+      setDrillDownAttributes(vgj, mygraph);
+//       StringTokenizer st = new StringTokenizer(drillDownOrgs,";");
+//       String orgstr;
+//       while (st.hasMoreTokens()) {
+// 	  orgstr=st.nextToken();
+// 	  System.out.println("community show_init ddOrg: ["+orgstr+"]");
+// 	  vgj.drillDownNode(mygraph, orgstr, true);
+//       }
+
+// 	    vgj.drillDownNode(mygraph, "CENTCOM-HHC", true);
+// 	    vgj.drillDownNode(mygraph, "DLAHQ", true);
+// 	    vgj.drillDownNode(mygraph, "3ID-HHC", true);
+//       System.out.println("afdd community show_init numberofnodes: "+mygraph.numberOfNodes());
+	    showLiveClusters(vgj, mygraph);
+      System.out.println("af slc community show_init numberofnodes: "+mygraph.numberOfNodes());
+
+
+
       showGraph(vgj);
       out.println(idx++);
  	    System.out.println("Leaving vgj tree.");
@@ -209,6 +241,8 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
       } else {
          //loadInit(selOrg);
       // create and show vgjOrgTree (use my model)
+	  System.out.println("vgjcommunitytree ota updating model");
+	  OrgHierModel ohm = OrgHierApp.updateModel();
         OrgHierVGJOrgTree ohvt=new OrgHierVGJOrgTree(ohm, selOrg);
         ohvt.show();
       }
@@ -238,6 +272,7 @@ import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.Node;
       // out.println(idx++);
 
 	    vgj.setGraph(mygraph);
+
       //out.println(idx++);
       showGraph(vgj);
       //out.println(idx++);
