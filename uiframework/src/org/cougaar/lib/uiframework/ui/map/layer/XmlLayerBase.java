@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Attic/XmlLayerBase.java,v $
- * $Revision: 1.7 $
- * $Date: 2001-03-11 16:12:51 $
+ * $Revision: 1.8 $
+ * $Date: 2001-03-11 20:05:02 $
  * $Author: pfischer $
  *
  * **********************************************************************
@@ -28,9 +28,10 @@ import javax.swing.*;
 
 import java.util.*;
 import java.net.*;
-import com.bbn.openmap.LatLonPoint;
 
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.gui.OMToolSet;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -42,6 +43,7 @@ import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
 import org.cougaar.lib.uiframework.ui.components.*;
+import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.util.*;
 import mil.darpa.log.alpine.blackjack.assessui.client.UIConstants;
 import mil.darpa.log.alpine.blackjack.assessui.client.UILaunchPopup;
@@ -189,6 +191,12 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
         return myState.findClosest(x,y,limit);
     }
 
+    private CLabeledSlider timeSlider = null;
+    public void setTimeSlider(CLabeledSlider timeSlider)
+    {
+        this.timeSlider = timeSlider;
+    }
+
     /**
      * Invoked when the mouse has been clicked on a component.
      * @param e MouseEvent
@@ -200,6 +208,9 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	    if(e.getClickCount() >= 2){
                 uiLaunchPopup.setInvoker(XmlLayerBase.this.getParent());
                 uiLaunchPopup.setConfigProperty("Org", getOrgName(omgr));
+                float tr = timeSlider.getValue();
+                uiLaunchPopup.setConfigProperty("Time",
+                    new RangeModel(Math.round(tr - 10), Math.round(tr + 10)));
                 uiLaunchPopup.launchUI(UIConstants.STOPLIGHT_UI_NAME);
 	    }
 	} else {
