@@ -1,0 +1,25 @@
+<structure>
+  <a name="hierarchy">
+    <val>Color Coded by </val>
+  </a>
+  <list>
+    <a name="UID"><val>Metrics</val></a>
+
+    <list>
+      <a name="UID"><val>1. Days of Supply as % of Required Days</val></a>
+    </list>
+
+    <list>
+      <a name="UID"><val>2. Inventory as % of Capacity</val></a>
+    </list>
+    <list>
+      <a name="UID"><val>3. Inventory as % of Safety Level</val></a>
+    </list>
+    <list>
+      <a name="UID"><val>4. Cumulative Expenditures as % of Budget</val></a>
+    </list>
+    <list>
+      <a name="UID"><val>5. Cumulative Contract Utilization as % of Floor</val></a>
+    </list>
+  </list>
+</structure>
