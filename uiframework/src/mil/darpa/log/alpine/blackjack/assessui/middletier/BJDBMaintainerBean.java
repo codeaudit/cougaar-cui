@@ -25,6 +25,9 @@ import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoDecoder;
 
 public class BJDBMaintainerBean implements SessionBean
 {
+    private static final String HACK_FOR_SAFETY_LEVEL = "Demand";
+    private static final String SAFETY_LEVEL_METRIC_STRING = "Safety Level";
+
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
     private static final String DB_PASSWORD = "java:comp/env/DBPassword";
@@ -112,6 +115,17 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         String metric_string;
         metric_string = myDecoder.startXMLDecoding (updateXML);
 
+        boolean run_safety_level_hack = false;
+        int safety_level_metric_id = 0;
+
+        if (metric_string.compareTo(HACK_FOR_SAFETY_LEVEL) == 0) {
+            System.out.println ("******************************");
+            System.out.println ("Running hack for safety level!");
+            System.out.println ("******************************");
+            run_safety_level_hack = true;
+            safety_level_metric_id = getMetricID (SAFETY_LEVEL_METRIC_STRING);
+        }
+
         int index = 0;
 
         int start_time_in_days;
@@ -164,6 +178,11 @@ if (index == 0) {
 
                 System.out.println ("");
                 System.out.print ("" + index);
+
+                if (run_safety_level_hack) {
+                    float multiplier = getOrgSafetyLevelMultiplier (org_id);
+                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, safety_level_metric_id, rate_float * multiplier);
+                }
 
                 index++;
 
@@ -405,6 +424,37 @@ System.out.print ("insert"+time_index);
         int time_in_days = (int) (time_sec_int / (long) 86400);
 
         return (time_in_days);
+    }
+
+    private float getOrgSafetyLevelMultiplier (int org_id) {
+
+        float multiplier = 1.0f;
+        try
+        {
+            // The effective query is
+            // SELECT id FROM assessmentOrgs WHERE name = org_field_name
+
+            ResultSet rs = stmt.executeQuery ("SELECT * FROM assessmentOrgs WHERE id = " + org_id);
+
+            if (rs.next()) { // get the id value
+                // Get out the multiplier
+            }
+            else {
+                // This is really messed up somehow
+            }
+
+            return multiplier;
+        }
+        catch(SQLException e)
+        {
+            System.out.println ("SQL error code " + e.getErrorCode());
+            System.out.println (e.getMessage());
+            throw new EJBException(e);
+        }
+        catch(Exception e)
+        {
+            throw new EJBException(e);
+        }
     }
 
     public void ejbActivate() {}
