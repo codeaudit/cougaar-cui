@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Stack;
 import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.event.TableModelEvent;
@@ -33,15 +34,6 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 public class QueryGenerator
 {
     private static final boolean debug = false;
-    public static final String INV_SAF_METRIC = "Inventory Over Target Level";
-    public static final String INV_CRITICAL_METRIC = "Inventory Over Critical Level";
-    public static final String RES_DEM_METRIC = "Cumulative Resupply Over Cumulative Demand";
-    private static final String DEMAND_METRIC = "Demand";
-    private static final String DUEIN_METRIC = "DueIn";
-    private static final String DUEOUT_METRIC = "DueOut";
-    private static final String INVENTORY_METRIC = "Inventory";
-    private static final String CRITICAL_LEVEL_METRIC = "Critical Level";
-    private static final String TARGET_LEVEL_METRIC = "Target Level";
     private static final String NO_DATA = "No Data Available";
 
     private VariableInterfaceManager variableManagerKludgeHelper = null;
@@ -49,7 +41,7 @@ public class QueryGenerator
     /** the database table model to set queries on. */
     private DatabaseTableModel dbTableModel;
 
-    private boolean aggregateItems = false;
+    private AggregationScheme aggregationScheme = null;
 
     /**
      * Creates a new query generator.
@@ -59,26 +51,6 @@ public class QueryGenerator
     public QueryGenerator(DatabaseTableModel dbTableModel)
     {
         this.dbTableModel = dbTableModel;
-    }
-
-    /**
-     * Set whether query generator should aggregate over items or not
-     *
-     * @param newValue true if query generator should aggregate over items.
-     */
-    public void setAggregateItems(boolean newValue)
-    {
-        aggregateItems = newValue;
-    }
-
-    /**
-     * Returns whether query generator is aggregating over items or not
-     *
-     * @return true if query generator is aggregating over items.
-     */
-    public boolean getAggregateItems()
-    {
-        return aggregateItems;
     }
 
     /**
@@ -105,11 +77,16 @@ public class QueryGenerator
         VariableModel yAxis = (VariableModel)vim.
                     getDescriptors(VariableModel.Y_AXIS).nextElement();
 
-        // Create query(s) that aggregate over organizations
         VariableModel orgDesc = vim.getDescriptor("Org");
         VariableModel metricDesc = vim.getDescriptor("Metric");
         String metricString = metricDesc.getValue().toString();
         TreeNode selectedOrgNode = (TreeNode)orgDesc.getValue();
+
+        // get aggregation scheme based on metric selected
+        aggregationScheme = (AggregationScheme)
+            DBInterface.aggregationSchemes.get(metricString);
+
+        // Create query(s) that aggregate over organizations
         if ((orgDesc.getState() == VariableModel.FIXED) ||
             (selectedOrgNode.isLeaf()))
         {
@@ -149,10 +126,7 @@ public class QueryGenerator
                                         dbTableModel.getColumnIndex("item"),
                                         dbTableModel.getColumnIndex("metric")};
             DatabaseTableModel.Combiner timeCombiner =
-                (metricString.equals(DEMAND_METRIC) ||
-                 metricString.equals(DUEOUT_METRIC) ||
-                 metricString.equals(DUEIN_METRIC)) ?
-                new AdditiveCombiner() : new AverageCombiner();
+              aggregationScheme.getCombiner(aggregationScheme.timeAggregation);
             dbTableModel.aggregateRows(significantColumns,
                                        timeRange.toString(),
                                        timeHeaderColumn,
@@ -188,7 +162,7 @@ public class QueryGenerator
 
         // weighted aggregation across items
         VariableModel itemDescriptor = vim.getDescriptor("Item");
-        if (aggregateItems)
+        if (aggregationScheme.itemAggregation != AggregationScheme.NONE)
         {
             if (debug) System.out.println("Aggregating across items");
             DefaultMutableTreeNode selectedItemNode =
@@ -217,7 +191,7 @@ public class QueryGenerator
         }
         // remove item column if it is there and not needed
         if ((itemDescriptor.getState() == VariableModel.FIXED) &&
-            (aggregateItems))
+            (aggregationScheme.itemAggregation != AggregationScheme.NONE))
         {
             dbTableModel.removeColumn(1);
         }
@@ -280,8 +254,7 @@ public class QueryGenerator
         // derive unit column if needed
         String metric = vim.getDescriptor("Metric").getValue().toString();
         if (yDescName.equals("Item") &&
-            !metric.equals(INV_SAF_METRIC) && !metric.equals(RES_DEM_METRIC) &&
-            !metric.equals(INV_CRITICAL_METRIC))
+            !MetricInfo.metricUnits.get(metric).equals(MetricInfo.UNITLESS))
         {
             if (debug) System.out.println("Adding unit of issue column");
             dbTableModel.insertColumn(1);
@@ -322,35 +295,47 @@ public class QueryGenerator
     {
         String query = null;
 
-        if (metricString.equals(INV_SAF_METRIC))
+        if (MetricInfo.isDerived(metricString))
         {
             int metricInt = Integer.parseInt(DBInterface.lookupValue(
               DBInterface.getTableName("Metric"), "name", "id", metricString));
 
-            query = generateRatioQuery(vim, "Org", orgNode,
-                                       INVENTORY_METRIC, TARGET_LEVEL_METRIC,
-                                       metricInt);
-        }
-        else if (metricString.equals(INV_CRITICAL_METRIC))
-        {
-            int metricInt = Integer.parseInt(DBInterface.lookupValue(
-              DBInterface.getTableName("Metric"), "name", "id", metricString));
+            Stack stack = new Stack();
+            String[] derivedMetricFormula =
+                (String[])MetricInfo.derivedMetrics.get(metricString);
+            for (int i = 0; i < derivedMetricFormula.length; i++)
+            {
+                String item = derivedMetricFormula[i];
 
-            query = generateRatioQuery(vim, "Org", orgNode,
-                                       INVENTORY_METRIC, CRITICAL_LEVEL_METRIC,
-                                       metricInt);
-        }
-        else if (metricString.equals(RES_DEM_METRIC))
-        {
-            int metricInt = Integer.parseInt(DBInterface.lookupValue(
-              DBInterface.getTableName("Metric"), "name", "id", metricString));
+                if (DBInterface.metrics.contains(item))
+                {
+                    stack.push(
+                        generateQueryUsingRootNode(vim, "Org", orgNode, item));
+                }
+                else if (MetricInfo.isUnaryOperator(item))
+                {
+                    if (item.equals(MetricInfo.CUMLATIVE_SUM))
+                    {
+                        String operand = (String)stack.pop();
+                        stack.push(generateCumulativeSumQuery(operand));
+                    }
+                }
+                else if (MetricInfo.isBinaryOperator(item))
+                {
+                    String operand2 = (String)stack.pop();
+                    String operand1 = (String)stack.pop();
+                    stack.push(
+                        generateBinaryOperationQuery(operand1, operand2,
+                                                     item, metricInt));
+                }
+                else
+                {
+                    System.err.println(
+                        "Invalid symbol in derived metric: " + item);
+                }
+            }
 
-            // Cumulative Resupply Over Cumulative Demand
-            String numQuery = generateCumulativeSumQuery(
-                generateQueryUsingRootNode(vim, "Org", orgNode,DUEIN_METRIC));
-            String denQuery = generateCumulativeSumQuery(
-                generateQueryUsingRootNode(vim, "Org", orgNode,DEMAND_METRIC));
-            query = generateRatioQuery(numQuery, denQuery, metricInt);
+            query = (String)stack.pop();
         }
         else
         {
@@ -361,21 +346,9 @@ public class QueryGenerator
         return query;
     }
 
-    private String generateRatioQuery(VariableInterfaceManager vim,
-                                   String varName, TreeNode tn,
-                                   String numMetric, String denMetric,
-                                   int metricInt)
-    {
-        String numQuery =
-            generateQueryUsingRootNode(vim, varName, tn, numMetric);
-        String denQuery =
-            generateQueryUsingRootNode(vim, "Org", tn, denMetric);
-
-        return generateRatioQuery(numQuery, denQuery, metricInt);
-    }
-
-    private String generateRatioQuery(String numQuery, String denQuery,
-                                      int metricInt)
+    private String
+        generateBinaryOperationQuery(String operand1, String operand2,
+                                     String op, int metricInt)
     {
         String query = null;
 
@@ -383,9 +356,10 @@ public class QueryGenerator
         {
             // if numerator data does not exist, assume 0
             query = "select t2.org, t2.item, t2.unitsOfTime, " + metricInt +
-                " as METRIC, (NVL(t1.assessmentValue, 0)/t2.assessmentValue)" +
-                " as \"ASSESSMENTVALUE\" from (" + numQuery + ") t1, (" +
-                denQuery + ") t2 WHERE (t1.ORG (+) = t2.ORG and" +
+                " as METRIC, (NVL(t1.assessmentValue, 0)" + op +
+                "t2.assessmentValue)" +
+                " as \"ASSESSMENTVALUE\" from (" + operand1 + ") t1, (" +
+                operand2 + ") t2 WHERE (t1.ORG (+) = t2.ORG and" +
                 " t1.UnitsOfTime (+) = t2.UnitsOfTime and " +
                 "t1.item (+) = t2.item and t2.assessmentValue <> 0)";
         }
@@ -394,9 +368,10 @@ public class QueryGenerator
             // if numerator data does not exist, NULL will be returned
             // (could not get Access to assume 0 as with Oracle)
             query = "select t2.org, t2.item, t2.unitsOfTime, " + metricInt +
-                " as METRIC, (t1.assessmentValue/t2.assessmentValue) as " +
-                "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1 " +
-                "RIGHT OUTER JOIN (" +denQuery+ ") t2 ON (t1.ORG=t2.ORG and" +
+                " as METRIC, (t1.assessmentValue" + op +
+                "t2.assessmentValue) as \"ASSESSMENTVALUE\" from (" +
+                operand1 + ") t1 RIGHT OUTER JOIN (" + operand2 +
+                ") t2 ON (t1.ORG=t2.ORG and" +
                 " t1.UnitsOfTime=t2.UnitsOfTime and t1.item=t2.item and" +
                 " t2.assessmentValue<>0)";
         }
@@ -467,7 +442,9 @@ public class QueryGenerator
             query.append(org_id);
             query.append(" AS \"ORG\", item, unitsOfTime, ");
             query.append(metric_id);
-            query.append(" as \"METRIC\", sum(");
+            query.append(" as \"METRIC\", ");
+            query.append(aggregationScheme.getSQLString(varName));
+            query.append("(");
             query.append(metric_table);
             query.append(".assessmentValue) AS \"ASSESSMENTVALUE\" FROM ");
             query.append(metric_table);
@@ -850,7 +827,7 @@ public class QueryGenerator
                 aggregateItems(tn, itemColumn);
             }
             dbTableModel.aggregateRows(childVector, node, itemColumn,
-                                       new WeightedAverageCombiner(true));
+             aggregationScheme.getCombiner(aggregationScheme.itemAggregation));
         }
     }
 
@@ -901,170 +878,6 @@ public class QueryGenerator
             }
         }
         return leafList;
-    }
-
-    private class FurthestFromOneCombiner
-        implements DatabaseTableModel.Combiner
-    {
-        public Vector prepare(Vector row, int headerColumn)
-        {
-            return row;
-        }
-
-        public Object combine(Object obj1, Object obj2)
-        {
-            if ((obj1 == null) ||
-                (obj1.toString().equals(DatabaseTableModel.NO_VALUE)))
-                return obj2;
-            Object combinedObject = null;
-            if ((obj1 instanceof Float) && (obj2 instanceof Float))
-            {
-                float f1 = ((Float)obj1).floatValue();
-                float f2 = ((Float)obj2).floatValue();
-                float f1Badness = Math.abs(f1 - 1);
-                float f2Badness = Math.abs(f2 - 1);
-                combinedObject = (f1Badness > f2Badness) ? obj1 : obj2;
-            }
-            else
-            {
-                combinedObject = obj1;
-            }
-
-            return combinedObject;
-        }
-
-        public Vector finalize(Vector row, int headerColumn)
-        {
-            return row;
-        }
-    };
-
-    private class AdditiveCombiner implements DatabaseTableModel.Combiner
-    {
-        public Vector prepare(Vector row, int headerColumn)
-        {
-            return row;
-        }
-
-        public Object combine(Object obj1, Object obj2)
-        {
-            if ((obj1 == null) ||
-                (obj1.toString().equals(DatabaseTableModel.NO_VALUE)))
-                return obj2;
-            Object combinedObject = null;
-            if ((obj1 instanceof Float) && (obj2 instanceof Float))
-            {
-                float f1 = ((Float)obj1).floatValue();
-                float f2 = ((Float)obj2).floatValue();
-                combinedObject = new Float(f1 + f2);
-            }
-            else
-            {
-                combinedObject = obj1;
-            }
-
-            return combinedObject;
-        }
-
-        public Vector finalize(Vector row, int headerColumn)
-        {
-            return row;
-        }
-    };
-
-    private class AverageCombiner extends AdditiveCombiner
-    {
-        private int numRowsCombined = 0;
-
-        public Vector prepare(Vector row, int headerColumn)
-        {
-            numRowsCombined++;
-            return row;
-        }
-
-        public Vector finalize(Vector row, int headerColumn)
-        {
-            for (int i = 0; i < row.size(); i++)
-            {
-                Object obj = row.elementAt(i);
-                if (obj instanceof Float)
-                {
-                    row.setElementAt(
-                       new Float((((Number)obj).floatValue())/numRowsCombined),
-                       i);
-                }
-            }
-            numRowsCombined = 0;
-            return row;
-        }
-    }
-
-    private class WeightedAverageCombiner extends AdditiveCombiner
-    {
-        private float totalWeight = 0;
-        private boolean assumeNullEqZero = false;
-
-        public WeightedAverageCombiner(boolean assumeNullEqZero)
-        {
-            this.assumeNullEqZero = assumeNullEqZero;
-        }
-
-        public Vector prepare(Vector row, int headerColumn)
-        {
-            DefaultMutableTreeNode headerNode =
-                (DefaultMutableTreeNode)row.elementAt(headerColumn);
-            String weightString =
-              ((Hashtable)headerNode.getUserObject()).get("WEIGHT").toString();
-            float weight = Float.parseFloat(weightString);
-            totalWeight += weight;
-            for (int i = 0; i < row.size(); i++)
-            {
-                Object obj = row.elementAt(i);
-                if (obj instanceof Float)
-                {
-                    row.setElementAt(
-                       new Float((((Number)obj).floatValue())*weight), i);
-                }
-            }
-
-            return row;
-        }
-
-        public Vector finalize(Vector row, int headerColumn)
-        {
-            if (assumeNullEqZero)
-            {
-                totalWeight = 0;
-
-                // find total weight under branch
-                DefaultMutableTreeNode headerNode =
-                    (DefaultMutableTreeNode)row.elementAt(headerColumn);
-                Enumeration branchChildren = headerNode.children();
-                while (branchChildren.hasMoreElements())
-                {
-                    DefaultMutableTreeNode node =
-                        (DefaultMutableTreeNode)branchChildren.nextElement();
-                    String weightString = ((Hashtable)
-                        node.getUserObject()).get("WEIGHT").toString();
-                    float weight = Float.parseFloat(weightString);
-                    totalWeight += weight;
-                }
-            }
-
-            for (int i = 0; i < row.size(); i++)
-            {
-                Object obj = row.elementAt(i);
-                if (obj instanceof Float)
-                {
-                    row.setElementAt(
-                       new Float((((Number)obj).floatValue())/totalWeight),
-                       i);
-                }
-            }
-
-            totalWeight = 0;
-            return row;
-        }
     }
 
     /**

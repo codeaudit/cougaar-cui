@@ -53,7 +53,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
 {
     private boolean plaf = false;
     private boolean useMenuButtons = true;
-    private final Object[] metrics = DBInterface.metrics;
+    private final Object[] metrics = DBInterface.metrics.toArray();
     private final static int spacing = 5;
     private CTreeButton itemTreeButton = null;
     private DatabaseTableModel stoplightTableModel = new DatabaseTableModel();
@@ -64,7 +64,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private CComboSelector metricSelector = null;
     private CViewFeatureSelectionControl viewPanel = null;
     private QueryGenerator queryGenerator = null;
-    private static final Vector stoplightMetrics = new Vector();
     private UILaunchPopup uiLaunchPopup = new UILaunchPopup();
     private JCheckBoxMenuItem autoScale =
         new JCheckBoxMenuItem("Auto Scale", false);
@@ -143,10 +142,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
      */
     private void createComponents()
     {
-        stoplightMetrics.add(QueryGenerator.INV_SAF_METRIC);
-        stoplightMetrics.add(QueryGenerator.RES_DEM_METRIC);
-        stoplightMetrics.add(QueryGenerator.INV_CRITICAL_METRIC);
-
         //DefaultMutableTreeNode root =
         //    DBInterface.createTree(DBInterface.getTableName("item"));
         DefaultMutableTreeNode root = DBInterface.itemTree;
@@ -374,41 +369,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
         }
         itemMenu.add(new JSeparator());
 
-        // item aggregation
-        final JCheckBoxMenuItem aggregateItems =
-            new JCheckBoxMenuItem("Aggregate");
-        aggregateItems.setMnemonic('A');
-        itemMenu.add(aggregateItems);
-        aggregateItems.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent e)
-                {
-                    boolean newSelection = aggregateItems.isSelected();
-                    if (newSelection != queryGenerator.getAggregateItems())
-                    {
-                        queryGenerator.setAggregateItems(newSelection);
-                        updateView();
-                    }
-                }
-            });
-        aggregateItems.setEnabled(
-            stoplightMetrics.contains(metricSelector.getSelectedItem()));
-        metricSelector.addPropertyChangeListener("selectedItem",
-                                                 new PropertyChangeListener(){
-                public void propertyChange(PropertyChangeEvent e)
-                {
-                    String newSelectedMetric = e.getNewValue().toString();
-                    if (stoplightMetrics.contains(newSelectedMetric))
-                    {
-                        aggregateItems.setEnabled(true);
-                    }
-                    else
-                    {
-                        aggregateItems.setSelected(false);
-                        aggregateItems.setEnabled(false);
-                    }
-                }
-            });
-
         // refresh item weights
         final JMenuItem refreshItemWeights =
             new JMenuItem("Refresh Item Weights");
@@ -502,6 +462,29 @@ public class StoplightPanel extends JPanel implements CougaarUI
             });
 
         mb.add(viewMenu, 1);
+
+        //
+        // Edit Menu
+        //
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.setMnemonic('E');
+
+        JMenuItem aggregation = new JMenuItem("Aggregation", 'A');
+        editMenu.add(aggregation);
+        aggregation.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    int optionSelected =
+                        AggregationEditor.showDialog(findJFrame(),
+                            metricSelector.getSelectedItem().toString());
+                    if (optionSelected == JOptionPane.OK_OPTION)
+                    {
+                        updateView();
+                    }
+                }
+            });
+
+        mb.add(editMenu, 1);
     }
 
     private void updateView()

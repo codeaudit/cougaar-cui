@@ -43,6 +43,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
 {
     private boolean plaf = true;
     private boolean useMenuButtons = true;
+    private CTreeButton metricTreeButton = null;
     private DatabaseTableModel databaseTableModel = new DatabaseTableModel();
     private CLinePlotChart chart = new CLinePlotChart(databaseTableModel);
     private CChartLegend legend = new CChartLegend();
@@ -127,7 +128,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     private void createComponents()
     {
         DefaultMutableTreeNode root = DBInterface.metricTree;
-        CTreeButton metricTreeButton =
+        metricTreeButton =
             new CTreeButton(root,
                             (DefaultMutableTreeNode)root.getChildAt(0));
         metricTreeButton.setRootVisible(false);
@@ -174,7 +175,6 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         // create a new query generator to update databaseTableModel based
         // on (and triggered by) changes to variable controls.
         queryGenerator = new QueryGenerator(databaseTableModel);
-        queryGenerator.setAggregateItems(true); // always on in this UI
         variableManager =
             new VariableInterfaceManager(variables, useMenuButtons);
         variableManager.addVariableListener(
@@ -314,6 +314,9 @@ public class LinePlotPanel extends JPanel implements CougaarUI
 
     private void populateMenuBar(JMenuBar mb)
     {
+        //
+        // View Menu
+        //
         JMenu viewMenu = new JMenu("View");
         viewMenu.setMnemonic('V');
 
@@ -361,6 +364,29 @@ public class LinePlotPanel extends JPanel implements CougaarUI
             });
 
         mb.add(viewMenu, 1);
+
+        //
+        // Edit Menu
+        //
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.setMnemonic('E');
+
+        JMenuItem aggregation = new JMenuItem("Aggregation", 'A');
+        editMenu.add(aggregation);
+        aggregation.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    int optionSelected =
+                        AggregationEditor.showDialog(findFrame(),
+                            metricTreeButton.getSelectedItem().toString());
+                    if (optionSelected == JOptionPane.OK_OPTION)
+                    {
+                        updateView();
+                    }
+                }
+            });
+
+        mb.add(editMenu, 1);
     }
 
     private void updateView()
