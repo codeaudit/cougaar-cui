@@ -20,6 +20,7 @@ public class AggregationEditor extends JDialog
 {
     private JList metricList;
     private JComboBox orgSelector;
+    private JPanel derivedMetricBox;
     private JComboBox timeSelector;
     private JComboBox itemSelector;
     private Hashtable localAggregationSchemes = null;
@@ -30,7 +31,7 @@ public class AggregationEditor extends JDialog
     {
         super(owner, true);
         setTitle("Aggregation Editor");
-        setSize(500, 250);
+        setSize(600, 250);
         localAggregationSchemes =
             copyAggregationSchemes(DBInterface.aggregationSchemes);
         createComponents();
@@ -109,8 +110,11 @@ public class AggregationEditor extends JDialog
              AggregationScheme.getLabelString(AggregationScheme.FONE),
              AggregationScheme.getLabelString(AggregationScheme.WAVG)};
         JPanel aggPanel = new JPanel();
-        aggPanel.setBorder(
-            BorderFactory.createTitledBorder("Metric's Aggregation Scheme"));
+        aggPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(
+                "Metric's Ordered Aggregation Scheme"),
+                BorderFactory.createEmptyBorder(
+                    spacing/2, spacing, spacing, spacing)));
         aggPanel.setLayout(new BoxLayout(aggPanel, BoxLayout.Y_AXIS));
         Box orgBox = new Box(BoxLayout.X_AXIS);
         JLabel orgLabel = new JLabel("Organization: ", JLabel.RIGHT);
@@ -119,6 +123,15 @@ public class AggregationEditor extends JDialog
         aggPanel.add(Box.createVerticalStrut(spacing));
         aggPanel.add(orgBox);
         Dimension labelSize = orgLabel.getPreferredSize();
+        derivedMetricBox = new JPanel();
+        derivedMetricBox.
+            setLayout(new BoxLayout(derivedMetricBox, BoxLayout.Y_AXIS));
+        JLabel derivedMetricLabel =
+            new JLabel("-- Derived Metric Calculation --", JLabel.CENTER);
+        derivedMetricLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        derivedMetricBox.add(Box.createVerticalStrut(spacing));
+        derivedMetricBox.add(derivedMetricLabel);
+        aggPanel.add(derivedMetricBox);
         Box timeBox = new Box(BoxLayout.X_AXIS);
         JLabel timeLabel = new JLabel("Time: ", JLabel.RIGHT);
         timeLabel.setPreferredSize(labelSize);
@@ -230,7 +243,7 @@ public class AggregationEditor extends JDialog
         itemSelector.setSelectedItem(as.getLabelString(as.itemAggregation));
 
         String metric = (String)metricList.getSelectedValue();
-
+        derivedMetricBox.setVisible(MetricInfo.isDerived(metric));
         boolean unitlessMetric =
             MetricInfo.metricUnits.get(metric).equals(MetricInfo.UNITLESS);
         itemSelector.setEnabled(unitlessMetric);
