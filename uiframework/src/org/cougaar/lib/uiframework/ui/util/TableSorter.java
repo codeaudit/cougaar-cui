@@ -43,11 +43,14 @@ public class TableSorter extends TableMap {
     int             indexes[];
     Vector          sortingColumns = new Vector();
     boolean         ascending = true;
-    int compares;
+    int             compares;
 
     // PHF - added for persistant sort cap.
     private int selectedSortColumn = -1;
 
+    // PHF - added for sorted column header indicator
+    private SelectedTableCellRenderer
+      selectedTableCellRenderer = new SelectedTableCellRenderer();
 
     public TableSorter() {
         indexes = new int[0]; // for consistency
@@ -162,7 +165,7 @@ public class TableSorter extends TableMap {
             } else if (result > 0) {
                 return 1;
             } else {
-        	return 0;
+                return 0;
             }
         }
     }
@@ -323,6 +326,8 @@ public class TableSorter extends TableMap {
         super.tableChanged(new TableModelEvent(this));
     }
 
+    private TableCellRenderer defaultRenderer = null;
+
     // There is no-where else to put this.
     // Add a mouse listener to the Table to trigger a table sort
     // when a column heading is clicked in the JTable.
@@ -337,8 +342,6 @@ public class TableSorter extends TableMap {
             tokenColumn = new TableColumn(0);
             tableView.getColumnModel().addColumn(new TableColumn(0));
         }
-        final TableCellRenderer defaultRenderer =
-            tableView.getColumnModel().getColumn(0).getHeaderRenderer();
         if (tokenColumn != null)
             tableView.getColumnModel().removeColumn(tokenColumn);
 
@@ -352,7 +355,11 @@ public class TableSorter extends TableMap {
                     TableColumn newTC =
                         columnModel.getColumn(columnModel.getColumnIndex(
                             model.getColumnName(column)));
-                    newTC.setHeaderRenderer(new SelectedTableCellRenderer());
+                    if (newTC.getHeaderRenderer() != selectedTableCellRenderer)
+                    {
+                      defaultRenderer = newTC.getHeaderRenderer();
+                    }
+                    newTC.setHeaderRenderer(selectedTableCellRenderer);
                     if (selectedSortColumn != -1)
                     {
                         TableColumn oldTC =
@@ -372,6 +379,8 @@ public class TableSorter extends TableMap {
                     {
                         selectedSortColumn = -1;
                         reallocateIndexes();
+                        TableSorter.super.tableChanged(
+                          new TableModelEvent(TableSorter.this));
                         return;
                     }
 
@@ -396,17 +405,17 @@ public class TableSorter extends TableMap {
             getTableCellRendererComponent(JTable table, Object value,
                                           boolean isSelected, boolean hasFocus,
                                           int row, int column) {
-	    if (table != null) {
+            if (table != null) {
                 JTableHeader header = table.getTableHeader();
-	        if (header != null) {
+                if (header != null) {
                     setForeground(Color.white);
                     setBackground(Color.darkGray);
-	            setFont(header.getFont());
-	        }
+                    setFont(header.getFont());
+                }
             }
 
             setText((value == null) ? "" : value.toString());
-	    setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+            setBorder(UIManager.getBorder("TableHeader.cellBorder"));
             setHorizontalAlignment(JLabel.CENTER);
             return this;
         }
