@@ -130,22 +130,26 @@ public class InventoryQuery implements Query, PropertyChangeListener
     return null;
   }
 
-
+  public String getPSP_id()
+  {
+    return "inventory";
+  }
+  
+  /*
   public String getPSP_id()
   {
     return "GLMINVENTORY.PSP";
   }
-
+  */
   public void readReply(InputStream is)
   {
-    //System.out.println("read reply");
     inventory = null;
     if(!fileBased)
     {
       try {
         ObjectInputStream p = new ObjectInputStream(is);
         inventory = (UISimpleInventory)p.readObject();
-        //System.out.println("inventory = " + inventory);
+        System.out.println("inventory = " + inventory);
         if(buildFile)
         {
           //System.out.println(assetName);
@@ -224,7 +228,7 @@ public class InventoryQuery implements Query, PropertyChangeListener
       catch (Exception e)
       {
         chart.setYAxisLabel("Quantity");
-        System.out.println("No Units Found");
+        System.out.println("No Units Found ");
       }
 
       System.out.println(model.getNSN());
