@@ -585,7 +585,7 @@ public class CRowHeaderTable extends JTable
             String dispValue = (value == null) ? "" : value.toString();
             setText(dispValue);
             setToolTipText(dispValue);
-            if ((row < rowStart) || (column == 1))
+            if (row < rowStart)
             {
                  setHorizontalAlignment(JLabel.CENTER);
             }
