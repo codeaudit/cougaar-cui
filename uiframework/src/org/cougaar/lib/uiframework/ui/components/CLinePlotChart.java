@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -195,6 +195,14 @@ public class CLinePlotChart extends CChart
                 for (int column = columnStart; column < tm.getColumnCount();
                      column++)
                 {
+                    Object value = tm.getValueAt(row, column);
+                    double valueDouble = (value instanceof Number) ?
+                        ((Number)value).doubleValue() : 0;
+
+                    // don't attempt to plot infinite numbers
+                    if (Double.isInfinite(valueDouble))
+                      continue;
+
                     int pointLocation = (column - columnStart) * 2;
                     try
                     {
@@ -205,9 +213,7 @@ public class CLinePlotChart extends CChart
                     {
                         data[pointLocation] = column;
                     }
-                    Object value = tm.getValueAt(row, column);
-                    data[pointLocation + 1] = (value instanceof Number) ?
-                        ((Number)value).doubleValue():0;
+                    data[pointLocation + 1] = valueDouble;
                 }
                 plot(data, numberOfDataPoints, 1,
                      tm.getValueAt(row, 0).toString());
