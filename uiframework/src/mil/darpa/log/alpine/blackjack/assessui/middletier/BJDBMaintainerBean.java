@@ -22,8 +22,10 @@ public class BJDBMaintainerBean implements SessionBean
     private static final String DB_USER = "java:comp/env/DBUser";
     private static final String DB_PASSWORD = "java:comp/env/DBPassword";
     private Connection connection = null;
+    private Statement stmt = null;
 
-    private static final int BEGIN_TIME_SEC = 994204800;
+
+    private static final int C_TIME_SEC = 994204800;
 
     public void ejbCreate() throws CreateException
     {
@@ -59,62 +61,62 @@ public class BJDBMaintainerBean implements SessionBean
         myDecoder.startXMLDecoding (updateXML);
         int index = 0;
 
-        while (!myDecoder.doneXMLDecoding ()) {
+        try {
+            stmt = connection.createStatement();
 
-            AggInfoStructure myStruct = myDecoder.getNextDataAtom();
+            while (!myDecoder.doneXMLDecoding ()) {
 
+                AggInfoStructure myStruct = myDecoder.getNextDataAtom();
+
+if (index == 0) {
+                System.out.print ("Org " + myStruct.getOrg());
+                System.out.println (", Fieldname " + myStruct.getFieldname());
+}
 /*
-            System.out.println ("Org is " + myStruct.getOrg());
-            System.out.println ("Item is " + myStruct.getItem());
-            System.out.println ("Time is " + myStruct.getTime());
-            System.out.println ("Start Time is " + myStruct.getStartTime());
-            System.out.println ("End Time is " + myStruct.getEndTime());
-            System.out.println ("Fieldname is " + myStruct.getFieldname());
-            System.out.println ("Value is " + myStruct.getValue());
-            System.out.println ("Rate is " + myStruct.getRate());
+                System.out.println ("Time is " + myStruct.getTime());
+                System.out.println ("Value is " + myStruct.getValue());
 */
+                System.out.print ("Item " + myStruct.getItem());
+                System.out.print (", Rate " + myStruct.getRate());
 
-            int metric_id = getMetricID (myStruct.getFieldname());
+                int metric_id = getMetricID (myStruct.getFieldname());
 //            System.out.println ("metric id is " + metric_id);
 
-            int item_id = getItemID (myStruct.getItem());
+                int item_id = getItemID (myStruct.getItem());
 //            System.out.println ("item id is " + item_id);
 
-            int org_id = getOrgID (myStruct.getOrg());
+                int org_id = getOrgID (myStruct.getOrg());
 //            System.out.println ("org id is " + org_id);
 
-            if (myStruct.getTime() != null) {
+                if (myStruct.getTime() != null) {
 
-              float value_float = Float.parseFloat (myStruct.getValue());
+                    float value_float = Float.parseFloat (myStruct.getValue());
 
-              int time_in_days = convertTimeToDays (myStruct.getTime());
+                    int time_in_days = convertTimeToDays (myStruct.getTime());
 
 //              System.out.println ("time in days is " + time_in_days);
 
-              putValueInTable (org_id, item_id, time_in_days, metric_id, value_float);
-            }
-            else {
-              float rate_float = Float.parseFloat (myStruct.getRate());
+                    putValueInTable (org_id, item_id, time_in_days, metric_id, value_float);
+                }
+                else {
+                    float rate_float = Float.parseFloat (myStruct.getRate());
 
-              int start_time_in_days = convertTimeToDays (myStruct.getStartTime());
-              int end_time_in_days = convertTimeToDays (myStruct.getEndTime());
+                    int start_time_in_days = convertTimeToDays (myStruct.getStartTime());
+                    int end_time_in_days = convertTimeToDays (myStruct.getEndTime());
 
-              System.out.println ("start days " + start_time_in_days + ",end days " + end_time_in_days);
+//                    System.out.println (", start days " + start_time_in_days + ",end days " + end_time_in_days);
 
-              putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
-            }
+                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
+                }
 
-            System.out.print ("" + index);
+                System.out.println ("");
+                System.out.print ("" + index);
 
-            index++;
+                index++;
 
-        } /* end of while */
+            } /* end of while */
 
-        System.out.println ("Done, processed " + index + " records");
-        Statement stmt = null;
-
-        try {
-            stmt = connection.createStatement();
+            System.out.println ("Done, processed " + index + " records");
 
             // Save the work in the database
             stmt.executeUpdate("COMMIT");
@@ -135,13 +137,10 @@ public class BJDBMaintainerBean implements SessionBean
     }
 
     private int getMetricID (String metric_field_name) {
-        Statement stmt = null;
         int metric_id = 0;
 
         try
         {
-            stmt = connection.createStatement();
-
             // See if the metric_field_name is in the table already
             ResultSet rs = stmt.executeQuery("SELECT id FROM assessmentMetrics WHERE name = '" + metric_field_name + "'");
 
@@ -177,24 +176,13 @@ public class BJDBMaintainerBean implements SessionBean
         {
             throw new EJBException(e);
         }
-        finally
-        {
-            try
-            {
-                if (stmt != null) stmt.close();
-            }
-            catch(SQLException e) {}
-        }
     }
 
     private int getItemID (String item_field_name) {
-        Statement stmt = null;
         int item_id = 0;
 
         try
         {
-            stmt = connection.createStatement();
-
             // See if the item_field_name is in the table already
             ResultSet rs = stmt.executeQuery("SELECT id FROM assessmentItems WHERE name = '" + item_field_name + "'");
 
@@ -231,24 +219,13 @@ public class BJDBMaintainerBean implements SessionBean
         {
             throw new EJBException(e);
         }
-        finally
-        {
-            try
-            {
-                if (stmt != null) stmt.close();
-            }
-            catch(SQLException e) {}
-        }
     }
 
     private int getOrgID (String org_field_name) {
-        Statement stmt = null;
         int org_id = 0;
 
         try
         {
-            stmt = connection.createStatement();
-
             // See if the org_field_name is in the table already
             ResultSet rs = stmt.executeQuery("SELECT id FROM assessmentOrgs WHERE name = '" + org_field_name + "'");
 
@@ -285,14 +262,6 @@ public class BJDBMaintainerBean implements SessionBean
         {
             throw new EJBException(e);
         }
-        finally
-        {
-            try
-            {
-                if (stmt != null) stmt.close();
-            }
-            catch(SQLException e) {}
-        }
     }
 
     private void putValueInTable (int org,
@@ -300,21 +269,16 @@ public class BJDBMaintainerBean implements SessionBean
                                  int time,
                                  int metric,
                                  float value) {
-        Statement stmt = null;
+        int rc;
 
         try
         {
-            stmt = connection.createStatement();
+            rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + value + " WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time + " AND metric = " + metric);
 
-            // See if this value is in the table already
-            ResultSet rs = stmt.executeQuery("SELECT assessmentValue FROM assessmentData WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time + " AND metric = " + metric);
-
-            // If it's in the table, update the value
-            if (rs.next()) {
-                stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + value + " WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time + " AND metric = " + metric);
-            }
-            // Insert the new value
-            else {
+            // If the update was not successful, do an insert
+            // (rc will contain the number of rows updated by the
+            // executeUpdate command.)
+            if (rc == 0) {
                 stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org + ", " + item + ", " + time + ", " + metric + ", " + value + ")");
             }
         }
@@ -328,14 +292,6 @@ public class BJDBMaintainerBean implements SessionBean
         {
             throw new EJBException(e);
         }
-        finally
-        {
-            try
-            {
-                if (stmt != null) stmt.close();
-            }
-            catch(SQLException e) {}
-        }
     }
 
     private void putValuesInTable (int org,
@@ -344,26 +300,28 @@ public class BJDBMaintainerBean implements SessionBean
                                   int end_time,
                                   int metric,
                                   float rate) {
-        Statement stmt = null;
+        int rc;
+        int rows_to_update = end_time - start_time;
 
         try
         {
-            stmt = connection.createStatement();
+System.out.print ("update");
+            rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + rate + " WHERE org = " + org + " AND item = " + item + " AND metric = " + metric + " AND unitsOfTime >= " + start_time + " AND unitsOfTime < " + end_time);
 
-            for (int time_index = start_time; time_index < end_time; time_index++) {
-                // See if this value is in the table already
-                ResultSet rs = stmt.executeQuery("SELECT assessmentValue FROM assessmentData WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time_index + " AND metric = " + metric);
-
-                System.out.print ("select.");
-
-                // If it's in the table, update the value
-                if (rs.next()) {
-                    System.out.print ("update.");
-                    stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + rate + " WHERE org = " + org + " AND item = " + item + " AND unitsOfTime = " + time_index + " AND metric = " + metric);
-                }
-                // Insert the new value
-                else {
-                    stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org + ", " + item + ", " + time_index + ", " + metric + ", " + rate + ")");
+            // If all the updates were not successful, do an insert
+            // (rc will contain the number of rows updated by the
+            // executeUpdate command.)
+            if (rc != rows_to_update) {
+                for (int time_index = start_time; time_index < end_time; time_index++) {
+System.out.print ("insert"+time_index);
+                    try
+                    {
+                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org + ", " + item + ", " + time_index + ", " + metric + ", " + rate + ")");
+                    }
+                    catch (SQLException e)
+                    {
+                        System.out.print ("skipping insert");
+                    }
                 }
             }
         }
@@ -375,33 +333,26 @@ public class BJDBMaintainerBean implements SessionBean
         }
         catch(Exception e)
         {
+            System.out.println ("Not an SQL exception");
             throw new EJBException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (stmt != null) stmt.close();
-            }
-            catch(SQLException e) {}
         }
     }
 
     private int convertTimeToDays (String time_msecs) {
 
-      // Convert milliseconds to seconds
-      long time_msec_long = Long.parseLong (time_msecs);
+        // Convert milliseconds to seconds
+        long time_msec_long = Long.parseLong (time_msecs);
 
-      int time_sec_int = (int) (time_msec_long / 1000);
+        int time_sec_int = (int) (time_msec_long / 1000);
 
-      // Normalize the times
-      time_sec_int = time_sec_int - BEGIN_TIME_SEC;
+        // Normalize the times
+        time_sec_int = time_sec_int - C_TIME_SEC;
 
-      // 24 hours * 60 minutes * 60 seconds = 86400 seconds in a day, and
-      // then round to the nearest whole day
-      int time_in_days = (int) (time_sec_int / 86400.0 + 0.5);
+        // 24 hours * 60 minutes * 60 seconds = 86400 seconds in a day, and
+        // then truncate to the whole day after adding a small fudge factor
+        int time_in_days = (int) (time_sec_int / 86400.0 + 0.001);
 
-      return (time_in_days);
+        return (time_in_days);
     }
 
     public void ejbActivate() {}
