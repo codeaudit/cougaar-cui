@@ -229,6 +229,10 @@ public class CRowHeaderTable extends JTable
             }
         }
 
+        // Protection against apparent race condition bug that results in this
+        // being set too high.  (demo kludge)
+        if (rowStart > 0) rowStart = 1;
+
         // adjust for first column which is now rendered in seperate row header
         // component.
         if (columnStart > 0) columnStart--;
