@@ -16,6 +16,7 @@ public class BlackjackTableCreator
     private static String password;
     private static boolean randomdata = Boolean.getBoolean("RANDOMDATA");
     private static boolean createItemTable = Boolean.getBoolean("CREATEITEMS");
+    private static boolean createMetricTable = Boolean.getBoolean("CREATEMETRICS");
     private static int startTime = Integer.getInteger("STARTTIME").intValue();
     private static int endTime = Integer.getInteger("ENDTIME").intValue();
 
@@ -61,8 +62,10 @@ public class BlackjackTableCreator
             con.close();                       // can't have nested
             populateTransducerTables();        // connections in some
             con = establishConnection(dbURL);  // databases.
+            con.setAutoCommit(false);          //
             stmt = con.createStatement();      //
             populateOtherTables(stmt);
+            con.commit();
         }
         catch(Exception e)
         {
@@ -141,15 +144,18 @@ public class BlackjackTableCreator
                                  "primary key (id)            )");
         }
 
-        try
+        if (createMetricTable)
         {
-            stmt.executeUpdate("DROP TABLE assessmentMetrics");
-        }
-        catch(SQLException e) {/* it doesn't yet exist; good */}
-        stmt.executeUpdate("CREATE TABLE assessmentMetrics " +
+            try
+            {
+                stmt.executeUpdate("DROP TABLE assessmentMetrics");
+            }
+            catch(SQLException e) {/* it doesn't yet exist; good */}
+            stmt.executeUpdate("CREATE TABLE assessmentMetrics " +
                                 "(id     INTEGER      NOT NULL," +
                                  "name   CHAR(50)     NOT NULL," +
                                 "primary key (id))");
+        }
     }
 
     private static void populateTransducerTables() throws Exception
@@ -174,13 +180,16 @@ public class BlackjackTableCreator
 
     private static void populateOtherTables(Statement stmt) throws Exception
     {
-        String[] metrics = {"Demand", "Days of Supply",
-                            "Supply as Proportion of Demand"};
-
-        for (int i=0; i < metrics.length; i++)
+        if (createMetricTable)
         {
-            stmt.executeUpdate("INSERT INTO assessmentMetrics VALUES (" + i +
-                               ", '" + metrics[i] + "')");
+            String[] metrics = {"Demand", "Days of Supply",
+                                "Supply as Proportion of Demand"};
+
+            for (int i=0; i < metrics.length; i++)
+            {
+                stmt.executeUpdate("INSERT INTO assessmentMetrics VALUES (" + i +
+                                    ", '" + metrics[i] + "')");
+            }
         }
 
         // Value table
