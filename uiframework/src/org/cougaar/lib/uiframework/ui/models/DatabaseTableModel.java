@@ -225,23 +225,13 @@ public class DatabaseTableModel implements TableModel
     {
         dataRows = new Vector();
 
-        try
-        {
-            Class.forName(DBDatasource.DBDRIVER);
-        }
-        catch(Exception e)
-        {
-            System.out.println("Failed to load driver");
-        }
-
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
         try
         {
-            con = DriverManager.getConnection(DBDatasource.DBURL,
-                                              DBDatasource.DBUSER,
-                                              DBDatasource.DBPASSWORD);
+            //con = DBDatasource.establishConnection();
+            con = DBDatasource.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(sqlQuery);
 
@@ -293,7 +283,7 @@ public class DatabaseTableModel implements TableModel
             {
                 if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
-                if (con != null) con.close();
+                //if (con != null) con.close();
             }
             catch (SQLException e)
             {

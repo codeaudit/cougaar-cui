@@ -95,11 +95,13 @@ public class StoplightPanel extends JPanel
      */
     private void createComponents()
     {
-        DefaultMutableTreeNode root =
-            DBInterface.createTree(DBInterface.getTableName("item"));
+        //DefaultMutableTreeNode root =
+        //    DBInterface.createTree(DBInterface.getTableName("item"));
+        DefaultMutableTreeNode root = DBInterface.itemTree;
         CTreeButton itemTreeButton = new CTreeButton(root, root);
 
-        root = DBInterface.createTree(DBInterface.getTableName("org"));
+        //root = DBInterface.createTree(DBInterface.getTableName("org"));
+        root = DBInterface.orgTree;
         CTreeButton orgTreeButton = new CTreeButton(  root, root);
 
         ComboSelector metricSelector = new ComboSelector(metrics);

@@ -41,6 +41,51 @@ public class DBDatasource
     public static final String DBPASSWORD = System.getProperty("DBPASSWORD");
 
     /**
+     * Establish a new connection to the database using the configured system
+     * property values.
+     *
+     * @return a new connection to the database.
+     */
+    public static Connection establishConnection() throws SQLException
+    {
+        Connection con = null;
+
+        //
+        // Load Database Driver
+        //
+        try
+        {
+            Class.forName(DBDRIVER);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Failed to load driver");
+        }
+
+        // Connect to the database
+        con = DriverManager.getConnection(DBURL, DBUSER, DBPASSWORD);
+
+        return con;
+    }
+
+    /**
+     * Get a existing connection to the database.  Create one if existing one
+     * doesn't exist.
+     *
+     * @return a connection to the database.
+     */
+    public static Connection getConnection() throws SQLException
+    {
+        if (dbConnection == null)
+        {
+            dbConnection = establishConnection();
+        }
+
+        return dbConnection;
+    }
+    private static Connection dbConnection = null;
+
+    /**
      * Recreates a structure based on data from the database.
      *
      * @param config configuration object for mapped transducer.
@@ -91,7 +136,7 @@ public class DBDatasource
 
         try
         {
-            con = establishConnection();
+            con = getConnection();
             while(searchValues.hasMoreElements())
             {
                 values.add(lookupValue(con, table, searchColumn, resultColumn,
@@ -106,7 +151,7 @@ public class DBDatasource
         {
             try
             {
-                if (con != null) con.close();
+                //if (con != null) con.close();
             }
             catch(Exception e){/*I tried*/}
         }
@@ -146,7 +191,7 @@ public class DBDatasource
 
         try
         {
-            con = establishConnection();
+            con = getConnection();
             values = lookupValues(con, table, searchColumn,
                                   resultColumn, searchValue);
         }
@@ -158,7 +203,7 @@ public class DBDatasource
         {
             try
             {
-                if (con != null) con.close();
+                //if (con != null) con.close();
             }
             catch(Exception e){/*I tried*/}
         }
@@ -265,27 +310,5 @@ public class DBDatasource
         MappedTransducer mt = new MappedTransducer(DBDRIVER, config);
         mt.setDbParams(DBURL, DBUSER, DBPASSWORD);
         return mt;
-    }
-
-    private static Connection establishConnection() throws Exception
-    {
-        Connection con = null;
-
-        //
-        // Load Database Driver
-        //
-        try
-        {
-            Class.forName(DBDRIVER);
-        }
-        catch(Exception e)
-        {
-            System.out.println("Failed to load driver");
-        }
-
-        // Connect to the database
-        con = DriverManager.getConnection(DBURL, DBUSER, DBPASSWORD);
-
-        return con;
     }
 }

@@ -78,10 +78,12 @@ public class LinePlotPanel extends JPanel
         metricTreeButton.setRootVisible(false);
         metricTreeButton.expandFirstLevel();
 
-        root = DBInterface.createTree(DBInterface.getTableName("item"));
+        //root = DBInterface.createTree(DBInterface.getTableName("item"));
+        root = DBInterface.itemTree;
         CTreeButton itemTreeButton = new CTreeButton(root, root);
 
-        root = DBInterface.createTree(DBInterface.getTableName("org"));
+        //root = DBInterface.createTree(DBInterface.getTableName("org"));
+        root = DBInterface.orgTree;
         CTreeButton orgTreeButton = new CTreeButton(root, root);
 
         VariableModel[] variables =
