@@ -15,18 +15,7 @@ import org.cougaar.lib.uiframework.query.generic.*;
  *  This class is a container for a QueryInterpreter designed to answer queries
  *  about the locations (latitude and longitude) of organizations.  It is
  *  intended to run inside an Aggregation Agent Cluster, where relevant data
- *  is available (provided by a LocSchedulePlugIn).  The organizations
- *  recognized by the resident QueryInterpreter are supplied in a configuration
- *  file called "OrgList.xml", which should be formatted like so:
- *  <pre>
- *    &lt;?xml version="1.0" encoding="UTF-8"?&gt;
- *    &lt;org name="All Orgs"&gt;
- *      &lt;org name="First Org"/&gt;
- *      &lt;org name="Second Org"/&gt;
- *      &lt;org name="Third Org"/&gt;
- *      ...
- *    &lt;/org&gt;
- *  </pre>
+ *  is available (provided by a LocSchedulePlugIn).
  */
 public class PSP_LocQuery extends PSP_QueryBase {
   private GenericInterpreter responder = null;

@@ -5,6 +5,14 @@ import org.cougaar.lib.uiframework.query.*;
 import org.cougaar.lib.uiframework.query.generic.*;
 import org.cougaar.lib.uiframework.ui.orglocation.data.*;
 
+/**
+ *  This QueryAttribute implementation works in conjunction with the
+ *  TPLocDimension class to allow a QueryInterpreter to process requests for
+ *  Org location data.  It has four possible modes--one for each piece of
+ *  information available, namely start time, end time, latitude, and longitude.
+ *  Four separate instances, one of each type, should be used by eahc such
+ *  QueryInterpreter.
+ */
 public class TPLocAttribute extends QueryAttribute {
   private static String BOGUS = "Bogus";
 
@@ -34,9 +42,9 @@ public class TPLocAttribute extends QueryAttribute {
 
   private String attributeValue (TimeLocation tl) {
     if (type == START_TIME)
-      return String.valueOf(tl.getStart());
+      return String.valueOf(DayBaseModel.getDayForMillis(tl.getStart()));
     else if (type == END_TIME)
-      return String.valueOf(tl.getEnd());
+      return String.valueOf(DayBaseModel.getDayForMillis(tl.getEnd()));
     else if (type == LATITUDE)
       return String.valueOf(tl.getLocation().getLatitude());
     else if (type == LONGITUDE)
