@@ -83,31 +83,39 @@ import java.net.URL;
 	 */
 	public boolean load()
 	{
-	    if (parent==null) {
-		parent=this;
+	    InputStream propsIn=null;
+	    if (parent!=null) {
+		Class kl=parent.getClass();
+		System.out.println("loading properties.  File: ["
+		   +resourceName+"] "
+		   +"Package location is same as for class: ["+kl+"]");
+		propsIn = kl.getResourceAsStream(resourceName);
+	    } else {
+		System.out.println("loading props from FileInputStream("
+			       +resourceName+")");
+		try {
+		    propsIn = new FileInputStream(resourceName);
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		    propsIn=null;
+		}
 	    }
 	    
-	    Class kl=parent.getClass();
-	    System.out.println("kl is "+kl);
-	    InputStream propsIn = kl.getResourceAsStream(resourceName);
-	    
-	    if (propsIn == null) {
-		
+	    if (propsIn == null) {		
 		if (verbose) {
 		    System.err.println("Unable to locate resources: "
 				       + resourceName);
 		}
-		return false;
-		
-	    } else {
-		
+		return false;		
+	    } else {		
 		try {
 		    props.load(propsIn);
 		    return true;
 		} catch (java.io.IOException e) {
 		    if (verbose) {
-			System.err.println("Caught IOException loading resources: "
+			System.err.println("Caught IOException loading: "
                                        + resourceName);
+			e.printStackTrace();
 		    }
 		    return false;
 		}

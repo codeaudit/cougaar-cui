@@ -163,7 +163,7 @@
       return rcInt;
    }
 
-//   private int getLoudSystemProperty(String key, int defaultVal, int invalidVal) {
+
    static public int getLoudSystemProperty(String key, int defaultVal, int invalidVal) {
          int rcInt=invalidVal;
          rcInt=getSystemProperty(key, invalidVal);
@@ -301,7 +301,7 @@
          back_graphics.clearRect(0, 0, windowSize_.width, windowSize_.height);
       
          back_graphics.setColor(Color.black);
-         drawAxes_(back_graphics);
+         // drawAxes_(back_graphics);
          drawObjects_(false, back_graphics, 1);
          back_graphics.dispose();
       
@@ -671,11 +671,14 @@
       static private Boolean wantMouseDragging=null; // mod
       static public boolean getMouseDraggingState()
         {
-          return (wantMouseDragging!=null&&wantMouseDragging.equals(Boolean.TRUE));
+          return (wantMouseDragging!=null
+		  &&wantMouseDragging.equals(Boolean.TRUE));
         }
-      static public void setMouseDraggingState(boolean value)
-      { wantMouseDragging=new Boolean(value);
-         System.err.println("explicit set wantMouseDragging "+wantMouseDragging);
+       static public void setMouseDraggingState(boolean value)
+       { 
+	  wantMouseDragging=new Boolean(value);
+	  System.err.println("explicit set wantMouseDragging "
+			     +wantMouseDragging);
 
       }
 
@@ -1003,7 +1006,9 @@
       
          double closest = (width_ + height_) * scale_;
       
-         for(tmpnode = graph_.firstNode(); tmpnode != null; tmpnode = graph_.nextNode(tmpnode))
+         for(tmpnode = graph_.firstNode(); 
+	     tmpnode != null; 
+	     tmpnode = graph_.nextNode(tmpnode))
          {
             if(!tmpnode.isVisible() || (!group_nodes && tmpnode.isGroup()))
                continue;
@@ -1016,7 +1021,8 @@
             pos.y = Math.abs(pos.y - y);
          
          
-            if(pos.x < bbox.width / 2.0 * scale_ + 1 && pos.y < bbox.height / 2.0 * scale_ + 1)
+            if(pos.x < bbox.width / 2.0 * scale_ + 1 
+	       && pos.y < bbox.height / 2.0 * scale_ + 1)
             {
                if(pos.x + pos.y < closest)  // rough estimate of closeness
                {
@@ -1047,18 +1053,21 @@
       
          double xd, yd, dist;
       
-         for(tmpnode = graph_.firstNode(); tmpnode != null; tmpnode = graph_.nextNode(tmpnode))
+         for(tmpnode = graph_.firstNode(); 
+	     tmpnode != null; tmpnode = graph_.nextNode(tmpnode))
          {
             if(tmpnode.isGroup())
                continue;
-            for(int child = tmpnode.firstChild(); child != -1; child = tmpnode.nextChild())
+            for(int child = tmpnode.firstChild(); 
+		child != -1; child = tmpnode.nextChild())
             {
                Node childnode = graph_.getNodeFromIndex(child);
                if(childnode.isGroup())
                   continue;
             
                int npoints = 0;
-               DPoint3[] path = graph_.getEdgePathPoints(tmpnode.getIndex(), child);
+               DPoint3[] path = graph_.getEdgePathPoints(tmpnode.getIndex(), 
+							 child);
                if(path != null)
                   npoints = path.length;
             
@@ -1174,8 +1183,10 @@
       public void setScale(double new_scale)
       {
       	// Scale about the center - compute new offset to keep centered
-         setOffsets_(windowSize_.width / 2.0 - (new_scale / scale_) * (windowSize_.width / 2.0 - offset_.x),
-                     windowSize_.height / 2.0 - (new_scale / scale_) * (windowSize_.height / 2.0 - offset_.y));
+         setOffsets_(windowSize_.width / 2.0 - (new_scale / scale_) 
+		     * (windowSize_.width / 2.0 - offset_.x),
+                     windowSize_.height / 2.0 - (new_scale / scale_) 
+		     * (windowSize_.height / 2.0 - offset_.y));
       
          scale_ = new_scale;
       
@@ -1195,11 +1206,15 @@
    
       public void setViewAngles(double theta, double phi)
       {
-         rotxMatrix_.matrix[1][1] = rotxMatrix_.matrix[2][2] = -Math.cos(-phi + Math.PI / 2.0);
-         rotxMatrix_.matrix[2][1] = -(rotxMatrix_.matrix[1][2] = -Math.sin(-phi + Math.PI / 2.0));
+         rotxMatrix_.matrix[1][1] = rotxMatrix_.matrix[2][2] 
+	     = -Math.cos(-phi + Math.PI / 2.0);
+         rotxMatrix_.matrix[2][1] = -(rotxMatrix_.matrix[1][2] 
+				      = -Math.sin(-phi + Math.PI / 2.0));
       
-         rotzMatrix_.matrix[0][0] = rotzMatrix_.matrix[1][1] = Math.cos(-theta);
-         rotzMatrix_.matrix[1][0] = -(rotzMatrix_.matrix[0][1] = -Math.sin(-theta));
+         rotzMatrix_.matrix[0][0] = rotzMatrix_.matrix[1][1] 
+	     = Math.cos(-theta);
+         rotzMatrix_.matrix[1][0] = -(rotzMatrix_.matrix[0][1] 
+				      = -Math.sin(-theta));
       
          updateViewTransform_();
       
@@ -1231,10 +1246,12 @@
          if(adjust_bounds)
          {
             computeBounds_();
-            getParent().postEvent(new Event((Object)this, RESIZE, (Object)this));
+            getParent().postEvent(new Event((Object)this, 
+					    RESIZE, (Object)this));
          
             String string = getLabel_(0, 0, 0, false);
-            getParent().postEvent(new Event((Object)this, OffsetCanvas.LABEL, string));
+            getParent().postEvent(new Event((Object)this, 
+					    OffsetCanvas.LABEL, string));
          
          }
          paintOver();
@@ -1306,7 +1323,8 @@
                      graph_.removeNode(tmpnode);
                selectedNode_ = null;
                computeBounds_();
-               getParent().postEvent(new Event((Object)this, RESIZE, (Object)this));
+               getParent().postEvent(new Event((Object)this, 
+					       RESIZE, (Object)this));
             }
             if(selectedEdge_ != null)
             {
@@ -1373,7 +1391,9 @@
    
       public DRect windowRect()
       {
-         return new DRect(-offset_.x / scale_, -offset_.y / scale_, windowSize_.width / scale_, windowSize_.height / scale_);
+         return new DRect(-offset_.x / scale_, -offset_.y / scale_, 
+			  windowSize_.width / scale_, 
+			  windowSize_.height / scale_);
       }
    
    
@@ -1746,7 +1766,8 @@
          
             // Check edge path points.
             int tmpnode_index = tmpnode.getIndex();
-            for(int child = tmpnode.firstChild(); child != -1; child = tmpnode.nextChild())
+            for(int child = tmpnode.firstChild(); 
+		child != -1; child = tmpnode.nextChild())
             {
                if(graph_.isDirected() || tmpnode_index <= child)
                {
@@ -2142,7 +2163,8 @@
    
    
    
-      private void rotImage_(double theta, int[] pixels, int w, int h, int[] result,
+      private void rotImage_(double theta, int[] pixels, int w, int h, 
+			     int[] result,
                              int image_size)
       {
          double dxX = Math.cos(theta);

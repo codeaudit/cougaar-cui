@@ -33,9 +33,9 @@ public class OrgHierEditorApp {
      false;
 
 
-  public static void initApp(Object obj) {
-  	RuntimeParameters myprp=new RuntimeParameters(obj);
-	myprp.setProperty("ui.orgView.defaultFontSize", "11");
+  public static void initApp() {
+  	RuntimeParameters myprp=new RuntimeParameters();
+	myprp.setProperty("ui.orgView.defaultFontSize", "11");
 	myprp.setProperty("ui.orgView.defaultNodeVSpace", "31"); 
 	myprp.setProperty("ui.orgView.defaultNodeHSpace", "4");
 	myprp.setProperty("ui.orgView.defaultTestFile", "c:\\data\\deftest.xml");
@@ -44,7 +44,7 @@ public class OrgHierEditorApp {
 	myprp.load();
 	myprp.addToSystemProperties();
 
-  }
+  }
 
   public static void main(String[] args) {
     ArgVector argsV=new ArgVector(args);
@@ -57,7 +57,7 @@ public class OrgHierEditorApp {
     try {
     String xmlFile;
     OrgHierRelationship ohr;
-    initApp(new OrgHierApp());
+    initApp();
 
     try {
     if (argV.size() >0) {

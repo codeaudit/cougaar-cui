@@ -1,37 +1,9 @@
 package org.cougaar.lib.uiframework.ui.ohv;
 
-import org.apache.xerces.parsers.DOMParser;
-
-
 import java.io.File;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.Iterator;
 import java.util.Vector;
-import java.util.TreeSet;
-import java.util.Enumeration;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
-import java.net.URL;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import java.io.IOException;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-
-import java.util.ArrayList;
-import java.util.List;
+// import java.net.URL;
 
 import org.cougaar.lib.uiframework.ui.ohv.util.*;
 
@@ -44,10 +16,12 @@ public class OrgHierApp {
     //true;
      false;
 
-
-
-  public static void initApp(Object obj) {
-  	RuntimeParameters myprp=new RuntimeParameters(obj);
+    /**
+       Initalizes default values for several properties and then attempts
+       to load properties from a configuration file.
+     **/
+  public static void initApp() {
+  	RuntimeParameters myprp=new RuntimeParameters();
 	myprp.setProperty("ui.orgView.defaultFontSize", "11");
 	myprp.setProperty("ui.orgView.defaultNodeVSpace", "31"); 
 	myprp.setProperty("ui.orgView.defaultNodeHSpace", "4");
@@ -59,22 +33,28 @@ public class OrgHierApp {
 
   }
 
+    /**
+       Main executable for running viewer application and test applications.
+     **/
   public static void main(String[] args) {
     ArgVector argsV=new ArgVector(args);
 
-    if (argsV.contains("testciv")) {
-      test1(args);
+    if (argsV.size() == 0) {
+	showCommunityView(args);
     }
-    if (argsV.contains("testdlv")) {
+    if (argsV.contains("testciv")||argsV.contains("cview")) {
+	showCommunityView(args);
+    }
+    if (argsV.contains("testdlv")||argsV.contains("dynview")) {
       test2(args);
     }
-    if (argsV.contains("testdlev")) {
+    if (argsV.contains("testdlev")||argsV.contains("dynlevview")) {
       testdlev(args);
     }
     if (argsV.contains("editor")) {
       editor(argsV);
     }
-    if (argsV.contains("testTextTree")) {
+    if (argsV.contains("testTextTree")||argsV.contains("texttree")) {
       testTextTree(argsV);
     }
   }
@@ -84,12 +64,7 @@ public class OrgHierApp {
       try {
 	  String xmlFile;
 	  OrgHierRelationship ohr;
-	  initApp(new OrgHierApp());
-	  xmlFile = "file:/c:/alp_workspace/xerces-1_2_0/data/personal.xml";
-	  xmlFile = "file:/c:/dev/ui/kr/sfp/defTest.xml";
-	  xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/deftestb.xml";
-	  xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/defTestTime.xml";
-	  xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/dbjconfadm.xml";
+	  initApp();
 	  
 	  try {
 	      if (argV.size() >0) {
@@ -142,12 +117,7 @@ public class OrgHierApp {
     try {
     String xmlFile;
     OrgHierRelationship ohr;
-    initApp(new OrgHierApp());
-    xmlFile = "file:/c:/alp_workspace/xerces-1_2_0/data/personal.xml";
-    xmlFile = "file:/c:/dev/ui/kr/sfp/defTest.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/deftestb.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/defTestTime.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/dbjconfadm.xml";
+    initApp();
 
     try {
     if (argV.size() >0) {
@@ -195,17 +165,12 @@ public class OrgHierApp {
     }
   }
 
-  public static void test1(String[] args) {
-    System.out.println("Starting testciv.");
+  public static void showCommunityView(String[] args) {
+    System.out.println("Starting civ.");
     try {
     String xmlFile;
     OrgHierRelationship ohr;
-    initApp(new OrgHierApp());
-    xmlFile = "file:/c:/alp_workspace/xerces-1_2_0/data/personal.xml";
-    xmlFile = "file:/c:/dev/ui/kr/sfp/defTest.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/deftestb.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/defTestTime.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/dbjconfadm.xml";
+    initApp();
 
     try {
     if (args.length>0) {
@@ -260,8 +225,7 @@ public class OrgHierApp {
     try {
     String xmlFile;
     OrgHierRelationship ohr;
-    initApp(new OrgHierApp());
-    xmlFile = "file:/c:/alp_workspace/xerces-1_2_0/data/personal.xml";
+    initApp();
     xmlFile = "file:/c:/dev/ui/kr/sfp/defTest.xml";
     xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/deftestb.xml";
     xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/defTestTime.xml";
@@ -319,12 +283,7 @@ public class OrgHierApp {
     try {
     String xmlFile;
     OrgHierRelationship ohr;
-    initApp(new OrgHierApp());
-    xmlFile = "file:/c:/alp_workspace/xerces-1_2_0/data/personal.xml";
-    xmlFile = "file:/c:/dev/ui/kr/sfp/defTest.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/deftestb.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/defTestTime.xml";
-    xmlFile = "file:/c:/JBuilder3/myprojects/xcs/data/dbjconfadm.xml";
+    initApp();
 
     try {
     if (args.length>0) {
