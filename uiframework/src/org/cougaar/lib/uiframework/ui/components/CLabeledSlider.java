@@ -161,6 +161,16 @@ public class CLabeledSlider extends JPanel
     }
 
     /**
+     * Get the actual JSlider that is wrapped by this component
+     *
+     * @return the actual JSlider that is wrapped by this component
+     */
+    public JSlider getSlider()
+    {
+        return slider;
+    }
+
+    /**
      * Adjusts min and max values to nice, round numbers that divide nicely
      * by 10. (for nice tick labels)
      *
