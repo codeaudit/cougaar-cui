@@ -40,7 +40,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:00 $
+ * @version $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
  * @author Leigh Brookshaw
  */
 public class DataSet extends Object {
@@ -630,7 +630,10 @@ public class DataSet extends Object {
           int x0 = 0 , y0 = 0;
           int x1 = 0 , y1 = 0;
 //     Calculate the clipping rectangle
-          Rectangle clip = g.getClipRect();
+
+          //PHF - removed use of deprecated method
+          Rectangle clip = g.getClipBounds();
+
           int xcmin = clip.x;
           int xcmax = clip.x + clip.width;
           int ycmin = clip.y;
@@ -723,7 +726,10 @@ public class DataSet extends Object {
           int x1,y1;
           int i;
 //     Calculate the clipping rectangle
-          Rectangle clip = g.getClipRect();
+
+          //PHF - removed use of deprecated method
+          Rectangle clip = g.getClipBounds();
+
           int xcmin = clip.x;
           int xcmax = clip.x + clip.width;
           int ycmin = clip.y;

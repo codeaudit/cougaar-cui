@@ -3,8 +3,10 @@ package org.cougaar.lib.uiframework.ui.components.graph;
 import java.awt.*;
 import java.util.*;
 import java.lang.*;
+import java.io.BufferedReader;
 import java.io.StreamTokenizer;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.URL;
 
@@ -44,7 +46,7 @@ import java.net.URL;
  * Markers are stroked using the line drawing method of the class Graph.
  * This means that any stroked figure can become a marker.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
  * @author  Leigh Brookshaw
  */
 
@@ -201,7 +203,10 @@ public class Markers extends Object {
 
          is = file.openStream();
 
-         st = new StreamTokenizer(is);
+        // PHF - removed use of deprecated constructor
+         st =
+            new StreamTokenizer(new BufferedReader(new InputStreamReader(is)));
+
          st.eolIsSignificant(true);
          st.commentChar('#');
 

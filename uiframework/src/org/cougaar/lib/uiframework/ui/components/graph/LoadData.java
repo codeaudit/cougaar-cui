@@ -40,7 +40,7 @@ import java.net.URL;
  * This class will load data (as a seperate thread) into a DataSet
  * given a URL.
  *
- * @version  $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version  $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
  * @author   Leigh Brookshaw
  */
 
@@ -252,7 +252,10 @@ public class LoadData extends Thread {
                                     comment = false;
                          case ' ': case '\t':
                              if( nbytes > 0 ) {
-                                String s = new String(b,0,0,nbytes);
+
+                                // PHF - removed use of deprecated method
+                                String s = new String(b,0,nbytes);
+
                                 data[size] = Double.valueOf(s).doubleValue();
                                 size++;
                                 if( size >= datamax ) {

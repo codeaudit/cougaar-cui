@@ -38,7 +38,7 @@ import java.io.InputStream;
  * This class extends the interactive graphics class G2Dint to incorporate
  * contouring.
  *
- * @version  $Revision: 1.1 $, $Date: 2001-02-05 14:37:00 $.
+ * @version  $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $.
  * @author   Leigh Brookshaw
  */
 
@@ -290,7 +290,10 @@ public class Contour extends G2Dint {
                                     comment = false;
                          case ' ': case '\t':
                                 if( nbytes > 0 ) {
-                                   String s = new String(b,0,0,nbytes);
+
+                                   //PHF - removed use of deprecated method
+                                   String s = new String(b,0,nbytes);
+
                                    data[n] = Double.valueOf(s).doubleValue();
                                    n++;
                                    if( n >= max ) {

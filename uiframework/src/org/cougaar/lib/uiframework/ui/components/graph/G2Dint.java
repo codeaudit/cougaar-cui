@@ -1,6 +1,7 @@
 package org.cougaar.lib.uiframework.ui.components.graph;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.applet.*;
 import java.net.URL;
 import java.util.*;
@@ -73,7 +74,7 @@ import java.util.*;
  *    windowing system the mouse button might have to be pressed in the
  *    popup window to ensure it has the keyboard focus.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:00 $.
+ * @version $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $.
  * @author Leigh Brookshaw
  */
 
@@ -163,7 +164,7 @@ public class G2Dint extends Graph2D {
  *  New update method incorporating mouse dragging.
  */
     public void update(Graphics g) {
-          Rectangle r = bounds();
+          Rectangle r = getBounds(); //PHF - removed use of deprecated method
           Color c = g.getColor();
 
 	  /* The r.x and r.y returned from bounds is relative to the
@@ -592,7 +593,7 @@ class Gin extends Frame {
    * @param y height in pixels
    */
      public void resize( int x, int y) {
-        super.resize(x,y);
+        super.setSize(x,y); //PHF - removed use of deprecated method
      }
 
   /**
@@ -711,7 +712,7 @@ class Range extends Frame {
 
 
      public void resize( int x, int y) {
-        super.resize(x,y);
+        super.setSize(x,y); //PHF - removed use of deprecated method
      }
 
      public void requestFocus() {
@@ -758,7 +759,11 @@ class Range extends Frame {
 
          if(e.target instanceof Button) {
              if( done.equals(e.target) && g2d != null) {
-                  g2d.deliverEvent( new Event(this,Event.ACTION_EVENT,this) );
+
+                  //PHF - removed use of deprecated method
+                  g2d.dispatchEvent(
+                    new ActionEvent(this, ActionEvent.ACTION_FIRST, "action"));
+
                   this.hide();
                   return true;
              } else

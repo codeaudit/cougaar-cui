@@ -4,8 +4,10 @@ import java.awt.*;
 import java.applet.*;
 import java.util.*;
 import java.lang.*;
+import java.io.BufferedReader;
 import java.io.StreamTokenizer;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.URL;
 
@@ -39,7 +41,7 @@ import java.net.URL;
  * token of the StreamTokenizer is also modified so that scientific notation
  * is recognised.
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
  * @author Leigh Brookshaw
  */
 
@@ -92,7 +94,10 @@ public class ScanWord extends StreamTokenizer {
  * @param in Input stream to read from
  */
      public ScanWord( InputStream in ) {
-           super(in);
+
+           // PHF - removed use of deprecated constructor
+           super(new BufferedReader(new InputStreamReader(in)));
+
            this.is = in;
            resetWordSyntax();
      }

@@ -51,7 +51,7 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.1 $, $Date: 2001-02-05 14:37:00 $
+ * @version  $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
  * @author   Leigh Brookshaw
  */
 
@@ -246,7 +246,10 @@ public class Graph2D extends JPanel { // PHF
                                     comment = false;
                          case ' ': case '\t':
                                 if( nbytes > 0 ) {
-                                   String s = new String(b,0,0,nbytes);
+
+                                   // PHF - removed use of deprecated method
+                                   String s = new String(b,0,nbytes);
+
                                    data[n] = Double.valueOf(s).doubleValue();
                                    n++;
                                    if( n >= max ) {
@@ -557,7 +560,8 @@ public class Graph2D extends JPanel { // PHF
 
         int i;
         Graphics lg  = g.create();
-        Rectangle r = bounds();
+        Rectangle r = getBounds();  //PHF - removed use of deprecated method
+
 
         /* The r.x and r.y returned from bounds is relative to the
 	** parents space so set them equal to zero.
@@ -660,7 +664,7 @@ public class Graph2D extends JPanel { // PHF
 	    /* The r.x and r.y returned from bounds is relative to the
 	    ** parents space so set them equal to zero
             */
-            Rectangle r = bounds();
+            Rectangle r = getBounds();  //PHF -removed use of deprecated method
 
             r.x = 0;
             r.y = 0;
@@ -1020,6 +1024,7 @@ class LoadMessage extends Thread {
         Color    foreground = Color.red;
         Graphics lg = null;
         Font     f = null;
+        boolean  loading = true; // PHF- removed use of deprecated method
 
 /**
  *    Instantiate the class
@@ -1063,6 +1068,7 @@ class LoadMessage extends Thread {
 
             g2d.clearAll = false;
             g2d.paintAll = false;
+            loading = true;
 
             super.start();
 
@@ -1072,8 +1078,9 @@ class LoadMessage extends Thread {
  */
         public void end() {
 
-            super.stop();
+            //super.stop();  // PHF- removed use of deprecated method
 
+            loading = false; // PHF- removed use of deprecated method
             g2d.clearAll = true;
             g2d.paintAll = true;
 
@@ -1097,7 +1104,7 @@ class LoadMessage extends Thread {
            setPriority(Thread.MIN_PRIORITY);
 
 
-           while(true) {
+           while(loading) {  // PHF - removed use of deprecated method
 
                 if( newmessage != null && draw) {
                     message = newmessage;
@@ -1120,7 +1127,10 @@ class LoadMessage extends Thread {
 
                 if( draw ) {
                       lg.setColor(foreground);
-                      r = g2d.bounds();
+
+                      // PHF - removed use of deprecated method
+                      r = g2d.getBounds();
+
                       x = r.x + (r.width-sw)/2;
                       y = r.y + (r.height+sa)/2;
                       lg.drawString(message, x, y);
