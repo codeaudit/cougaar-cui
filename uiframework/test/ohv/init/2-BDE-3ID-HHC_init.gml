@@ -2,7 +2,7 @@ graph [
    directed 1
    node [
       id 4
-      label "1-BDE-3ID-HHC"
+      label "2-BDE-3ID-HHC"
       graphics [
          Image [
             Type ""
@@ -25,7 +25,7 @@ graph [
    ]
    node [
       id 7
-      label "1-64-ARBN"
+      label "4-64-ARBN"
       graphics [
          Image [
             Type ""
@@ -48,7 +48,7 @@ graph [
    ]
    node [
       id 8
-      label "3-7-INFBN"
+      label "2-7-INFBN"
       graphics [
          Image [
             Type ""
@@ -71,7 +71,7 @@ graph [
    ]
    node [
       id 9
-      label "3-15-INFBN"
+      label "3-69-ARBN"
       graphics [
          Image [
             Type ""
@@ -94,7 +94,7 @@ graph [
    ]
    node [
       id 10
-      label "26-FSB"
+      label "3-FSB"
       graphics [
          Image [
             Type ""

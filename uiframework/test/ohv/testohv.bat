@@ -28,8 +28,9 @@ rem Usage requires parameters: URL APP or defaultTest APP where APP is testciv o
 rem The next-to-last word in the following command is the URL which supplies relational data
 
 set JAVA_CMD=java -Xms100m -Xmx300m -classpath %LIBPATH%  %APP% defaultTest cview 
-echo testciv
+rem echo testciv
 rem set JAVA_CMD=java -Xms100m -Xmx300m -classpath %LIBPATH% %APP% http://localhost:5555/$AGG/agg/demo/GENERIC.PSP?QUERY_ORG_HIERARCHY.PSP testciv
+rem set JAVA_CMD=java -Xms100m -Xmx300m -classpath %LIBPATH% %APP% http://localhost:5555/$ohvagg/org/orgrels.psp  testciv
 
 if NOT EXIST %BIN_BASE% echo **** Error: No directory for bytecode: %BIN_BASE%
 
