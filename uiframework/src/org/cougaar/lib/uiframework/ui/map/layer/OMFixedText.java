@@ -3,6 +3,9 @@ package org.cougaar.lib.uiframework.ui.map.layer;
 import java.util.Vector;
 
 import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import com.bbn.openmap.omGraphics.*;
 
@@ -22,6 +25,13 @@ public class OMFixedText extends OMText
   public OMFixedText (float lat, float lon, float fixedSize, int latOffs, int lonOffs, String text, int just)
   {
     super (lat, lon, latOffs, lonOffs, text, just);
+
+    fixedTextSize = fixedSize;
+  }
+
+  public OMFixedText (float lat, float lon, float fixedSize, int latOffs, int lonOffs, String text, Font font, int just)
+  {
+    super (lat, lon, latOffs, lonOffs, text, font, just);
 
     fixedTextSize = fixedSize;
   }
@@ -71,24 +81,31 @@ public class OMFixedText extends OMText
             }
             pt = proj.forward(lat, lon);
             adjustTextFont (proj);
-            break;
+            if (getNeedToRegenerate())
+              return false;
+            else
+              break;
+              
         case RENDERTYPE_UNKNOWN:
             System.err.println(
                 "OMText.render.generate(): invalid RenderType");
             return false;
         }
-	// commented out to compile with 3.6.2
-//         if (f == null) {
-//             f = DEFAULT_FONT;
-//         }
 
+// commented out to compile with 3.6.2
+/*
+        if (f == null) {
+            f = DEFAULT_FONT;
+        }
+*/
         setNeedToRegenerate(false);
         return true;
     }
 
-  private void adjustTextFont (Projection proj)
+  private void adjustTextFont (Projection proj)
   {
-
+//    System.out.println ("adjusting text font");
+    
     LatLonPoint llp1 = new LatLonPoint (lat, lon);
     LatLonPoint llp2 = new LatLonPoint (lat + fixedTextSize, lon + fixedTextSize);
 
@@ -98,12 +115,15 @@ public class OMFixedText extends OMText
     int y[] = (int[]) xys.elementAt(1);
 
 //        System.out.println ("OMFixedText y range: " + (y[0] - y[1]) );
-    int fontSize = (y[0] - y[1]) / 2;         // ( x[1] - x[0], y[0] - y[1]);
-    if (fontSize > 0)
-      f = new Font ( "SansSerif", Font.BOLD, fontSize );
+    int fontSize = (y[0] - y[1]);         // ( x[1] - x[0], y[0] - y[1]);
+    if (fontSize > 1)
+      f = new Font ( "SansSerif", Font.BOLD, fontSize / 2 );
     else
+    {
       setNeedToRegenerate (true); // so we don't render it!
-
+    }
 
   }
+
+
 }
