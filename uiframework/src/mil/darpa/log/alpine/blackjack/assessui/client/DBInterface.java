@@ -79,9 +79,16 @@ public class DBInterface extends DBDatasource
 
     private static int getIntFromQuery(String query)
     {
-        String intString =
-            (String)DBInterface.executeVectorReturnQuery(query).firstElement();
-        return Integer.parseInt(intString);
+        try
+        {
+            String intString = (String)
+                DBInterface.executeVectorReturnQuery(query).firstElement();
+            return Integer.parseInt(intString);
+        }
+        catch(Exception e)
+        {
+            return 0;
+        }
     }
 
     /**

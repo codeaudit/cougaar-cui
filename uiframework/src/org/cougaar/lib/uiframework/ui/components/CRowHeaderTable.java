@@ -191,7 +191,7 @@ public class CRowHeaderTable extends JTable
 
         // adjust for first column which is now rendered in seperate row header
         // component.
-        columnStart--;
+        if (columnStart > 0) columnStart--;
     }
 
     private void resizeRowHeadersToFit()
@@ -225,18 +225,21 @@ public class CRowHeaderTable extends JTable
                     // (only use horizontal scroll bar if needed)
                     int columnCount = getColumnModel().getColumnCount();
                     int dataWidth = 0;
-                    int vpWidth = getParent().getSize().width;
-                    if ((vpWidth / columnCount) < minCellWidth)
+                    if (columnCount > 0)
                     {
-                        setAutoResizeMode(AUTO_RESIZE_OFF);
-                        dataWidth = minCellWidth;
-                    }
-                    else
-                    {
-                        setAutoResizeMode(AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-                        if (!usingJdk13orGreater())
+                        int vpWidth = getParent().getSize().width;
+                        if ((vpWidth / columnCount) < minCellWidth)
                         {
-                            dataWidth = (getSize().width * 4)/columnCount; //jdk1.2
+                            setAutoResizeMode(AUTO_RESIZE_OFF);
+                            dataWidth = minCellWidth;
+                        }
+                        else
+                        {
+                            setAutoResizeMode(AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+                            if (!usingJdk13orGreater())
+                            {
+                                dataWidth = (getSize().width * 4)/columnCount;
+                            }
                         }
                     }
 

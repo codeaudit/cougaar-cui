@@ -148,7 +148,11 @@ public class DBDatasource
             rs = stmt.executeQuery(query);
             while (rs.next())
             {
-                result.add(rs.getString(1).trim());
+                String rsString = rs.getString(1);
+                if (rsString != null)
+                {
+                    result.add(rsString.trim());
+                }
             }
         }
         catch (SQLException e)

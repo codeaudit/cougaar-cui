@@ -321,8 +321,18 @@ public class TableSorter extends TableMap {
     public void addMouseListenerToHeaderInTable(JTable table) {
         final TableSorter sorter = this;
         final JTable tableView = table;
+
+        TableColumn tokenColumn = null;
+        if (tableView.getColumnModel().getColumnCount() == 0)
+        {
+            tokenColumn = new TableColumn(0);
+            tableView.getColumnModel().addColumn(new TableColumn(0));
+        }
         final TableCellRenderer defaultRenderer =
             tableView.getColumnModel().getColumn(0).getHeaderRenderer();
+        if (tokenColumn != null)
+            tableView.getColumnModel().removeColumn(tokenColumn);
+
         tableView.setColumnSelectionAllowed(false);
         MouseAdapter listMouseListener = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -392,7 +402,6 @@ public class TableSorter extends TableMap {
             return this;
         }
     }
-
     /*
     public int translateIndex(int i)
     {
