@@ -16,8 +16,10 @@ import javax.swing.event.*;
  */
 public class CLabeledSlider extends JPanel
 {
+    private int fidelity = 1000;
+
     /** the spacing between major tick marks on slider */
-    private static final int MAJOR_TICK_SPACING = 10;
+    private int majorTickSpacing = fidelity/10;
 
     /** the static label */
     private JLabel label;
@@ -121,6 +123,23 @@ public class CLabeledSlider extends JPanel
     }
 
     /**
+     * Set the fidelity of this slider (i.e. the number of selectable values)
+     *
+     * @param fidelity the new fidelity of this slider (i.e. the number of
+     *                 selectable values)
+     */
+    public void setFidelity(int fidelity)
+    {
+        System.out.println("fidelity set to " + fidelity);
+        this.fidelity = fidelity;
+        slider.setMaximum(fidelity);
+        majorTickSpacing = fidelity/10;
+        slider.setMinorTickSpacing(majorTickSpacing/2);
+        slider.setMajorTickSpacing(majorTickSpacing);
+        setSliderRange(minValue, maxValue);
+    }
+
+    /**
      * Get the minimum value of this slider
      *
      * @return the minimum value of this slider
@@ -209,12 +228,15 @@ public class CLabeledSlider extends JPanel
      */
     public void setSliderRange(float minValue, float maxValue)
     {
+        System.out.println("setSliderRange: " + minValue + " to " + maxValue);
+
         // Try to maintain the same value if possible
         float currentValue = getValue();
 
         this.minValue = minValue;
         this.maxValue = maxValue;
-        unit = (maxValue - minValue) / 100f;
+        unit = (maxValue - minValue) / fidelity;
+        System.out.println("Unit = " + unit);
 
         if (Math.abs(maxValue) > 10)
         {
@@ -226,7 +248,7 @@ public class CLabeledSlider extends JPanel
         }
 
         Hashtable valueLabels = new Hashtable();
-        for (int i = 0; i <= 100; i += MAJOR_TICK_SPACING)
+        for (int i = 0; i <= fidelity; i += majorTickSpacing)
         {
             valueLabels.put(new Integer(i),
                             new JLabel(labelFormat.format(fromSlider(i))));
@@ -261,9 +283,10 @@ public class CLabeledSlider extends JPanel
         valueLabel.setHorizontalAlignment(JLabel.RIGHT);
         add(labelPanel, BorderLayout.WEST);
 
-        slider = new JSlider(0, 100);
-        slider.setMinorTickSpacing(5);
-        slider.setMajorTickSpacing(MAJOR_TICK_SPACING);
+        slider = new JSlider(0, fidelity);
+        majorTickSpacing = fidelity/10;
+        slider.setMinorTickSpacing(majorTickSpacing/2);
+        slider.setMajorTickSpacing(majorTickSpacing);
         add(slider, BorderLayout.CENTER);
 
         slider.addChangeListener(new ChangeListener() {
