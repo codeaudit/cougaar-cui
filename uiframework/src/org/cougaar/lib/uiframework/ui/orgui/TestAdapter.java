@@ -11,6 +11,13 @@ import org.cougaar.lib.aggagent.dictionary.GenericLogic;
  *  one from a COUGAAR society (which may not exist in a test environment).
  */
 public class TestAdapter extends OrgSubAdapter {
+  // the name of the subordinate role in a command relationship
+  private static String SELF_RELATION = "Self";
+  private static String SUBORDINATE = "AdministrativeSubordinate";
+  private static String SUPERIOR = "AdministrativeSuperior";
+  private static String FOOD_PROVIDER = "SubsistenceSupplyProvider";
+  private static String FOOD_CUSTOMER = "SubsistenceSupplyCustomer";
+
   // set the interval of the generated test relationships to a very long time.
   private long start = 0;
   private long end = 1000000000000000L;
@@ -22,16 +29,38 @@ public class TestAdapter extends OrgSubAdapter {
    *  @param eventType the type of event--only ADD events generate output
    */
   public void execute (Collection matches, String eventType) {
-    System.out.println("TestAdapter::execute");
     event = eventType;
     if (!event.equals(GenericLogic.collectionType_ADD))
       return;
 
-    // invent some dummy data...      
-    // relations.add(new Bond(name, relName, role.getName(), start, end));
-    relations.add(new Bond("3ID", "1BDE", Const.SUBORDINATE, start, end));
-    relations.add(new Bond("1BDE", "3-69-ARBN", Const.SUBORDINATE, start, end));
-    relations.add(new Bond("1BDE", "Pakistan", Const.SUBORDINATE, start, end));
-    relations.add(new Bond("1BDE", "3FSB", Const.SUBORDINATE, start, end));
+    // invent some dummy data...
+    selfRelation("DLAHQ");
+    selfRelation("3ID-HHC");
+    selfRelation("1-BDE-3ID-HHC");
+    selfRelation("3-69-ARBN");
+    selfRelation("1-24-INFBN");
+    selfRelation("3-FSB");
+    commandRelation("3ID-HHC", "1-BDE-3ID-HHC");
+    commandRelation("1-BDE-3ID-HHC", "3-69-ARBN");
+    commandRelation("1-BDE-3ID-HHC", "1-24-INFBN");
+    commandRelation("1-BDE-3ID-HHC", "3-FSB");
+    foodSupport("3-FSB", "3ID-HHC");
+    foodSupport("3-FSB", "1-BDE-3ID-HHC");
+    foodSupport("3-FSB", "3-69-ARBN");
+    foodSupport("3-FSB", "1-24-INFBN");
+  }
+
+  private void commandRelation (String superior, String subordinate) {
+    relations.add(new Bond(superior, subordinate, SUBORDINATE, start, end));
+    relations.add(new Bond(subordinate, superior, SUPERIOR, start, end));
+  }
+
+  private void foodSupport (String provider, String customer) {
+    relations.add(new Bond(provider, customer, FOOD_CUSTOMER, start, end));
+    relations.add(new Bond(customer, provider, FOOD_PROVIDER, start, end));
+  }
+
+  private void selfRelation (String self) {
+    relations.add(new Bond(self, self, SELF_RELATION, start, end));
   }
 }

@@ -41,15 +41,6 @@ import org.cougaar.lib.planserver.PlanServiceUtilities;
  *  </pre>
  */
 public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
-  // XML headers included at the top of each response
-  // for validating parsers:
-  // private static String XML_HEADERS =
-  //   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-  //   "<!DOCTYPE orgrels SYSTEM \"orgrels.dtd\">";
-  // for non-validating parsers:
-  private static String XML_HEADERS =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-
   // when no data is available, punt and return this
   private static String NO_DATA_AVAILABLE =
     "<orgrels><!-- NO DATA TABLE FOUND --></orgrels>";
@@ -71,48 +62,53 @@ public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
       return;
     }
 
+    // Generate the header and open the root-level tag
+    out.println(Const.XML_HEADER);
+    Const.addOpenTag(out, Const.ORG_RELS);
+    out.println();
+
+    // Generate the content
     // For the nonce, we'll do this without any pretense or finesse:
     // if the relationship exists for any period of time, report it.
     Vector snippets = new Vector();
-    for (Enumeration e = table.elements(); e.hasMoreElements(); ) {
-      TPRelations rels = (TPRelations) e.nextElement();
+    for (Enumeration i = table.elements(); i.hasMoreElements(); ) {
+      TPRelations rels = (TPRelations) i.nextElement();
       String org = rels.getOrgName();
-      Iterator i = rels.getAllRelatives(Const.SUPERIOR);
-      if (i.hasNext()) {
-        while (i.hasNext())
-          snippets.add(clusterTag(org, i.next().toString()));
+      Enumeration j = rels.getRelationMaps();
+      if (i.hasMoreElements()) {
+        while (j.hasMoreElements()) {
+          RelationTimeMap rtm = (RelationTimeMap) j.nextElement();
+          String type = rtm.getType();
+          for (Iterator k = rtm.getAllRelatives(); k.hasNext(); )
+            sendClusterTag(out, org, k.next().toString(), type);
+        }
       }
       else {
-        snippets.add(clusterTag(org, null));
+        sendClusterTag(out, org, null, null);
       }
     }
 
-    // generate the output:  headers, root-level tags, and content
-    out.println(XML_HEADERS);
-    out.println("<orgrels>");
-    for (Iterator i = snippets.iterator(); i.hasNext(); )
-      out.println(i.next());
-    out.println("</orgrels>");
+    // Close the root-level tag and flush the buffer
+    Const.addCloseTag(out, Const.ORG_RELS);
+    out.println();
     out.flush();
   }
 
   // Generate the XML for a single relationship between two Organizations
-  private String clusterTag (String org, String superior) {
-    StringBuffer buf = new StringBuffer();
-    buf.append("<Cluster ID=\"");
-    buf.append(org);
-    buf.append("\">");
-    if (superior != null) {
-      buf.append("<other>");
-      buf.append(superior);
-      buf.append("</other><relationship>");
-      buf.append(Const.SUPERIOR);
-      buf.append("</relationship>");
+  private void sendClusterTag (
+      PrintStream out, String org, String other, String type)
+  {
+    Const.addOpenTag(out, Const.CLUSTER, Const.ID_ATTRIBUTE, org);
+    if (other != null) {
+      Const.addTag(out, Const.RELATIVE, other);
+      Const.addTag(out, Const.REL_TYPE, type);
     }
-    buf.append("</Cluster>");
-    return buf.toString();
+    Const.addCloseTag(out, Const.CLUSTER);
+    out.println();
   }
 
+  // Use COUGAAR resources to find the relationship table on the logplan, if it
+  // exists.
   private Hashtable findTable (PlanServiceContext psc) {
     Collection c = psc.getServerPlugInSupport().queryForSubscriber(tableSeeker);
     if (!c.isEmpty())

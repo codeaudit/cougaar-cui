@@ -24,6 +24,7 @@ import org.cougaar.lib.aggagent.ldm.PlanObject;
  *  Aggregation Agent's clients.
  *  </p><p>
  *  Currently, only superior/subordinate relationships are supported.
+ *  </p>
  */
 public class OrgSubPlugIn extends SimplePlugIn {
   // store the information in a hashtable keyed by organization
@@ -86,19 +87,13 @@ public class OrgSubPlugIn extends SimplePlugIn {
   }
 
   private void visitOrgRels (Node n) {
-    System.out.println("OrgSubPlugIn::visitOrgRels");
     NodeList orgs = n.getChildNodes();
     for (int i = 0; i < orgs.getLength(); i++) {
-      System.out.println("  -> child #" + i);
       Node child = orgs.item(i);
       if (child.getNodeType() == Node.ELEMENT_NODE &&
           child.getNodeName().equals(Const.CLUSTER))
       {
-        System.out.println("  - -> Visiting " + child.getNodeName());
         visitRelation((Element) child);
-      }
-      else {
-        System.out.println("  - -> Ignoring " + child.getNodeName());
       }
     }
   }
@@ -106,25 +101,12 @@ public class OrgSubPlugIn extends SimplePlugIn {
   // process a single relationship--the relationship is logged from the
   // perspective of both of the participants, just in case
   private void visitRelation (Element n) {
-    System.out.println("OrgSubPlugIn::visitRelation");
     String id = n.getAttribute(Const.ID_ATTRIBUTE);
     String relative = findChildValue(Const.RELATIVE, n);
     String role = findChildValue(Const.REL_TYPE, n);
     long start = Long.parseLong(findChildValue(Const.START, n));
     long end = Long.parseLong(findChildValue(Const.END, n));
     insertRelation(id, role, relative, start, end);
-    insertRelation(relative, converse(role), id, start, end);
-  }
-
-  // get the converse of the role
-  // currently, only superior/subordinate relationships are supported
-  private String converse (String role) {
-    if (role.equals(Const.SUBORDINATE))
-      return Const.SUPERIOR;
-    else if (role.equals(Const.SUPERIOR))
-      return Const.SUBORDINATE;
-    System.out.println("OrgSubPlugIn::converse:  No converse for " + role);
-    return "<<Converse of " + role + ">>";
   }
 
   // Add a relationship to the table.
@@ -132,7 +114,7 @@ public class OrgSubPlugIn extends SimplePlugIn {
       String org, String rel, String other, long start, long end)
   {
     System.out.println("OrgSubPlugIn::insertRelation:  " +
-      org + " " + rel + " " + other + " " + start + " " + end);
+      org + " " + rel + " " + other /* + " " + start + " " + end */);
     TPRelations tpr = (TPRelations) table.get(org);
     if (tpr == null) {
       tpr = new TPRelations(org);
@@ -144,7 +126,7 @@ public class OrgSubPlugIn extends SimplePlugIn {
   // Search the children of a node for one of a particular name and extract
   // its contents as a String value; for purposes of the search, non-ELEMENT
   // nodes are ignored.
-  private String findChildValue (String name, Node n) {
+  private static String findChildValue (String name, Node n) {
     NodeList nl = n.getChildNodes();
     for (int i = 0; i < nl.getLength(); i++) {
       Node child = nl.item(i);

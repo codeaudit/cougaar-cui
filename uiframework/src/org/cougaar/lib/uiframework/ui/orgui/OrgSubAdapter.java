@@ -23,25 +23,11 @@ import org.cougaar.lib.aggagent.dictionary.glquery.samples.CustomQueryBaseAdapte
  *  RelationshipSchedule of the self-org.
  */
 public class OrgSubAdapter extends CustomQueryBaseAdapter {
-  // attatch this header to every XML output
-  protected static String XML_HEADER =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-
-  // this Vector contains the Roles that we are interested in
-  protected Vector roles = new Vector();
-
   // store the results until requested by the container
   protected Vector relations = new Vector();
 
   // the event to which the current response corresponds
   protected String event = null;
-
-  /**
-   *  Create a new OrgSubAdapter.  Also, initialize the roles Vector.
-   */
-  public OrgSubAdapter () {
-    roles.add(Constants.Role.ADMINISTRATIVESUBORDINATE);
-  }
 
   /**
    *  Given a collection of Organization assets found on the logplan, find the
@@ -60,22 +46,20 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
     if (!event.equals(GenericLogic.collectionType_ADD))
       return;
 
+    // search for the self-org and ignore all others
     for (Iterator i = matches.iterator(); i.hasNext(); ) {
       Organization org = (Organization) i.next();
       if (org.isSelf()) {
         String name = org.getItemIdentificationPG().getNomenclature();
         RelationshipSchedule rs = org.getRelationshipSchedule();
-        for (Iterator j = roles.iterator(); j.hasNext(); ) {
-          Role role = (Role) j.next();
-          Collection relatives = rs.getMatchingRelationships(role);
-          for (Iterator rels = relatives.iterator(); rels.hasNext(); ) {
-            RelationshipImpl r = (RelationshipImpl) rels.next();
-            Organization rel = (Organization) rs.getOther(r);
-            String relName = rel.getItemIdentificationPG().getNomenclature();
-            long start = r.getStartTime();
-            long end = r.getEndTime();
-            relations.add(new Bond(name, relName, role.getName(), start, end));
-          }
+        for (Iterator j = rs.filter(Const.TRUE).iterator(); j.hasNext(); ) {
+          RelationshipImpl r = (RelationshipImpl) j.next();
+          String type = rs.getOtherRole(r).getName();
+          String other = ((Organization)
+            rs.getOther(r)).getItemIdentificationPG().getNomenclature();
+          long start = r.getStartTime();
+          long end = r.getEndTime();
+          relations.add(new Bond(name, other, type, start, end));
         }
       }
     }
@@ -92,22 +76,16 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
     if (!event.equals(GenericLogic.collectionType_ADD))
       return;
 
-    // System.out.println("   [[");
-    // System.out.println("OrgSubAdapter::returnVal:  giving output...");
     PrintStream ps = new PrintStream(out);
-    println(ps, XML_HEADER);
-    println(ps, "<" + Const.ORG_RELS + ">");
+    ps.println(Const.XML_HEADER);
+    Const.addOpenTag(ps, Const.ORG_RELS);
+    ps.println();
     for (Iterator i = relations.iterator(); i.hasNext(); )
-      println(ps, ((Bond) i.next()).toXml());
-    println(ps, "</" + Const.ORG_RELS + ">");
-    // System.out.println("   ]]");
+      ((Bond) i.next()).toXml(ps);
+    Const.addCloseTag(ps, Const.ORG_RELS);
+    ps.println();
     ps.flush();
     relations.clear();
-  }
-
-  private static void println (PrintStream ps, String s) {
-    // System.out.println(s);
-    ps.println(s);
   }
 
   /**
@@ -145,46 +123,14 @@ public class OrgSubAdapter extends CustomQueryBaseAdapter {
      *  Document).
      *  @return a String containing the XML code for this Bond
      */
-    public String toXml () {
-      StringBuffer buf = new StringBuffer();
-      addOpenTag(buf, Const.CLUSTER, Const.ID_ATTRIBUTE, org);
-      addTag(buf, Const.RELATIVE, relative);
-      addTag(buf, Const.REL_TYPE, relationship);
-      addTag(buf, Const.START, String.valueOf(startTime));
-      addTag(buf, Const.END, String.valueOf(endTime));
-      addCloseTag(buf, Const.CLUSTER);
-      return buf.toString();
-    }
-
-    private static void addTag (StringBuffer buf, String name, String val) {
-      addOpenTag(buf, name);
-      buf.append(val);
-      addCloseTag(buf, name);
-    }
-
-    private static void addOpenTag (StringBuffer buf, String name) {
-      addOpenTag(buf, name, null, null);
-    }
-
-    private static void addOpenTag (
-        StringBuffer buf, String name, String attrib, String val)
-    {
-      buf.append("<");
-      buf.append(name);
-      if (attrib != null && val != null) {
-        buf.append(" ");
-        buf.append(attrib);
-        buf.append("=\"");
-        buf.append(val);
-        buf.append("\"");
-      }
-      buf.append(">");
-    }
-
-    private static void addCloseTag (StringBuffer buf, String name) {
-      buf.append("</");
-      buf.append(name);
-      buf.append(">");
+    public void toXml (PrintStream ps) {
+      Const.addOpenTag(ps, Const.CLUSTER, Const.ID_ATTRIBUTE, org);
+      Const.addTag(ps, Const.RELATIVE, relative);
+      Const.addTag(ps, Const.REL_TYPE, relationship);
+      Const.addTag(ps, Const.START, String.valueOf(startTime));
+      Const.addTag(ps, Const.END, String.valueOf(endTime));
+      Const.addCloseTag(ps, Const.CLUSTER);
+      ps.println();
     }
   }
 }

@@ -93,10 +93,18 @@ public class TPRelations {
    *  @param rel a String identifying the relationship type
    *  @return an Iterator containing identifiers for all relatives of type rel
    */
-  public Iterator getAllRelatives (String rel) {
+  public Iterator getRelatives (String rel) {
     RelationTimeMap rtm = (RelationTimeMap) table.get(rel);
     if (rtm != null)
       return rtm.getAllRelatives();
     return EMPTY;
+  }
+
+  /**
+   *  Generate a list of all relationship schedules held by this table.
+   *  @return an Enumeration of RelationTimeMap instances
+   */
+  public Enumeration getRelationMaps () {
+    return table.elements();
   }
 }

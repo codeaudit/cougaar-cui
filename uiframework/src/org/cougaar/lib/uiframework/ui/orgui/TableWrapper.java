@@ -12,14 +12,28 @@ public class TableWrapper {
   private Hashtable table = null;
   private String name = null;
 
+  /**
+   *  Report the name given to this TableWrapper.  Different tables should have
+   *  different names so that they can be told apart.
+   *  @return the table's name
+   */
   public String getName () {
     return name;
   }
 
+  /**
+   *  Retrieve the table wrapped within this TableWrapper.
+   *  @return the resident Hashtable
+   */
   public Hashtable getTable () {
     return table;
   }
 
+  /**
+   *  Wrap a Hashtable with a new TableWrapper and affix the associated name.
+   *  @param n the name of the resident table
+   *  @param t the Hashtable being wrapped
+   */
   public TableWrapper (String n, Hashtable t) {
     table = t;
     name = n;
