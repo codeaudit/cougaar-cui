@@ -95,11 +95,10 @@ public class DBInterface extends DBDatasource
     private static DefaultMutableTreeNode makeMetricTree()
     {
         DefaultMutableTreeNode p;
-        DefaultMutableTreeNode groupA;
+        DefaultMutableTreeNode groupB;
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("");
-        root.add(p = new DefaultMutableTreeNode(
-                            UIConstants.STOPLIGHT_UI_NAME + " Components"));
-        root.add(groupA = new DefaultMutableTreeNode("Group A"));
+        root.add(p = new DefaultMutableTreeNode("Group A"));
+        root.add(groupB = new DefaultMutableTreeNode("Group B"));
 
 
         for (int i = 0; i < metrics.length; i++)
@@ -108,13 +107,13 @@ public class DBInterface extends DBDatasource
             ht.put("UID", metrics[i]);
             ht.put("ID", metricIDs[i]);
 
-            if (i < 2)
+            if ((i == 1) || (i == 3))
             {
                 p.add(new DefaultMutableTreeNode(ht));
             }
             else
             {
-                groupA.add(new DefaultMutableTreeNode(ht));
+                groupB.add(new DefaultMutableTreeNode(ht));
             }
         }
 
