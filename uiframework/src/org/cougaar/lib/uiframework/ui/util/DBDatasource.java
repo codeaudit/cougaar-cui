@@ -234,14 +234,6 @@ public class DBDatasource
         {
             e.printStackTrace();
         }
-        finally
-        {
-            try
-            {
-                //if (con != null) con.close(); (reusing a single connection)
-            }
-            catch(Exception e){/*I tried*/}
-        }
 
         return values;
     }
@@ -285,14 +277,6 @@ public class DBDatasource
         catch (Exception e)
         {
             e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                //if (con != null) con.close();
-            }
-            catch(Exception e){/*I tried*/}
         }
 
         return values;

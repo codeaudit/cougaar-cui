@@ -48,19 +48,8 @@ public class ScenarioMap implements CougaarUI
 
     public ScenarioMap ()
     {
-      try
-      {
-
         PropertyHandler propertyHandler = new PropertyHandler();
-
         new ScenarioMap(propertyHandler);
-      }
-      catch (Exception exc)
-      {
-        System.err.println ("Unable to initiate OpenMap default constructor: " + exc.toString());
-        exc.printStackTrace();
-      }
-      
     }
 
     public ScenarioMap(PropertyHandler propertyHandler) {
