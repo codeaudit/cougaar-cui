@@ -209,7 +209,7 @@ public class BlackjackTableCreator
         System.out.println("Time Range from " + startTime + " to " + endTime);
         System.out.println(
             "Number of rows to be inserted into assessmentData: " +
-            (orgSize * itemSize * metricSize * (endTime - startTime)));
+            (orgSize * (itemSize+1) * metricSize * (endTime - startTime + 1)));
         stmt.close();
 
         PreparedStatement prepStmt = con.prepareStatement(
@@ -217,8 +217,8 @@ public class BlackjackTableCreator
         for (int org=0; org<orgSize; org++)
         {
             long start = (new Date()).getTime();
-            for (int item=0; item<itemSize; item++)
-                for (int time=startTime; time<endTime; time++)
+            for (int item=0; item<(itemSize+1); item++)
+                for (int time=startTime; time<(endTime+1); time++)
                     for (int metric=0; metric<metricSize; metric++)
                     {
                         prepStmt.setInt(1, org);
