@@ -146,7 +146,9 @@ public class CRLabel extends JComponent
                 pheight = height;
                 break;
             case DOWN_UP:
-                startx = height - padding;
+                float versionNumber =
+                    Float.parseFloat(System.getProperty("java.class.version"));
+                startx = (versionNumber > 46) ? 0 : height - padding;
                 starty = width;
                 pwidth = height;
                 pheight = width;
