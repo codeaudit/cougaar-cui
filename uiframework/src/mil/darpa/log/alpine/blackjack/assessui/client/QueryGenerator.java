@@ -297,17 +297,16 @@ public class QueryGenerator
 
         if (MetricInfo.isDerived(metricString))
         {
-            int metricInt = Integer.parseInt(DBInterface.lookupValue(
-              DBInterface.getTableName("Metric"), "name", "id", metricString));
+            int metricInt = DBInterface.getAllMetrics().indexOf(metricString);
 
             Stack stack = new Stack();
-            String[] derivedMetricFormula =
-                (String[])MetricInfo.derivedMetrics.get(metricString);
-            for (int i = 0; i < derivedMetricFormula.length; i++)
+            Vector derivedMetricFormula =
+                (Vector)MetricInfo.derivedMetrics.get(metricString);
+            for (int i = 0; i < derivedMetricFormula.size(); i++)
             {
-                String item = derivedMetricFormula[i];
+                String item = (String)derivedMetricFormula.elementAt(i);
 
-                if (DBInterface.metrics.contains(item))
+                if (DBInterface.getAllMetrics().contains(item))
                 {
                     stack.push(
                         generateQueryUsingRootNode(vim, "Org", orgNode, item));
@@ -431,9 +430,8 @@ public class QueryGenerator
                              ((DefaultMutableTreeNode)
                                 tn).getUserObject()).get("ID").toString();
 
+            int metric_id = DBInterface.getAllMetrics().indexOf(metric);
             String metric_catalog_table = DBInterface.getTableName("Metric");
-            String metric_id =  DBInterface.lookupValue(metric_catalog_table,
-                                                        "name", "id", metric);
             String metric_table =
                 DBInterface.lookupValue(metric_catalog_table,
                                         "name", "table_name", metric);

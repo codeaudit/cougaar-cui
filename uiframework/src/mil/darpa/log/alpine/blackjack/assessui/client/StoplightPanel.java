@@ -53,7 +53,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
 {
     private boolean plaf = false;
     private boolean useMenuButtons = true;
-    private final Object[] metrics = DBInterface.metrics.toArray();
     private final static int spacing = 5;
     private CTreeButton itemTreeButton = null;
     private DatabaseTableModel stoplightTableModel = new DatabaseTableModel();
@@ -151,7 +150,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         root = DBInterface.orgTree;
         CTreeButton orgTreeButton = new CTreeButton(  root, root);
 
-        metricSelector = new CComboSelector(metrics);
+        metricSelector =
+            new CComboSelector(DBInterface.getAllMetrics().toArray());
 
         CRangeButton rangeButton =
             new CRangeButton("C", DBInterface.minTimeRange,
@@ -480,6 +480,24 @@ public class StoplightPanel extends JPanel implements CougaarUI
                     if (optionSelected == JOptionPane.OK_OPTION)
                     {
                         updateView();
+                    }
+                }
+            });
+
+        JMenuItem derivedMetrics = new JMenuItem("Derived Metrics", 'D');
+        editMenu.add(derivedMetrics);
+        derivedMetrics.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    int optionSelected =
+                        DerivedMetricEditor.showDialog(findJFrame(),
+                            metricSelector.getSelectedItem().toString());
+                    if (optionSelected == JOptionPane.OK_OPTION)
+                    {
+                        // update metrics in metric selector
+                        JComboBox tempCombo =
+                            new JComboBox(DBInterface.getAllMetrics());
+                        metricSelector.setModel(tempCombo.getModel());
                     }
                 }
             });

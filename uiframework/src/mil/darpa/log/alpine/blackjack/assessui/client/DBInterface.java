@@ -44,17 +44,25 @@ public class DBInterface extends DBDatasource
     public static int maxTimeRange = getTimeExt(true);
 
     /** Array of strings that represent blackjack metric types */
-    public static final Vector metrics =
-        lookupValues("assessmentMetrics", "name");
-    public static final Vector metricIDs =
-        lookupValues("assessmentMetrics", "id");
+    // used specialized select for backwards compat. with old dbs
+    public static final Vector rawMetrics =
+        executeVectorReturnQuery(
+            "SELECT name FROM assessmentMetrics WHERE table_name IS NOT NULL");
 
     /** Hashtable to manage aggregation schemes for each type of metric */
     public static Object[] aggregationSchemeLabels = createAggLabels();
     public static Hashtable aggregationSchemes = createDefaultAggSchemes();
 
-    /** Tree that represents blackjack metric groupings */
-    public static DefaultMutableTreeNode metricTree = makeMetricTree();
+    public static Vector getAllMetrics()
+    {
+        Vector allMetrics = (Vector)rawMetrics.clone();
+        Enumeration keys = MetricInfo.derivedMetrics.keys();
+        while (keys.hasMoreElements())
+        {
+            allMetrics.add(keys.nextElement());
+        }
+        return allMetrics;
+    }
 
     /** used to get min or max time for all metrics */
     private static int getTimeExt(boolean max)
@@ -77,12 +85,30 @@ public class DBInterface extends DBDatasource
 
     private static Object[] createAggLabels()
     {
-        Vector aggLabels = (Vector)metrics.clone();
+        Vector aggLabels = getAllMetrics();
         aggLabels.add(MetricInfo.GROUPA);
         aggLabels.add(MetricInfo.GROUPB);
         aggLabels.add(MetricInfo.GROUPC);
 
         return aggLabels.toArray();
+    }
+
+    /**
+     * update aggregation schemes and labels to include latest derived metrics
+     */
+    public static void updateAggSchemes()
+    {
+        aggregationSchemeLabels = createAggLabels();
+
+        for (int i = 0; i < aggregationSchemeLabels.length; i++)
+        {
+            String metric = (String)aggregationSchemeLabels[i];
+            if (aggregationSchemes.get(metric) == null)
+            {
+                String units = (String)MetricInfo.metricUnits.get(metric);
+                aggregationSchemes.put(metric, createDefaultAggScheme(units));
+            }
+        }
     }
 
     public static Hashtable createDefaultAggSchemes()
@@ -92,22 +118,22 @@ public class DBInterface extends DBDatasource
         for (int i = 0; i < aggregationSchemeLabels.length; i++)
         {
             String metric = (String)aggregationSchemeLabels[i];
-
-            int defaultTimeAggregation =
-                MetricInfo.metricUnits.get(metric).
-                    equals(MetricInfo.ITEM_DAY_UNITS) ?
-                        AggregationScheme.SUM : AggregationScheme.AVG;;
-
-            int defaultItemAggregation = metric.equals(MetricInfo.GROUPC) ?
-                AggregationScheme.WAVG : AggregationScheme.NONE;
-
-            aggSchemes.put(metric,
-                new AggregationScheme(AggregationScheme.SUM,
-                                      defaultTimeAggregation,
-                                      defaultItemAggregation));
+            String units = (String)MetricInfo.metricUnits.get(metric);
+            aggSchemes.put(metric, createDefaultAggScheme(units));
         }
 
         return aggSchemes;
+    }
+
+    private static AggregationScheme createDefaultAggScheme(String units)
+    {
+            int defaultTimeAggregation =
+                units.equals(MetricInfo.ITEM_DAY_UNITS) ?
+                        AggregationScheme.SUM : AggregationScheme.AVG;;
+
+            return new AggregationScheme(AggregationScheme.SUM,
+                                         defaultTimeAggregation,
+                                         AggregationScheme.NONE);
     }
 
     /**
@@ -164,8 +190,10 @@ public class DBInterface extends DBDatasource
         return tree;
     }
 
-    private static DefaultMutableTreeNode makeMetricTree()
+    public static DefaultMutableTreeNode makeMetricTree()
     {
+        Vector metrics = getAllMetrics();
+
         DefaultMutableTreeNode p;
         DefaultMutableTreeNode groupB;
         DefaultMutableTreeNode groupC;
@@ -180,7 +208,7 @@ public class DBInterface extends DBDatasource
 
             Hashtable ht = new SelectableHashtable("UID");
             ht.put("UID", metric);
-            ht.put("ID", metricIDs.elementAt(i));
+            ht.put("ID", String.valueOf(i));
 
             Hashtable mu = MetricInfo.metricUnits;
             if (mu.get(metric).equals(mu.get(MetricInfo.GROUPA)))

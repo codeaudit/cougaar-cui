@@ -127,7 +127,7 @@ public class LinePlotPanel extends JPanel implements CougaarUI
      */
     private void createComponents()
     {
-        DefaultMutableTreeNode root = DBInterface.metricTree;
+        DefaultMutableTreeNode root = DBInterface.makeMetricTree();
         metricTreeButton =
             new CTreeButton(root,
                             (DefaultMutableTreeNode)root.getChildAt(0));
@@ -382,6 +382,22 @@ public class LinePlotPanel extends JPanel implements CougaarUI
                     if (optionSelected == JOptionPane.OK_OPTION)
                     {
                         updateView();
+                    }
+                }
+            });
+
+        JMenuItem derivedMetrics = new JMenuItem("Derived Metrics", 'D');
+        editMenu.add(derivedMetrics);
+        derivedMetrics.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    int optionSelected =
+                        DerivedMetricEditor.showDialog(findFrame(),
+                            metricTreeButton.getSelectedItem().toString());
+                    if (optionSelected == JOptionPane.OK_OPTION)
+                    {
+                        metricTreeButton.setRoot(DBInterface.makeMetricTree());
+                        metricTreeButton.expandFirstLevel();
                     }
                 }
             });

@@ -40,8 +40,8 @@ public class MetricInfo
     private static final String TARGET_LEVEL_METRIC = "Target Level";
 
     public static final String CUMLATIVE_SUM = "CUMULATIVE SUM";
-    private static final String[] UNARY_OPS = {CUMLATIVE_SUM};
-    private static final String[] BINARY_OPS = {"+", "-", "*", "/"};
+    public static final String[] UNARY_OPS = {CUMLATIVE_SUM};
+    public static final String[] BINARY_OPS = {"+", "-", "*", "/"};
 
     /** Hashtable that maps metric to metric units */
     public static Hashtable metricUnits = createMetricUnits();
@@ -49,7 +49,7 @@ public class MetricInfo
     /** Hashtable that describes derived metrics */
     public static Hashtable derivedMetrics = createDerivedMetrics();
 
-    private static Hashtable createMetricUnits()
+    public static Hashtable createMetricUnits()
     {
         Hashtable mu = new Hashtable();
 
@@ -69,21 +69,29 @@ public class MetricInfo
         return mu;
     }
 
-    private static Hashtable createDerivedMetrics()
+    public static Hashtable createDerivedMetrics()
     {
         Hashtable dm = new Hashtable();
 
-        dm.put(INV_SAF_METRIC, new String[] {INVENTORY_METRIC,
-                                             TARGET_LEVEL_METRIC,
-                                             "/"});
-        dm.put(INV_CRITICAL_METRIC, new String[] {INVENTORY_METRIC,
-                                                  CRITICAL_LEVEL_METRIC,
-                                                  "/"});
-        dm.put(RES_DEM_METRIC, new String[] {DUEIN_METRIC,
-                                             CUMLATIVE_SUM,
-                                             DEMAND_METRIC,
-                                             CUMLATIVE_SUM,
-                                             "/"});
+        Vector f = new Vector();
+        f.add(INVENTORY_METRIC);
+        f.add(TARGET_LEVEL_METRIC);
+        f.add("/");
+        dm.put(INV_SAF_METRIC, f);
+
+        f = new Vector();
+        f.add(INVENTORY_METRIC);
+        f.add(CRITICAL_LEVEL_METRIC);
+        f.add("/");
+        dm.put(INV_CRITICAL_METRIC, f);
+
+        f = new Vector();
+        f.add(DUEIN_METRIC);
+        f.add(CUMLATIVE_SUM);
+        f.add(DEMAND_METRIC);
+        f.add(CUMLATIVE_SUM);
+        f.add("/");
+        dm.put(RES_DEM_METRIC, f);
 
         return dm;
     }
