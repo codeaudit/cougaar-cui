@@ -100,25 +100,15 @@ public class QueryGenerator
      */
     public void generateQuery(VariableInterfaceManager vim)
     {
-        VariableModel xAxis = (VariableModel)vim.
-                    getDescriptors(VariableModel.X_AXIS).nextElement();
-        VariableModel yAxis = (VariableModel)vim.
-                    getDescriptors(VariableModel.Y_AXIS).nextElement();
-
-        System.out.println("New Query ->");
-        System.out.println("X Axis: " + xAxis + " - " + xAxis.getValue());
-        System.out.println("Y Axis: " + yAxis + " - " + yAxis.getValue());
-
-        Enumeration vds = vim.getDescriptors(VariableModel.FIXED);
-        while(vds.hasMoreElements())
-        {
-            VariableModel v = (VariableModel)vds.nextElement();
-            System.out.println("Fixed: " + v + " - " + v.getValue());
-        }
+        System.out.println(vim);
 
         //
         // build sql query from general query data
         //
+        VariableModel xAxis = (VariableModel)vim.
+                    getDescriptors(VariableModel.X_AXIS).nextElement();
+        VariableModel yAxis = (VariableModel)vim.
+                    getDescriptors(VariableModel.Y_AXIS).nextElement();
 
         StringBuffer query =
             new StringBuffer("SELECT * FROM assessmentData WHERE (");
