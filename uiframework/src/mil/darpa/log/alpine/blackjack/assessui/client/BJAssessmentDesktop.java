@@ -1,6 +1,7 @@
 package mil.darpa.log.alpine.blackjack.assessui.client;
 
 import org.cougaar.lib.uiframework.ui.components.CDesktopFrame;
+import org.cougaar.lib.uiframework.ui.map.app.OpenMap;
 
 /**
  * Blackjack Assessment Desktop UI main application class.  Includes
@@ -27,6 +28,8 @@ public class BJAssessmentDesktop extends CDesktopFrame
 
         boolean plaf = Boolean.getBoolean("PLAF"); // will be used in future
 
+        addTool("Map View", 'M', OpenMap.class,
+                new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         addTool("Stoplight View", 'S', StoplightPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
         addTool("Lineplot View", 'L', LinePlotPanel.class,
