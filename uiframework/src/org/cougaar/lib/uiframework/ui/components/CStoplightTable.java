@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
+import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
 import org.cougaar.lib.uiframework.ui.models.StoplightThresholdModel;
 
 /**
@@ -138,7 +139,9 @@ public class CStoplightTable extends CRowHeaderTable
     public void
         setViewFeatureSelectionControl(final CViewFeatureSelectionControl vfc)
     {
-        vfc.addPropertyChangeListener("selectedItem",
+        final int defaultCellWidth = getMinCellWidth();
+
+        vfc.addPropertyChangeListener("mode",
             new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent e)
                 {
@@ -162,6 +165,29 @@ public class CStoplightTable extends CRowHeaderTable
                     }
 
                     threadedTableUpdate();
+                }
+            });
+
+        vfc.addPropertyChangeListener("fitHorizontally",
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    if (((Boolean)e.getNewValue()).booleanValue())
+                    {
+                        setMinCellWidth(0);
+                    }
+                    else
+                    {
+                        setMinCellWidth(defaultCellWidth);
+                    }
+                }
+            });
+
+        vfc.addPropertyChangeListener("fitVertically",
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    setFitRowHeight(((Boolean)e.getNewValue()).booleanValue());
                 }
             });
     }
@@ -190,9 +216,6 @@ public class CStoplightTable extends CRowHeaderTable
         public StoplightCellRenderer()
         {
             super();
-
-            // enforce black fonts (otherwise L&F themes could make unreadable)
-            setForeground(Color.black);
         }
 
         public Component
@@ -200,6 +223,22 @@ public class CStoplightTable extends CRowHeaderTable
                                       boolean isSelected, boolean hasFocus,
                                       int row, int column)
         {
+            // Create tooltip for each data cell to describe the row, column,
+            // and value of that cell.
+            // When jdk1.3 is used, I might make this a multiline tooltip
+            // using html
+            StringBuffer toolTipText = new StringBuffer("(");
+            toolTipText.append(table.getColumnName(column));
+            toolTipText.append(", ");
+            toolTipText.append(table.getModel().getValueAt(row, 0));
+            toolTipText.append(")");
+
+            if (!value.toString().equals(DatabaseTableModel.NO_VALUE))
+            {
+                toolTipText.append(": ");
+                toolTipText.append(value.toString());
+            }
+            setToolTipText(toolTipText.toString());
             setHorizontalAlignment(JLabel.CENTER);
             colorRenderer(value);
             super.getTableCellRendererComponent(table, value, isSelected,
@@ -223,6 +262,10 @@ public class CStoplightTable extends CRowHeaderTable
         {
             if (showColor)
             {
+                // enforce black fonts
+                // (otherwise L&F themes could make unreadable)
+                setForeground(Color.black);
+
                 if (value instanceof Number)
                 {
                     Comparable compValue = (Comparable)value;
@@ -254,7 +297,9 @@ public class CStoplightTable extends CRowHeaderTable
             }
             else
             {
-                setBackground(Color.white);
+                // Use default colors from theme / L&F
+                setForeground(null);
+                setBackground(null);
             }
         }
     }

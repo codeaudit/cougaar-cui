@@ -18,7 +18,9 @@ import org.cougaar.lib.uiframework.ui.util.SelectableHashtable;
  */
 public class CRowHeaderTable extends JTable
 {
-    private static final int MIN_CELL_CHARACTER_WIDTH = 7;
+    private JScrollPane enclosingScrollpane = null;
+    private boolean fitRowHeight = false;
+    private int minCellCharacterWidth = 7;
     private int minCellWidth = 0;
     private HeaderCellRenderer headerCellRenderer = new HeaderCellRenderer();
     private JTable cornerHeader = createCornerHeader();
@@ -59,10 +61,75 @@ public class CRowHeaderTable extends JTable
         resizeRowHeadersToFit();
     }
 
+    /**
+     * Set row height mode.  If false, rows will be automatically set to the
+     * correct height for the current look and feel.
+     *
+     * @param fitRowHeight new value for fitRowHeight.
+     */
+    public void setFitRowHeight(boolean fitRowHeight)
+    {
+        this.fitRowHeight = fitRowHeight;
+        resizeRowHeadersToFit();
+    }
+
+    /**
+     * Get row height mode.  If false, rows are automatically set to the
+     * correct height for the current look and feel.
+     *
+     * @return current value for fitRowHeight.
+     */
+    public boolean getFitRowHeight()
+    {
+        return fitRowHeight;
+    }
+
+    /**
+     * Keep row header height and data row height in sync.
+     *
+     * @param rowHeight new row height
+     */
+    public void setRowHeight(int rowHeight)
+    {
+        super.setRowHeight(rowHeight);
+
+        if (rowHeader != null)
+        {
+            rowHeader.setRowHeight(rowHeight);
+        }
+    }
+
+    /**
+     * Set the number of characters that must be visible in each data cell.
+     *
+     * @param width the number of characters that must be visible in each data
+     *              cell.
+     */
+    public void setMinCellWidth(int width)
+    {
+        if (width != minCellCharacterWidth)
+        {
+            minCellCharacterWidth = width;
+
+            resetMinCellWidth();
+            resizeRowHeadersToFit();
+        }
+    }
+
+    /**
+     * Set the number of characters that must be visible in each data cell.
+     *
+     * @return the number of characters that will be visible in each data cell.
+     */
+    public int getMinCellWidth()
+    {
+        return minCellCharacterWidth;
+    }
+
     private void resetMinCellWidth()
     {
         StringBuffer sampleString = new StringBuffer();
-        for (int i = 0 ; i < MIN_CELL_CHARACTER_WIDTH; i++)
+        for (int i = 0 ; i < minCellCharacterWidth; i++)
         {
             sampleString.append("#");
         }
@@ -131,6 +198,7 @@ public class CRowHeaderTable extends JTable
             if (c instanceof JScrollPane)
             {
                 JScrollPane sp = (JScrollPane)c;
+                enclosingScrollpane = sp;
                 sp.setRowHeaderView(rowHeader);
                 sp.setCorner(JScrollPane.UPPER_LEFT_CORNER, cornerHeader);
 
@@ -240,27 +308,15 @@ public class CRowHeaderTable extends JTable
 
     private void resizeRowHeadersToFit()
     {
+        // This can take a long time (esp. when using jdk1.2)
+        // I am having trouble getting a wait cursor to appear during this
+        // operation
+
         // Resize row header columns to fit contents
         SwingUtilities.invokeLater(new Runnable() {
                 public void run()
                 {
                     if ((rowHeader == null)||(getParent() == null)) return;
-
-                    // Primary Row Headers are sized to show contents
-                    int headCount = rowHeader.getModel().getColumnCount();
-                    int totalWidth = 0;
-                    for (int column = 0; column < headCount; column++)
-                    {
-                        totalWidth +=
-                            sizeRowHeaderColumnBasedonContents(column);
-                    }
-                    totalWidth += 10;
-                    rowHeader.setPreferredScrollableViewportSize(
-                       new Dimension(totalWidth,
-                       rowHeader.getPreferredScrollableViewportSize().height));
-                    cornerHeader.setPreferredScrollableViewportSize(
-                       new Dimension(totalWidth,
-                       cornerHeader.getPreferredScrollableViewportSize().height));
 
                     // Set data cell widths
                     // (only use horizontal scroll bar if needed)
@@ -277,10 +333,6 @@ public class CRowHeaderTable extends JTable
                         else
                         {
                             setAutoResizeMode(AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-                            if (!usingJdk13orGreater())
-                            {
-                                dataWidth = (getSize().width * 4)/columnCount;
-                            }
                         }
                     }
 
@@ -289,38 +341,115 @@ public class CRowHeaderTable extends JTable
                         TableColumn c = getColumnModel().getColumn(i);
                         c.setHeaderRenderer(headerCellRenderer);
                         c.setPreferredWidth(dataWidth);
-
+                        c.setMinWidth(dataWidth);
                     }
-                    sizeColumnsToFit(-1);
 
-                    // Presentation mode fix
-                    TableModel tm = getModel();
-                    if ((tm != null) && (tm.getColumnCount() > 0))
+                    fixRowHeight();
+
+                    // Primary Row Headers are sized to show contents
+                    int headCount = rowHeader.getModel().getColumnCount();
+                    int totalWidth = 0;
+                    for (int column = 0; column < headCount; column++)
                     {
-                        int rowHeight = getColumnHeader(CRowHeaderTable.this, 0).
-                            getTableCellRendererComponent(CRowHeaderTable.this,
-                            "#", false, false, 0, 0).getPreferredSize().height;
-                        if ((rowHeader != null) && (cornerHeader != null)
-                            && (rowHeight > 0))
-                        {
-                            setRowHeight(rowHeight);
-                            rowHeader.setRowHeight(rowHeight);
-                            cornerHeader.setRowHeight(rowHeight);
-                        }
+                        int columnWidth =
+                            sizeRowHeaderColumnBasedonContents(column);
+                        totalWidth += columnWidth;
                     }
+                    if (!usingJdk13orGreater())
+                    {
+                        totalWidth += headCount; // insets
+                    }
+                    rowHeader.setPreferredScrollableViewportSize(
+                       new Dimension(totalWidth,
+                       rowHeader.getPreferredScrollableViewportSize().height));
+                    cornerHeader.setPreferredScrollableViewportSize(
+                       new Dimension(totalWidth,
+                       cornerHeader.getPreferredScrollableViewportSize().height));
 
-                    // Ensure that table repaints correctly
-                    getTableHeader().resizeAndRepaint();
-                    rowHeader.sizeColumnsToFit(-1);
-                    rowHeader.revalidate();
-                    rowHeader.repaint();
-                    cornerHeader.sizeColumnsToFit(-1);
-                    cornerHeader.revalidate();
-                    cornerHeader.repaint();
-                    revalidate();
-                    repaint();
+                    repaintAndValidate();
                 }
             });
+    }
+
+    private void fixRowHeight()
+    {
+        // Presentation mode fix
+        TableModel tm = getModel();
+        if ((tm != null) && (tm.getColumnCount() > 0))
+        {
+            int rowHeight = getColumnHeader(CRowHeaderTable.this, 0).
+                getTableCellRendererComponent(CRowHeaderTable.this,
+                "#", false, false, 0, 0).getPreferredSize().height;
+            if ((rowHeader != null) && (cornerHeader != null)
+                && (rowHeight > 0))
+            {
+                setRowHeight(rowHeight);
+                cornerHeader.setRowHeight(rowHeight);
+            }
+        }
+
+        int forcedRowHeight = 0;
+        if (fitRowHeight)
+        {
+            // adjust row height such that all rows fit in viewport
+            forcedRowHeight = (enclosingScrollpane.
+                getViewportBorderBounds().height)/getRowCount();
+            if (!usingJdk13orGreater())
+            {
+                forcedRowHeight--; // adjust for intercell spacing
+            }
+            if (forcedRowHeight < getRowHeight())
+            {
+                setRowHeight((forcedRowHeight <= 0) ? 1 : forcedRowHeight);
+            }
+        }
+
+        // If cells are being compressed to a very small height/width,
+        // turn off borders around cells.
+        int bWidth = 1;
+        int bHeight = 1;
+        if (getColumnModel().getColumnCount() > 0)
+        {
+            int actualDataColumnWidth =
+                ((TableColumn)getColumnModel().getColumn(0)).getWidth();
+            if (actualDataColumnWidth < 3)
+            {
+                bWidth = 0;
+            }
+            if (getRowHeight() < 3)
+            {
+                bHeight = 0;
+                if (!usingJdk13orGreater())
+                {
+                    // if jdk < 1.3 row height will change when intercell
+                    // spacing is set to 0. (so we set it back to the correct
+                    // height)
+                    if (forcedRowHeight > 0)
+                        setRowHeight(getRowHeight() + 1);
+                }
+            }
+        }
+        setIntercellSpacing(new Dimension(bWidth, bHeight));
+        if (!usingJdk13orGreater())
+        {
+            rowHeader.setIntercellSpacing(
+                new Dimension(rowHeader.getIntercellSpacing().width, bHeight));
+        }
+    }
+
+    private void repaintAndValidate()
+    {
+        // Ensure that table repaints correctly
+        sizeColumnsToFit(-1);
+        getTableHeader().resizeAndRepaint();
+        rowHeader.sizeColumnsToFit(-1);
+        rowHeader.revalidate();
+        rowHeader.repaint();
+        cornerHeader.sizeColumnsToFit(-1);
+        cornerHeader.revalidate();
+        cornerHeader.repaint();
+        revalidate();
+        repaint();
     }
 
     /**
@@ -390,14 +519,22 @@ public class CRowHeaderTable extends JTable
 
         int targetWidth = Math.max(headerWidth, maxCellWidth);
 
+        // reduce the width if the height is so small that it isn't readable
+        int fontHeight = getFontMetrics(getFont()).getHeight();
+        if (getRowHeight() < fontHeight)
+        {
+            targetWidth = 10;
+        }
+
+        targetWidth += 5; // A little breathing room
         TableColumn column = table.getColumnModel().getColumn(columnIndex);
         column.setMinWidth(targetWidth);
         column.setPreferredWidth(targetWidth);
-        column.setMaxWidth(targetWidth + 25);
+        column.setMaxWidth(targetWidth);
         column = cornerHeader.getColumnModel().getColumn(columnIndex);
         column.setMinWidth(targetWidth);
         column.setPreferredWidth(targetWidth);
-        column.setMaxWidth(targetWidth + 25);
+        column.setMaxWidth(targetWidth);
         return targetWidth;
     }
 
@@ -478,18 +615,18 @@ public class CRowHeaderTable extends JTable
 
         private void prepareComponent()
         {
-	    if (CRowHeaderTable.this != null)
+	          if (CRowHeaderTable.this != null)
             {
                 JTableHeader header = getTableHeader();
-	        if (header != null)
+	              if (header != null)
                 {
                     setForeground(header.getForeground());
                     setBackground(header.getBackground());
-	            setFont(header.getFont());
-	        }
+	                  setFont(header.getFont());
+	              }
             }
             setOpaque(true);
-	    setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+	          setBorder(UIManager.getBorder("TableHeader.cellBorder"));
         }
     }
 }
