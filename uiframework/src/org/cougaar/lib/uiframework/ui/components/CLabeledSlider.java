@@ -130,7 +130,6 @@ public class CLabeledSlider extends JPanel
      */
     public void setFidelity(int fidelity)
     {
-        System.out.println("fidelity set to " + fidelity);
         this.fidelity = fidelity;
         slider.setMaximum(fidelity);
         majorTickSpacing = fidelity/10;
@@ -228,15 +227,12 @@ public class CLabeledSlider extends JPanel
      */
     public void setSliderRange(float minValue, float maxValue)
     {
-        System.out.println("setSliderRange: " + minValue + " to " + maxValue);
-
         // Try to maintain the same value if possible
         float currentValue = getValue();
 
         this.minValue = minValue;
         this.maxValue = maxValue;
         unit = (maxValue - minValue) / fidelity;
-        System.out.println("Unit = " + unit);
 
         if (Math.abs(maxValue) > 10)
         {
