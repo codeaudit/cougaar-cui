@@ -29,12 +29,12 @@ public class SimpleTPLocation implements TPLocation {
    *  @param t the time of interest
    *  @return the location of the model at the given time
    */
-  public Location getLocation (Date t) {
+  public Location getLocation (long t) {
     if (isInScope(t)) {
-      Node n = (Node) times.elementAt(0);
+      TimeLocation n = (TimeLocation) times.elementAt(0);
       for (int i = 1; i < times.size(); i++) {
-        Node m = (Node) times.elementAt(i);
-        if (m.date.after(t))
+        TimeLocation m = (TimeLocation) times.elementAt(i);
+        if (m.time > t)
           break;
         n = m;
       }
@@ -52,7 +52,7 @@ public class SimpleTPLocation implements TPLocation {
    *  @param t the time of interest
    *  @return true iff the given time is supported by this model.
    */
-  public boolean isInScope (Date t) {
+  public boolean isInScope (long t) {
     return times.size() > 0;
   }
 
@@ -64,31 +64,32 @@ public class SimpleTPLocation implements TPLocation {
    *  @param t the starting time for the given location
    *  @param loc the location understood by the model for a period of time
    */
-  public void add (String id, Date t, Location loc) {
-    Node n = (Node) idIndex.get(id);
+  public void add (String id, long t, Location loc) {
+    // TimeLocation n = (TimeLocation) idIndex.get(id);
+    TimeLocation n = null;
     if (n == null) {
-      n = new Node(id, t, loc);
-      idIndex.put(id, n);
+      n = new TimeLocation(id, t, loc);
+      // idIndex.put(id, n);
       insertInOrder(n);
     }
     else {
       n.loc.reset(loc.getLatitude(), loc.getLongitude());
-      n.date = t;
+      n.time = t;
       shiftPositionOf(n);
     }
   }
 
-  private void shiftPositionOf (Node n) {
+  private void shiftPositionOf (TimeLocation n) {
     int k = times.indexOf(n);
     int j = k;
-    if (j > 0 && ((Node) times.elementAt(j - 1)).date.after(n.date)) {
+    if (j > 0 && ((TimeLocation) times.elementAt(j - 1)).time > n.time) {
       j--;
-      while (j > 0 && ((Node) times.elementAt(j - 1)).date.after(n.date))
+      while (j > 0 && ((TimeLocation) times.elementAt(j - 1)).time > n.time)
         j--;
     }
     else {
       while (j < times.size() - 1 &&
-          ((Node) times.elementAt(j + 1)).date.before(n.date))
+          ((TimeLocation) times.elementAt(j + 1)).time < n.time)
       {
         j++;
       }
@@ -97,7 +98,7 @@ public class SimpleTPLocation implements TPLocation {
     times.insertElementAt(n, j);
   }
 
-  private void insertInOrder (Node n) {
+  private void insertInOrder (TimeLocation n) {
     times.add(n);
     shiftPositionOf(n);
   }
@@ -111,15 +112,34 @@ public class SimpleTPLocation implements TPLocation {
     throw new Error("Not bloody implemented!");
   }
 
+  /**
+   *  Give a summary of the state of this location.  In particular, the time
+   *  values at which the location changes (the locations themselves can be
+   *  added later, if necessary).
+   */
+  public String toString () {
+    StringBuffer buf = new StringBuffer("SimpleTPLocation[");
+    Iterator i = times.iterator();
+    if (i.hasNext()) {
+      buf.append(((TimeLocation) i.next()).time);
+      while (i.hasNext()) {
+        buf.append(", ");
+        buf.append(((TimeLocation) i.next()).time);
+      }
+    }
+    buf.append("]");
+    return buf.toString();
+  }
+
   // Keep UID, date, and location together
-  private static class Node {
+  private static class TimeLocation {
     public String uid = null;
-    public Date date = null;
+    public long time = -1;
     public Location loc = null;
 
-    public Node (String id, Date t, Location l) {
+    public TimeLocation (String id, long t, Location l) {
       uid = id;
-      date = t;
+      time = t;
       loc = l;
     }
   }

@@ -17,7 +17,7 @@ public interface TPLocation {
    *  @param t the time for which the caller wants to know the model's location
    *  @return the location for time t
    */
-  public Location getLocation (Date t);
+  public Location getLocation (long t);
 
   /**
    *  Check to see if the provided time is within the scope of this model.  If
@@ -27,5 +27,5 @@ public interface TPLocation {
    *  @param t the time of interest to the caller
    *  @return true iff the time is in this model's scope
    */
-  public boolean isInScope (Date t);
+  public boolean isInScope (long t);
 }
