@@ -25,10 +25,12 @@ set CP=%CP%;%DATA_PATH%
 set DBTYPE="oracle"
 rem set DBTYPE="access"
 
+rem set DBURL="pfischer:1521:alp"
 rem set DBURL="quicktableDemo"
 rem set DBURL="alp-demo:1521:alp"
 rem set DBURL="eiger.alpine.bbn.com:1521:alp"
-set DBURL="alp-3.alp.isotic.org:1521:alp"
+rem set DBURL="alp-3.alp.isotic.org:1521:alp"
+set DBURL="alp-92.alp.isotic.org:1521:alp"
 
 rem set DBUSER="pfischer"
 rem set DBUSER="jmeyer"
@@ -38,11 +40,11 @@ set DBUSER="blackjacka"
 
 rem set DBPASSWORD="pfischer"
 rem set DBPASSWORD="jmeyer"
-rem set DBPASSWORD="init1389"
 rem set DBPASSWORD="blackjack"
 set DBPASSWORD="blackjacka"
 
 java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentLauncher
+rem java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentDesktop
 
 del marker.txt
 cd ..\desktop
