@@ -180,7 +180,7 @@
       
          menu.add(new MenuItem("-"));
          menu.add(new MenuItem("Exit This Window"));
-         menu.add(new MenuItem("Exit Application (and ALP Node)"));
+         menu.add(new MenuItem("Exit Application (and COUGAAR Node)"));
 
          menubar.add(menu);
       

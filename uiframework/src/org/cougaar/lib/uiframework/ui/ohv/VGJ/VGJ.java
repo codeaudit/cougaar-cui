@@ -355,7 +355,7 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
 
       public static void drawMyGraph()
       {
-         Frame frame = new Frame("ALP Graph");
+         Frame frame = new Frame("COUGAAR Graph");
          VGJ vgj = new VGJ();
          vgj.isApp_ = true;
 
