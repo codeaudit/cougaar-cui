@@ -143,6 +143,13 @@ public class LinePlotPanel extends JPanel implements CougaarUI
                 public void variablesSwapped(VariableModel vm1,
                                              VariableModel vm2)
                 {
+                    // Special case for metrics control, if control is not a
+                    // independent variable, it must be set to a leaf node.
+                    // (because we don't support aggregation across different
+                    // metrics)
+                    fixVariableValue(vm1);
+                    fixVariableValue(vm2);
+
                     qg.generateQuery(variableManager);
                 }
             });
@@ -237,6 +244,20 @@ public class LinePlotPanel extends JPanel implements CougaarUI
                             chartPanel.getDividerSize());
                     }
                 });
+        }
+    }
+
+    /**
+     * Special case for metrics control, if control is not a
+     * independent variable, it must be set to a leaf node.
+     * (because we don't support aggregation across different metrics)
+     */
+    private void fixVariableValue(VariableModel vm)
+    {
+        if (vm.getName().equalsIgnoreCase("Metric") &&
+            (vm.getState() == VariableModel.FIXED))
+        {
+            vm.setValue("Demand");
         }
     }
 
