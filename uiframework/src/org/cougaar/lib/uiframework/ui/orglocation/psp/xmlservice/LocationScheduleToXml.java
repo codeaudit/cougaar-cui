@@ -9,6 +9,7 @@ import org.cougaar.domain.planning.ldm.plan.LocationScheduleElement;
 import org.cougaar.domain.glm.ldm.plan.GeolocLocation;
 import org.cougaar.domain.glm.ldm.asset.Organization;
 import org.cougaar.domain.glm.ldm.asset.LocationSchedulePG;
+import org.cougaar.domain.glm.plugins.TimeUtils;
 
 import org.cougaar.lib.aggagent.dictionary.glquery.samples.*;
 
@@ -23,6 +24,7 @@ import org.cougaar.lib.uiframework.ui.orglocation.data.*;
  *  ignored in any event.
  */
 public class LocationScheduleToXml extends CustomQueryBaseAdapter {
+
   // Collect the schedule information in an OrgTimeLocSchedule.  There should
   // never be more than one of these at any given time unless the usage model
   // changes.
@@ -38,9 +40,12 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
    *  @param eventType the published operation applied to the matching Objects
    */
   public void execute (Collection matches, String eventType) {
-    // Find the self-org and ignore all others
     for (Iterator i = matches.iterator(); i.hasNext(); ) {
       Organization org = (Organization) i.next();
+      // Determine whether this organization is the one we're looking for by
+      // comparing the owner of the asset to the asset in question.  Foreign
+      // organization assets will be ignored; if we're interested in their
+      // itineraries, we'll contact them...
       String orgName = org.getUID().getOwner();
       if (org.isSelf()) {
         if (locSchedule != null) {
@@ -49,11 +54,31 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
             orgName);
         }
         Schedule s = org.getLocationSchedulePG().getSchedule();
+
         if (s != null) {
           locSchedule = new SimpleTPLocation(orgName);
           Enumeration e = s.getAllScheduleElements();
-          while (e.hasMoreElements())
-            addToLocSchedule((LocationScheduleElement) e.nextElement());
+          boolean needsHomeLocation = ((org.hasMilitaryOrgPG()) &&
+                                       (org.getMilitaryOrgPG().getHomeLocation() != null));
+          if (!needsHomeLocation) {
+            System.out.println(
+            "LocationScheduleToXml::execute:  unable to find home location for " +
+            orgName);
+          }
+
+          while (e.hasMoreElements()) {
+            if (needsHomeLocation) {
+              // insert entry for home location
+              LocationScheduleElement lse = (LocationScheduleElement)e.nextElement();
+              long start = lse.getStartTime() - TimeUtils.MSEC_PER_DAY;
+              addHomeLocationToLocSchedule(org, start, lse.getStartTime());
+              needsHomeLocation = false;
+
+              addToLocSchedule(lse);
+            } else {
+              addToLocSchedule((LocationScheduleElement) e.nextElement());
+            }
+          }
         }
       }
     }
@@ -65,6 +90,13 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
     double longitude = location.getLongitude().getValue(0);
     long start = elt.getStartTime();
     long end = elt.getEndTime();
+    locSchedule.add(start, end, new Location(latitude, longitude));
+  }
+
+  private void addHomeLocationToLocSchedule(Organization org, long start, long end) {
+    GeolocLocation home = (GeolocLocation) org.getMilitaryOrgPG().getHomeLocation();
+    double latitude = home.getLatitude().getValue(0);
+    double longitude = home.getLongitude().getValue(0);
     locSchedule.add(start, end, new Location(latitude, longitude));
   }
 
