@@ -11,7 +11,7 @@ import org.cougaar.lib.uiframework.ui.models.RangeModel;
  *
  * This bean has a bounded property:  "range".
  *
- * @see assessment.MThumbSliderRangeControl
+ * @see CMThumbSliderRangeControl
  */
 public class CSliderRangeControl extends CMultipleSliderControl
 {

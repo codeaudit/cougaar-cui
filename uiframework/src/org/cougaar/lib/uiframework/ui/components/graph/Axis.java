@@ -54,7 +54,7 @@ import java.lang.*;
  * but in this mode nothing is automated, the user must code everything
  * manually
  *
- * @version  $Revision: 1.1 $, $Date: 2001-02-05 14:37:00 $.
+ * @version  $Revision: 1.2 $, $Date: 2001-02-08 20:20:11 $.
  * @author   Leigh Brookshaw
  */
 
@@ -122,7 +122,7 @@ public class Axis extends Object {
   /**
    * Default value <i>true</i>. Normally never changed. If set <i>false</I>
    * the Axis draw method exits without drawing the axis.
-   * @see Axis#drawAxis()
+   * @see Axis#drawAxis(Graphics g)
    */
       public boolean redraw           = true;
   /**
@@ -166,7 +166,7 @@ public class Axis extends Object {
 
   /**
    * The graph canvas this axis is attached to (if it is attached to any)
-   * @see graph.Graph2D
+   * @see Graph2D
    */
       public Graph2D g2d = null;
 
@@ -349,7 +349,7 @@ public class Axis extends Object {
   /**
    * Attach a DataSet for the Axis to manage.
    * @param d dataSet to attach
-   * @see graph.DataSet
+   * @see DataSet
    */
       public void attachDataSet( DataSet d ) {
             if( orientation == HORIZONTAL )   attachXdata( d );
@@ -358,7 +358,7 @@ public class Axis extends Object {
   /**
    * Detach an attached DataSet
    * @param d dataSet to detach
-   * @see graph.DataSet
+   * @see DataSet
    */
       public void detachDataSet( DataSet d ) {
            int i = 0;
@@ -476,7 +476,7 @@ public class Axis extends Object {
    * the data value into a pixel value
    * @param v data value to convert
    * @return equivalent pixel value
-   * @see graph.Axis#getDouble( )
+   * @see Axis#getDouble(int i )
    */
       public int getInteger(double v) {
           double scale;
@@ -499,7 +499,7 @@ public class Axis extends Object {
    * the pixel position into a data value
    * @param i pixel value
    * @return equivalent data value
-   * @see graph.Axis#getInteger( )
+   * @see Axis#getInteger( double v )
    */
       public double getDouble(int i) {
             double scale;

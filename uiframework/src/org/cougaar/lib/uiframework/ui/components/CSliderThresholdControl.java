@@ -13,7 +13,7 @@ import org.cougaar.lib.uiframework.ui.models.StoplightThresholdModel;
  *
  * This bean has a bounded property:  "thresholds".
  *
- * @see assessment.MThumbSliderThresholdControl
+ * @see CMThumbSliderThresholdControl
  */
 public class CSliderThresholdControl extends CMultipleSliderControl
 {

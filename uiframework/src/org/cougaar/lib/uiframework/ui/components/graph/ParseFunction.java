@@ -58,7 +58,7 @@ import java.lang.*;
  *   <li> Scientific notation using "e", "E", "d", "D".
  * </ul>
  *
- * @version $Revision: 1.1 $, $Date: 2001-02-05 14:37:01 $
+ * @version $Revision: 1.2 $, $Date: 2001-02-08 20:20:12 $
  * @author Leigh Brookshaw
  */
 
@@ -362,9 +362,9 @@ public class ParseFunction extends ScanString {
    * Return the solution of the function if it has no independent values
    * or they have already been set using the set methods
    * @return solution of the function
-   * @see ParseFunction.setX()
-   * @see ParseFunction.setY()
-   * @see ParseFunction.setZ()
+   * @see ParseFunction#setX(double x)
+   * @see ParseFunction#setY( double x )
+   * @see ParseFunction#setZ( double x )
    */
         public double getResult() throws Exception {
 

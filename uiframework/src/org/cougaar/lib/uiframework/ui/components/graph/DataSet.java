@@ -40,7 +40,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
+ * @version $Revision: 1.3 $, $Date: 2001-02-08 20:20:11 $
  * @author Leigh Brookshaw
  */
 public class DataSet extends Object {
@@ -70,7 +70,7 @@ public class DataSet extends Object {
 
   /**
    *    The Graphics canvas that is driving the whole show.
-   * @see graph.Graph2D
+   * @see Graph2D
    */
       public Graph2D g2d;
 
@@ -86,7 +86,7 @@ public class DataSet extends Object {
       public Color linecolor     = null;
   /**
    *    The index of the marker to use at the data points.
-   * @see graph.Markers
+   * @see Markers
    */
       public int    marker       = 0;
   /**
@@ -100,12 +100,12 @@ public class DataSet extends Object {
   /**
    *    The Axis object the X data is attached to. From the Axis object
    *    the scaling for the data can be derived.
-   * @see graph.Axis
+   * @see Axis
    */
       public Axis xaxis;
   /**
    *    The Axis object the Y data is attached to.
-   * @see graph.Axis
+   * @see Axis
    */
       public Axis yaxis;
   /**
@@ -720,7 +720,7 @@ public class DataSet extends Object {
    *  close the edge of the clipping region will be clipped.
    * @param g Graphics context
    * @param w data window
-   * @see graph.Markers
+   * @see Markers
    */
       protected void draw_markers(Graphics g, Rectangle w) {
           int x1,y1;

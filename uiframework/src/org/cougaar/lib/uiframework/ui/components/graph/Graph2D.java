@@ -51,7 +51,7 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.2 $, $Date: 2001-02-06 18:06:02 $
+ * @version  $Revision: 1.3 $, $Date: 2001-02-08 20:20:11 $
  * @author   Leigh Brookshaw
  */
 
@@ -74,14 +74,14 @@ public class Graph2D extends JPanel { // PHF
 
 /**
  *  A vector list of All the axes attached
- *  @see Graph2d#attachAxis()
+ *  @see Graph2D#attachAxis(Axis a)
  */
 
     protected Vector axis          = new Vector(4);
 
 /**
  *  A vector list of All the DataSets attached
- *  @see Graph2d#attachDataSet()
+ *  @see Graph2D#attachDataSet(DataSet d)
  *  @see DataSet
  */
 
@@ -89,7 +89,7 @@ public class Graph2D extends JPanel { // PHF
 
 /**
  *  The markers that may have been loaded
- *  @see Graph2D#setMarkers()
+ *  @see Graph2D#setMarkers(Markers m)
  */
 
     protected Markers markers = null;
@@ -700,7 +700,6 @@ public class Graph2D extends JPanel { // PHF
  *  the method Graph2D.finishedloading() decrements the counter. When the
  *  counter is back to zero the plotting resumes.
  *  @see Graph2D#finishedloading()
- *  @see Graph2D#loadmessage()
  *  @see LoadMessage
 */
     public void startedloading() {
@@ -720,7 +719,6 @@ public class Graph2D extends JPanel { // PHF
  * Decrement the loading Data counter by one. When it is zero resume
  * plotting.
  *  @see Graph2D#startedloading()
- *  @see Graph2D#loadmessage()
  *  @see LoadMessage
 */
     public void finishedloading() {

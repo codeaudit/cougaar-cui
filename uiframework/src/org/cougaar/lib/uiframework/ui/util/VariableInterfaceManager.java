@@ -19,8 +19,7 @@ import org.cougaar.lib.uiframework.ui.models.VariableModel;
  * used with a query generator to parameterize a query that populates a
  * database table model.
  *
- * @see assessment.QueryGenerator
- * @see assessment.DatabaseTableModel
+ * @see org.cougaar.lib.uiframework.ui.models.DatabaseTableModel
  */
 public class VariableInterfaceManager
 {
