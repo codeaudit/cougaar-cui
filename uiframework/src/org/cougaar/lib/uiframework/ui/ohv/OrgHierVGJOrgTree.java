@@ -39,7 +39,7 @@ import java.util.StringTokenizer;
  **/
 
 public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
-    private OrgHierModel ohm; 
+    static private OrgHierModel ohm; 
     private String textTree; 
     private String delim="\n"; 
     private Stack branchStack = new Stack(); 
@@ -186,11 +186,11 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
     private   OrgTreeAction ota = new OrgTreeAction() {
 	  public void execute()
 	  {
-	    System.out.println("in community OrgTreeAction.execute -- show org graph");
-	      showOrgGraph();
+	    System.out.println("in  OrgTreeAction.execute -- update org graph");
+	      updateOrgGraph();
 	    System.out.println("out OrgTreeAction.execute");
 	  }
-	  public String getId() { return "Show Community"; }
+	  public String getId() { return "Update"; }
       };
     private void showGraph(VGJ vgj) {
 	    vgj.showGraph(false, false, false, ota, false);
@@ -298,11 +298,20 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
     public long getStartTime() { return ohm.getStartTime(); }
     public long getEndTime() { return ohm.getEndTime(); }
 
-
+    private void updateOrgGraph() {
+	System.out.println("vgjorgtree ota updating model");
+	OrgHierModel ohm = OrgHierApp.updateModel();
+	showOrgGraph(name);
+    }
     private void showOrgGraph() {
       // selOrg = getSelectedOrg();
       String selOrg = vgj.getSelectedNodeLabel();
-            System.out.println("selected node: "+selOrg);
+      showOrgGraph(selOrg);
+    }
+
+    public static void showOrgGraph(String forOrg) {
+	String selOrg=forOrg;
+      System.out.println("show org graph for selected node: "+selOrg);
       if (selOrg==null) {
         System.err.println("==========================");
         System.err.println("Select an Organization !!!");
@@ -311,10 +320,8 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
         System.err.println("Select an Organization !!!");
         System.err.println("==========================");
       } else {
-         //loadInit(selOrg);
-      // create and show vgjOrgTree (use my model)
 	  System.out.println("vgjorgtree ota updating model");
-	  OrgHierModel ohm = OrgHierApp.updateModel();
+	  //	  OrgHierModel ohm = OrgHierApp.updateModel();
         OrgHierVGJOrgTree ohvt=new OrgHierVGJOrgTree(ohm, selOrg);
         ohvt.show();
       }

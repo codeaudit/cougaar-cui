@@ -42,6 +42,7 @@
    import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.NodePropertiesDialog;
    import org.cougaar.lib.uiframework.ui.ohv.VGJ.graph.EdgePropertiesDialog;
    import org.cougaar.lib.uiframework.ui.ohv.util.RuntimeParameters;
+   import org.cougaar.lib.uiframework.ui.ohv.OrgHierVGJOrgTree;
 
 
    import java.awt.image.*;
@@ -560,7 +561,8 @@
             {
                if(e.clickCount == 2)
                {
-                  setNodeProperties(false);
+//                   setNodeProperties(false);
+		   processDoubleClickNode();
                   return false;
                }
             
@@ -1806,7 +1808,19 @@
       }
    
    
-   
+       private void processDoubleClickNode() {
+	   String dblClickEdit=RuntimeParameters
+	      .getLoudSystemProperty("double.click.edit.node",
+				      "false");
+	   
+         Node which = selectedNode_;
+	 String nodeLabel = which.getLabel();
+	 // get node label
+	 OrgHierVGJOrgTree.showOrgGraph(nodeLabel);
+	 if (dblClickEdit.equalsIgnoreCase("true")) {
+	     setNodeProperties(false);
+	 }
+       }
    
       public void setNodeProperties(boolean always_default)
       {
