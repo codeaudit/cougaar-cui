@@ -42,9 +42,8 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
       // comparing the owner of the asset to the asset in question.  Foreign
       // organization assets will be ignored; if we're interested in their
       // itineraries, we'll contact them...
-      String owner = org.getUID().getOwner();
       String orgName = org.getName();
-      if (owner.equals(orgName)) {
+      if (org.isSelf()) {
         if (locSchedule != null) {
           System.out.println(
             "LocationScheduleToXml::execute:  more than one schedule for " +
