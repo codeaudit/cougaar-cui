@@ -38,7 +38,9 @@
    import java.awt.Checkbox;
    import java.awt.CheckboxGroup;
    import java.awt.FlowLayout;
-
+   import java.awt.Component;
+   import java.util.Vector;
+   import java.util.Iterator;
 
    import java.util.Hashtable;
 
@@ -356,6 +358,26 @@
           }
         });
       }
+
+
+    public void addControl(Component control) {
+	    controls_.add(control);
+	    invalidate();
+	    validate();
+    }
+
+    public void repaint() {
+      graphCanvas_.repaint();
+      super.repaint();
+    }
+    public void addControls(Vector controls) {
+      for (Iterator it=controls.iterator(); it.hasNext(); ) {
+        Component control = (Component)it.next();
+        controls_.add(control);
+              invalidate();
+              validate();
+      }
+    }
 
 
    

@@ -49,6 +49,7 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
     private GraphWindow gw;
     private Graph mygraph;
     private String name;
+      private RelList relList;
     
     public OrgHierVGJOrgTree(Collection col, String name) { 
 	init(new OrgHierModel(col), name);
@@ -58,6 +59,7 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 	String rootId;
 	this.ohm=ohm;
 	this.name=name;
+	relList=new RelList(ohm, relListAction);
 	Set roots=ohm.generateRoots(); 
 	textTree="Top Level"+delim;
 	for (Iterator riter=roots.iterator(); riter.hasNext(); ) { 
@@ -166,6 +168,7 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 
       vgj.setGraph(mygraph);
       vgj.setCanvasTitle(name+" Community");
+      vgj.addControl(relList);
 
       setDrillDownAttributes(vgj, mygraph);
 // 	    vgj.drillDownNode(mygraph, "CENTCOM-HHC", true);
@@ -192,6 +195,29 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 	  }
 	  public String getId() { return "Update"; }
       };
+    ItemListener relListAction=new ItemListener() {
+       public void itemStateChanged(ItemEvent e) {
+         System.out.println("in relListAction updrel "+e.getStateChange());
+         System.out.println("in relListAction updrel "+e.getItem());
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+          System.out.println("in relListAction updrel selected");
+		      String relType = (String) e.getItem();
+		        //combo.getSelectedItem();
+            //updateSuperiorRelationships();
+            // get selection from relList
+            // String relType = (String)relList.getSelectedValue();
+            System.out.println("   reltype is "+relType);
+            // update graph based on relType
+            updateRelationships(relType);
+
+            // set title here
+            vgj.setCanvasTitle(name+" Community with "+relType+" Relationships");
+
+            System.out.println("out relListAction");
+        }
+       }
+	};
+
     private void showGraph(VGJ vgj) {
 	    vgj.showGraph(false, false, false, ota, false);
     }
@@ -210,6 +236,21 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 	out.println(idx++);
 
 	out.println("Finished updateSuperiorRelationships.");
+
+      }
+      void updateRelationships(String relType) {
+      int idx=100;
+        showRelationships(vgj, mygraph, relType);
+        out.println(idx++);
+        showLiveClusters(vgj, mygraph);
+
+	      vgj.setGraph(mygraph);
+        out.println(idx++);
+	      showGraph(vgj);
+        out.println(idx++);
+
+      // end from supkpr
+        out.println("Finished updateRelationships "+relType);
 
       }
     public void show() { 
@@ -239,6 +280,32 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
       }
     }
 
+
+    public void showRelationships(VGJ vgj, Graph mygraph, String relType) {
+      Collection ohrs=ohm.getRelationshipsOfType(relType);
+
+      if (DEBUG > 30) {
+        System.out.println("showRelationships of type ["+relType
+            +"] Entires: "+ohrs.size());
+      }
+
+      vgj.clearLinks();
+
+      OrgHierRelationship ohr;
+    	HashSet hs;
+    	String sub, sup;
+      for (Iterator rit=ohrs.iterator(); rit.hasNext(); ) {
+	      ohr = (OrgHierRelationship)rit.next();
+        sub=ohr.getId();
+        sup=ohr.getOtherId();
+    		    if (DEBUG > 30) {
+		        	System.out.println("getTreeVGJ vgj.addLink(mygraph, sup, sub); sup: "+sup
+                  +" sub: "+sub);
+    		    }
+    		    // vgj.addSuperior(mygraph, sup, sub);
+    		    vgj.addSuperiorLink(mygraph, sup, sub);
+	    }
+    }
 
     public void showLiveClusters(VGJ vgj, Graph mygraph) {
 

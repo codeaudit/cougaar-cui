@@ -43,6 +43,7 @@
 
    import java.util.Hashtable; // kwr
 import EDU.auburn.VGJ.util.DDimension;       // kwr
+   import java.awt.Component;
 
 /**
  *	The VGJ applet. It is a big button that pops up VGJ graph
@@ -132,7 +133,11 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
                             boolean makeNewWindow)
       {
                   int firstNode;
-        if (myGw!=null&&!makeNewWindow) { myGw.pack(); myGw.show(); return; }
+        if (myGw!=null&&!makeNewWindow) { 
+	    // myGw.pack(); 
+	    myGw.show(); 
+	    return; 
+	}
                myGw=buildWindow_(mygraph);
                myGw.setCanvasTitle(canvastitle);
              if (exitOnWindowClose) {
@@ -447,6 +452,11 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
            mygraph.insertEdge(idx1, idx2);
             }
 
+      public void clearLinks() {
+        mygraph.removeAllEdges();
+      }
+
+
       /*
         Do not create nodes.  If they do not exist, ignore this link.
       */
@@ -611,6 +621,14 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
       }
 
 
+      Vector controlsToAdd=new Vector();
+      public void addControl(Component control) {
+        if (myGw!=null)
+          myGw.addControl(control);
+        controlsToAdd.add(control);
+
+      }
+
 
       private GraphWindow buildWindow_()
       {
@@ -676,6 +694,7 @@ import EDU.auburn.VGJ.util.DDimension;       // kwr
                   graph_editing_window.setTitle(frameTitle + ": "
                      + appCount_);
             
+               graph_editing_window.addControls(controlsToAdd);
                graph_editing_window.pack();
                graph_editing_window.show();
 

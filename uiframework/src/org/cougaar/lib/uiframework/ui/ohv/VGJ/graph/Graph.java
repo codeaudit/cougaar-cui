@@ -543,6 +543,13 @@
    
    
    
+      public void removeAllEdges() {
+        for (Enumeration en=edges_.elements(); en.hasMoreElements(); ) {
+          Edge edge=(Edge)en.nextElement();
+          removeEdge(edge);
+        }
+      }
+   
    
    // removeEdge(int n1, int n2)================================================
    /**

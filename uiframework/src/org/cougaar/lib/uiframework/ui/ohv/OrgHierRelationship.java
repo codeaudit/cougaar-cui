@@ -58,27 +58,29 @@ public class OrgHierRelationship extends ScheduleElementImpl {
 
 
   public boolean equals(OrgHierRelationship rhs) {
-    boolean rc= (id==rhs.id
-          && other==rhs.other
-          && rel==rhs.rel
+      //  System.err.println("    eq_ohr "+rhs);
+    boolean rc= (id.equals(rhs.id)
+          && other.equals(rhs.other)
+          && rel.equals(rhs.rel)
           && getStartTime()==rhs.getStartTime()
           && getEndTime()==rhs.getEndTime());
+    // System.err.println("    eq_ohr rc "+rc);
     return rc;
   }
+//   public boolean equals(OrgHierRelationship rhs) {
+//     boolean rc= (id==rhs.id
+//           && other==rhs.other
+//           && rel==rhs.rel
+//           && getStartTime()==rhs.getStartTime()
+//           && getEndTime()==rhs.getEndTime());
+//     return rc;
+//   }
 
   boolean isValidCluster() { return (id!=null&&id!=""); }
   String getId() { return id; }
   String getOtherId() { return other; }
   String getRelationship() { return rel; }
 
-  /*
-  OrgHierRelationship(String id) {
-    init(id, -1L, 1L, null, null);
-  }
-  OrgHierRelationship(String id, long start, long end, String rel, String other) {
-    init(id, start, end, rel, other);
-  }
-  */
   private String id=null, other=null, rel=null;
   private boolean hasSuperior=false;
   private void init(String id, long start, long end, String rel, String other) {

@@ -109,6 +109,41 @@ import java.util.List;
     public Collection getRelationships() {
       return orgRelSched;
     }
+    public Collection getRelationshipTypes() {
+      TreeSet rv=new TreeSet();
+      Collection col=orgRelSched;
+      OrgHierRelationship or;
+      String relType;
+      for (Iterator citer=col.iterator(); citer.hasNext(); ) {
+        or=(OrgHierRelationship)citer.next();
+        relType=or.getRelationship();
+	if (relType!=null) {
+	    rv.add(relType);
+	}
+      }
+      return rv;
+    }
+    public Collection getRelationshipsOfType(String relType) {
+      System.out.println("getRelationshipsOfType "+relType);
+      // TreeSet rv=new TreeSet();
+      Vector rv=new Vector();
+      // Collection col=orgRelSched;
+      OrgHierRelationship or;
+      // schedule throws an exception whenever iterator() is called
+      // so I changed this to enumeration until they fix that
+      //for (Iterator citer=col.iterator(); citer.hasNext(); ) {
+      //  or=(OrgHierRelationship)citer.next();
+      for (Enumeration en=orgRelSched.getAllScheduleElements();
+            en.hasMoreElements(); ) {
+        or=(OrgHierRelationship)en.nextElement();
+        System.out.println("or is "+or);
+        if (or.getRelationship()!=null&&relType.equals(or.getRelationship())) {
+          System.out.println("Adding it...");
+          rv.add(or);
+        }
+      }
+      return rv;
+    }
     public Collection getOrgsAtTime(long time) {
       TreeSet rv=new TreeSet();
       Collection col=orgRelSched.getScheduleElementsWithTime(time);
