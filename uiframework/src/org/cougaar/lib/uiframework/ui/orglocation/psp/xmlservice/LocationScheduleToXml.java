@@ -38,12 +38,9 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
    *  @param eventType the published operation applied to the matching Objects
    */
   public void execute (Collection matches, String eventType) {
+    // Find the self-org and ignore all others
     for (Iterator i = matches.iterator(); i.hasNext(); ) {
       Organization org = (Organization) i.next();
-      // Determine whether this organization is the one we're looking for by
-      // comparing the owner of the asset to the asset in question.  Foreign
-      // organization assets will be ignored; if we're interested in their
-      // itineraries, we'll contact them...
       String orgName = org.getUID().getOwner();
       if (org.isSelf()) {
         if (locSchedule != null) {
