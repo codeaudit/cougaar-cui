@@ -80,6 +80,10 @@ public class CMenuButton extends JButton implements Selector
         int menuItemHeight = selectedMenu.getPreferredSize().height;
         int menuIndex = 0;
 
+        // Always put currently selected menu item at bottom
+        // (TBD - do this as needed)
+        selectorMenu.reorderMenuItems();
+
         // find index of currently selected menu item
         Component[] comps = selectedMenu.getParent().getComponents();
         for (int i = 0; i < comps.length; i++)
