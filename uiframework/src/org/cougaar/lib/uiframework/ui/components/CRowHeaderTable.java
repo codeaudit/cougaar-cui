@@ -8,6 +8,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
 import org.cougaar.lib.uiframework.ui.util.SelectableHashtable;
 
 /**
@@ -220,7 +221,7 @@ public class CRowHeaderTable extends JTable
                 {
                     Object value = tm.getValueAt(rowStart, columnStart);
                     if ((value instanceof Float) ||
-                        (value.toString().equals("N/A")))
+                        (value.toString().equals(DatabaseTableModel.NO_VALUE)))
                     {
                         break search;
                     }

@@ -20,6 +20,9 @@ import org.cougaar.lib.uiframework.ui.util.DBDatasource;
  */
 public class DatabaseTableModel implements TableModel
 {
+    /** string shown in cells that have no data */
+    public final static String NO_VALUE = " ";
+
     /** Vector of table model listeners. */
     private Vector tableModelListeners = new Vector();
 
@@ -340,7 +343,7 @@ public class DatabaseTableModel implements TableModel
                     String assessmentValue;
                     if ((assessmentValue = rs.getString(i)) == null)
                     {
-                        dataRow.add("N/A");
+                        dataRow.add(NO_VALUE);
                     }
                     else
                     {
@@ -427,7 +430,7 @@ public class DatabaseTableModel implements TableModel
 
                 while(dp.columnIndex > targetRow.size())
                 {
-                    targetRow.add("N/A");
+                    targetRow.add(NO_VALUE);
                 }
 
                 if (dp.columnIndex >= targetRow.size())
@@ -448,7 +451,7 @@ public class DatabaseTableModel implements TableModel
                 Vector row = (Vector)newRows.elementAt(i);
                 while (row.size() < maxRowSize)
                 {
-                    row.add("N/A");
+                    row.add(NO_VALUE);
                 }
             }
 
@@ -490,7 +493,7 @@ public class DatabaseTableModel implements TableModel
         for (int row = 0; row < dataRows.size(); row++)
         {
             Vector dataRow = (Vector)dataRows.elementAt(row);
-            dataRow.insertElementAt("N/A", columnIndex);
+            dataRow.insertElementAt(NO_VALUE, columnIndex);
         }
         fireTableChangedEvent(
             new TableModelEvent(this, TableModelEvent.HEADER_ROW));
@@ -522,7 +525,7 @@ public class DatabaseTableModel implements TableModel
         Vector newRow = new Vector();
         for (int column=0; column < getColumnCount(); column++)
         {
-            newRow.add("N/A");
+            newRow.add(NO_VALUE);
         }
         dataRows.add(newRow);
         fireTableChangedEvent(

@@ -14,6 +14,7 @@ import org.cougaar.lib.uiframework.ui.components.graph.Axis;
 import org.cougaar.lib.uiframework.ui.components.graph.DataSet;
 import org.cougaar.lib.uiframework.ui.components.graph.Graph2D;
 import org.cougaar.lib.uiframework.ui.components.graph.Markers;
+import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
 import org.cougaar.lib.uiframework.ui.models.TestFunctionTableModel;
 
 /**
@@ -257,7 +258,8 @@ public class CLinePlotChart extends Graph2D
                     Object testValue = tm.getValueAt(rowStart, columnStart);
                     if ((testValue instanceof Float) ||
                         (testValue instanceof Double) ||
-                        (testValue.toString().equals("N/A")))
+                        (testValue.toString().
+                            equals(DatabaseTableModel.NO_VALUE)))
                     {
                         break search;
                     }
