@@ -22,6 +22,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 public class QueryGenerator
 {
     private static final boolean debug = false;
+    private static final String INV_SAF_METRIC = "Inventory Over Safety Level";
     private static final String NO_DATA = "No Data Available";
 
     /** the database table model to set queries on. */
@@ -116,12 +117,12 @@ public class QueryGenerator
 
         // Create query(s) that aggregate over organizations
         VariableModel orgDesc = vim.getDescriptor("Org");
+        VariableModel metricDesc = vim.getDescriptor("Metric");
         TreeNode selectedOrgNode = (TreeNode)orgDesc.getValue();
         if ((orgDesc.getState() == VariableModel.FIXED) ||
             (selectedOrgNode.isLeaf()))
         {
-            String query =
-                generateQueryUsingRootNode(vim, "Org", selectedOrgNode);
+            String query = generateSingleQuery(vim, selectedOrgNode);
             System.out.println(query);
             dbTableModel.setDBQuery(query, 4, 1);
         }
@@ -130,8 +131,8 @@ public class QueryGenerator
             for (int i = 0; i < selectedOrgNode.getChildCount(); i++)
             {
                 String query =
-                    generateQueryUsingRootNode(vim, "Org",
-                                               selectedOrgNode.getChildAt(i));
+                    generateSingleQuery(vim, selectedOrgNode.getChildAt(i));
+
                 System.out.println("query #" + i + ": " + query);
                 if (i == 0)
                 {
@@ -180,7 +181,7 @@ public class QueryGenerator
         // derive unit column if needed
         String metric = vim.getDescriptor("Metric").getValue().toString();
         if (yDescName.equals("Item") &&
-            !metric.equals("Inventory/Safety Level"))
+            !metric.equals(INV_SAF_METRIC))
         {
             if (debug) System.out.println("Adding unit of issue column");
             dbTableModel.insertColumn(1);
@@ -213,10 +214,48 @@ public class QueryGenerator
             new TableModelEvent(dbTableModel, TableModelEvent.HEADER_ROW));
     }
 
+    private String generateSingleQuery(VariableInterfaceManager vim,
+                                       TreeNode orgNode)
+    {
+        String query = null;
+        VariableModel metricDesc = vim.getDescriptor("Metric");
+
+        if (metricDesc.getValue().toString().equals(INV_SAF_METRIC))
+        {
+            query = generateRatioQuery(vim, "Org", orgNode,
+                                       "Inventory", "Safety Level");
+        }
+        else
+        {
+            query = generateQueryUsingRootNode(vim, "Org", orgNode,
+                                           metricDesc.getValue().toString());
+        }
+
+        return query;
+    }
+
+    private String generateRatioQuery(VariableInterfaceManager vim,
+                                   String varName, TreeNode tn,
+                                   String numMetric, String denMetric)
+    {
+        String query = null;
+
+        String numQuery =
+            generateQueryUsingRootNode(vim, varName, tn, numMetric);
+        String denQuery =
+            generateQueryUsingRootNode(vim, "Org", tn, denMetric);
+        query = "select t1.org, t1.item, t1.unitsOfTime, t1.metric, " +
+                "(t1.assessmentValue/t2.assessmentValue) as " +
+                "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1, (" +
+                denQuery + ") t2 where (t1.ORG=t2.ORG and" +
+                " t1.UnitsOfTime=t2.UnitsOfTime and t1.item=t2.item)";
+
+        return query;
+    }
 
     private String
         generateQueryUsingRootNode(VariableInterfaceManager vim,
-                                   String varName, TreeNode tn)
+                                   String varName, TreeNode tn, String metric)
     {
         String id = ((Hashtable)
                         ((DefaultMutableTreeNode)
@@ -233,8 +272,18 @@ public class QueryGenerator
         query.append(generateWhereClause("Org", getLeafList(tn).elements()));
         if (debug) System.out.println("Generating Item where clause");
         query.append(" AND "+generateWhereClause(vim.getDescriptor("Item")));
+
+        // do this right - later
         if (debug) System.out.println("Generating Metric where clause");
-        query.append(" AND "+generateWhereClause(vim.getDescriptor("Metric")));
+        if (metric.equals("Group A") || metric.equals("Group B"))
+        {
+            query.append(" AND "+generateWhereClause(vim.getDescriptor("Metric")));
+        }
+        else
+        {
+            query.append(" AND "+generateWhereClause("Metric", metric));
+        }
+
         if (debug) System.out.println("Generating Time where clause");
         query.append(" AND "+generateWhereClause(vim.getDescriptor("Time")));
         query.append(")");
