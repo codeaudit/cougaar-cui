@@ -244,7 +244,11 @@
    // This will give the initial window size.
       public Dimension preferredSize()
       {
-         return new Dimension(1024, 640);
+         int hWinSize=getLoudSystemProperty("ui.orgView.hWinSize", 1280, 1280);
+         int vWinSize=getLoudSystemProperty("ui.orgView.vWinSize", 1010, 1010);
+	 System.out.println("preferredSize: h,v: "+hWinSize+","+vWinSize);
+         return new Dimension(hWinSize, vWinSize);
+         //return new Dimension(1024, 640);
          //return new Dimension(1024, 400);
          //return new Dimension(400, 400);
       }
