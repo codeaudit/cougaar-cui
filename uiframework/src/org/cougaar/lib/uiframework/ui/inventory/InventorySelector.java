@@ -28,6 +28,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
+import javax.swing.table.TableColumn;
 
 import java.net.URL;
 
@@ -71,8 +72,8 @@ public class InventorySelector implements CougaarUI
   JComboBox clusterNameBox = new JComboBox();
   JComboBox assetNameBox = new JComboBox();
   boolean doDisplayTable = true;
-  boolean isApplet;
   boolean listFilled = false;
+  String currentAsset = null;
   boolean buildFile = true;
   String clusterHost = "localhost";
   String clusterPort = "5555";
@@ -95,7 +96,7 @@ public class InventorySelector implements CougaarUI
   Container frame = null;
   Vector assetNames;
   DoQuery queryListener = new DoQuery();
-  static final String PSP_id = "ALPINVENTORY.PSP";
+  static final String PSP_id = "GLMINVENTORY.PSP";
 
   InventoryExecutionTimeStatusHandler timeStatusHandler=null;
   InventoryExecutionListener executionListener=null;
@@ -103,7 +104,7 @@ public class InventorySelector implements CougaarUI
   private BlackJackInventoryChart chart = new BlackJackInventoryChart("", null, "Quantity", true);
   private CChartLegend legend = new CChartLegend();
   private JTable table = new JTable(new InventoryTableModel());
-//  private JScrollPane tableScrollPane = new JScrollPane(table);
+  private JScrollPane tableScrollPane = new JScrollPane(table);
   private FileOutputStream ostream = null;
   private ObjectOutputStream objectOutputStream = null;
 
@@ -120,10 +121,16 @@ public class InventorySelector implements CougaarUI
 
   private JLabel dataTipLabel = new JLabel(" ", SwingConstants.LEFT);
 
-  private JDialog cDataDialog = null;
+  private JDialog cDateDialog = null;
   private JTextField monthField = new JTextField();
   private JTextField dayField = new JTextField();
   private JTextField yearField = new JTextField();
+
+  private javax.swing.Timer refreshTimer = new javax.swing.Timer(30000, new RefreshAction());
+  boolean autoDataRefresh = false;
+  private JDialog refreshDelayDialog = null;
+  private JTextField delayTimeField = new JTextField("30000");
+
   private String cluster = null;
   private String asset = null;
 
@@ -139,6 +146,10 @@ public class InventorySelector implements CougaarUI
   public InventorySelector(String host, String port, String file,
                            String incluster, String inasset, long sTime, long eTime)
   {
+//    cacheFileName = System.getProperty("cacheFileName", cacheFileName);
+    cacheFileName = System.currentTimeMillis() + ".inv";
+    
+    
     hostAndPort = "http://" + host + ":" + port + "/";
     clusterHost = host;
     clusterPort = port;
@@ -221,6 +232,7 @@ public class InventorySelector implements CougaarUI
    try {
    in = new ObjectInputStream (new
                               FileInputStream(filename));
+   //currentAsset = null;
    }
    catch (Exception e)
    { //file not found or something wrong with opening it
@@ -229,9 +241,10 @@ public class InventorySelector implements CougaarUI
     System.exit(1);
    }
 
-   try{
-    clusterData = (Hashtable) in.readObject();
-    }
+   try
+   {
+     clusterData = (Hashtable) in.readObject();
+   }
    catch (Exception e)
    {
     System.err.println("unable to read data object from " +
@@ -245,27 +258,34 @@ public class InventorySelector implements CougaarUI
       System.err.println("unable to close profile.dat  : " + g);
     }
   }
-
-
+  
+  
+  
   public void buildControlPanel(Container contentPane, JMenuBar menuBar)
   {
     createMenuAndDialogs(contentPane, menuBar);
     JPanel container = new JPanel(new BorderLayout());
     queryPanel.setBorder(new LineBorder(Color.blue));
-    assetNameBox.setPreferredSize(new Dimension(400,25));
+    assetNameBox.setPreferredSize(new Dimension(500,25));
     queryPanel.setLayout(new FlowLayout());
     queryPanel.add(new JLabel("Org"));
 
 
     contentPane.add(container, BorderLayout.CENTER);
     contentPane.add(queryPanel, BorderLayout.SOUTH);
-//    tableScrollPane.setMinimumSize(new Dimension(10,10));
-
+    tableScrollPane.setMinimumSize(new Dimension(10,10));
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    
 //    innerSplit.setOneTouchExpandable(true);
 //    innerSplit.setTopComponent(chart);
-    container.add(chart, BorderLayout.CENTER);
-    container.add(dataTipLabel, BorderLayout.SOUTH);
-    chart.setDataTipLabel(dataTipLabel);
+    if(!InventoryChartUI.tableView)
+    {
+      container.add(chart, BorderLayout.CENTER);
+      container.add(dataTipLabel, BorderLayout.SOUTH);
+      chart.setDataTipLabel(dataTipLabel);
+    }
+    else
+     container.add(tableScrollPane, BorderLayout.CENTER);
 //    innerSplit.setBottomComponent(tableScrollPane);
 
 //    outerSplit.setOneTouchExpandable(true);
@@ -301,11 +321,14 @@ public class InventorySelector implements CougaarUI
       addClustersFromHash();
 
     clusterNameBox.addActionListener(new FillAssetList());
+    JButton refreshButton = new JButton("Refresh");
 
+    refreshButton.addActionListener(new RefreshAction());
     assetNameBox.addActionListener(queryListener);
     queryPanel.add(clusterNameBox);
     queryPanel.add(new JLabel("Items"));
     queryPanel.add(assetNameBox);
+    queryPanel.add(refreshButton);
 
 
     queryPanel.setPreferredSize(new Dimension(20,50));
@@ -316,6 +339,7 @@ public class InventorySelector implements CougaarUI
 
      public void updateInventoryBox()
      {
+     	 
        assetNameBox.removeActionListener(queryListener);
        if(!fileBased)
        {
@@ -324,6 +348,7 @@ public class InventorySelector implements CougaarUI
 
          if (clusterNameBox != null)
             clusterName = (String)clusterNameBox.getSelectedItem();
+         
          assetNames = getAssets(clusterName);
          if (assetNames != null)
             for (int i = 0; i < assetNames.size(); i++)
@@ -412,7 +437,7 @@ public class InventorySelector implements CougaarUI
       assetNames = (Vector)p.readObject();
     } catch (Exception e)
     {
-      //displayErrorString("Object read exception: " + e.toString());
+      
       System.err.println("error getting asstenames from stream");
     }
     Collections.sort(assetNames);
@@ -422,14 +447,24 @@ public class InventorySelector implements CougaarUI
 
   private void addClustersFromHash()
   {
-    Enumeration e = clusterData.keys();
+    //Enumeration e = clusterData.keys();
+    
+    Vector keys = new Vector();
+  	
+  	for(Enumeration e = clusterData.keys(); e.hasMoreElements();)
+  	{
+  		keys.add(e.nextElement());
+  	}
+  	
+    Collections.sort(keys);    
     clusterNameBox.removeAllItems();
 //    System.out.println("clusterfromhash");
-    while(e.hasMoreElements())
+    
+    for(int i = 0; i < keys.size(); i++)
     {
-      String clusterName = (String)e.nextElement();
+    	String clusterName = (String)keys.elementAt(i);
       clusterNameBox.addItem(clusterName);
-//      System.out.println("clusterfromhas" + clusterName);
+      
     }
   }
 
@@ -439,16 +474,17 @@ public class InventorySelector implements CougaarUI
     if(clusterHost == null || clusterPort == null)
       return;
     try {
+    	//System.out.println("try connection helper");
       ConnectionHelper connection = new ConnectionHelper(hostAndPort);
-      //System.out.println("add cluster list host and port " + hostAndPort);
+      //System.out.println("add cluster list host and port " + hostAndPort + " connection " + connection);
       clusterURLs = connection.getClusterIdsAndURLs();
       if (clusterURLs == null) {
         System.err.println("No clusters");
-        System.exit(0);
+        
       }
     } catch (Exception e) {
       System.err.println(e);
-      System.exit(0);
+      
     }
     Enumeration names = clusterURLs.keys();
     clusterNameBox.removeAllItems();
@@ -460,30 +496,11 @@ public class InventorySelector implements CougaarUI
     {
         clusterNameBox.addItem(vNames.elementAt(i));
         clusterContainer.put(vNames.elementAt(i), new Hashtable(1));
-//        System.out.println("clusteritem " + vNames.elementAt(i));
+
     }
     if (!vNames.isEmpty())
-  clusterName = (String)vNames.elementAt(0);
-    //add("Display schedules from:", clusterNameBox, SET_CLUSTER);
-    // if applet, modify all cluster URLs to use the code base host and port
-    // note that this doesn't sort
-    if (isApplet) {
-      Hashtable tmpHT = new Hashtable();
-      names = clusterURLs.keys();
-      while (names.hasMoreElements()) {
-        String name = (String)names.nextElement();
-        String clusterURL = (String)clusterURLs.get(name);
-        int startIndex = clusterURL.indexOf('$');
-        if (startIndex == -1)
-          continue;
-        int endIndex = clusterURL.indexOf('/', startIndex);
-        if (endIndex == -1)
-          continue;
-        clusterURL = hostAndPort + clusterURL.substring(startIndex, endIndex+1);
-        tmpHT.put(name, clusterURL);
-      }
-      clusterURLs = tmpHT;
-    }
+    clusterName = (String)vNames.elementAt(0);
+   
   }
 
   private void createMenuAndDialogs(final Container contentPane, JMenuBar menuBar)
@@ -554,7 +571,7 @@ public class InventorySelector implements CougaarUI
           chart.setScrollMainChart(((JCheckBoxMenuItem)e.getSource()).getState());
         }
       };
-    MenuUtility.addCheckMenuItem(menu, "Scroll Inventory Chart (3 Chart View)", action, true);
+    MenuUtility.addCheckMenuItem(menu, "Scroll Inventory Chart (3 Chart View)", action, false);
 
 
     action = new AbstractAction()
@@ -712,23 +729,39 @@ public class InventorySelector implements CougaarUI
     MenuUtility.addCheckMenuItem(menu, "Use C-Date", 'U', action, false);
 
 
-//    cDataDialog = new JDialog(frame, "Enter C-Date", true);
-    cDataDialog = new JDialog((JFrame)null, "Enter C-Date", true);
-    cDataDialog.setResizable(false);
-    cDataDialog.getContentPane().setLayout(new BorderLayout());
-    cDataDialog.getContentPane().add(getCDateDialogPanel(), BorderLayout.CENTER);
-    cDataDialog.pack();
+    cDateDialog = new JDialog((JFrame)null, "Enter C-Date", true);
+    cDateDialog.setResizable(false);
+    cDateDialog.getContentPane().setLayout(new BorderLayout());
+    cDateDialog.getContentPane().add(getCDateDialogPanel(), BorderLayout.CENTER);
+    cDateDialog.pack();
     action = new AbstractAction()
       {
         public void actionPerformed(ActionEvent e)
         {
-          cDataDialog.setLocationRelativeTo(contentPane);
-          //cDataDialog.setLocationRelativeTo(InventorySelector.this);
-          cDataDialog.show();
+          cDateDialog.setLocationRelativeTo(contentPane);
+          cDateDialog.show();
         }
       };
     MenuUtility.addMenuItem(menu, "Set C-Date ...", 'S', action);
+
+    refreshDelayDialog = new JDialog((JFrame)null, "Enter Refresh Time", true);
+    refreshDelayDialog.setResizable(false);
+    refreshDelayDialog.getContentPane().setLayout(new BorderLayout());
+    refreshDelayDialog.getContentPane().add(getRefreshDelayDialogPanel(), BorderLayout.CENTER);
+    refreshDelayDialog.pack();
+    action = new AbstractAction()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          refreshDelayDialog.setLocationRelativeTo(contentPane);
+          refreshDelayDialog.show();
+        }
+      };
+    MenuUtility.addMenuItem(menu, "Set Data Refresh ...", action);
   }
+
+  
+
 
   private JPanel getCDateDialogPanel()
   {
@@ -755,13 +788,61 @@ public class InventorySelector implements CougaarUI
             ex.printStackTrace();
           }
 
-          cDataDialog.hide();
+          cDateDialog.hide();
         }
       });
 
     panel.add(monthField);
     panel.add(dayField);
     panel.add(yearField);
+    panel.add(button);
+
+    return(panel);
+  }
+
+  private JPanel getRefreshDelayDialogPanel()
+  {
+    JPanel panel = new JPanel(new GridLayout(3, 1));
+    JButton button = new JButton("Set Refresh Delay");
+
+    button.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          try
+          {
+            refreshTimer.setDelay(Integer.parseInt(delayTimeField.getText()));
+          }
+          catch (Exception ex)
+          {
+            ex.printStackTrace();
+          }
+
+          refreshDelayDialog.hide();
+        }
+      });
+
+    JCheckBox checkBox = new JCheckBox("Auto Refresh");
+    checkBox.setSelected(autoDataRefresh);
+    checkBox.addActionListener(new ActionListener()
+      {
+        public void actionPerformed(ActionEvent e)
+        {
+          autoDataRefresh = ((JCheckBox)e.getSource()).isSelected();
+          
+          if ((autoDataRefresh) && (assetNameBox.getSelectedItem() != null))
+          {
+            refreshTimer.restart();
+          }
+          else
+          {
+            refreshTimer.stop();
+          }
+        }
+      });
+
+    panel.add(delayTimeField);
+    panel.add(checkBox);
     panel.add(button);
 
     return(panel);
@@ -785,7 +866,8 @@ public class InventorySelector implements CougaarUI
         objectOutputStream = new ObjectOutputStream(ostream);
         objectOutputStream.writeObject(clusterContainer);
         objectOutputStream.flush();
-        System.err.println("save object " + clusterContainer + " " + cacheFileName);
+        System.err.println("save object " + clusterContainer);
+        System.err.println("\n\nSaved File Name:  " + cacheFileName + "\n\n");
       }
       else
         System.err.println("don't save object");
@@ -1068,6 +1150,14 @@ public class InventorySelector implements CougaarUI
     }
   }
 
+  class RefreshAction implements ActionListener
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+      queryListener.performQuery(true);
+    }
+  }
+
   class DoQuery implements ActionListener // listens on assetnamebox selecteditemchange
   {
     public void actionPerformed(ActionEvent e)
@@ -1075,21 +1165,69 @@ public class InventorySelector implements CougaarUI
       System.err.println("doquery filebased: " + fileBased + " usecache " + useCache);
       try
       {
+        refreshTimer.stop();
+
+        InventoryQuery query = performQuery(true);
+
+        // Must set the total range of the chart slider
+        chart.resetTotalRange();
+
+        // Set the slider to be in a two month range from the start of the data
+        long msInTwoMonths = 1000L*60L*60L*24L*30L*2L;
+        chart.setInitialRange(msInTwoMonths);
+        //System.out.println("st " + start);
+        if(startParam != 0)
+        {
+          //System.out.println("range " + startParam + " " + endParam);
+          chart.setXScrollerRange(new RangeModel(startParam, endParam));
+        }
+
+        /*if (frame instanceof JFrame)
+        {
+          ((JFrame)frame).setTitle(query.model.getAssetName());
+        }
+        else if (frame instanceof JInternalFrame)
+        {
+          ((JInternalFrame)frame).setTitle(query.model.getAssetName());
+        }*/
+
+        setDataSetMenu();
+        frame.validate();
+        
+        if (autoDataRefresh)
+        {
+          refreshTimer.restart();
+        }
+      }
+      catch(Throwable ex)
+      {
+        ex.printStackTrace();
+      }
+    }
+
+    public InventoryQuery performQuery(boolean setCurrentAsset)
+    {
+      InventoryQuery query = null;
+
+      try
+      {
         String assetName = (String)assetNameBox.getSelectedItem();
         String clusterName = (String) clusterNameBox.getSelectedItem();
-        InventoryQuery query = null;
-
+        if(setCurrentAsset)
+          currentAsset = assetName;
+        //System.out.println("performQuery currentAsset = " + currentAsset + " setcuurentasset = " + setCurrentAsset);
         if(!fileBased && !useCache)
         {
           setupTimeStatusHandler();
-          query = new InventoryQuery(assetName, clusterName, clusterContainer, assetInventories, startParam, endParam);
-          new QueryHelper(query, hostAndPort + "$" + clusterName + "/", isApplet, chart, table, legend, doDisplayTable, timeStatusHandler);
+          query = new InventoryQuery(assetName, clusterName, clusterContainer, assetInventories);
+          new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable, timeStatusHandler);
         }
         else if(fileBased)
         {
+        	//System.out.println("clusterName " + clusterName);
           Hashtable assetList = (Hashtable) clusterData.get(clusterName);
           UISimpleInventory inventory = (UISimpleInventory) assetList.get(assetName);
-          query = new InventoryQuery(inventory, clusterName, clusterContainer, startParam, endParam);
+          query = new InventoryQuery(inventory, clusterName, clusterContainer);
           new QueryHelper(query, chart, table, legend);
         }
         else if(useCache)
@@ -1101,19 +1239,18 @@ public class InventorySelector implements CougaarUI
             {
               System.err.println("from cache");
               UISimpleInventory inventory = (UISimpleInventory) assetList.get(assetName);
-              query = new InventoryQuery(inventory, clusterName, clusterContainer, startParam, endParam);
+              query = new InventoryQuery(inventory, clusterName, clusterContainer);
               new QueryHelper(query, chart, table, legend);
             }
             else
             {
               System.err.println("from port");
               setupTimeStatusHandler();
-              query = new InventoryQuery(assetName, clusterName, clusterContainer, assetInventories, startParam, endParam);
-              new QueryHelper(query, hostAndPort + "$" + clusterName + "/", isApplet, chart, table, legend, doDisplayTable, timeStatusHandler);
+              query = new InventoryQuery(assetName, clusterName, clusterContainer, assetInventories);
+              new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable, timeStatusHandler);
             }
           }
         }
-
         if (frame instanceof JFrame)
         {
           ((JFrame)frame).setTitle(query.model.getAssetName());
@@ -1122,14 +1259,14 @@ public class InventorySelector implements CougaarUI
         {
           ((JInternalFrame)frame).setTitle(query.model.getAssetName());
         }
-
-        setDataSetMenu();
-        frame.validate();
+        
       }
       catch(Throwable ex)
       {
         ex.printStackTrace();
       }
+      
+      return(query);
     }
   }
 
@@ -1152,9 +1289,82 @@ public class InventorySelector implements CougaarUI
     public void actionPerformed(ActionEvent e)
     {
 
-//      System.out.println("fillassetlist ");
+      //System.out.println("fillassetlist ");
       listFilled = false;
-      if(clusterNameBox.getSelectedItem() != null )
+      boolean foundMatch = false;
+      clusterName = (String)clusterNameBox.getSelectedItem();
+      if(currentAsset != null && clusterName != null)
+      {
+      	//  find the asset which matches int he selected cluster or if none matches
+      	//  bring up the first asset (if one exists)
+      	//  then perform doquery with this cluster and asset
+      	
+      	//clusterName = (String)clusterNameBox.getSelectedItem();
+      	//System.out.println("clustername at fill " + clusterName);
+      	Vector myAssetNames = new Vector();
+      	updateInventoryBox();
+      	if(fileBased)
+      	{
+      		Hashtable assetList = (Hashtable) clusterData.get(clusterName);
+          
+          
+          for(Enumeration enum = assetList.keys(); enum.hasMoreElements();)
+          {
+          	myAssetNames.add((String)enum.nextElement());
+          }
+        }
+      	else
+      	  myAssetNames = assetNames;
+      	
+      	
+      	//System.out.println("assetnames size is " + myAssetNames.size());
+      	if(myAssetNames != null && myAssetNames.size() > 0)
+      	{
+	      	for(int i = 0; i < myAssetNames.size(); i++)
+	      	{
+	      		String matchAsset = (String) myAssetNames.elementAt(i);
+	      		//System.out.println("next asset " + matchAsset + " " + currentAsset + " " + i);
+	      		if(matchAsset.equals(currentAsset))
+	      		{
+	      			//  do performQuery with current asset
+	      			//  set currentAsset as selected item
+	      			assetNameBox.setSelectedItem(currentAsset);
+	      			queryListener.performQuery(false);
+	      			foundMatch = true;
+	      			break;
+	      		}
+	      		
+	      	}
+	      	if(!foundMatch)
+		  		{
+		  			//  do performQuery with 1st asset
+		  			//  but don't reset currentAsset
+		  			//  set 1st item as selected item
+		  			//System.out.println("setting to first item");
+		  			assetNameBox.removeActionListener(queryListener);
+		  			assetNameBox.setSelectedItem(myAssetNames.elementAt(0));
+		  			assetNameBox.addActionListener(queryListener);
+		  			queryListener.performQuery(false);
+		   		}
+	      }
+	      else
+	      {
+	      	//  nothing to display
+	      	//System.out.println("removing all");
+	      	if (frame instanceof JFrame)
+          {
+            ((JFrame)frame).setTitle("");
+          }
+          else if (frame instanceof JInternalFrame)
+          {
+            ((JInternalFrame)frame).setTitle("");
+          }
+	      	chart.detachAllDataSets();
+          legend.removeAllDataSets();
+          chart.repaint();
+	      }
+      }
+      else if(clusterNameBox.getSelectedItem() != null )
         updateInventoryBox();
     }
   }
@@ -1188,7 +1398,11 @@ public class InventorySelector implements CougaarUI
         String host = "65.84.104.67";
         String port = "5555";
         String defaultString = host + ":" + port;
-        messageString = OptionPane.showInputDialog(null, msg, "Cluster Location", 3, null, null, defaultString);
+        if ((messageString = OptionPane.showInputDialog(frame, msg, "Cluster Location", 3, null, null, defaultString)) == null)
+        {
+          return;
+        }
+        
         String s = (String)messageString;
         s = s.trim();
         if (s.length() != 0)

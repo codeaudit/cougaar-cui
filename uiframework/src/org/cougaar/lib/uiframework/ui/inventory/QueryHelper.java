@@ -54,7 +54,7 @@ public class QueryHelper implements ActionListener,
   String clusterName;
   String assetName;
   boolean doDisplayTable = true;
-  boolean isApplet;
+  
 
   InventoryExecutionTimeStatusHandler timeStatusHandler;
 
@@ -66,13 +66,13 @@ public class QueryHelper implements ActionListener,
      use the container passed as an argument.
    */
 
-  public QueryHelper(Query query, String clusterURL, boolean isApplet, BlackJackInventoryChart chart, JTable table, CChartLegend legend, boolean doDisplayTable, InventoryExecutionTimeStatusHandler aTimeStatusHandler)
+  public QueryHelper(Query query, String clusterURL, BlackJackInventoryChart chart, JTable table, CChartLegend legend, boolean doDisplayTable, InventoryExecutionTimeStatusHandler aTimeStatusHandler)
   {
     this.query = query;
     this.clusterURL = clusterURL;
     System.out.println("clusterRL" + clusterURL + "dummy");
     this.doDisplayTable = doDisplayTable;
-    this.isApplet = isApplet;
+    
     clusterName = clusterURL.substring(clusterURL.indexOf('$')+1, clusterURL.length()-1);
     assetName = query.getQueryToSend();
     int indx = assetName.indexOf(":");
@@ -177,7 +177,7 @@ public class QueryHelper implements ActionListener,
   {
     if (!query.setTableData(clusterName, table, legend))
     {
-      displayErrorString("No data received");
+      //displayErrorString("No data received");
     }
   }
 

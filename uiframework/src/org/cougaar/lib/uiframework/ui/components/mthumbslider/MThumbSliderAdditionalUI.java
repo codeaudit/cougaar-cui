@@ -1,13 +1,14 @@
-/*
- * <copyright>
- * Copyright 1997-2001 Defense Advanced Research Projects
- * Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
- * Raytheon Systems Company (RSC) Consortium).
- * This software to be used only in accordance with the
- * COUGAAR licence agreement.
- * </copyright>
- */
 package org.cougaar.lib.uiframework.ui.components.mthumbslider;
+
+/*
+* <copyright>
+* Copyright 1997-2001 Defense Advanced Research Projects
+* Agency (DARPA) and ALPINE (a BBN Technologies (BBN) and
+* Raytheon Systems Company (RSC) Consortium).
+* This software to be used only in accordance with the
+* COUGAAR licence agreement.
+* </copyright>
+*/
 
 import java.awt.*;
 import java.awt.event.*;
@@ -138,6 +139,40 @@ public class MThumbSliderAdditionalUI {
     TrackListener(CMThumbSlider slider) {
       this.slider = slider;
     }
+
+/*    public void mousePressed(MouseEvent e) {
+      if ( !slider.isEnabled() ) {
+        return;
+      }
+      currentMouseX = e.getX();
+      currentMouseY = e.getY();
+      slider.requestFocus();
+
+      for (int i=0; i<thumbNum; i++) {
+        Rectangle rect = thumbRects[i];
+        if ( rect.contains(currentMouseX, currentMouseY) ) {
+
+          switch ( slider.getOrientation() ) {
+            case JSlider.VERTICAL:
+                 offset = currentMouseY - rect.y;
+                 break;
+            case JSlider.HORIZONTAL:
+                 offset = currentMouseX - rect.x;
+                 break;
+          }
+          isDragging = true;
+          slider.setValueIsAdjusting(true);
+          adjustingThumbRect = rect;
+          adjustingThumbIndex = i;
+          return;
+        }
+      }
+    }
+*/
+
+
+
+
 
     protected transient boolean lockScroll = false;
     protected transient int offset2 = 0;
@@ -321,6 +356,71 @@ public class MThumbSliderAdditionalUI {
       mSlider.repaint();
     }
 
+
+
+
+
+
+
+/*
+    public void mouseDragged( MouseEvent e ) {
+      if ( !slider.isEnabled()
+                 || !isDragging
+                 || !slider.getValueIsAdjusting()
+                 || adjustingThumbRect == null ) {
+        return;
+      }
+      int thumbMiddle = 0;
+      currentMouseX = e.getX();
+      currentMouseY = e.getY();
+
+      Rectangle rect = thumbRects[adjustingThumbIndex];
+      trackRect = getTrackRect();
+      switch ( slider.getOrientation() ) {
+        case JSlider.VERTICAL:
+          int halfThumbHeight = rect.height / 2;
+          int thumbTop    = e.getY() - offset;
+          int trackTop    = trackRect.y;
+          int trackBottom = trackRect.y + (trackRect.height - 1);
+
+          thumbTop = Math.max( thumbTop, trackTop    - halfThumbHeight );
+          thumbTop = Math.min( thumbTop, trackBottom - halfThumbHeight );
+
+          setThumbLocationAt(rect.x, thumbTop, adjustingThumbIndex);
+
+          thumbMiddle = thumbTop + halfThumbHeight;
+          mSlider.setValueAt( ui.valueForYPosition( thumbMiddle ) , adjustingThumbIndex);
+          calculateThumbsLocation(); // PHF (so thumbs can push each other around)
+          break;
+
+        case JSlider.HORIZONTAL:
+          int halfThumbWidth = rect.width / 2;
+          int thumbLeft  = e.getX() - offset;
+          int trackLeft  = trackRect.x;
+          int trackRight = trackRect.x + (trackRect.width - 1);
+
+          thumbLeft = Math.max( thumbLeft, trackLeft  - halfThumbWidth );
+          thumbLeft = Math.min( thumbLeft, trackRight - halfThumbWidth );
+
+          setThumbLocationAt( thumbLeft, rect.y, adjustingThumbIndex);
+
+          thumbMiddle = thumbLeft + halfThumbWidth;
+          mSlider.setValueAt( ui.valueForXPosition( thumbMiddle ), adjustingThumbIndex );
+          calculateThumbsLocation(); // PHF (so thumbs can push each other around)
+          break;
+      }
+    }
+
+    public void mouseReleased(MouseEvent e) {
+      if ( !slider.isEnabled() ) {
+        return;
+      }
+      offset = 0;
+      isDragging = false;
+      mSlider.setValueIsAdjusting(false);
+      mSlider.repaint();
+    }
+*/
     public boolean shouldScroll(int direction) {
       return false;
     }

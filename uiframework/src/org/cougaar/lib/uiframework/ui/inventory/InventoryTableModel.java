@@ -61,6 +61,8 @@ public class InventoryTableModel extends AbstractTableModel
 
   public InventoryTableModel(UISimpleInventory inventory)
   {
+   if(inventory != null)
+   {
     //System.out.println("new inventory object   #1");
     this.inventory = inventory;
     dateTimeFormater.setCalendar(new InventoryChartBaseCalendar());
@@ -81,13 +83,13 @@ public class InventoryTableModel extends AbstractTableModel
     {
       UISimpleNamedSchedule namedSchedule =
         (UISimpleNamedSchedule)v.elementAt(i);
-
+      //System.out.println("named sched " + namedSchedule.getName() + " " + col  + " " );
       String newLabel = InventoryScheduleNames.getName(namedSchedule.getName());
 
       if(newLabel != null)
       {
           columnNames.add(newLabel);
-//          System.out.println("named sched " + namedSchedule.getName() + " " + col  + " " + i);
+          //System.out.println("named sched " + namedSchedule.getName() + " " + col  + " " + newLabel);
           Vector s = namedSchedule.getSchedule();
           Vector rows = new Vector();
           for (int j = 0; j < s.size(); j++)
@@ -96,12 +98,13 @@ public class InventoryTableModel extends AbstractTableModel
             rows.addElement(new ScheduleTableEntry(schedule.getQuantity(),
                      schedule.getStartTime(),
                      schedule.getEndTime()));
-//            System.out.println("starttime = " + schedule.getStartTime()/timeScale + " is " + shortDate(schedule.getStartTime()));
-//            System.out.println("rows " + schedule.getQuantity() + " " + schedule.getStartTime());
+            //System.out.println("starttime = " + schedule.getStartTime()/timeScale + " is " + shortDate(schedule.getStartTime()));
+            //System.out.println("rows " + schedule.getQuantity() + " " + schedule.getStartTime());
             allRows++;
             if(j > maxRows)
               maxRows = j;
           }
+          //System.out.println("rows for above " + s.size());
           col += 1;
           columns.add(rows);
       }
@@ -119,13 +122,39 @@ public class InventoryTableModel extends AbstractTableModel
     {
       shortOutName = InventoryScheduleNames.SHORTFALL_DUE_OUT;
     }
-    if(InventoryChartUI.lookAheadDays > 0)
+    //if(InventoryChartUI.lookAheadDays > 0)
+    //{
+    //  buildOddData(InventoryChartUI.lookAheadDays, InventoryScheduleNames.PROJECTED_DUE_OUT, InventoryScheduleNames.CRITICAL_LEVEL, true);
+    //}
+    
+    // new critical calculation = reorder * .8
+    
+    if(columnExists(InventoryScheduleNames.REORDER_LEVEL))
     {
-      buildOddData(InventoryChartUI.lookAheadDays, InventoryScheduleNames.PROJECTED_DUE_OUT, InventoryScheduleNames.CRITICAL_LEVEL, true);
+    	double factor = 0.8;
+    	Vector rv = null;
+    	for(int i = 1; i < columnNames.size() ; i++)
+      {
+        if(columnNames.elementAt(i).equals(InventoryScheduleNames.REORDER_LEVEL))
+        {
+          rv = (Vector) columns.elementAt(i - 1);
+          continue;
+        }
+      }
+    	
+    	Vector newColumn = multiplyRows(rv, factor);
+    	if(newColumn != null)
+      {
+      	Vector newData = trimToOnhand(newColumn);
+        columns.add(newData);
+        columnNames.add(InventoryScheduleNames.CRITICAL_LEVEL);
+        
+      }
+      
     }
     String generatedColumn = null;
 
-    if(columnExists(InventoryScheduleNames.PROJECTED_DUE_OUT))
+    /*if(columnExists(InventoryScheduleNames.PROJECTED_DUE_OUT))
     {
       generatedColumn = combineDataColumns(InventoryScheduleNames.PROJECTED_DUE_OUT, InventoryScheduleNames.REQUESTED_DUE_OUT, "Experimental Column", true);
       buildOddData(InventoryChartUI.lookAheadDays, generatedColumn, InventoryScheduleNames.TARGET_LEVEL, true);
@@ -135,7 +164,35 @@ public class InventoryTableModel extends AbstractTableModel
       generatedColumn = combineDataColumns(InventoryScheduleNames.REQUESTED_DUE_OUT, InventoryScheduleNames.PROJECTED_DUE_OUT, "Experimental Column", true);
       buildOddData(InventoryChartUI.lookAheadDays, generatedColumn, InventoryScheduleNames.TARGET_LEVEL, true);
     }
-
+    */
+    
+    //  new target = (GOAL + REORDER) * .5
+    
+    if(columnExists(InventoryScheduleNames.GOAL_LEVEL) && columnExists(InventoryScheduleNames.REORDER_LEVEL))
+    {
+    	generatedColumn = combineDataColumns(InventoryScheduleNames.GOAL_LEVEL, InventoryScheduleNames.REORDER_LEVEL, "Experimental Column", true);
+    	double factor = 0.5;
+    	Vector rv = null;
+    	for(int i = 1; i < columnNames.size() ; i++)
+      {
+        if(columnNames.elementAt(i).equals("Experimental Column"))
+        {
+          rv = (Vector) columns.elementAt(i - 1);
+          continue;
+        }
+      }
+    	
+    	Vector newColumn = multiplyRows(rv, factor);
+    	if(newColumn != null)
+      {
+      	Vector newData = trimToOnhand(newColumn);
+        columns.add(newData);
+        columnNames.add(InventoryScheduleNames.TARGET_LEVEL);
+        
+      }
+      
+    }
+    
     //  batch datasets for Projected Due In
     //                     Projected Requisitions - Projected Requested Due In
     //                     Approved Due In - Due In
@@ -162,7 +219,7 @@ public class InventoryTableModel extends AbstractTableModel
     data = setColumnData(columns, cols, allRows);
     data = sortTheRow(data, allRows, colCount);
     buildDataSets();
-
+   }
   }
 
   public InventoryTableModel()
@@ -195,6 +252,45 @@ public class InventoryTableModel extends AbstractTableModel
     }
     allRows = 4;
 
+  }
+
+  public Vector trimToOnhand(Vector dataVector)
+  {
+  	
+  	Vector onHandData = null;  //  to hold the data from the passed in column
+  	Vector newData = new Vector();
+    
+    for(int i = 1; i < columnNames.size() ; i++)
+    {
+      if(columnNames.elementAt(i).equals("On Hand"))
+      {
+        onHandData = (Vector) columns.elementAt(i - 1);
+      }
+    }
+    long onHandTime = 0;
+    for(int i = 0; i < onHandData.size(); i++)
+    {
+    	ScheduleTableEntry d = (ScheduleTableEntry) onHandData.elementAt(i);
+    	long thisTime = d.startTime;
+    	double thisQuantity = d.quantity;
+    	if(thisQuantity > 0)
+    	{
+    		onHandTime = thisTime;
+    		break;
+    	}
+    }
+    
+    for(int i = 0; i < dataVector.size(); i++)
+    {
+    	ScheduleTableEntry d = (ScheduleTableEntry) dataVector.elementAt(i);
+    	long thisTime = d.startTime;
+    	double thisQuantity = d.quantity;
+    	if(thisTime >= onHandTime)
+    	{
+    	  newData.add(d);
+    	}
+    }
+    return newData;
   }
 
   private void buildDataSets()
@@ -256,7 +352,9 @@ public class InventoryTableModel extends AbstractTableModel
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(rawIntervalStart);
         //myData[(i*2)+0] = (double)(roundTimeToHours(cal)/timeScale);
-        long entryTime = roundTimeToHours(cal);
+//        long entryTime = roundTimeToHours(cal);
+        long entryTime = truncateTimeToHours(cal);
+        
         Date intervalStart = new Date(entryTime);
 
         if(intervalType == 0)
@@ -285,7 +383,8 @@ public class InventoryTableModel extends AbstractTableModel
           cal = new GregorianCalendar();
           cal.setTime(rawStart);
           //myData[(i*2)+0] = (double)(roundTimeToHours(cal)/timeScale);
-          long startTime = roundTimeToHours(cal);
+//          long startTime = roundTimeToHours(cal);
+          long startTime = truncateTimeToHours(cal);
 
           //********************
           if(startTime > thisIntervalStart && nextRow.startTime < thisIntervalEnd)
@@ -323,6 +422,7 @@ public class InventoryTableModel extends AbstractTableModel
     for(int i = 0; i < names.size(); i++)
     {
       finalColumnNames[i] = (String)names.elementAt(i);
+      //System.out.println("set column " + finalColumnNames[i]);
       colCount = i + 1;
     }
 
@@ -343,7 +443,8 @@ public class InventoryTableModel extends AbstractTableModel
         ScheduleTableEntry s = (ScheduleTableEntry) nextRow.elementAt(j);
         date.setTime(s.startTime);
         cal.setTime(date);
-        newData[absRow][0] = new Double(roundTimeToHours(cal));
+//        newData[absRow][0] = new Double(roundTimeToHours(cal));
+        newData[absRow][0] = new Double(truncateTimeToHours(cal));
         newData[absRow++][i + 1] = new Double((double)s.quantity);
       }
 
@@ -382,14 +483,15 @@ public class InventoryTableModel extends AbstractTableModel
   {
     Vector scheduleList = (Vector) columns.elementAt(col - 1);
     double[] myData = new double[scheduleList.size()*2];
-    GregorianCalendar cal = new GregorianCalendar();
-    Date date = new Date();
+//    GregorianCalendar cal = new GregorianCalendar();
+//    Date date = new Date();
     for(int i=0; i<scheduleList.size(); i++)
     {
       ScheduleTableEntry sched = (ScheduleTableEntry)scheduleList.elementAt(i);
-      date.setTime(sched.startTime);
-      cal.setTime(date);
-      myData[(i*2)+0] = (double)(roundTimeToHours(cal)/timeScale);
+//      date.setTime(sched.startTime);
+//      cal.setTime(date);
+//      myData[(i*2)+0] = (double)(roundTimeToHours(cal)/timeScale);
+      myData[(i*2)+0] = (double)(sched.startTime/timeScale);
       myData[(i*2)+1] = sched.quantity;
     }
 
@@ -413,13 +515,28 @@ public class InventoryTableModel extends AbstractTableModel
   }
 
 
+  private long truncateTimeToHours(GregorianCalendar cal)
+  {
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MINUTE, 0);
+
+    return(cal.getTime().getTime());
+  }
+
+
   public String getNSN()
   {
     String nsn = null;
     if (inventory != null)
     {
       nsn = inventory.getAssetName();
-      nsn = nsn.substring(nsn.indexOf("NSN/")).trim();
+      int index = nsn.indexOf("NSN/");
+      if(index == -1)
+        return nsn;
+      else
+      //nsn = nsn.substring(nsn.indexOf("NSN/")).trim();
+        return nsn.substring(index).trim();
     }
 
     return(nsn);
@@ -612,7 +729,11 @@ public class InventoryTableModel extends AbstractTableModel
       else if(diVector == null && rdiVector != null && udiVector == null)
         newRow = calcNewOutRow(rdiVector, null, true, true);
       else if(rdiVector != null && diVector != null && udiVector != null)
-        newRow = calcNewInRow(rdiVector, diVector, udiVector);
+      {
+//        newRow = calcNewInRow(rdiVector, diVector, udiVector);
+        newRow = calcNewOutRow(rdiVector, diVector, false, true);
+        newRow = calcNewOutRow(newRow, udiVector, false, true);
+      }
       else if(rdiVector != null && udiVector != null && diVector == null)
         newRow = calcNewOutRow(rdiVector, udiVector, false, true);
       else
@@ -690,7 +811,10 @@ public class InventoryTableModel extends AbstractTableModel
         i++;
 
         if(i >= rv.size())
+        {
           iDone = true;
+System.out.println("i");  
+        }
         else
           r = (ScheduleTableEntry) rv.elementAt(i);
       }
@@ -700,7 +824,10 @@ public class InventoryTableModel extends AbstractTableModel
         j++;
 
         if(j >= dv.size())
+        {
           jDone = true;
+System.out.println("j");
+        }
         else
           d = (ScheduleTableEntry) dv.elementAt(j);
       }
@@ -710,7 +837,10 @@ public class InventoryTableModel extends AbstractTableModel
         k++;
 
         if(k >= uv.size())
+        {
           kDone = true;
+System.out.println("k");
+        }
         else
           u = (ScheduleTableEntry) uv.elementAt(k);
       }
@@ -894,6 +1024,9 @@ public String combineDataColumns(String columnA, String columnB, String newColum
 
 }
 
+/*******************************************************************************************
+
+********************************************************************************************/
 public Vector calcNewOutRow(Vector rv, Vector dv, boolean sum, boolean previous)
   {
     //System.out.println("calcNewRowOut ");
@@ -1036,6 +1169,51 @@ public Vector calcNewOutRow(Vector rv, Vector dv, boolean sum, boolean previous)
       else
         thisTime = d.startTime;
 
+    }
+
+    return row;
+  }
+
+/*******************************************************************************************
+
+********************************************************************************************/
+public Vector multiplyRows(Vector rv, double factor)
+  {
+    Vector row = new Vector();
+       
+    ScheduleTableEntry r = null;
+    
+    long thisTime = 0;
+    double thisValue = 0;
+    
+    if(rv == null)
+      return null;
+      
+    //  enter with first r object and d and u objects which are greater or equal in time values
+    
+    for(int i = 0; i < rv.size(); i++)
+    {
+    	thisValue = 0;
+    	ScheduleTableEntry newRow = new ScheduleTableEntry(0, thisTime, thisTime);  // thisTime has been set to the next time to make a row
+      r = (ScheduleTableEntry) rv.elementAt(i);
+      if(r.quantity == 0)
+        continue;           // don't calc a point for this one
+      if(r != null)
+      {
+        thisValue = r.quantity * factor;
+        thisTime = r.startTime;
+      }
+                
+      if(thisValue >= 0)
+        newRow.quantity = thisValue;
+      else
+        newRow.quantity = 0;
+      //System.out.println("newRow.quantity " + newRow.quantity);
+      newRow.startTime = thisTime;
+      //  we can make this row
+
+      row.add(newRow);
+      allRows++;
     }
 
     return row;

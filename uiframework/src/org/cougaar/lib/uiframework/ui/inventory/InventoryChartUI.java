@@ -26,6 +26,7 @@ public class InventoryChartUI implements CougaarUI
   public static final NSNItemUnits itemUnits = new NSNItemUnits("ItemUnits.txt");
 
   static int lookAheadDays = 0;
+  static boolean tableView = false;
 
   public InventoryChartUI()
   {
@@ -104,6 +105,12 @@ public class InventoryChartUI implements CougaarUI
       {
         lookAheadDays = (new Integer(args[argumentSelector + 1])).intValue();
         argumentSelector += 2;
+      }
+      else if(argument.equals("T"))
+      {
+        tableView = true;
+        argumentSelector += 1;
+        
       }
       else if(argument.equals("C"))
       {

@@ -32,7 +32,7 @@ public class StepDataSet extends PolygonFillableDataSet
   <br><br><b>Notes</b>:<br>
                     - Defaults to not showing the last known step value
   *********************************************************************************************************************/
-  public double endPointLead = 0.0;
+  public double endPointLead = 24.0*60*60;
 
   /*********************************************************************************************************************
   <b>Description</b>: Constructor for a new empty bar data set.

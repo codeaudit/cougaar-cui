@@ -40,7 +40,7 @@ import java.lang.*;
  *  It is to be used in conjunction with the Graph2D class and Axis
  *  class for plotting 2D graphs.
  *
- * @version $Revision: 1.4 $, $Date: 2001-04-10 13:48:26 $
+ * @version $Revision: 1.5 $, $Date: 2001-06-06 21:24:03 $
  * @author Leigh Brookshaw
  */
 public class DataSet extends Object {
@@ -292,7 +292,8 @@ public class DataSet extends Object {
 
            length = 0;
 
-           if ( d  == null || d.length == 0 || n <= 0 ) {
+//           if ( d  == null || d.length == 0 || n <= 0 ) {
+           if ( d  == null ) {
               throw new Exception("DataSet: Error in parsed data!");
            }
 
@@ -334,7 +335,8 @@ public class DataSet extends Object {
 
            length = 0;
 
-           if ( d  == null || d.length == 0 || n <= 0 ) {
+//           if ( d  == null || d.length == 0 || n <= 0 ) {
+           if ( d  == null ) {
               throw new Exception("DataSet: Error in parsed data!");
            }
 
@@ -378,7 +380,8 @@ public class DataSet extends Object {
            double tmp[];
            int ln = n*stride;
 
-           if ( d  == null || d.length == 0 || n <= 0 ) {
+//           if ( d  == null || d.length == 0 || n <= 0 ) {
+           if ( d  == null ) {
               throw new Exception("DataSet: Error in append data!");
            }
 

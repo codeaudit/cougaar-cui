@@ -64,8 +64,6 @@ public class InventoryQuery implements Query, PropertyChangeListener
 {
   String assetName;
   String clusterName;
-  int start = 0;
-  int end = 0;
   Hashtable clusters;
   Hashtable assetInventories;
   private boolean fileBased = false;
@@ -78,15 +76,13 @@ public class InventoryQuery implements Query, PropertyChangeListener
 
   /** Called to create an inventory chart from a query using asset and cluster.
    */
-  public InventoryQuery(String assetName, String clusterName, Hashtable clusters, Hashtable assetInventories, long startParam, long endParam)
+  public InventoryQuery(String assetName, String clusterName, Hashtable clusters, Hashtable assetInventories)
   {
     //System.out.println("constructor 1");
     this.assetName = assetName;
     this.clusterName = clusterName;
     this.clusters = clusters;
     this.assetInventories = assetInventories;
-    start = (int) startParam;
-    end = (int) endParam;
     if(assetInventories != null)
     {
       clusters.put(clusterName, assetInventories);
@@ -97,14 +93,12 @@ public class InventoryQuery implements Query, PropertyChangeListener
   /** Called to create an inventory chart from data retrieved from a file.
    */
 
-  public InventoryQuery(UISimpleInventory inventory, String clusterName, Hashtable clusters, long startParam, long endParam)
+  public InventoryQuery(UISimpleInventory inventory, String clusterName, Hashtable clusters)
   {
     //System.out.println("constructor 2");
     this.inventory = inventory;
     this.assetName = inventory.getAssetName();
     this.clusterName = clusterName;
-    start = (int) startParam;
-    end = (int) endParam;
     fileBased = true;
     buildFile = true;
   }
@@ -139,7 +133,7 @@ public class InventoryQuery implements Query, PropertyChangeListener
 
   public String getPSP_id()
   {
-    return "ALPINVENTORY.PSP";
+    return "GLMINVENTORY.PSP";
   }
 
   public void readReply(InputStream is)
@@ -247,20 +241,6 @@ public class InventoryQuery implements Query, PropertyChangeListener
         legend.addDataSet(dataSet);
       }
 
-      // Must set the total range of the slider
-      chart.resetTotalRange();
-//      chart.resetRange();
-      // Set the slider to be in a two month rang from the start of the data
-      long msADay = 1000L*60L*60L*24L;
-      long msInTwoMonths = msADay*30L*2L;
-      chart.setInitialRange(msInTwoMonths);
-      //System.out.println("st " + start);
-      if(start != 0)
-      {
-        //System.out.println("range " + start + " " + end);
-        chart.setXScrollerRange(new RangeModel(start, end));
-      }
-
       return(true);
     }
 
@@ -333,6 +313,11 @@ public class InventoryQuery implements Query, PropertyChangeListener
         {
           LabelIcon icon = new LabelIcon(dataSet);
            TableCellRenderer headerRenderer = tblColumn[i].getHeaderRenderer();
+	   //A java V1.3 compatability thing-headerRenderers default is null
+	   if(headerRenderer == null) {
+	       headerRenderer = new DefaultTableCellRenderer();
+	       tblColumn[i].setHeaderRenderer(headerRenderer);
+	   }
            ((DefaultTableCellRenderer)headerRenderer).setIcon(icon);
           //System.out.println("persistent name " + model.getColumnName(i));
         }
@@ -348,6 +333,7 @@ public class InventoryQuery implements Query, PropertyChangeListener
           columnModel.removeColumn(tblColumn[i]);
           //System.out.println("persistent name " + model.getColumnName(i));
         }
+        tblColumn[i].setPreferredWidth(200);
       }
 
       table.sizeColumnsToFit(0);
@@ -358,7 +344,8 @@ public class InventoryQuery implements Query, PropertyChangeListener
     return(false);
   }
 
-
+  
+  
     public void propertyChange(PropertyChangeEvent e)
     {
       boolean newValue = ((Boolean)e.getNewValue()).booleanValue();

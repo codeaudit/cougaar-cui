@@ -41,46 +41,74 @@ public class  InventoryScheduleNames implements PlotColors, UISimpleNamedSchedul
   public static final String INVENTORY_STATUS = "Inventory Status";
   public static final String CONSUMER = "Consumer";
   public static final String SUPPLIER = "Supplier";
+  
+  //  new streams
+  public final static String ALLOCATED = "Allocated";
+  public final static String AVAILABLE = "Available";
+	public final static String TOTAL_LABOR = "Labor";
+	public final static String TOTAL_LABOR_8 = "Labor 8 Hours/Day";
+	public final static String TOTAL_LABOR_10 = "Labor 10 Hours/Day";
+	public final static String TOTAL_LABOR_12 = "Labor 12 Hours/Day";
+	
+	public final static String GOAL_LEVEL = "Goal Level";
+	public final static String REORDER_LEVEL = "Reorder Level";
+	public final static String AVERAGE_DEMAND_LEVEL = "Average Demand";
+	//public final static String ON_HAND_MOCK_PERIOD = "On Hand w/Mock Period"; 
+	public final static String ON_HAND_MOCK_PERIOD = "On Hand w/Mock Period";   
+	public final static String PROJECTED_DUE_IN_MOCK_PERIOD = "Projected Due In w/Mock Period";
+	public final static String PROJECTED_DUE_OUT_MOCK_PERIOD = "Requested Due Out w/Mock Period";
+	public final static String REQUESTED_DUE_OUT_MOCK_PERIOD = "Requested Due Out w/Mock Period";
+	public final static String PROJECTED_REQUESTED_DUE_OUT_MOCK_PERIOD = "Projected Requested Due Out w/Mock Period";
+	public final static String PROJECTED_REQUESTED_DUE_IN_MOCK_PERIOD = "Projected Requested Due In w/Mock Period";
+   
+
+public final static String INACTIVE = "_INACTIVE"; // Suffix for inactive schedules
+  
 
 
   public static String getName(String scheduleName)
   {
+  	
     if (scheduleName.equals(UISimpleNamedScheduleNames.DUE_IN))
     {
       return(DUE_IN);
     }
-    else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_DUE_IN))
+    else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_DUE_OUT_MOCK_PERIOD))
     {
-      return(PROJECTED_DUE_IN);
+      return(PROJECTED_DUE_OUT);
     }
+    //else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_DUE_IN))
+    //{
+    //  return(PROJECTED_DUE_IN);
+    //}
     else if (scheduleName.equals(UISimpleNamedScheduleNames.REQUESTED_DUE_IN))
     {
       return(REQUESTED_DUE_IN);
     }
-    else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_REQUESTED_DUE_IN))
-    {
-      return(PROJECTED_REQUESTED_DUE_IN);
-    }
-    else if (scheduleName.equals(UISimpleNamedScheduleNames.ON_HAND))
-    {
-      return(ON_HAND);
-    }
+    //else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_REQUESTED_DUE_IN))
+    //{
+    //  return(PROJECTED_REQUESTED_DUE_IN);
+    //}
+    //else if (scheduleName.equals(UISimpleNamedScheduleNames.ON_HAND))
+    //{
+    //  return(ON_HAND);
+    //}
     else if (scheduleName.equals(UISimpleNamedScheduleNames.DUE_OUT))
     {
       return(DUE_OUT);
     }
-    else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_DUE_OUT))
-    {
-      return(PROJECTED_DUE_OUT);
-    }
+    //else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_DUE_OUT))
+    //{
+      //return(PROJECTED_DUE_OUT);
+    //}
     else if (scheduleName.equals(UISimpleNamedScheduleNames.REQUESTED_DUE_OUT))
     {
       return(REQUESTED_DUE_OUT);
     }
-    else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_REQUESTED_DUE_OUT))
-    {
-      return(PROJECTED_REQUESTED_DUE_OUT);
-    }
+    //else if (scheduleName.equals(UISimpleNamedScheduleNames.PROJECTED_REQUESTED_DUE_OUT))
+    //{
+    //  return(PROJECTED_REQUESTED_DUE_OUT);
+    //}
     else if (scheduleName.equals(SHORTFALL_DUE_IN))
     {
       return(SHORTFALL_DUE_IN);
@@ -96,6 +124,66 @@ public class  InventoryScheduleNames implements PlotColors, UISimpleNamedSchedul
     else if (scheduleName.equals(CRITICAL_LEVEL))
     {
       return(CRITICAL_LEVEL);
+    }
+    else if (scheduleName.equals(ALLOCATED))
+    {
+      return(ALLOCATED);
+    }
+    else if (scheduleName.equals(AVAILABLE))
+    {
+      return(AVAILABLE);
+    }
+    else if (scheduleName.equals(TOTAL_LABOR))
+    {
+      return(TOTAL_LABOR);
+    }
+    else if (scheduleName.equals(TOTAL_LABOR_8))
+    {
+      return(TOTAL_LABOR_8);
+    }
+    else if (scheduleName.equals(TOTAL_LABOR_10))
+    {
+      return(TOTAL_LABOR_10);
+    }
+    else if (scheduleName.equals(TOTAL_LABOR_12))
+    {
+      return(TOTAL_LABOR_12);
+    }
+    else if (scheduleName.equals(GOAL_LEVEL))
+    {
+      return(GOAL_LEVEL);
+    }
+    else if (scheduleName.equals(REORDER_LEVEL))
+    {
+      return(REORDER_LEVEL);
+    }
+    else if (scheduleName.equals(AVERAGE_DEMAND_LEVEL))
+    {
+      return(AVERAGE_DEMAND_LEVEL);
+    }
+    else if (scheduleName.equals(ON_HAND_MOCK_PERIOD))
+    {
+      return(ON_HAND);
+    }
+    else if (scheduleName.equals(PROJECTED_DUE_IN_MOCK_PERIOD))
+    {
+      return(PROJECTED_DUE_IN);
+    }
+    //else if (scheduleName.equals(REQUESTED_DUE_OUT_MOCK_PERIOD))
+    //{
+    //  return(REQUESTED_DUE_OUT);
+    //}
+    else if (scheduleName.equals(PROJECTED_REQUESTED_DUE_OUT_MOCK_PERIOD))
+    {
+      return(PROJECTED_REQUESTED_DUE_OUT);
+    }
+    else if (scheduleName.equals(PROJECTED_REQUESTED_DUE_IN_MOCK_PERIOD))
+    {
+      return(PROJECTED_REQUESTED_DUE_IN);
+    }
+    else if (scheduleName.equals(INACTIVE))
+    {
+      return(INACTIVE);
     }
 
     return(null);
@@ -170,24 +258,36 @@ public class  InventoryScheduleNames implements PlotColors, UISimpleNamedSchedul
     if (scheduleName.equals(DUE_IN))
     {
       dataSet = new BarDataSet(data, data.length/2, true, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
     }
     else if (scheduleName.equals(PROJECTED_DUE_IN))
     {
       dataSet = new BarDataSet(data, data.length/2, false, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
       ((PolygonFillableDataSet)dataSet).polygonFill = true;
       ((PolygonFillableDataSet)dataSet).useFillPattern = true;
     }
     else if (scheduleName.equals(REQUESTED_DUE_IN))
     {
       dataSet = new BarDataSet(data, data.length/2, true, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
     }
     else if (scheduleName.equals(PROJECTED_REQUESTED_DUE_IN))
     {
       dataSet = new BarDataSet(data, data.length/2, false, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
       ((PolygonFillableDataSet)dataSet).polygonFill = true;
       ((PolygonFillableDataSet)dataSet).useFillPattern = true;
     }
@@ -198,24 +298,36 @@ public class  InventoryScheduleNames implements PlotColors, UISimpleNamedSchedul
     else if (scheduleName.equals(DUE_OUT))
     {
       dataSet = new BarDataSet(data, data.length/2, true, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
     }
     else if (scheduleName.equals(PROJECTED_DUE_OUT))
     {
       dataSet = new BarDataSet(data, data.length/2, false, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
       ((PolygonFillableDataSet)dataSet).polygonFill = true;
       ((PolygonFillableDataSet)dataSet).useFillPattern = true;
     }
     else if (scheduleName.equals(REQUESTED_DUE_OUT))
     {
       dataSet = new BarDataSet(data, data.length/2, true, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
     }
     else if (scheduleName.equals(PROJECTED_REQUESTED_DUE_OUT))
     {
       dataSet = new BarDataSet(data, data.length/2, false, InventoryTableModel.barWidth);
-      dataSet.visible = false;
+      if(!InventoryChartUI.tableView)
+        dataSet.visible = false;
+      else
+        dataSet.visible = true;
       ((PolygonFillableDataSet)dataSet).polygonFill = true;
       ((PolygonFillableDataSet)dataSet).useFillPattern = true;
     }
@@ -362,11 +474,11 @@ public class  InventoryScheduleNames implements PlotColors, UISimpleNamedSchedul
     }
     else if (scheduleName.equals(TARGET_LEVEL))
     {
-      return(Color.white);
+      return(Color.green);
     }
     else if (scheduleName.equals(CRITICAL_LEVEL))
     {
-      return(Color.white);
+      return(Color.blue);
     }
     else if (scheduleName.startsWith(BATCHED_HEADER))
     {

@@ -42,7 +42,7 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
 
 //  private boolean fullView = true;
   private int viewMode = 0;
-  private boolean scrollMainChart = true;
+  private boolean scrollMainChart = false;
 
   private Hashtable labelIconList = null;
 
@@ -214,8 +214,8 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
     }
     else if (!(viewMode == SHOW_INVENTORY_CHART))
     {
-      mainChart.setShowXDividers(true);
       mainChart.resetRange();
+      mainChart.setShowXDividers(true);
     }
   }
 
@@ -709,6 +709,10 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
     if ((viewMode == SHOW_INVENTORY_CHART) || (scrollMainChart))
     {
       mainChart.setXScrollerRange(new RangeModel((int)minMax[0], (int)minMax[1]));
+    }
+    else
+    {
+      mainChart.resetRange();
     }
 
     mainChart.setXDividers(minMax[0], minMax[1]);

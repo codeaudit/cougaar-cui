@@ -5,6 +5,8 @@ import java.util.*;
 import java.lang.*;
 import java.awt.image.*;
 
+import java.awt.geom.*;
+
 /*
 **************************************************************************
 **
@@ -48,7 +50,7 @@ import java.awt.image.*;
  * unless the text is large the integer mapping will blur the text.
  * Also positioning of arbitrarily rotated text becomes problematic.
  *
- * @version $Revision: 1.2 $, $Date: 2001-04-10 13:48:27 $
+ * @version $Revision: 1.3 $, $Date: 2001-06-06 21:24:03 $
  * @author  Leigh Brookshaw
  */
 
@@ -502,15 +504,93 @@ public class RTextLine extends TextLine {
                     yoffset = 0;
                     break;
          }
+
+  if (g instanceof Graphics2D)
+  {
+    BufferedImage image = new BufferedImage(width, maxHeight, BufferedImage.TYPE_INT_RGB);
+    Graphics2D g2d = image.createGraphics();
+
+    if(background != null) {
+        g2d.setColor(background);
+    } else {
+        g2d.setColor(comp.getBackground());
+    }
+
+    g2d.fillRect(0,0,width,maxHeight);
+    
+    //   ** Set the image font and color
+    
+    g2d.setFont(g.getFont());
+    g2d.setColor(g.getColor());
+    
+    if(font  != null) g2d.setFont(font);
+    if(color != null) g2d.setColor(color);
+    
+    for(int i=0; i<list.size(); i++)
+    {
+      ts = ((TextState)(list.elementAt(i)));
+      if(ts.f != null)
+        g2d.setFont(ts.f);
+      if(ts.s != null)
+      {
+        g2d.drawString(ts.toString(), ts.x, ts.y+maxAscent);
+      }
+    }
+
+    RotateTextFilter f = new RotateTextFilter(angle);
+    ImageProducer producer = new FilteredImageSource(image.getSource(),f);
+    rotatedImage = comp.createImage(producer);
+
+    g.drawImage(rotatedImage,x+xoffset,y+yoffset,null);
+
+
    /*
-   ** Create the offscreen image that the text will be written into
-   */
+
+    Graphics2D g2d = (Graphics2D)g;
+    AffineTransform trans = g2d.getTransform();
+
+    //   ** Set the image font and color
+    Font oldFont = g2d.getFont();
+    Color oldColor = g2d.getColor();
+
+    if(font  != null) g2d.setFont(font);
+    if(color != null) g2d.setColor(color);
+    
+    for(int i=0; i<list.size(); i++)
+    {
+      ts = ((TextState)(list.elementAt(i)));
+      if(ts.f != null)
+        g2d.setFont(ts.f);
+      if(ts.s != null)
+      {
+        g2d.setColor(Color.blue);
+        g2d.drawRect(g2d.getClipRect().x, g2d.getClipRect().y, g2d.getClipRect().width-1, g2d.getClipRect().height-1);
+
+        g2d.setTransform(AffineTransform.getRotateInstance(-Math.PI/10, x, y));
+
+        g2d.setColor(Color.blue);
+        g2d.drawRect(g2d.getClipRect().x, g2d.getClipRect().y, g2d.getClipRect().width-1, g2d.getClipRect().height-1);
+
+        g2d.setColor(Color.red);
+        g2d.drawString(ts.toString(),x,y);
+//        g2d.setTransform(AffineTransform.getRotateInstance(Math.PI/10));
+//        g2d.setTransform(trans);
+      }
+    }
+
+     g2d.setFont(oldFont);
+     g2d.setColor(oldColor);*/
+  }
+  else
+  {
+//   ** Create the offscreen image that the text will be written into
+
          offsI = comp.createImage(width,maxHeight);
          if (offsI == null) return;
          offsG = offsI.getGraphics();
-   /*
-   ** Color the image with the background color
-   */
+
+//   ** Color the image with the background color
+
          if(background != null) {
                 offsG.setColor(background);
          } else {
@@ -518,40 +598,39 @@ public class RTextLine extends TextLine {
          }
 
          offsG.fillRect(0,0,width,maxHeight);
-   /*
-   ** Set the image font and color
-   */
+
+//   ** Set the image font and color
+
          offsG.setFont(g.getFont());
          offsG.setColor(g.getColor());
 
          if(font  != null) offsG.setFont(font);
          if(color != null) offsG.setColor(color);
 
-   /*
-   ** Write to the offscreen image
-   */
+//   ** Write to the offscreen image
+
          for(int i=0; i<list.size(); i++) {
               ts = ((TextState)(list.elementAt(i)));
               if(ts.f != null) offsG.setFont(ts.f);
               if(ts.s != null)
                  offsG.drawString(ts.toString(),ts.x,ts.y+maxAscent );
    }
-         /*
-   ** Rotate the Offscreen image
-   */
+
+//   ** Rotate the Offscreen image
+
 
          RotateTextFilter f = new RotateTextFilter(angle);
          ImageProducer producer = new FilteredImageSource(offsI.getSource(),f);
 
          rotatedImage = comp.createImage(producer);
-   /*
-   ** Draw the rotated image to the Component. Do not notify any
-         ** image consumer especially the component, otherwise we will get a
-         ** feedback loop starting up,
-         ** as this method is normally called from a paint method.
-   */
-         g.drawImage(rotatedImage,x+xoffset,y+yoffset,null);
 
+//   ** Draw the rotated image to the Component. Do not notify any
+//         ** image consumer especially the component, otherwise we will get a
+//         ** feedback loop starting up,
+//         ** as this method is normally called from a paint method.
+
+         g.drawImage(rotatedImage,x+xoffset,y+yoffset,null);
+  }
 
        }
 }

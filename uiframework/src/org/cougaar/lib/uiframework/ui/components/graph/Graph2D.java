@@ -51,7 +51,7 @@ import java.net.URL;
  * graph. This means that independent components like Axis and DataSets must be
  * registered with this class to be incorporated into the plot.
  *
- * @version  $Revision: 1.4 $, $Date: 2001-04-10 13:48:26 $
+ * @version  $Revision: 1.5 $, $Date: 2001-06-06 21:24:03 $
  * @author   Leigh Brookshaw
  */
 
@@ -451,10 +451,23 @@ public class Graph2D extends JPanel { // PHF
          double max=0.0;
 
          if(dataset == null | dataset.isEmpty() ) return max;
+
+         // Bad hack, but it works
+         for (int i=0; i<dataset.size(); i++)
+         {
+           d = ((DataSet)dataset.elementAt(i));
+           if (d.dataPoints() != 0)
+           {
+            dataset.insertElementAt(dataset.remove(i), 0);
+            break;
+           }
+         }
+
          for (int i=0; i<dataset.size(); i++) {
              d = ((DataSet)dataset.elementAt(i));
+             
              if(i==0) max = d.getXmax();
-             else     max = Math.max(max,d.getXmax());
+             else if (d.dataPoints() != 0)    max = Math.max(max,d.getXmax());
    }
 
          return max;
@@ -468,10 +481,22 @@ public class Graph2D extends JPanel { // PHF
          double max=0.0;
 
          if(dataset == null | dataset.isEmpty() ) return max;
+
+         // Bad hack, but it works
+         for (int i=0; i<dataset.size(); i++)
+         {
+           d = ((DataSet)dataset.elementAt(i));
+           if (d.dataPoints() != 0)
+           {
+            dataset.insertElementAt(dataset.remove(i), 0);
+            break;
+           }
+         }
+
          for (int i=0; i<dataset.size(); i++) {
              d = ((DataSet)dataset.elementAt(i));
              if(i==0) max = d.getYmax();
-             else     max = Math.max(max,d.getYmax());
+             else if (d.dataPoints() != 0)     max = Math.max(max,d.getYmax());
    }
 
          return max;
@@ -487,10 +512,22 @@ public class Graph2D extends JPanel { // PHF
          double min = 0.0;
 
          if(dataset == null | dataset.isEmpty() ) return min;
+
+         // Bad hack, but it works
+         for (int i=0; i<dataset.size(); i++)
+         {
+           d = ((DataSet)dataset.elementAt(i));
+           if (d.dataPoints() != 0)
+           {
+            dataset.insertElementAt(dataset.remove(i), 0);
+            break;
+           }
+         }
+
          for (int i=0; i<dataset.size(); i++) {
              d = ((DataSet)dataset.elementAt(i));
              if(i==0) min = d.getXmin();
-             else     min = Math.min(min,d.getXmin());
+             else if (d.dataPoints() != 0)     min = Math.min(min,d.getXmin());
    }
 
          return min;
@@ -506,10 +543,22 @@ public class Graph2D extends JPanel { // PHF
          double min=0.0;
 
          if(dataset == null | dataset.isEmpty() ) return min;
+
+         // Bad hack, but it works
+         for (int i=0; i<dataset.size(); i++)
+         {
+           d = ((DataSet)dataset.elementAt(i));
+           if (d.dataPoints() != 0)
+           {
+            dataset.insertElementAt(dataset.remove(i), 0);
+            break;
+           }
+         }
+
          for (int i=0; i<dataset.size(); i++) {
              d = ((DataSet)dataset.elementAt(i));
              if(i==0) min = d.getYmin();
-             else     min = Math.min(min,d.getYmin());
+             else if (d.dataPoints() != 0)     min = Math.min(min,d.getYmin());
    }
 
          return min;

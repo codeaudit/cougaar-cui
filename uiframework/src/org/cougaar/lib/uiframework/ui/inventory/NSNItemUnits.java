@@ -3,11 +3,19 @@ package org.cougaar.lib.uiframework.ui.inventory;
 import java.util.*;
 import java.io.*;
 
-public class NSNItemUnits
+public class NSNItemUnits implements Runnable
 {
   private Hashtable itemTable = new Hashtable(1);
 
+  private String file = null;
+
   public NSNItemUnits(String file)
+  {
+    this.file = file;
+    (new Thread(this)).start();
+  }
+
+  public void run()
   {
     long time = System.currentTimeMillis();
     try

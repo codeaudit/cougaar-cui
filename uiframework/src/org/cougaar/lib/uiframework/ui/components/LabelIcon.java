@@ -10,7 +10,7 @@ import org.cougaar.lib.uiframework.ui.components.graph.*;
 public class LabelIcon implements Icon, PlotColors
 {
   private Color[] plotColors = null;
-  private final static Color[] defaultColors = {midnightBlue, darkGreen, darkYellow, rust, darkPurple, orange, red};
+  private final static Color[] defaultColors = {midnightBlue, darkGreen, darkYellow, rust, darkPurple, orange, red, green, blue};
 
   private DataSet dataSet = null;
 
