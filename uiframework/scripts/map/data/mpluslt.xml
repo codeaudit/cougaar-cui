@@ -1,181 +1,848 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <structure>
-  <a name="NamedLocationList">
-    <val>Organization</val>
+  <a name="result set">
   </a>
   <list>
     <a name="name">
-      <val>Some Orgs</val>
+      <val>All Orgs</val>
     </a>
     <list>
-      <a name="values">
-	<a name="latitude"><val>16.55</val></a>
-	<a name="longitude"><val>38.6</val></a>
-	<a name="startDate"> <val>312</val></a>
-	<a name="thruDate"> <val>342</val></a>
-      </a>
       <a name="name">
-        <val>23INBN</val>
+        <val>1-MEB</val>
       </a>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>3</val>
+          </a>
+          <a name="longitude">
+            <val>39.4403</val>
+          </a>
+          <a name="latitude">
+            <val>15.6117</val>
+          </a>
+          <a name="endTime">
+            <val>7</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>7</val>
+          </a>
+          <a name="longitude">
+            <val>39.4403</val>
+          </a>
+          <a name="latitude">
+            <val>15.6117</val>
+          </a>
+          <a name="endTime">
+            <val>13</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>13</val>
+          </a>
+          <a name="longitude">
+            <val>39.4403</val>
+          </a>
+          <a name="latitude">
+            <val>15.6117</val>
+          </a>
+          <a name="endTime">
+            <val>25</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>25</val>
+          </a>
+          <a name="longitude">
+            <val>39.4403</val>
+          </a>
+          <a name="latitude">
+            <val>15.6117</val>
+          </a>
+          <a name="endTime">
+            <val>43</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>43</val>
+          </a>
+          <a name="longitude">
+            <val>39.4403</val>
+          </a>
+          <a name="latitude">
+            <val>15.6117</val>
+          </a>
+          <a name="endTime">
+            <val>59</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>59</val>
+          </a>
+          <a name="longitude">
+            <val>39.4403</val>
+          </a>
+          <a name="latitude">
+            <val>15.6117</val>
+          </a>
+          <a name="endTime">
+            <val>179</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>179</val>
+          </a>
+          <a name="longitude">
+            <val>39.4403</val>
+          </a>
+          <a name="latitude">
+            <val>15.6117</val>
+          </a>
+          <a name="endTime">
+            <val>190</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
     </list>
     <list>
-      <a name="values">
-	<a name="latitude"><val>14.44</val></a>
-	<a name="longitude"><val>36.3</val></a>
-	<a name="startDate"> <val>312</val></a><a name="thruDate"> <val>342</val></a>
-	<a name="Metrics">
-	<a name="metric1"><val>50</val></a>
-	<a name="metric12"><val>150</val></a>
-	<a name="metric2"><val>250</val></a>
-	<a name="metric3"><val>30</val></a>
-	<a name="metric4"><val>250</val></a>
-	<a name="metric5"><val>111</val></a>
-	<a name="metric6"><val>125</val></a>
-	</a>
-	</a>
       <a name="name">
-        <val>30INBN</val>
+        <val>3-BDE-2ID-HHC</val>
       </a>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>0</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>5</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>5</val>
+          </a>
+          <a name="longitude">
+            <val>37.6</val>
+          </a>
+          <a name="latitude">
+            <val>15.15</val>
+          </a>
+          <a name="endTime">
+            <val>20</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>20</val>
+          </a>
+          <a name="longitude">
+            <val>37.6</val>
+          </a>
+          <a name="latitude">
+            <val>15.15</val>
+          </a>
+          <a name="endTime">
+            <val>45</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>45</val>
+          </a>
+          <a name="longitude">
+            <val>37.6</val>
+          </a>
+          <a name="latitude">
+            <val>15.15</val>
+          </a>
+          <a name="endTime">
+            <val>105</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>105</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>134</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
     </list>
     <list>
-      <a name="values">
-	<a name="latitude"><val>17.35</val></a>
-	<a name="longitude"><val>38.2</val></a>
-	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>342</val></a>
-	<a name="Metrics">
-	<a name="metric1"><val>50</val></a>
-	<a name="metric12"><val>150</val></a>
-	<a name="metric2"><val>250</val></a>
-	<a name="metric3"><val>30</val></a>
-	<a name="metric4"><val>250</val></a>
-	<a name="metric5"><val>111</val></a>
-	<a name="metric6"><val>125</val></a>
-	</a>
-	</a>
       <a name="name">
-        <val>2-7-INFBN</val>
-<!--        <val>31INBN</val> -->
+        <val>2-3-INFBN</val>
       </a>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>0</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>7</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>7</val>
+          </a>
+          <a name="longitude">
+            <val>37.73</val>
+          </a>
+          <a name="latitude">
+            <val>14.65</val>
+          </a>
+          <a name="endTime">
+            <val>20</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>20</val>
+          </a>
+          <a name="longitude">
+            <val>37.73</val>
+          </a>
+          <a name="latitude">
+            <val>14.65</val>
+          </a>
+          <a name="endTime">
+            <val>45</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>45</val>
+          </a>
+          <a name="longitude">
+            <val>37.73</val>
+          </a>
+          <a name="latitude">
+            <val>14.65</val>
+          </a>
+          <a name="endTime">
+            <val>105</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>105</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>134</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
     </list>
-
     <list>
-      <a name="values">
-	<a name="latitude"><val>16.7</val></a>
-	<a name="longitude"><val>38.2</val></a>
-	<a name="startDate"> <val>12</val></a>
-        <a name="thruDate"> <val>234</val></a> <!-- 32 -->
-	</a>
       <a name="name">
-        <val>1-23-INFBN</val>  <!-- 3-7-INBN -->
+        <val>553-CSB-HHD</val>
       </a>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>0</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>25</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>25</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>35</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>35</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>45</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>45</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>180</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>180</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>224</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
     </list>
     <list>
-      <a name="values">
-	<a name="latitude"><val>14.1</val></a>
-	<a name="longitude"><val>36.2</val></a>
-	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>42</val></a>
-	</a>
       <a name="name">
-        <val>4-7-INBN</val>
+        <val>3-15-INFBN</val>
       </a>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>0</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>15</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>15</val>
+          </a>
+          <a name="longitude">
+            <val>38.25</val>
+          </a>
+          <a name="latitude">
+            <val>14.72</val>
+          </a>
+          <a name="endTime">
+            <val>35</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>35</val>
+          </a>
+          <a name="longitude">
+            <val>38.25</val>
+          </a>
+          <a name="latitude">
+            <val>14.72</val>
+          </a>
+          <a name="endTime">
+            <val>45</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>45</val>
+          </a>
+          <a name="longitude">
+            <val>38.25</val>
+          </a>
+          <a name="latitude">
+            <val>14.72</val>
+          </a>
+          <a name="endTime">
+            <val>180</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>180</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>224</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
     </list>
     <list>
-      <a name="values">
-	<a name="latitude"><val>16.8</val></a>
-	<a name="longitude"><val>37.1</val></a>
-	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
-	</a>
+      <a name="name">
+        <val>24-CSB-HHD</val>
+      </a>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>0</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>20</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>20</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>35</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>35</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>45</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>45</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>180</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>180</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>224</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+    </list>
+    <list>
       <a name="name">
         <val>5-20-INFBN</val>
-        <!-- <val>5-7-INBN</val> -->
       </a>
-    </list>
-    <list>
-      <a name="values">
-	<a name="latitude"><val>14.5</val></a>
-	<a name="longitude"><val>37.2</val></a>
-	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
-	</a>
-      <a name="name">
-        <val>6-7-INBN</val>
-      </a>
-    </list>
-    <list>
-      <a name="values">
-	<a name="latitude"><val>16.1</val></a>
-	<a name="longitude"><val>38.5</val></a>
-	<a name="startDate"> <val>31</val></a><a name="thruDate"> <val>34</val></a>
-	</a>
-      <a name="name">
-        <val>7-7-INBN</val>
-      </a>
-    </list>
-
-
-    <list>
-      <a name="values">
-	<a name="latitude"><val>15.2</val></a>
-	<a name="longitude"><val>37.5</val></a>
-	<a name="startDate"> <val>12</val></a><a name="thruDate"> <val>34</val></a>
-	</a>
-      <a name="name">
-        <val>1-64-ARBN</val>
-        <!-- <val>MCCGlobalMode</val> -->
-      </a>
-    </list>
-
-    <list>
-      <a name="values">
-	<a name="latitude"><val>17.2</val></a>
-	<a name="longitude"><val>38.2</val></a>
-	<a name="startDate"> <val>3</val></a><a name="thruDate"> <val>42</val></a>
-	</a>
-      <a name="name">
-        <!-- <val>3ID</val> -->
-        <val>4-64-ARBN</val> 
-      </a>
-    </list>
-    <list>
-      <a name="values">
-	<a name="latitude"><val>16.3</val></a>
-	<a name="longitude"><val>38.2</val></a>
-	</a>
-        <a name="name">
-          <val>3-15-INFBN</val> <!-- 1BDE -->
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>0</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>5</val>
+          </a>
         </a>
-    </list>
-    <list>
-      <a name="values">
-	<a name="latitude"><val>16.55</val></a>
-	<a name="longitude"><val>38.9</val></a>
-	<a name="symbol"><val>Armored</val></a>
-	<a name="thruDate"> <val>3</val></a>
-	</a>
-          <a name="name">
-            <val>3-69-ARBN</val>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>5</val>
           </a>
-    </list>
-    <list>
-      <a name="values">
-	<a name="latitude"><val>16.55</val></a>
-	<a name="longitude"><val>38.5</val></a>
-	<a name="symbol"><val>Armored</val></a>
-	<a name="startDate"> <val>3</val></a><a name="thruDate"> <val>42</val></a>
-	</a>
-          <a name="name">
-            <val>3-69-ARBN</val>
+          <a name="longitude">
+            <val>37.42</val>
           </a>
+          <a name="latitude">
+            <val>14.85</val>
+          </a>
+          <a name="endTime">
+            <val>20</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>20</val>
+          </a>
+          <a name="longitude">
+            <val>37.42</val>
+          </a>
+          <a name="latitude">
+            <val>14.85</val>
+          </a>
+          <a name="endTime">
+            <val>45</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>45</val>
+          </a>
+          <a name="longitude">
+            <val>37.42</val>
+          </a>
+          <a name="latitude">
+            <val>14.85</val>
+          </a>
+          <a name="endTime">
+            <val>105</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>105</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>134</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
     </list>
     <list>
-      <a name="values">
-	<a name="latitude"><val>16</val></a>
-	<a name="longitude"><val>38</val></a>
-	<a name="symbol"><val>Armored</val></a>
-	<a name="startDate"> <val>42</val></a><a name="thruDate"> <val>312</val></a>
+      <a name="name">
+        <val>110-QMCO-POLSPLY</val>
       </a>
-          <a name="name">
-            <val>3-69-ARBN</val>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>0</val>
           </a>
+          <a name="longitude">
+            <val>38.76</val>
+          </a>
+          <a name="latitude">
+            <val>14.92</val>
+          </a>
+          <a name="endTime">
+            <val>20</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>20</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>35</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>35</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>45</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>45</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>180</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
+      <list>
+        <a name="values">
+          <a name="startTime">
+            <val>180</val>
+          </a>
+          <a name="longitude">
+            <val>38.9103</val>
+          </a>
+          <a name="latitude">
+            <val>15.2906</val>
+          </a>
+          <a name="endTime">
+            <val>224</val>
+          </a>
+        </a>
+        <a name="name">
+          <val>TimeLoc</val>
+        </a>
+      </list>
     </list>
   </list>
 </structure>
