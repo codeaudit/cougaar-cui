@@ -103,6 +103,8 @@ class TimedXmlLayerModel extends XmlLayerModel {
 
 	    // omgraphic = new VecIcon(lat, lon, color); 
 	    String type="infantry";
+	    type=getUnitType(label);
+	    System.out.println("-- TimedXlm.getUnitIconType("+label+") returns: ["+type+"]");
 	    omgraphic = makeIconGraphic(lat, lon, color, type);
 	    ((VecIcon) omgraphic).addToMessage(msg);
 	    ((VecIcon) omgraphic).setLabel(label);	    
@@ -135,7 +137,7 @@ class TimedXmlLayerModel extends XmlLayerModel {
 	for (Iterator itr=vec.iterator(); itr.hasNext();) {
 	    // NamedLocationTM nl=(NamedLocationTM)itr.next();
 	    NamedLocationTime nl=(NamedLocationTime)itr.next();
-	    unit = makeUnit(nl.getLatitude(),nl.getLongitude(), Color.white, // red,
+	    unit = makeUnit(nl.getLatitude(),nl.getLongitude(), Color.cyan, // white, // red,
 			    nl.getName(),
 			    nl.getName(),
 			    //			     " MSG ",

@@ -47,6 +47,13 @@ class XmlLayerModel {
     return markers.findClosest(x, y, limit);
   }
 
+    UnitTypeDictionary unitTypeDictionary=new UnitTypeDictionary();
+
+    
+    protected String getUnitType(String unitName) {
+	return unitTypeDictionary.getUnitType(unitName);	
+    }
+
 
 	private void makeInfantryUnit(float lat, float lon, Color color,
 				      String label, String msg, Hashtable data) 
@@ -111,6 +118,8 @@ class XmlLayerModel {
 
 	    // omgraphic = new VecIcon(lat, lon, color); 
 	    String type="infantry";
+	    type=getUnitType(label);
+	    System.out.println("-- Xlym.getUnitIconType("+label+") returns: ["+type+"]");
 	    omgraphic = makeIconGraphic(lat, lon, color, type);
 	    ((VecIcon) omgraphic).addToMessage(msg);
 	    ((VecIcon) omgraphic).setLabel(label);	    
@@ -126,6 +135,37 @@ class XmlLayerModel {
 	    
 	}
 	
+
+    /*
+    class UnitTypeDictionary {
+	public UnitTypeDictionary() {
+	    initialize();
+	}
+	public String getUnitType(String unitName) { 
+	    String type = dictionary.getProperty(unitName);
+	    if (type==null) { 
+		type="unknown"; 
+	    }
+	    return type;
+	}
+    Properties dictionary=new Properties();
+
+    private void initialize() {
+	dictionary.setProperty("23INBN","infantry");
+	dictionary.setProperty("30INBN","infantry");
+	dictionary.setProperty("31INBN","infantry");
+	dictionary.setProperty("3-7-INBN","infantry");
+	dictionary.setProperty("4-7-INBN","infantry");
+	dictionary.setProperty("5-7-INBN","infantry");
+	dictionary.setProperty("6-7-INBN","infantry");
+	dictionary.setProperty("7-7-INBN","infantry");
+	dictionary.setProperty("3-69-ARBN","armored");
+	dictionary.setProperty("3ID","other");
+	dictionary.setProperty("1BDE","other");
+    }
+
+    }
+    */
 	Unit getUnit(OMGraphic g) {
 	    return (Unit) units.get(g);
 	}
@@ -166,6 +206,7 @@ class XmlLayerModel {
 	    HashSet hs;
       String uriString=null;
       String fString=null;
+      String unitTypeFile = Environment.get("xml.unitTypeFile");
       uriString = Environment.get("xml.locations.url");
       fString= Environment.get("xml.locations");
       System.out.println("XMLlayer.XmlLayerModel *** uriString from environment is "+uriString);
@@ -177,6 +218,16 @@ class XmlLayerModel {
       if (fString==null) {
         fString="c:\\dev\\opmp\\mplustcm.xml";
         System.out.println("No fs_parm use: "+fString);
+      }
+      if (unitTypeFile==null) {
+	  System.err.println("Warning:  Unit type file is not defined.");
+      } else {
+	  try {
+	      FileInputStream fin = new FileInputStream(unitTypeFile);
+	      unitTypeDictionary.load(fin);
+	  } catch (Exception ex) {
+	      System.err.println("Warning:  Exception thrown while reading unit type data from ["+unitTypeFile+"].");	      
+	  }
       }
 
 	    try {
