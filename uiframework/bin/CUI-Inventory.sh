@@ -24,5 +24,6 @@ source $COUGAAR_INSTALL_PATH/bin/setlibpath.sh
 source $COUGAAR_INSTALL_PATH/bin/setarguments.sh
 
 MYCLASSES="org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI l 4 "
+MYPROPERTIES="$MYPROPERTIES -Dorg.cougaar.log.displaytimes=%COUGAAR_INSTALL_PATH%/CUI-InvDisplayTimes.log"
 
 exec java $MYPROPERTIES -classpath $LIBPATHS $BOOTSTRAPPER $MYCLASSES $*

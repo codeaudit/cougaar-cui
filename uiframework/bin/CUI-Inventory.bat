@@ -33,5 +33,5 @@ rem set LIBPATHS=%LIBPATHS%;%COUGAAR_INSTALL_PATH%\lib\classes
 
 @ECHO ON
 
-java -Djava.compiler=NONE -classpath %LIBPATHS% org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI l 4
+java -Djava.compiler=NONE -Dorg.cougaar.log.displaytimes=%COUGAAR_INSTALL_PATH%\CUI-InvDisplayTimes.log -classpath %LIBPATHS% org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI l 4
 REM java -classpath %LIBPATHS% org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI l 4
