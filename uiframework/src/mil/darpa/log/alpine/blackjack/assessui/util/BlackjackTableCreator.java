@@ -132,6 +132,7 @@ public class BlackjackTableCreator
             try
             {
                 stmt.executeUpdate("DROP TABLE assessmentData");
+                stmt.executeUpdate("DROP PROCEDURE add_new_data_rows");
             }
             catch(SQLException e) {/* it doesn't yet exist; good */}
             stmt.executeUpdate("CREATE TABLE assessmentData " +
@@ -141,6 +142,24 @@ public class BlackjackTableCreator
                                  "metric          INTEGER     NOT NULL," +
                                  "assessmentValue FLOAT," +
                             "primary key (org, item, metric, unitsOfTime))");
+
+            // Create a stored procedure for adding new rows
+            stmt.executeUpdate("create procedure ADD_NEW_DATA_ROWS " +
+                   "(orgid integer, itemid integer, start_time integer, " +
+                   "end_time integer, metricid integer, value float) " +
+                   "as " +
+                   "time_num integer; " +
+                   "begin " +
+                   "delete from assessmentdata where org = orgid and " +
+                   "item = itemid and metric = metricid and " +
+                   "unitsoftime >= start_time and unitsoftime <= end_time; " +
+                   "for time_num in start_time..end_time loop " +
+                   "insert into assessmentdata " +
+                   "(org, item, unitsoftime, metric, assessmentvalue) " +
+                   "values " +
+                   "(orgid, itemid, time_num, metricid, value); " +
+                   "end loop; " +
+                   "end;");
         }
 
         if (createOrgTable)
@@ -239,13 +258,15 @@ public class BlackjackTableCreator
         // metric table
         if (createMetricTable)
         {
-            String[] metrics = {"Demand", "Days of Supply",
-                                "Supply as Proportion of Demand"};
+            String[] metrics = {"Demand", "Inventory",
+                                "DueOut", "Target Level", "DueIn",
+                                "Inventory Over Target Level",
+                                "Cumulative Resupply Over Cumulative Demand"};
 
             for (int i=0; i < metrics.length; i++)
             {
                 stmt.executeUpdate("INSERT INTO assessmentMetrics VALUES ("
-                                    + i + ", '" + metrics[i] + "')");
+                                    + (i+1) + ", '" + metrics[i] + "')");
             }
 
             con.commit();
@@ -413,7 +434,7 @@ public class BlackjackTableCreator
                 secondsToGo -= (hoursToGo * 3600);
                 long minutesToGo = secondsToGo / 60;
                 secondsToGo -= (minutesToGo * 60);
-                System.out.println("\nCompleted filling data for org #" + org);
+                System.out.println("Completed filling data for org #" + org);
                 System.out.println("Estimated time to go: " + hoursToGo +
                                " hours, " + minutesToGo + " minutes, and " +
                                secondsToGo + " seconds");

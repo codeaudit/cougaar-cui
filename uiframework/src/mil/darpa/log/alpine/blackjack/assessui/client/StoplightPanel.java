@@ -142,7 +142,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private void createComponents()
     {
         stoplightMetrics.add(QueryGenerator.INV_SAF_METRIC);
-        //stoplightMetrics.add(QueryGenerator.RES_DEM_METRIC);
+        stoplightMetrics.add(QueryGenerator.RES_DEM_METRIC);
 
         //DefaultMutableTreeNode root =
         //    DBInterface.createTree(DBInterface.getTableName("item"));

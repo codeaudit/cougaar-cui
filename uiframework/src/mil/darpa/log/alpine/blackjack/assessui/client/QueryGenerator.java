@@ -32,8 +32,12 @@ public class QueryGenerator
 {
     private static final boolean debug = false;
     public static final String INV_SAF_METRIC = "Inventory Over Target Level";
-    public static final String DEMAND = "Demand";
-    public static final String DUEOUTS = "Due Outs";
+    public static final String RES_DEM_METRIC = "Cumulative Resupply Over Cumulative Demand";
+    private static final String DEMAND_METRIC = "Demand";
+    private static final String DUEIN_METRIC = "DueIn";
+    private static final String DUEOUT_METRIC = "DueOut";
+    private static final String INVENTORY_METRIC = "Inventory";
+    private static final String TARGET_LEVEL_METRIC = "Target Level";
     private static final String NO_DATA = "No Data Available";
 
     private VariableInterfaceManager variableManagerKludgeHelper = null;
@@ -195,7 +199,9 @@ public class QueryGenerator
                                         dbTableModel.getColumnIndex("metric")};
             String metricString = metricDesc.getValue().toString();
             DatabaseTableModel.Combiner timeCombiner =
-                (metricString.equals(DEMAND) || metricString.equals(DUEOUTS)) ?
+                (metricString.equals(DEMAND_METRIC) ||
+                 metricString.equals(DUEOUT_METRIC) ||
+                 metricString.equals(DUEIN_METRIC)) ?
                 new AdditiveCombiner() : new AverageCombiner();
             dbTableModel.aggregateRows(significantColumns,
                                        timeRange.toString(),
@@ -322,19 +328,26 @@ public class QueryGenerator
                                        TreeNode orgNode)
     {
         String query = null;
-        VariableModel metricDesc = vim.getDescriptor("Metric");
+        String metricString =vim.getDescriptor("Metric").getValue().toString();
 
-        if (metricDesc.getValue().toString().equals(INV_SAF_METRIC))
+        if (metricString.equals(INV_SAF_METRIC))
         {
             query = generateRatioQuery(vim, "Org", orgNode,
-                                       "Inventory", "Target Level");
-            //query = generateRatioQuery(vim, "Org", orgNode,
-            //                           "Target Level", "Demand");
+                                       INVENTORY_METRIC, TARGET_LEVEL_METRIC);
+        }
+        else if (metricString.equals(RES_DEM_METRIC))
+        {
+            // Cumulative Resupply Over Cumulative Demand
+            String numQuery = generateCumulativeSumQuery(
+                generateQueryUsingRootNode(vim, "Org", orgNode,DUEIN_METRIC));
+            String denQuery = generateCumulativeSumQuery(
+                generateQueryUsingRootNode(vim, "Org", orgNode,DEMAND_METRIC));
+            query = generateRatioQuery(numQuery, denQuery);
         }
         else
         {
             query = generateQueryUsingRootNode(vim, "Org", orgNode,
-                                           metricDesc.getValue().toString());
+                                               metricString);
         }
 
         return query;
@@ -344,17 +357,37 @@ public class QueryGenerator
                                    String varName, TreeNode tn,
                                    String numMetric, String denMetric)
     {
-        String query = null;
-
         String numQuery =
             generateQueryUsingRootNode(vim, varName, tn, numMetric);
         String denQuery =
             generateQueryUsingRootNode(vim, "Org", tn, denMetric);
+
+        return generateRatioQuery(numQuery, denQuery);
+    }
+
+    private String generateRatioQuery(String numQuery, String denQuery)
+    {
+        String query = null;
+
         query = "select t1.org, t1.item, t1.unitsOfTime, t1.metric, " +
                 "(t1.assessmentValue/t2.assessmentValue) as " +
                 "\"ASSESSMENTVALUE\" from (" + numQuery + ") t1, (" +
                 denQuery + ") t2 where (t1.ORG=t2.ORG and" +
                 " t1.UnitsOfTime=t2.UnitsOfTime and t1.item=t2.item)";
+
+        return query;
+    }
+
+    private String generateCumulativeSumQuery(String baseQuery)
+    {
+        String query = null;
+
+        query = "select t1.org, t1.item, t1.unitsOfTime, t1.metric, " +
+                "sum(t2.assessmentValue) as " +
+                "\"ASSESSMENTVALUE\" from (" + baseQuery + ") t1, (" +
+                baseQuery + ") t2 where (t1.ORG=t2.ORG and" +
+                " t1.UnitsOfTime>=t2.UnitsOfTime and t1.item=t2.item and t1.metric=t2.metric) " +
+                "group by t1.unitsOfTime, t1.item, t1.org, t1.metric";
 
         return query;
     }
