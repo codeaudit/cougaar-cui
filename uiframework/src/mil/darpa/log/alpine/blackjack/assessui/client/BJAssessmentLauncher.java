@@ -11,7 +11,7 @@ package mil.darpa.log.alpine.blackjack.assessui.client;
 
 import org.cougaar.lib.uiframework.ui.components.CFrameLauncher;
 import org.cougaar.lib.uiframework.ui.inventory.InventoryChartUI;
-import org.cougaar.lib.uiframework.ui.map.app.CMap;
+//import org.cougaar.lib.uiframework.ui.map.app.CMap;
 
 /**
  * Blackjack Assessment UI main application class.  Includes
@@ -38,8 +38,8 @@ public class BJAssessmentLauncher extends CFrameLauncher
 
         boolean plaf = Boolean.getBoolean("PLAF"); // will be used in future
 
-        addTool("Map View", 'M', CMap.class,
-                new Class[]{boolean.class}, new Object[]{new Boolean(true)});
+//        addTool("Map View", 'M', CMap.class,
+//                new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         addTool(UIConstants.STOPLIGHT_UI_NAME, 'S',
                 StoplightPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
