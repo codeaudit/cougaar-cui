@@ -110,15 +110,16 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
         metric_string = myDecoder.startXMLDecoding (updateXML);
 
         int index = 0;
-        Vector org_list = new Vector();
-        Vector item_list = new Vector();
-        int earliest_time = Integer.MAX_VALUE;
-        int latest_time = Integer.MIN_VALUE;
+
+        int start_time_in_days;
+        int end_time_in_days;
+        float rate_float;
 
         try {
             stmt = connection.createStatement();
 
             int metric_id = getMetricID (metric_string);
+
             System.out.println ("metric string is " + metric_string);
             System.out.println ("metric id is " + metric_id);
 
@@ -136,42 +137,28 @@ if (index == 0) {
 
                 int org_id = getOrgID (myStruct.getOrg());
 
-                if (org_list.contains ("" + org_id) == false) {
-                    org_list.add ("" + org_id);
-                }
-
-                if (item_list.contains ("" + item_id) == false) {
-                    item_list.add ("" + item_id);
-                }
-
                 if (myStruct.getTime() != null) {
+                    rate_float = Float.parseFloat (myStruct.getValue());
 
-                    float value_float = Float.parseFloat (myStruct.getValue());
-
-                    int time_in_days = convertTimeToDays (myStruct.getTime());
-
-                    if (time_in_days < earliest_time)
-                        earliest_time = time_in_days;
-                    if (time_in_days > latest_time)
-                        latest_time = time_in_days + 1;
+                    start_time_in_days = convertTimeToDays (myStruct.getTime());
+                    end_time_in_days = start_time_in_days + 1;
 
 //              System.out.println ("time in days is " + time_in_days);
 
-                    putValueInTable (org_id, item_id, time_in_days, metric_id, value_float);
+//                    putValueInTable (org_id, item_id, time_in_days, metric_id, value_float);
                 }
                 else {
-                    float rate_float = Float.parseFloat (myStruct.getRate());
+                    rate_float = Float.parseFloat (myStruct.getRate());
 
-                    int start_time_in_days = convertTimeToDays (myStruct.getStartTime());
-                    int end_time_in_days = convertTimeToDays (myStruct.getEndTime());
+                    start_time_in_days = convertTimeToDays (myStruct.getStartTime());
+                    end_time_in_days = convertTimeToDays (myStruct.getEndTime());
 
-                    if (start_time_in_days < earliest_time)
-                        earliest_time = start_time_in_days;
-                    if (end_time_in_days > latest_time)
-                        latest_time = end_time_in_days;
-
-                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
+//                    putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
                 }
+
+                putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
+
+                AggregateByOrg (org_id, item_id, metric_id, start_time_in_days, end_time_in_days);
 
                 System.out.println ("");
                 System.out.print ("" + index);
@@ -185,7 +172,6 @@ if (index == 0) {
             // Save the work in the database
             stmt.executeUpdate("COMMIT");
 
-            AggregateByOrganizations (org_list, item_list, metric_id, earliest_time, latest_time);
 //            AggregateItems (item_list);
         }
         catch(SQLException e)
@@ -420,6 +406,78 @@ System.out.print ("insert"+time_index);
 
         return (time_in_days);
     }
+
+    private void AggregateByOrg (int org_id,
+                                 int item_id,
+                                 int metric_id,
+                                 int start_time,
+                                 int end_time) {
+
+        int time_index;
+        int parent_org_id = 0;
+
+        try
+        {
+            System.out.print ("Looking for parent of:" + org_id);
+
+            // See if the current org_list id is in the table already
+            ResultSet rs = stmt.executeQuery("SELECT parent FROM assessmentOrgs WHERE id = " + org_id);
+
+            if (rs.next()) { // get the parent id value
+                parent_org_id = rs.getInt ("parent");
+
+                // See if the parent_org_id is actually in the table.
+                // If it isn't in the table, return, since it means we reached the top of the tree
+                ResultSet rs2 = stmt.executeQuery("SELECT parent FROM assessmentOrgs WHERE id = " + parent_org_id);
+
+                // We've reached the top of the tree
+                if (!rs2.next()) {
+                    System.out.println ("No parent");
+                    return;
+                }
+            } /* end of if */
+            else {
+                System.out.println ("No parent");
+                return;
+            }
+
+            System.out.println ("");
+
+            // Aggregate for this parent and item
+
+            for (time_index = start_time; time_index < end_time; time_index++) {
+                rs = stmt.executeQuery("SELECT sum(assessmentvalue) FROM assessmentData WHERE item = " + item_id + " and metric = " + metric_id + " and unitsoftime = " + time_index + " and org in (select id from assessmentorgs where parent =  " + parent_org_id + ")");
+
+                if (rs.next()) { // get the sum
+                    float sum = rs.getFloat ("sum(assessmentvalue)");
+                    int rc;
+
+                    System.out.println ("org " + parent_org_id +
+                                        ", item " + item_id +
+                                        ", time " + time_index + ", sum is " + sum);
+
+                    rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + sum + " WHERE org = " + parent_org_id + " AND item = " + item_id + " AND metric = " + metric_id + " AND unitsOfTime = " + time_index);
+
+                    // If all the update was not successful, do an insert
+                    if (rc != 1) {
+                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + parent_org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + sum + ")");
+                    }
+                }
+            } /* end of for time_index */
+        } /* end of try */
+        catch(SQLException e)
+        {
+            System.out.println ("SQL error code " + e.getErrorCode());
+            System.out.println (e.getMessage());
+            throw new EJBException(e);
+        }
+        catch(Exception e)
+        {
+            throw new EJBException(e);
+        }
+
+        AggregateByOrg (parent_org_id, item_id, metric_id, start_time, end_time);
+    } /* end of AggregateByOrganizations */
 
     private void AggregateByOrganizations (Vector org_list,
                                            Vector item_list,
