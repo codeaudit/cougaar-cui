@@ -75,7 +75,7 @@ public class LocDataPlugIn extends SimplePlugIn {
           tplTable.put(data.org, tp);
         }
 
-        tp.add(data.id, data.startDate,
+        tp.add(data.id, data.startTime,
           new Location(data.latitude, data.longitude));
       }
     }

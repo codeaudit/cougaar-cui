@@ -27,8 +27,6 @@ public class DomToLocPlugIn extends SimplePlugIn {
   }
   private static UnaryPredicate domTest = new DomSeeker();
 
-  private DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-
   IncrementalSubscription domSource = null;
 
   /**
@@ -84,7 +82,7 @@ public class DomToLocPlugIn extends SimplePlugIn {
     }
   }
 
-  private void includeChildText (LocData data, Node n) throws Exception {
+  private void includeChildText (LocData data, Node n) {
     if (n.getNodeType() != Node.ELEMENT_NODE)
       return;
 
@@ -95,9 +93,9 @@ public class DomToLocPlugIn extends SimplePlugIn {
     else if (name.equals("orgId"))
       data.org = text;
     else if (name.equals("startDate"))
-      data.startDate = parseDate(text);
+      data.startTime = Long.parseLong(text);
     else if (name.equals("thruDate"))
-      data.endDate = parseDate(text);
+      data.endTime = Long.parseLong(text);
     else if (name.equals("latitude"))
       data.latitude = Double.parseDouble(text);
     else if (name.equals("longitude"))
@@ -116,11 +114,5 @@ public class DomToLocPlugIn extends SimplePlugIn {
         buf.append(child.getNodeValue());
     }
     return buf.toString();
-  }
-
-  private Date parseDate (String text) throws ParseException {
-    synchronized (format) {
-      return format.parse(text);
-    }
   }
 }
