@@ -3,6 +3,9 @@ package mil.darpa.log.alpine.blackjack.assessui.middletier;
 import java.io.*;
 import java.lang.Integer;
 import java.util.Vector;
+import java.util.GregorianCalendar;
+import java.util.Calendar;
+import java.util.Date;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,11 +26,13 @@ public class BJDBMaintainerBean implements SessionBean
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
     private static final String DB_PASSWORD = "java:comp/env/DBPassword";
-    private static final String C_TIME_SEC = "java:comp/env/CTime";
+    private static final String C_TIME_YEAR = "java:comp/env/CTimeYear";
+    private static final String C_TIME_MONTH = "java:comp/env/CTimeMonth";
+    private static final String C_TIME_DAY = "java:comp/env/CTimeDay";
     private Connection connection = null;
     private Statement stmt = null;
 
-    private static int c_time_sec_int;
+    private static long c_time_sec_int;
 
     public void ejbCreate() throws CreateException
     {
@@ -37,13 +42,37 @@ public class BJDBMaintainerBean implements SessionBean
             DataSource ds = (DataSource)ic.lookup(DB_NAME);
             String username = (String)ic.lookup(DB_USER);
             String password = (String)ic.lookup(DB_PASSWORD);
-            String c_time_sec_string = (String)ic.lookup(C_TIME_SEC);
-            c_time_sec_int = Integer.parseInt (c_time_sec_string);
+            String c_time_year_string = (String)ic.lookup(C_TIME_YEAR);
+            String c_time_month_string = (String)ic.lookup(C_TIME_MONTH);
+            String c_time_day_string = (String)ic.lookup(C_TIME_DAY);
+
+            if ((c_time_year_string != null) &&
+                (c_time_month_string != null)&& 
+                (c_time_day_string != null)) {
+
+System.out.println ("c_time_year is " + c_time_year_string);
+System.out.println ("c_time_month is " + c_time_month_string);
+System.out.println ("c_time_day is " + c_time_day_string);
+
+                // Month is offset from zero, others are not
+                GregorianCalendar gc =
+                  new GregorianCalendar (Integer.parseInt (c_time_year_string),
+                                   Integer.parseInt (c_time_month_string) - 1,
+                                         Integer.parseInt (c_time_day_string));
+
+                c_time_sec_int = gc.getTime().getTime() / 1000;
+            }
+            else {
+                c_time_sec_int = 0;
+            }
+
 System.out.println ("c_time_sec_int is " + c_time_sec_int);
+
             connection = ds.getConnection(username, password);
         }
         catch(Exception e)
         {
+            System.out.println ("Not getting database connection");
             throw new CreateException("Could not create BJDBMaintainer: " +
                                       e.getMessage());
         }
@@ -60,7 +89,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
     public void updateDatabase(String updateXML) throws RemoteException
     {
-//        System.out.println("XML: " + updateXML);
+        System.out.println("Entered updateDabase");
 
         AggInfoDecoder myDecoder = new AggInfoDecoder ();
 
@@ -139,7 +168,8 @@ if (index == 0) {
             // Save the work in the database
             stmt.executeUpdate("COMMIT");
 
-            AggregateEntries (org_list, item_list);
+//            AggregateOrganizations (org_list);
+//            AggregateItems (item_list);
         }
         catch(SQLException e)
         {
@@ -325,7 +355,7 @@ if (index == 0) {
 
         try
         {
-System.out.print ("update");
+System.out.print (" update(" + start_time + " to " + end_time + ")");
             rc = stmt.executeUpdate("UPDATE assessmentData SET assessmentValue = " + rate + " WHERE org = " + org + " AND item = " + item + " AND metric = " + metric + " AND unitsOfTime >= " + start_time + " AND unitsOfTime < " + end_time);
 
             // If all the updates were not successful, do an insert
@@ -363,7 +393,7 @@ System.out.print ("insert"+time_index);
         // Convert milliseconds to seconds
         long time_msec_long = Long.parseLong (time_msecs);
 
-        int time_sec_int = (int) (time_msec_long / 1000);
+        long time_sec_int = (long) (time_msec_long / 1000);
 
         // Normalize the times
         time_sec_int = time_sec_int - c_time_sec_int;
@@ -375,7 +405,51 @@ System.out.print ("insert"+time_index);
         return (time_in_days);
     }
 
-    private void  AggregateEntries (Vector org_list, Vector item_list) {
+    private void AggregateOrganizations (Vector org_list) {
+
+        int index;
+        Vector parent_list = new Vector();
+        int parent_org_id;
+
+        try
+        {
+            // Loop through all the organizations, and make a list of
+            // all of the parents
+            for (index = 0; index < org_list.size(); index++) {
+                System.out.print ((String) org_list.elementAt(index) + " ");
+
+                // See if the org_field_name is in the table already
+                ResultSet rs = stmt.executeQuery("SELECT parent_id FROM assessmentOrgs WHERE id = " + org_list.elementAt(index));
+
+                if (rs.next()) { // get the parent id value
+                    parent_org_id = rs.getInt ("parent_id");
+
+                    if (parent_list.contains ("" + parent_org_id) == false) {
+                        parent_list.add ("" + parent_org_id);
+                    }
+                }
+                else {
+                    continue;
+                }
+            } /* end of for */
+
+            System.out.println ("");
+
+        }
+        catch(SQLException e)
+        {
+            System.out.println ("SQL error code " + e.getErrorCode());
+            System.out.println (e.getMessage());
+            throw new EJBException(e);
+        }
+        catch(Exception e)
+        {
+            throw new EJBException(e);
+        }
+
+    } /* end of AggregateOrganizations */
+
+    private void AggregateItems (Vector org_list) {
 
       int index;
 
@@ -385,13 +459,7 @@ System.out.print ("insert"+time_index);
 
       System.out.println ("");
 
-      for (index = 0; index < item_list.size(); index++) {
-          System.out.print ((String) item_list.elementAt(index) + " ");
-      }
-
-      System.out.println ("");
-
-    } /* end of AggregateEntries */
+    } /* end of AggregateItems */
 
     public void ejbActivate() {}
     public void ejbPassivate() {}
