@@ -28,7 +28,7 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
      */
     public CMThumbSliderRangeControl()
     {
-        super(NUMBER_OF_THUMBS);
+        super(NUMBER_OF_THUMBS, 0, 30);
 
         init(0, 30);
     }
@@ -41,7 +41,7 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
      */
     public CMThumbSliderRangeControl(float minValue, float maxValue)
     {
-        super(NUMBER_OF_THUMBS);
+        super(NUMBER_OF_THUMBS, minValue, maxValue);
 
         init(minValue, maxValue);
     }
@@ -55,9 +55,6 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
     private void init(float minValue, float maxValue)
     {
         slider.setFillColorAt(Color.red, 1);
-
-        // prepare slider with min and max values
-        initialize(minValue, maxValue);
 
         setRange(range);
 

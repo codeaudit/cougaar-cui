@@ -32,7 +32,7 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
      */
     public CMThumbSliderThresholdControl()
     {
-        super(NUMBER_OF_THUMBS);
+        super(NUMBER_OF_THUMBS, 0, 2);
 
         init(0, 2);
     }
@@ -45,7 +45,7 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
      */
     public CMThumbSliderThresholdControl(float minValue, float maxValue)
     {
-        super(NUMBER_OF_THUMBS);
+        super(NUMBER_OF_THUMBS, minValue, maxValue);
 
         init(minValue, maxValue);
     }
@@ -63,9 +63,6 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
         slider.setFillColorAt(Color.green, 2);
         slider.setFillColorAt(Color.yellow, 3);
         slider.setTrackFillColor(Color.red);
-
-        // prepare slider with min and max values
-        initialize(minValue, maxValue);
 
         float defaultSeperation = (maxValue - minValue)/(NUMBER_OF_THUMBS + 1);
         setThresholds(

@@ -7,6 +7,11 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
+/**
+  * This class is used to create muliple thumbed sliders whose value order
+  * is enforced (slider(n) must be less than or equal to slider(n+1)).
+  * Also, current value labels are added that float above each slider thumb.
+  */
 public class COrderedLabeledMThumbSlider extends JPanel
 {
     private static final int MAJOR_TICK_SPACING = 10;
@@ -17,7 +22,15 @@ public class COrderedLabeledMThumbSlider extends JPanel
     protected CMThumbSlider slider;
     private DecimalFormat labelFormat;
 
-    public COrderedLabeledMThumbSlider(int numThumbs)
+    /**
+     * Create a new mulitple thumbed slider with the given number of thumbs
+     *
+     * @param numThumb the number of thumb for slider control.
+     * @param minValue the minimum value for this slider
+     * @param maxValue the maximum value for this slider
+     */
+    public COrderedLabeledMThumbSlider(int numThumbs, float minValue,
+                                       float maxValue)
     {
         super(new BorderLayout());
 
@@ -27,9 +40,17 @@ public class COrderedLabeledMThumbSlider extends JPanel
         slider.setOpaque(false);
         slider.putClientProperty( "JSlider.isFilled", Boolean.TRUE );
         add(slider, BorderLayout.CENTER);
+
+        initialize(minValue, maxValue);
     }
 
-    protected void initialize(float minValue, float maxValue)
+    /**
+     * Called to initialize component with minimum and maximum range values.
+     *
+     * @param minValue the minimum value for this slider
+     * @param maxValue the maximum value for this slider
+     */
+    private void initialize(float minValue, float maxValue)
     {
         this.minValue = minValue;
         unit = (maxValue - minValue) / 100f;
@@ -76,6 +97,10 @@ public class COrderedLabeledMThumbSlider extends JPanel
         adjustValueLabelHeight();
     }
 
+    /**
+     * When look and feel or theme is changed, this method is called.  It
+     * resizes the component based on new font sizes.
+     */
     public void updateUI()
     {
         super.updateUI();
@@ -92,6 +117,14 @@ public class COrderedLabeledMThumbSlider extends JPanel
         add(Box.createVerticalStrut(fontHeight), BorderLayout.NORTH);
     }
 
+    /**
+     * Paints floating value labels over thumbs of slider.
+     *
+     * Also includes a workaround for an appearent Swing bug.  Without this
+     * workaround, JSlider will not appear when placed in some types of top
+     * level containers (e.g. PopupMenus).  Only first call to this method will
+     * invoke workaround functionality.
+     */
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
@@ -109,18 +142,42 @@ public class COrderedLabeledMThumbSlider extends JPanel
             g.drawString(label, thumbXLoc - (labelWidth / 2),
                          (int)slider.getLocation().getY()-5);
         }
-    }
 
-    protected int toSlider(float f)
+        // Swing bug workaround
+        if (updateUIAfterPaint)
+        {
+            SwingUtilities.updateComponentTreeUI(this);
+            updateUIAfterPaint = false;
+        }
+    }
+    private boolean updateUIAfterPaint = true;
+
+    /**
+     * Translates from float value to slider's integer value.
+     *
+     * @param f "value" float value
+     * @return slider's integer value
+     */
+    public int toSlider(float f)
     {
         return Math.round((f - minValue) / unit);
     }
 
-    protected float fromSlider(int i)
+    /**
+     * Translates from slider's integer value to float value.
+     *
+     * @param i slider's integer value
+     * @return "value" float value
+     */
+    public float fromSlider(int i)
     {
         return minValue + (unit * i);
     }
 
+    /**
+     * Private class used to ensure that the user doesn't select invalid
+     * values (slider(n) must be less than or equal to slider(n+1))
+     */
     class OrderChangeListener implements ChangeListener
     {
         int myPosition = 0;

@@ -267,6 +267,26 @@ public class CLabeledSlider extends JPanel
         return minValue + (unit * i);
     }
 
+   /**
+    * This is a workaround for an appearent Swing bug.  Without this method,
+    * JSlider will not appear when placed in some types of top level
+    * containers (e.g. PopupMenus).  Only first call to this method will
+    * invoke workaround functionality.
+    *
+    * @param g graphics context for this component.
+    */
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+
+        if (updateUIAfterPaint)
+        {
+            SwingUtilities.updateComponentTreeUI(this);
+            updateUIAfterPaint = false;
+        }
+    }
+    private boolean updateUIAfterPaint = true;
+
     /**
      * main for unit testing
      *
