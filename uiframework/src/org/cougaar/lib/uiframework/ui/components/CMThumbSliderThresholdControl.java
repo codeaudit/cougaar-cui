@@ -156,11 +156,15 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
 
         if (upperThresholds)
         {
+            slider.setFillColorAt(Color.yellow, 3);
+            slider.setTrackFillColor(Color.red);
             showThumbAt(2);
             showThumbAt(3);
         }
         else
         {
+            slider.setFillColorAt(Color.green, 3);
+            slider.setTrackFillColor(Color.green);
             hideThumbAt(2);
             hideThumbAt(3);
         }
