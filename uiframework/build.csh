@@ -47,7 +47,6 @@ setenv JF1 "${JF1} ${SRCR}/ui/orglocation/psp/*.java"
 setenv JF1 "${JF1} ${SRCR}/ui/orglocation/psp/xmlservice/*.java"
 setenv JF1 "${JF1} ${SRCR}/ui/orgui/*.java"
 
-
 setenv JFO "${JFO} ${SRCR}/ui/ohv/VGJ/algorithm/*.java"
 setenv JFO "${JFO} ${SRCR}/ui/ohv/VGJ/algorithm/tree/*.java"
 setenv JFO "${JFO} ${SRCR}/ui/ohv/VGJ/algorithm/cgd/*.java"
