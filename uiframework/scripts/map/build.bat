@@ -32,6 +32,8 @@ set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\app\*.java
 set JAVAC=c:\jdk1.2.2\bin\javac
 set JAVAFLAGS= -g  %deprec% -classpath %LIB_PATH% -d %CUR_BIN_DIR%
 
+if not exist %JAVAC% echo This should be compiled with Javac version 1.2.2 
+if not exist %JAVAC% set JAVAC=javac
 %JAVAC% %JAVAFLAGS% %SRC_FILES%
 
 goto ok
