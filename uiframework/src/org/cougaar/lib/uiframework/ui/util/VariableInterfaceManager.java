@@ -538,6 +538,40 @@ public class VariableInterfaceManager
                        (vm.getName() + ": " +
                             ((pb==null) ? vm.getValue() : pb.getText())) :
                         mb.getText());
+        setUpArrowControl(vm, xLabel);
+    }
+
+    private void setUpArrowControl(final VariableModel vm,
+                                   final CRLabel upArrow)
+    {
+        upArrow.removeMouseListener(
+            (MouseListener)upArrow.getClientProperty("UPLISTENER"));
+
+        if (vm.getValue() instanceof DefaultMutableTreeNode)
+        {
+            final Object parent =
+                ((DefaultMutableTreeNode)vm.getValue()).getParent();
+            if (parent != null)
+            {
+                // \u25b2 is not supported by cougaar font
+                //upArrow.setText(upArrow.getText() + "  \u25b2   ");
+                upArrow.setText(upArrow.getText() + "  ^   ");
+                MouseListener ml = new MouseAdapter() {
+                        public void mouseClicked(MouseEvent e)
+                        {
+                            int lo = upArrow.getOrientation();
+                            if (((lo == CRLabel.LEFT_RIGHT) &&
+                                (e.getX() > (upArrow.getSize().width - 20))) ||
+                                ((lo == CRLabel.DOWN_UP) && (e.getY() < 20)))
+                            {
+                                vm.setValue(parent);
+                            }
+                        }
+                    };
+                upArrow.putClientProperty("UPLISTENER", ml);
+                upArrow.addMouseListener(ml);
+            }
+        }
     }
 
     /**
