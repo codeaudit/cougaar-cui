@@ -64,7 +64,10 @@ import java.util.List;
     }
 
     public String getId() { return id; }
-    public boolean hasSuperior() { return (rel!=null&&rel.equalsIgnoreCase("AdministrativeSuperior")); }
+    public boolean hasSuperior() 
+      { 
+        return (rel!=null&&rel.equalsIgnoreCase("AdministrativeSuperior")); 
+      }
     public String getSuperior() {
       String sup=null;
       if (hasSuperior()) {
@@ -110,9 +113,12 @@ import java.util.List;
     }
 
     void printAttributes(Node node) {
-      if (node.hasAttributes()) {
-        System.out.println("I have attributes");
+	int numAttr=0;
+	// if (node.hasAttributes()) {
+      if (node.getAttributes()!=null) {
+	  numAttr= node.getAttributes().getLength();
       }
+        System.out.println("Number of attributes: "+numAttr);
     }
       /*
     int indentlevel=0;
