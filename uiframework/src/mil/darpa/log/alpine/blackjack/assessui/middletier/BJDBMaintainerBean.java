@@ -200,6 +200,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
                 }
             } /* end of while */
 
+            System.out.println ("");
             System.out.println ("*****Done, processed " + index + " records");
 
             // Save the work in the database
@@ -217,12 +218,15 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
                 if (stmt != null) stmt.close();
                 if (updateAssessmentData != null)
                     updateAssessmentData.close();
+                if (insertAssessmentData != null)
+                    insertAssessmentData.close();
             }
             catch(SQLException e) {}
         }
     }
 
     private PreparedStatement updateAssessmentData = null;
+    private PreparedStatement insertAssessmentData = null;
 
     private void createPreparedStatements () {
         try {
@@ -230,6 +234,9 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
                 connection.prepareStatement("UPDATE assessmentData " +
                     "SET assessmentValue = ? WHERE org = ? AND item = ? " +
                     "AND metric = ? AND unitsOfTime >= ? AND unitsOfTime < ?");
+            insertAssessmentData =
+                connection.prepareStatement("INSERT INTO assessmentData " +
+                    "VALUES (?, ?, ?, ?, ?)");
         }
         catch(SQLException e)
         {
@@ -387,7 +394,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
             updateAssessmentData.setInt(6,end_time);
             rc = updateAssessmentData.executeUpdate();
 
-            System.out.print ("u" + rows_to_update + "u");
+            System.out.print ("u" + rows_to_update);
 
             // If all the updates were not successful, do an insert
             // (rc will contain the number of rows updated by the
@@ -401,13 +408,19 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 //System.out.print ("insert"+time_index);
                     try
                     {
-                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + rate + ")");
+//                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + rate + ")");
+                        insertAssessmentData.setInt(1,org_id);
+                        insertAssessmentData.setInt(2,item_id);
+                        insertAssessmentData.setInt(3,time_index);
+                        insertAssessmentData.setInt(4,metric_id);
+                        insertAssessmentData.setFloat(5,rate);
+                        rc = insertAssessmentData.executeUpdate();
+
                         num_tobeinserted--;
                         System.out.print ("+");
                     }
                     catch (SQLException e)
                     {
-                        System.out.print ("skipping insert");
                         System.out.print ("_");
                     }
                 }
