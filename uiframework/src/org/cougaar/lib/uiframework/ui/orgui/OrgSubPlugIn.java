@@ -12,8 +12,6 @@ import org.cougaar.util.UnaryPredicate;
 
 import org.cougaar.lib.aggagent.ldm.PlanObject;
 
-import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
-
 /**
  *  <p>
  *  This PlugIn class is designed to fit into an Aggregation Agent and there

@@ -12,8 +12,6 @@ import org.cougaar.lib.planserver.PlanServiceContext;
 import org.cougaar.lib.planserver.PlanServiceProvider;
 import org.cougaar.lib.planserver.PlanServiceUtilities;
 
-import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
-
 /**
  *  The PSP_OrgSub class is a class of PSPs for the Aggregation Agent that
  *  report on relationships among the Organizations in a society.  The

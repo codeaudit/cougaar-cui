@@ -3,8 +3,6 @@ package org.cougaar.lib.uiframework.ui.orgui;
 
 import org.cougaar.util.UnaryPredicate;
 
-import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
-
 /**
  *  The predicate that detects the table of Relationships amont the
  *  Organizations.  The same predicate class is used by both the OrgSubPlugIn
