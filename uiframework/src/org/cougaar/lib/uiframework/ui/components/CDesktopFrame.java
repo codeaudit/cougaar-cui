@@ -88,6 +88,7 @@ public class CDesktopFrame extends CFrame
         final JInternalFrame f =
             new JInternalFrame(title, true, true, true, true);
         cougaarUI.install(f);
+        f.putClientProperty("CougaarUI", cougaarUI);
         f.setSize(800, 500);
         desktopPane.add(f, JLayeredPane.PALETTE_LAYER);
         f.setVisible(true);
@@ -217,7 +218,7 @@ public class CDesktopFrame extends CFrame
         JInternalFrame[] ifs = desktopPane.getAllFrames();
         for (int i = 0; i < ifs.length; i++)
         {
-            CougaarUI cui = (CougaarUI)ifs[i].getContentPane().getComponent(0);
+            CougaarUI cui = (CougaarUI)ifs[i].getClientProperty("CougaarUI");
             if (!cui.supportsPlaf())
             {
                 plafSupported = false;
