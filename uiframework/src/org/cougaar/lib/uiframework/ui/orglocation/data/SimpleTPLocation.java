@@ -111,6 +111,7 @@ public class SimpleTPLocation implements TPLocation {
     for (Iterator i = times.iterator(); i.hasNext(); )
       ((TimeLocation) i.next()).toXml(out);
     Const.closeTag(out, Const.SCHEDULE);
+    out.flush();
   }
 
   private void shiftPositionOf (TimeLocation loc) {
