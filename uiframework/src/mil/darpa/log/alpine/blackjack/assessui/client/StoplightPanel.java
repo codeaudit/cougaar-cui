@@ -141,7 +141,6 @@ public class StoplightPanel extends JPanel implements CougaarUI
         //Border etchedBorder = BorderFactory.createEtchedBorder();
         Border emptyBorder =
            BorderFactory.createEmptyBorder(spacing, spacing, spacing, spacing);
-        JPanel controlPanel = new JPanel(new GridLayout());
 
         // create a new query generator to update stoplightTableModel based
         // on (and triggered by) changes to variable controls.
@@ -259,15 +258,17 @@ public class StoplightPanel extends JPanel implements CougaarUI
         // high level layout
         gbl = new GridBagLayout();
         gbc = new GridBagConstraints();
-        gbc.weightx=1;
-        gbc.weighty=1;
-        JPanel leftPanel = new JPanel(gbl);
+        gbc.weightx=0;
+        gbc.weighty=0;
+        JPanel controlPanel = new JPanel(gbl);
         gbc.fill=GridBagConstraints.BOTH;
         gbl.setConstraints(fixedVariablesPanel, gbc);
-        leftPanel.add(fixedVariablesPanel);
+        controlPanel.add(fixedVariablesPanel);
         gbl.setConstraints(viewPanel, gbc);
-        leftPanel.add(viewPanel);
-        controlPanel.add(leftPanel);
+        controlPanel.add(viewPanel);
+        gbc.weightx=1;
+        gbc.weighty=1;
+        gbl.setConstraints(thresholdsPanel, gbc);
         controlPanel.add(thresholdsPanel);
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(controlPanel, BorderLayout.NORTH);
