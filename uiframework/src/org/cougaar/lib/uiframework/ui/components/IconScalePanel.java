@@ -16,9 +16,9 @@
  * **********************************************************************
  * 
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/components/IconScalePanel.java,v $
- * $Revision: 1.3 $
- * $Date: 2001-10-26 21:38:21 $
- * $Author: mdavis $
+ * $Revision: 1.4 $
+ * $Date: 2002-04-25 13:59:15 $
+ * $Author: mthome $
  * 
  * **********************************************************************
  */
@@ -47,7 +47,6 @@ import org.cougaar.lib.uiframework.ui.map.ScenarioMapBean;
  * This bean is a source for ZoomEvents.  It is a simple widget with a ZoomIn
  * button and a ZoomOut button.  When a button is pressed, the appropriate
  * zoom event is fired to all registered listeners.
- * @see #addZoomListener
  */
 public class IconScalePanel extends JPanel implements Serializable, Tool
 {

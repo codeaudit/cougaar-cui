@@ -679,7 +679,7 @@ public class InstanceHashtable extends Dictionary implements Map, Cloneable,
      * but not element addition.
      *
      * @return a set view of the mappings contained in this map.
-     * @see  Map#Entry
+     * @see  Map.Entry
      * @since 1.2
      */
     public Set entrySet() {
