@@ -8,14 +8,18 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
+import org.cougaar.lib.uiframework.ui.util.SliderControl;
+
 /**
   * This class is used to create muliple thumbed sliders whose value order
   * is enforced (slider(n) must be less than or equal to slider(n+1)).
   * Also, current value labels are added that float above each slider thumb.
   */
-public class COrderedLabeledMThumbSlider extends JPanel
+public class COrderedLabeledMThumbSlider
+    extends JPanel implements SliderControl
 {
-    private static final int MAJOR_TICK_SPACING = 10;
+    private static int FIDELITY = 1000;
+    private static final int MAJOR_TICK_SPACING = FIDELITY/10;
     private int numThumbs = 0;
     private float minValue = 0f;
     private float maxValue = 0f;
@@ -42,6 +46,7 @@ public class COrderedLabeledMThumbSlider extends JPanel
         slider.setFillColorAt(Color.green, 3);
         slider.setFillColorAt(Color.blue, 4);
         slider.setTrackFillColor(Color.magenta);
+        evenlyDistributeValues();
     }
 
     /**
@@ -69,6 +74,7 @@ public class COrderedLabeledMThumbSlider extends JPanel
     private void initialize(float minValue, float maxValue)
     {
         slider = new CMThumbSlider(numThumbs);
+        slider.setMaximum(FIDELITY);
         slider.setOpaque(false);
         slider.putClientProperty( "JSlider.isFilled", Boolean.TRUE );
         add(slider, BorderLayout.CENTER);
@@ -95,6 +101,52 @@ public class COrderedLabeledMThumbSlider extends JPanel
             });
 
         adjustValueLabelHeight();
+    }
+
+    /**
+     * Adjusts min and max values to nice, round numbers that divide nicely
+     * by 10. (for nice tick labels)
+     *
+     * @param newMinValue the minimum value that must be selectable on this
+     *                    slider
+     * @param newMaxValue the maximum value that must be selectable on this
+     *                    slider
+     * @return a value that represents the decimal shift used to adjust values
+     *         (e.g. 0.001, 100, 1000)
+     */
+    public float roundAndSetSliderRange(float newMinValue, float newMaxValue)
+    {
+        float difference = newMaxValue - newMinValue;
+        double log10 = Math.log(10);
+        if (difference == 0)
+        {
+            float adjustment =
+                (float)Math.pow(10, Math.log((double)newMaxValue)/log10);
+            newMaxValue += adjustment;
+            newMinValue -= adjustment;
+            difference = newMaxValue - newMinValue;
+        }
+        float shift =
+            (float)Math.pow(0.1, Math.floor(Math.log(difference)/log10));
+        newMinValue = (float)(Math.floor(newMinValue * shift) / shift);
+        newMaxValue = (float)(Math.ceil(newMaxValue * shift) / shift);
+        setSliderRange(newMinValue, newMaxValue);
+        return shift;
+    }
+
+    /**
+     * Adjusts all values such that thumbs are evenly distributed and ordered
+     * from first to last.
+     */
+    public void evenlyDistributeValues()
+    {
+        float defaultSeperation = (maxValue - minValue)/(numThumbs + 1);
+        for (int i = 0; i < numThumbs; i++)
+        {
+            slider.setValueAt(
+                toSlider(minValue + defaultSeperation * (i + 1)), i);
+        }
+        SwingUtilities.updateComponentTreeUI(this);
     }
 
     /**
@@ -137,7 +189,13 @@ public class COrderedLabeledMThumbSlider extends JPanel
         setSliderRange(minValue, maxValue);
     }
 
-    private void setSliderRange(float minValue, float maxValue)
+    /**
+     * Set the minimum and maximum value of this slider.
+     *
+     * @param minValue the new minimum value of this slider
+     * @param maxValue the new maximum value of this slider
+     */
+    public void setSliderRange(float minValue, float maxValue)
     {
         // Try to maintain the same values if possible
         Vector currentValues = new Vector();
@@ -148,7 +206,7 @@ public class COrderedLabeledMThumbSlider extends JPanel
 
         this.minValue = minValue;
         this.maxValue = maxValue;
-        unit = (maxValue - minValue) / 100f;
+        unit = (maxValue - minValue) / FIDELITY;
 
         if (Math.abs(maxValue) > 10)
         {
@@ -169,7 +227,7 @@ public class COrderedLabeledMThumbSlider extends JPanel
         }
 
         Hashtable valueLabels = new Hashtable();
-        for (int i = 0; i <= 100; i += MAJOR_TICK_SPACING)
+        for (int i = 0; i <= FIDELITY; i += MAJOR_TICK_SPACING)
         {
             valueLabels.put(new Integer(i),
                             new JLabel(labelFormat.format(fromSlider(i))));
@@ -179,7 +237,7 @@ public class COrderedLabeledMThumbSlider extends JPanel
         // Set sliders to old current values
         for (int i = 0; i < currentValues.size(); i++)
         {
-            Float currentValue = (Float)currentValues.elementAt(i);
+            Number currentValue = (Number)currentValues.elementAt(i);
             slider.setValueAt(toSlider(currentValue.floatValue()), i);
         }
         SwingUtilities.updateComponentTreeUI(this);

@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.util.Selector;
+import org.cougaar.lib.uiframework.ui.util.SliderControl;
 
 /**
  * A UI control bean that is a button that is labeled with the control's
@@ -18,7 +19,8 @@ import org.cougaar.lib.uiframework.ui.util.Selector;
  *
  * This bean has bounded property:  "selectedItem"
  */
-public class CRangeButton extends CPullrightButton implements Selector
+public class CRangeButton
+    extends CPullrightButton implements Selector, SliderControl
 {
     private CRangeSelector rs = null;
     private String prefix;
@@ -71,6 +73,71 @@ public class CRangeButton extends CPullrightButton implements Selector
                     setText(prefix + r.getMin() + " to " +prefix + r.getMax());
                 }
             });
+    }
+
+    /**
+     * Get the minimum value of the range control
+     *
+     * @return the minimum value of the range control
+     */
+    public float getMinValue()
+    {
+        return rs.getMinValue();
+    }
+
+    /**
+     * Set the minimum value of the range control
+     *
+     * @param minValue the minimum value of the range control
+     */
+    public void setMinValue(float minValue)
+    {
+        rs.setMinValue(minValue);
+    }
+
+    /**
+     * Get the maximum value of the range control
+     *
+     * @return the maximum value of the range control
+     */
+    public float getMaxValue()
+    {
+        return rs.getMaxValue();
+    }
+
+    /**
+     * Set the maximum value of the range control
+     *
+     * @param maxValue the maximum value of the range control
+     */
+    public void setMaxValue(float maxValue)
+    {
+        rs.setMaxValue(maxValue);
+    }
+
+    /**
+     * Adjusts all values such that thumbs are evenly distributed and ordered
+     * from first to last.
+     */
+    public void evenlyDistributeValues()
+    {
+        rs.evenlyDistributeValues();
+    }
+
+    /**
+     * Adjusts min and max values to nice, round numbers that divide nicely
+     * by 10. (for nice tick labels)
+     *
+     * @param newMinValue the minimum value that must be selectable on this
+     *                    slider
+     * @param newMaxValue the maximum value that must be selectable on this
+     *                    slider
+     * @return a value that represents the decimal shift used to adjust values
+     *         (e.g. 0.001, 100, 1000)
+     */
+    public float roundAndSetSliderRange(float newMinValue, float newMaxValue)
+    {
+        return rs.roundAndSetSliderRange(newMinValue, newMaxValue);
     }
 
     // For Testing ...

@@ -3,11 +3,13 @@ package org.cougaar.lib.uiframework.ui.components;
 import java.beans.*;
 import javax.swing.*;
 
+import org.cougaar.lib.uiframework.ui.util.SliderControl;
+
 /**
  * Base class for controls that consist of a stack of sliders.  Slider order is
  * enforced (slider(n) must be less than or equal to slider(n+1)).
  */
-public class CMultipleSliderControl extends JPanel
+public class CMultipleSliderControl extends JPanel implements SliderControl
 {
     private String[] sliderLabels;
 
@@ -105,6 +107,44 @@ public class CMultipleSliderControl extends JPanel
         {
             getSlider(i).setMaxValue(maxValue);
         }
+    }
+
+    /**
+     * Adjusts all values such that thumbs are evenly distributed and ordered
+     * from first to last.
+     */
+    public void evenlyDistributeValues()
+    {
+        float minValue = getMinValue();
+        float maxValue = getMaxValue();
+        int numThumbs = sliderLabels.length;
+        float defaultSeperation = (maxValue - minValue)/(numThumbs + 1);
+        for (int i = 0; i < numThumbs; i++)
+        {
+            getSlider(i).setValue(minValue + defaultSeperation * (i + 1));
+        }
+    }
+
+    /**
+     * Adjusts min and max values to nice, round numbers that divide nicely
+     * by 10. (for nice tick labels)
+     *
+     * @param newMinValue the minimum value that must be selectable on this
+     *                    slider
+     * @param newMaxValue the maximum value that must be selectable on this
+     *                    slider
+     * @return a value that represents the decimal shift used to adjust values
+     *         (e.g. 0.001, 100, 1000)
+     */
+    public float roundAndSetSliderRange(float newMinValue, float newMaxValue)
+    {
+        float shift = 0;
+        for (int i = 0; i < sliderLabels.length; i++)
+        {
+            shift =
+                getSlider(i).roundAndSetSliderRange(newMinValue, newMaxValue);
+        }
+        return shift;
     }
 
     /**

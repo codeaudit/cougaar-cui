@@ -76,12 +76,7 @@ public class CSliderThresholdControl extends CMultipleSliderControl
                 });
         }
 
-        float defaultSeperation = (maxValue-minValue)/(sliderLabels.length+1);
-        setThresholds(
-            new StoplightThresholdModel(minValue + defaultSeperation,
-                                        minValue + defaultSeperation * 2,
-                                        minValue + defaultSeperation * 3,
-                                        minValue + defaultSeperation * 4));
+        evenlyDistributeValues();
     }
 
     /**

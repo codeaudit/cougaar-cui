@@ -64,13 +64,6 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
         slider.setFillColorAt(Color.yellow, 3);
         slider.setTrackFillColor(Color.red);
 
-        float defaultSeperation = (maxValue - minValue)/(NUMBER_OF_THUMBS + 1);
-        setThresholds(
-            new StoplightThresholdModel(minValue + defaultSeperation,
-                                        minValue + defaultSeperation * 2,
-                                        minValue + defaultSeperation * 3,
-                                        minValue + defaultSeperation * 4));
-
         slider.addChangeListener(new ChangeListener() {
                 public void stateChanged(ChangeEvent e)
                 {
@@ -83,6 +76,8 @@ public class CMThumbSliderThresholdControl extends COrderedLabeledMThumbSlider
                     }
                 }
             });
+
+        evenlyDistributeValues();
     }
 
     /**

@@ -160,7 +160,44 @@ public class CLabeledSlider extends JPanel
         setSliderRange(minValue, maxValue);
     }
 
-    private void setSliderRange(float minValue, float maxValue)
+    /**
+     * Adjusts min and max values to nice, round numbers that divide nicely
+     * by 10. (for nice tick labels)
+     *
+     * @param newMinValue the minimum value that must be selectable on this
+     *                    slider
+     * @param newMaxValue the maximum value that must be selectable on this
+     *                    slider
+     * @return a value that represents the decimal shift used to adjust values
+     *         (e.g. 0.001, 100, 1000)
+     */
+    public float roundAndSetSliderRange(float newMinValue, float newMaxValue)
+    {
+        float difference = newMaxValue - newMinValue;
+        double log10 = Math.log(10);
+        if (difference == 0)
+        {
+            float adjustment =
+                (float)Math.pow(10, Math.log((double)newMaxValue)/log10);
+            newMaxValue += adjustment;
+            newMinValue -= adjustment;
+            difference = newMaxValue - newMinValue;
+        }
+        float shift =
+            (float)Math.pow(0.1, Math.floor(Math.log(difference)/log10));
+        newMinValue = (float)(Math.floor(newMinValue * shift) / shift);
+        newMaxValue = (float)(Math.ceil(newMaxValue * shift) / shift);
+        setSliderRange(newMinValue, newMaxValue);
+        return shift;
+    }
+
+    /**
+     * Set the minimum and maximum value of this slider.
+     *
+     * @param minValue the new minimum value of this slider
+     * @param maxValue the new maximum value of this slider
+     */
+    public void setSliderRange(float minValue, float maxValue)
     {
         // Try to maintain the same value if possible
         float currentValue = getValue();
