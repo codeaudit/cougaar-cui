@@ -74,10 +74,19 @@ public class DBInterface extends DBDatasource
     {
         String itemTable = getTableName("item");
         SqlTableMap config = new SqlTableMap();
-        config.setDbTable(itemTable);
-        config.setDbTable(itemTable + ", assessmentItemUnits");
         config.setPrimaryTableName(itemTable);
-        config.setJoinConditions("assessmentItemUnits.nsn(+)=" + itemTable + ".item_id");
+        if (!DBTYPE.equalsIgnoreCase("access"))
+        {
+            config.setJoinConditions("assessmentItemUnits.nsn(+)=" +
+                                     itemTable + ".item_id");
+            config.setDbTable(itemTable + ", assessmentItemUnits");
+        }
+        else
+        {
+            config.setDbTable(itemTable +
+                " LEFT JOIN assessmentItemUnits ON assessmentItemUnits.nsn =" +
+                itemTable + ".item_id");
+        }
         config.setIdKey("id");
         config.setParentKey("parent_id");
         config.addContentKey("UID", "name");

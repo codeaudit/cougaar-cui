@@ -213,6 +213,9 @@ public class QueryGenerator
             boolean uifound = false;
             for (int row = 0; row < dbTableModel.getRowCount(); row++)
             {
+                if (!(dbTableModel.getValueAt(row, 0) instanceof
+                      DefaultMutableTreeNode)) continue;
+
                 DefaultMutableTreeNode tn =
                     (DefaultMutableTreeNode)dbTableModel.getValueAt(row, 0);
                 Hashtable ht = (Hashtable)tn.getUserObject();
@@ -290,7 +293,7 @@ public class QueryGenerator
         StringBuffer query = new StringBuffer("SELECT ");
         query.append(id);
         query.append(
-            " AS \"ORG\", item, unitsOfTime, metric, sum(assessmentValue)" +
+            " AS \"ORG\", item, unitsOfTime, metric, sum(assessmentData.assessmentValue)" +
             " AS \"ASSESSMENTVALUE\" FROM assessmentData WHERE (");
 
         // filter data needed based on org, item, metric, time
@@ -314,7 +317,7 @@ public class QueryGenerator
         query.append(" AND "+generateWhereClause(vim.getDescriptor("Time")));
         query.append(")");
 
-        query.append(" GROUP BY item, metric, unitsOfTime");
+        query.append(" GROUP BY item, unitsOfTime, metric");
 
         return query.toString();
     }
