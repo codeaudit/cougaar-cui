@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -80,6 +80,16 @@ public class DbConnect {
       catch (Exception bla) {
         bla.printStackTrace();
       }
+  }
+
+  /**
+   * Allow the user to provide the database connection.  This capability is
+   * required when making use of an externally managed connection pool.
+   *
+   * @param conn externally managed database connection to use
+   */
+  public void setConnection(Connection conn) {
+    this.conn = conn;
   }
 
   /**
