@@ -70,18 +70,18 @@ try {
         UID inventory_object_name = in.getUID();
 
         if (inventory_object_name == null) {
-          System.out.println ("WARNING: no UID for inventory asset");
+//          System.out.println ("WARNING: no UID for inventory asset");
           continue;
         }
 
         org = inventory_object_name.getOwner();
 
-        System.out.print ("org: " + org);
+//        System.out.print ("org: " + org);
 
         RoleSchedule s1 = in.getRoleSchedule();
 
         if (s1 == null) {
-          System.out.println ("WARNING: no schedule in scheduledContentPG");
+//          System.out.println ("WARNING: no schedule in scheduledContentPG");
           continue;
         }
 
@@ -101,16 +101,17 @@ try {
           if (t.getVerb().equals(Constants.Verb.PROJECTWITHDRAW) == true) {
 
               looping++;
-              System.out.print (" " + looping + " ");
+//              System.out.print (" " + looping + " ");
 
-              System.out.print ("" + t.getVerb());
+//              System.out.print ("" + t.getVerb());
 
               Preference start_pref = t.getPreference (AspectType.START_TIME);
               if (start_pref != null) {
                 temp_double = new Double (start_pref.getScoringFunction().getBest().getAspectValue().getValue());
               }
-              else
-                  System.out.println ("No start preference");
+              else {
+//                  System.out.println ("No start preference");
+              }
 
               start_time_long = temp_double.longValue ();
               start_time = String.valueOf (start_time_long);
@@ -122,8 +123,9 @@ try {
               if (end_pref != null) {
                 temp_double = new Double (end_pref.getScoringFunction().getBest().getAspectValue().getValue());
               }
-              else
-                  System.out.println ("No end preference");
+              else {
+//                  System.out.println ("No end preference");
+              }
 
               end_time_long = temp_double.longValue ();
 
@@ -136,27 +138,27 @@ try {
               }
               end_time = String.valueOf (end_time_long);
 
-              System.out.print (" start" + start_time + ", end " + end_time);
+//              System.out.print (" start" + start_time + ", end " + end_time);
 
               // Find the item name in direct object's type identification
 
               Asset direct_object = t.getDirectObject();
 
               if (direct_object == null) {
-                System.out.println ("WARNING: No direct object found");
+//                System.out.println ("WARNING: No direct object found");
                 continue;
               }
 
               TypeIdentificationPG type_id_pg = direct_object.getTypeIdentificationPG();
 
               if (type_id_pg == null) {
-                System.out.println ("WARNING: no typeIdentificationPG for asset");
+//                System.out.println ("WARNING: no typeIdentificationPG for asset");
                 continue;
               }
 
               item = type_id_pg.getTypeIdentification();
 
-              System.out.print (", item is: " + item);
+//              System.out.print (", item is: " + item);
 
               Rate demand_rate = TaskUtils.getRate (t);
 
@@ -170,11 +172,11 @@ try {
               }
               else
               {
-                System.out.println ("WARNING: No rate for org " + org + ", item " + item);
+//                System.out.println ("WARNING: No rate for org " + org + ", item " + item);
                 continue;
               }
 
-              System.out.print (", rate " + rate);
+//              System.out.print (", rate " + rate);
 
               // If the structure is null, create one
               if (nextStructure == null) {
@@ -183,16 +185,16 @@ try {
               else if ((item.compareTo (nextStructure.getItem()) == 0) &&
                        (start_time.compareTo (nextStructure.getStartTime()) == 0) &&
                        (end_time.compareTo (nextStructure.getEndTime()) == 0)) {
-                  System.out.print (" adding to previous " + nextStructure.getRate());
+//                  System.out.print (" adding to previous " + nextStructure.getRate());
                   double temp_rate = Double.parseDouble (nextStructure.getRate());
                   temp_rate += Double.parseDouble (rate);
                   rate = String.valueOf (temp_rate);
-                  System.out.print (" now " + rate);
+//                  System.out.print (" now " + rate);
                   nextStructure.setRate (rate);
               }
               // Output the record and start a new one
               else {
-                System.out.println ("");
+//                System.out.println ("");
                 writeStructureToXML (org, nextStructure);
                 nextStructure = new AggInfoStructure (item, start_time, end_time, rate);
               }
@@ -202,7 +204,7 @@ try {
           } /* end of if verb is right */
         } /* end of while */
 
-        System.out.println ("");
+//        System.out.println ("");
 
       } /* if o is Inventory */
     } /* while iter */
@@ -217,8 +219,9 @@ catch (Exception e) {
       writeStructureToXML (org, nextStructure);
     }
 
+    System.out.println ("");
     System.out.println ("**************************************************************************");
-    System.out.println ("DueOuts sending " + index + " records, amounts to " + xml_count + " xml records");
+    System.out.println ("DueOutQueryAdapter sending " + index + " records, amounts to " + xml_count + " xml records");
     System.out.println ("**************************************************************************");
 
     if (send_xml) {
@@ -256,6 +259,8 @@ catch (Exception e) {
     xml_count++;
 
     send_xml = true;
+
+    System.out.print ("o");
 
   } /* end of writeStructureToXML */
 

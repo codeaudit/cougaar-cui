@@ -28,6 +28,8 @@ public class BJDBMaintainerBean implements SessionBean
     private static final String HACK_FOR_TARGET_LEVEL = "Demand";
     private static final String TARGET_LEVEL = "Target Level";
 
+    private static final int NUM_RECORDS_BEFORE_COMMIT = 100;
+
     private static final String DB_NAME = "java:comp/env/jdbc/AssessmentDB";
     private static final String DB_USER = "java:comp/env/DBUser";
     private static final String DB_PASSWORD = "java:comp/env/DBPassword";
@@ -133,16 +135,6 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
             stmt = connection.createStatement();
             createPreparedStatements();
 
-            if (metric_string.compareTo(HACK_FOR_TARGET_LEVEL) == 0) {
-                System.out.println ("******************************");
-                System.out.println ("Running hack for target level!");
-                System.out.println ("******************************");
-                run_target_level_hack = true;
-                target_level_metric_id = getMetricID (TARGET_LEVEL);
-                System.out.println ("metric string is " + TARGET_LEVEL);
-                System.out.println ("metric id is " + target_level_metric_id);
-            }
-
             int metric_id = getMetricID (metric_string);
 
             int org_id = getOrgID (org_string);
@@ -150,15 +142,21 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
             System.out.println ("Org is " + org_string);
             System.out.println ("metric string is " + metric_string);
-            System.out.println ("metric id is " + metric_id);
+
+            if (metric_string.compareTo(HACK_FOR_TARGET_LEVEL) == 0) {
+                System.out.println ("**Also running hack for target level!**");
+                run_target_level_hack = true;
+                target_level_metric_id = getMetricID (TARGET_LEVEL);
+            }
 
             while (!myDecoder.doneXMLDecoding ()) {
 
                 AggInfoStructure myStruct = myDecoder.getNextDataAtom();
                 String item_string = myStruct.getItem();
 
-                System.out.print ("Item " + item_string);
-                System.out.print (", Rate " + myStruct.getRate());
+//                System.out.print ("" + index);
+//                System.out.print ("Item " + item_string);
+//                System.out.print (", Rate " + myStruct.getRate());
 
                 int item_id = getItemID (item_string);
 
@@ -171,8 +169,6 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
                     start_time_in_days = convertTimeToDays (myStruct.getTime());
                     end_time_in_days = start_time_in_days + 1;
-
-//              System.out.println ("time in days is " + time_in_days);
                 }
                 else {
                     rate_float = Float.parseFloat (myStruct.getRate());
@@ -182,9 +178,6 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
                 }
 
                 putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
-
-                System.out.println ("");
-                System.out.print ("" + index);
 
                 if (run_target_level_hack) {
                     float this_multiplier = 1.0f;
@@ -200,13 +193,14 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
                 index++;
 
-                if (index % 100 == 0) {
+                if (index % NUM_RECORDS_BEFORE_COMMIT == 0) {
                     // Save the work in the database
                     connection.commit();
+                    System.out.print ("(" + NUM_RECORDS_BEFORE_COMMIT + ")");
                 }
             } /* end of while */
 
-            System.out.println ("Done, processed " + index + " records");
+            System.out.println ("*****Done, processed " + index + " records");
 
             // Save the work in the database
             connection.commit();
@@ -379,7 +373,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
 
         try
         {
-System.out.print (" update(" + start_time + " to " + end_time + ")");
+//System.out.print (" update(" + start_time + " to " + end_time + ")");
             // The effective update is
             // UPDATE assessmentData SET assessmentValue = rate
             // WHERE org = org_id AND item = item_id AND metric = metric_id
@@ -393,6 +387,8 @@ System.out.print (" update(" + start_time + " to " + end_time + ")");
             updateAssessmentData.setInt(6,end_time);
             rc = updateAssessmentData.executeUpdate();
 
+            System.out.print ("u" + rows_to_update + "u");
+
             // If all the updates were not successful, do an insert
             // (rc will contain the number of rows updated by the
             // executeUpdate command.)
@@ -402,15 +398,17 @@ System.out.print (" update(" + start_time + " to " + end_time + ")");
                 for (int time_index = end_time - 1;
                   time_index >= start_time && num_tobeinserted != 0;
                   time_index--) {
-System.out.print ("insert"+time_index);
+//System.out.print ("insert"+time_index);
                     try
                     {
                         stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + rate + ")");
                         num_tobeinserted--;
+                        System.out.print ("+");
                     }
                     catch (SQLException e)
                     {
                         System.out.print ("skipping insert");
+                        System.out.print ("_");
                     }
                 }
             }

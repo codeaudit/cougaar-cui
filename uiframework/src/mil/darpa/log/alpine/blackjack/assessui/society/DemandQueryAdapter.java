@@ -95,21 +95,21 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           PlanElement pe = t.getPlanElement();
 
           if (pe == null) {
-            System.out.println ("WARNING: no plan element for demand task");
+//            System.out.println ("WARNING: no plan element for demand task");
             continue;
           }
 
           UID cluster_object_name = pe.getUID();
 
           if (cluster_object_name == null) {
-            System.out.println ("WARNING: no UID for plan element of demand task");
+//            System.out.println ("WARNING: no UID for plan element of demand task");
             continue;
           }
 
           if (org.compareTo(cluster_object_name.getOwner()) != 0) {
-              System.out.print ("demand cluster " +
-                              cluster_object_name.getOwner());
-              System.out.println (" not the same as io " + org);
+//              System.out.print ("demand cluster " +
+//                              cluster_object_name.getOwner());
+//              System.out.println (" not the same as io " + org);
               continue;
           }
 
@@ -118,14 +118,14 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           Asset direct_object = t.getDirectObject();
 
           if (direct_object == null) {
-            System.out.println ("WARNING: No direct object found");
+//            System.out.println ("WARNING: No direct object found");
             continue;
           }
 
           TypeIdentificationPG type_id_pg = direct_object.getTypeIdentificationPG();
 
           if (type_id_pg == null) {
-            System.out.println ("WARNING: no typeIdentificationPG for asset");
+//            System.out.println ("WARNING: no typeIdentificationPG for asset");
             continue;
           }
 
@@ -145,16 +145,16 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           }
           else
           {
-            System.out.println ("WARNING: No rate for org " + org + ", item " + item);
+//            System.out.println ("WARNING: No rate for org " + org + ", item " + item);
             continue;
           }
 
-          System.out.println ("item is: " + item);
+//          System.out.println ("item is: " + item);
 
           myStructure = new AggInfoStructure (item, start_time, end_time, rate);
 
           if (!send_xml) {
-            System.out.println ("org is " + org);
+//            System.out.println ("org is " + org);
             output_xml = myEncoder.encodeStartOfXML(org, METRIC);
           }
 
@@ -163,11 +163,13 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           send_xml = true;
 
           index++;
+          System.out.print ("d");
 
         } /* if verb is "ProjectSupply" */
       } /* if o is Task */
     } /* while iter */
 
+    System.out.println ("");
     System.out.println ("**************************************************************************");
     System.out.println ("DemandQueryAdapter sending " + index + " records");
     System.out.println ("**************************************************************************");

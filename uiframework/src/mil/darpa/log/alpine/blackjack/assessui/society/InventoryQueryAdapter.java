@@ -69,7 +69,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
         UID inventory_object_name = in.getUID();
 
         if (inventory_object_name == null) {
-          System.out.println ("WARNING: no UID for inventory asset");
+//          System.out.println ("WARNING: no UID for inventory asset");
           continue;
         }
 
@@ -85,19 +85,19 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
         Schedule s1 = scheduled_content.getSchedule();
 
         if (a1 == null) {
-          System.out.println ("WARNING: no asset in scheduledContentPG");
+//          System.out.println ("WARNING: no asset in scheduledContentPG");
           continue;
         }
 
         if (s1 == null) {
-          System.out.println ("WARNING: no schedule in scheduledContentPG");
+//          System.out.println ("WARNING: no schedule in scheduledContentPG");
           continue;
         }
 
         TypeIdentificationPG type_id_pg = a1.getTypeIdentificationPG();
 
         if (type_id_pg == null) {
-          System.out.println ("WARNING: no typeIdentificationPG for asset");
+//          System.out.println ("WARNING: no typeIdentificationPG for asset");
           continue;
         }
 
@@ -105,7 +105,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
         Enumeration schedule_list = s1.getAllScheduleElements();
 
-        System.out.print ("" + inventory_count + "org " + org + ", item " + item + "...");
+//        System.out.print ("" + inventory_count + "org " + org + ", item " + item + "...");
 
         inventory_count++;
 
@@ -124,7 +124,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
             rate = "" + element.getQuantity();
 
           looping++;
-          System.out.print (" " + rate + "(" + looping + ")");
+//          System.out.print (" " + rate + "(" + looping + ")");
 
           // Pull out the start time and put it in a string
 
@@ -161,7 +161,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
           }
         } /* end of while */
 
-        System.out.println ("");
+//        System.out.println ("");
 
       } /* if o is Inventory */
     } /* while iter */
@@ -170,13 +170,13 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
       writeStructureToXML (org, nextStructure);
     }
 
+    System.out.println ("");
     System.out.println ("**************************************************************************");
-    System.out.println ("Inventory sending " + index + " records, amounts to " + xml_count + " xml records");
+    System.out.println ("InventoryQueryAdapter sending " + index + " records, amounts to " + xml_count + " xml records");
     System.out.println ("**************************************************************************");
 
     if (send_xml) {
       myEncoder.encodeEndOfXML(output_xml);
-      System.out.println ("Ending XML");
     }
   } /* end of execute */
 
@@ -202,7 +202,6 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
     // We are about to send a new one
     if (!send_xml) {
       output_xml = myEncoder.encodeStartOfXML(org, METRIC);
-      System.out.println ("Beginning XML");
     }
 
     myEncoder.encodeDataAtom (output_xml, new_structure);
@@ -210,6 +209,8 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
     xml_count++;
 
     send_xml = true;
+
+    System.out.print ("i");
 
   } /* end of writeStructureToXML */
 
