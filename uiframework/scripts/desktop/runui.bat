@@ -33,12 +33,14 @@ set DBURL="alp-3.alp.isotic.org:1521:alp"
 rem set DBUSER="pfischer"
 rem set DBUSER="jmeyer"
 rem set DBUSER="blackjack8"
-set DBUSER="blackjack"
+rem set DBUSER="blackjack"
+set DBUSER="blackjacka"
 
 rem set DBPASSWORD="pfischer"
 rem set DBPASSWORD="jmeyer"
 rem set DBPASSWORD="init1389"
-set DBPASSWORD="blackjack"
+rem set DBPASSWORD="blackjack"
+set DBPASSWORD="blackjacka"
 
 java -DDBTYPE=%DBTYPE% -DDBURL=%DBURL% -DDBUSER=%DBUSER% -DDBPASSWORD=%DBPASSWORD% -Dcmap.configDir=%DATA_PATH% -classpath %CP% mil.darpa.log.alpine.blackjack.assessui.client.BJAssessmentLauncher
 
