@@ -7,13 +7,16 @@ echo * xml4j_2_0_11.jar (IMB XML parser) in ..\..\lib.           *
 echo *************************************************************
 
 set LIB_PATH=..\..\lib
+rem set LIB_PATH=s:\alp70\alp\lib
 set DATA_PATH=.\data
 
 set CP=..\..\classes
-set CP=%CP%;%LIB_PATH%\class122.zip
+rem set CP=%CP%;%LIB_PATH%\class122.zip
+set CP=%CP%;%LIB_PATH%\classes12.zip
 set CP=%CP%;%LIB_PATH%\xml4j_2_0_11.jar
 set CP=%CP%;%LIB_PATH%\core.jar
-set CP=%CP%;%LIB_PATH%\openmap.jar
+rem set CP=%CP%;%LIB_PATH%\openmap.jar
+set CP=%CP%;%LIB_PATH%\cuimap.jar
 set CP=%CP%;%DATA_PATH%
 
 set SRCR=..\..\src\org\cougaar\lib\uiframework
@@ -33,6 +36,7 @@ set JF=%JF% %SRCR%\ui\components\*.java
 set JF=%JF% %SRCR%\ui\map\util\*.java
 set JF=%JF% %SRCR%\ui\map\layer\*.java
 set JF=%JF% %SRCR%\ui\map\app\*.java
+set JF=%JF% %SRCR%\ui\map\query\*.java
 set JF=%JF% %SRBJ%\assessui\client\*.java
 set JF=%JF% %SRBJ%\assessui\util\BlackjackTableCreator.java
 set JF=%JF% %SRBJ%\assessui\util\OrgXMLGenerator.java
