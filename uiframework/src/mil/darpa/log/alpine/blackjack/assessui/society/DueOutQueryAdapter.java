@@ -174,7 +174,7 @@ try {
               temp_long = temp_double.longValue ();
               quantity = String.valueOf (temp_long);
 
-              System.out.println (", quantity " + quantity);
+              System.out.print (", quantity " + quantity);
 
               // If the structure is null, create one
               if (nextStructure == null) {
@@ -188,17 +188,11 @@ try {
                   temp_quantity += Double.parseDouble (quantity);
                   quantity = String.valueOf (temp_quantity);
                   System.out.print (" now " + quantity);
-              }
-              // If the rates are the same, and the start time of the new record
-              // is the same as the end time of the old record, then combine
-              // the records
-              else if ((quantity.compareTo (nextStructure.getRate ()) == 0) &&
-                       (start_time.compareTo (nextStructure.getEndTime()) == 0) &&
-                       (item.compareTo (nextStructure.getItem()) == 0)) {
-                nextStructure.setEndTime (end_time);
+                  nextStructure.setRate (quantity);
               }
               // Output the record and start a new one
               else {
+                System.out.println ("");
                 writeStructureToXML (nextStructure);
                 nextStructure = new AggInfoStructure (org, item, start_time, end_time, quantity);
               }
