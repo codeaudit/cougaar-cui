@@ -108,6 +108,7 @@ public class TestClient {
 
   private static void printUsage () {
     System.out.println("Usage (at least one argument must be supplied):");
+    System.out.println("  single [org=<org>] [day=<day>] :  treat day as a singleton");
     System.out.println("  [org=<org>] [day=<day>] :  specify the org and/or day");
     System.out.println("  all : get data for all orgs and all days");
   }
