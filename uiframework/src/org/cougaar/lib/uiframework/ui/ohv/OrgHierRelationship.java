@@ -1,7 +1,5 @@
 package org.cougaar.lib.uiframework.ui.ohv;
 
-//import org.apache.xerces.parsers.DOMParser;
-import org.apache.xerces.parsers.DOMParser;
 
 
 import java.io.File;
@@ -19,16 +17,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.net.URL;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
+
 import java.io.IOException;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /* ====== alp 6.8      =======       
 import alp.ldm.plan.ScheduleImpl;
