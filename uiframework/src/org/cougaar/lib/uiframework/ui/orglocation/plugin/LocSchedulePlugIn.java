@@ -19,27 +19,23 @@ import org.cougaar.lib.uiframework.ui.orglocation.data.*;
  */
 public class LocSchedulePlugIn extends SimplePlugIn {
   // a table of SimpleTPLocations
-  private Hashtable tplTable = null;
+  private TPLocTable tplTable = null;
 
   // filter for data pertaining to the location of an organization
   private static class ScheduleDomSeeker implements UnaryPredicate {
     public boolean execute (Object obj) {
       if (obj instanceof PlanObject) {
-        Document doc = ((PlanObject) obj).getDocument();
-        return doc.getDocumentElement().getNodeName().equals("OrgLocSchedule");
+        String type =
+          ((PlanObject) obj).getDocument().getDocumentElement().getNodeName();
+        return type.equals(Const.SCHEDULE) || type.equals(Const.LOC_TABLE);
       }
       return false;
     }
   }
   private static UnaryPredicate locData = new ScheduleDomSeeker();
 
-  private static class MyTableSeeker implements UnaryPredicate {
-    public boolean execute (Object obj) {
-      return (obj instanceof TableWrapper) &&
-        ((TableWrapper) obj).getName().equals("OrgLocTable");
-    }
-  }
-  private static UnaryPredicate findLocTable = new MyTableSeeker();
+  // filter for the table in which location results are to be stored
+  private static UnaryPredicate findLocTable = new TableSeeker();
 
   // subscribe to the locData and findLocTable predicates
   private IncrementalSubscription locSubs = null;
@@ -67,41 +63,69 @@ public class LocSchedulePlugIn extends SimplePlugIn {
       if (tableSubs.hasChanged()) {
         Iterator i = tableSubs.getAddedCollection().iterator();
         if (i.hasNext())
-          tplTable = ((TableWrapper) i.next()).getTable();
+          tplTable = (TPLocTable) i.next();
       }
       if (tplTable == null) {
-        tplTable = new Hashtable();
-        publishAdd(new TableWrapper("OrgLocTable", tplTable));
+        tplTable = new TPLocTable(Const.TABLE_NAME);
+        publishAdd(tplTable);
       }
     }
 
     if (locSubs.hasChanged()) {
       for (Enumeration e = locSubs.getAddedList(); e.hasMoreElements(); ) {
         PlanObject po = (PlanObject) e.nextElement();
-        Node root = po.getDocument().getDocumentElement();
-        String orgName = findChildValue("orgName", root);
+        Element root = po.getDocument().getDocumentElement();
+        String rootName = root.getNodeName();
+        if (rootName.equals(Const.LOC_TABLE))
+          visitScheduleTable(root);
+        else if (rootName.equals(Const.SCHEDULE))
+          visitSchedule(root);
+        else
+          System.out.println(
+            "LocSchedulePlugIn::execute:  ignoring document of type \"" +
+            rootName + "\"");
 
-        // Create a new SimpleTPLocation and place it in the table, overwriting
-        // the existing one, if any.
-        SimpleTPLocation tp = new SimpleTPLocation();
-        tplTable.put(orgName, tp);
-        findScheduleElements(root, tp);
         publishRemove(po);
       }
     }
   }
 
-  private void findScheduleElements (Node n, SimpleTPLocation tp) {
+  private void visitScheduleTable (Node n) {
     NodeList nl = n.getChildNodes();
     for (int i = 0; i < nl.getLength(); i++) {
       Node child = nl.item(i);
       if (child.getNodeType() == Node.ELEMENT_NODE &&
-          child.getNodeName().equals("TimeLocation"))
+          child.getNodeName().equals(Const.SCHEDULE))
       {
-        long time = Long.parseLong(findChildValue("startTime", child));
-        double lat = Double.parseDouble(findChildValue("latitude", child));
-        double lon = Double.parseDouble(findChildValue("longitude", child));
-        tp.add(null, time, new Location(lat, lon));
+        visitSchedule(child);
+      }
+      else {
+        System.out.println("LocSchedulePlugIn::visitSchedule:  ignoring \"" +
+          child.getNodeName() + "\" tag in input");
+      }
+    }
+  }
+
+  private void visitSchedule (Node n) {
+    String orgName = findChildValue(Const.ORG_NAME, n);
+
+    // Create a new SimpleTPLocation and place it in the table, overwriting
+    // the existing one, if any.
+    SimpleTPLocation tp = new SimpleTPLocation(orgName);
+    tplTable.addSchedule(tp);
+
+    // visit the schedule elements
+    NodeList nl = n.getChildNodes();
+    for (int i = 0; i < nl.getLength(); i++) {
+      Node child = nl.item(i);
+      if (child.getNodeType() == Node.ELEMENT_NODE &&
+          child.getNodeName().equals(Const.TIME_LOC))
+      {
+        long start = Long.parseLong(findChildValue(Const.START, child));
+        long end = Long.parseLong(findChildValue(Const.END, child));
+        double lat = Double.parseDouble(findChildValue(Const.LATITUDE, child));
+        double lon = Double.parseDouble(findChildValue(Const.LONGITUDE, child));
+        tp.add(start, end, new Location(lat, lon));
       }
     }
   }

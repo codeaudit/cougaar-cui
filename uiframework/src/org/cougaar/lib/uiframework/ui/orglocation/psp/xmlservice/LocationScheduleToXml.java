@@ -12,6 +12,8 @@ import org.cougaar.domain.glm.ldm.asset.LocationSchedulePG;
 
 import org.cougaar.lib.aggagent.dictionary.glquery.samples.*;
 
+import org.cougaar.lib.uiframework.ui.orglocation.data.*;
+
 /**
  *  The LocationScheduleToXml class does what its name suggests.  It finds an
  *  Organization asset on the logplan and converts its location schedule to an
@@ -24,7 +26,7 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
   // Collect the schedule information in an OrgTimeLocSchedule.  There should
   // never be more than one of these at any given time unless the usage model
   // changes.
-  private OrgTimeLocSchedule locSchedule = null;
+  private SimpleTPLocation locSchedule = null;
 
   /**
    *  Locate and serialize to XML the schedule of locations planned for this
@@ -51,24 +53,22 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
         }
         Schedule s = org.getLocationSchedulePG().getSchedule();
         if (s != null) {
-          locSchedule = new OrgTimeLocSchedule(orgName);
+          locSchedule = new SimpleTPLocation(orgName);
           Enumeration e = s.getAllScheduleElements();
           while (e.hasMoreElements())
-            locSchedule.add(
-              makeTimeLocation((LocationScheduleElement) e.nextElement()));
+            addToLocSchedule((LocationScheduleElement) e.nextElement());
         }
       }
     }
   }
 
-  // create a TimeLocation instance from a LocationScheduleElement instance
-  private static TimeLocation makeTimeLocation (LocationScheduleElement elt) {
+  private void addToLocSchedule (LocationScheduleElement elt) {
     GeolocLocation location = (GeolocLocation) elt.getLocation();
     double latitude = location.getLatitude().getValue(0);
     double longitude = location.getLongitude().getValue(0);
     long start = elt.getStartTime();
     long end = elt.getEndTime();
-    return new TimeLocation(latitude, longitude, start, end);
+    locSchedule.add(start, end, new Location(latitude, longitude));
   }
 
   /**
@@ -77,10 +77,9 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
    */
   public void returnVal (OutputStream out) {
     if (locSchedule != null) {
-      PrintStream ps = new PrintStream(out);
-      ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-      ps.println(locSchedule.toXmlString());
-      ps.flush();
+      PrintWriter pw = new PrintWriter(out);
+      pw.println(Const.XML_HEAD);
+      locSchedule.toXml(pw);
       locSchedule = null;
     }
   }
@@ -94,7 +93,7 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
   public String randomDataForTest (String orgName, long t0, long t1) {
     int i;
 
-    OrgTimeLocSchedule sched = new OrgTimeLocSchedule(orgName);
+    SimpleTPLocation sched = new SimpleTPLocation(orgName);
     int n_intervals = (int) Math.floor(
       2.0 + 2.0 * (Math.random() + Math.random() + Math.random()));
     double avg_len = (double) (t1 - t0) / (double) n_intervals;
@@ -106,76 +105,13 @@ public class LocationScheduleToXml extends CustomQueryBaseAdapter {
     for (i = 0; i < n_intervals; i++) {
       double lat = -90.0 + 180.0 * Math.random();
       double lon = -180.0 + 360.0 * Math.random();
-      sched.add(new TimeLocation(lat, lon, nexi[i], nexi[i + 1]));
-    }
-    return sched.toXmlString();
-  }
-
-  // An inner class to coordinate the times and locations that collectively
-  // form a location schedule.  Each instance is tagged with the name of the
-  // organization whose schedule it represents.
-  private static class OrgTimeLocSchedule {
-    private Vector elements = new Vector();
-    private String orgName = null;
-
-    public OrgTimeLocSchedule (String org) {
-      orgName = org;
+      sched.add(nexi[i], nexi[i + 1], new Location(lat, lon));
     }
 
-    public void add (TimeLocation tl) {
-      elements.add(tl);
-    }
-
-    public String toXmlString () {
-      StringBuffer buf = new StringBuffer("<OrgLocSchedule>");
-      buf.append("<orgName>");
-      buf.append(orgName);
-      buf.append("</orgName>");
-      for (Iterator i = elements.iterator(); i.hasNext(); )
-        buf.append(((TimeLocation) i.next()).toXmlString());
-      buf.append("</OrgLocSchedule>");
-      return buf.toString();
-    }
-  }
-
-  // An inner class used to coordinate the time and location information.
-  // Collectively, these form a location schedule.
-  private static class TimeLocation {
-    public double lat = -91.0;
-    public double lon = -181.0;
-    public long start = 0;
-    public long end = -1;
-
-    public TimeLocation () {
-    }
-
-    public TimeLocation (
-        double latitude, double longitude, long startTime, long endTime)
-    {
-      lat = latitude;
-      lon = longitude;
-      start = startTime;
-      end = endTime;
-    }
-
-    private static void addAttribXml (StringBuffer b, String tag, Object val) {
-      b.append("<");
-      b.append(tag);
-      b.append(">");
-      b.append(val);
-      b.append("</");
-      b.append(tag);
-      b.append(">");
-    }
-
-    private String toXmlString () {
-      StringBuffer buf = new StringBuffer("<TimeLocation>");
-      addAttribXml(buf, "latitude", String.valueOf(lat));
-      addAttribXml(buf, "longitude", String.valueOf(lon));
-      addAttribXml(buf, "startTime", String.valueOf(start));
-      addAttribXml(buf, "endTime", String.valueOf(end));
-      buf.append("</TimeLocation>");
-      return buf.toString();
-    }
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    pw.println(Const.XML_HEAD);
+    sched.toXml(pw);
+    return sw.getBuffer().toString();
   }
 }

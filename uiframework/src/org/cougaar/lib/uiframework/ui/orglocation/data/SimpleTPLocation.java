@@ -2,6 +2,7 @@
 package org.cougaar.lib.uiframework.ui.orglocation.data;
 
 import java.util.*;
+import java.io.*;
 
 /**
  *  <p>
@@ -22,7 +23,16 @@ import java.util.*;
  */
 public class SimpleTPLocation implements TPLocation {
   private Vector times = new Vector();
-  private Hashtable idIndex = new Hashtable();
+  // private Hashtable idIndex = new Hashtable();
+  private String name = null;
+
+  public String getName () {
+    return name;
+  }
+
+  public SimpleTPLocation (String n) {
+    name = n;
+  }
 
   /**
    *  Retrieve the location understood by this model for the given time.
@@ -34,7 +44,7 @@ public class SimpleTPLocation implements TPLocation {
       TimeLocation n = (TimeLocation) times.elementAt(0);
       for (int i = 1; i < times.size(); i++) {
         TimeLocation m = (TimeLocation) times.elementAt(i);
-        if (m.time > t)
+        if (m.start > t)
           break;
         n = m;
       }
@@ -64,43 +74,65 @@ public class SimpleTPLocation implements TPLocation {
    *  @param t the starting time for the given location
    *  @param loc the location understood by the model for a period of time
    */
-  public void add (String id, long t, Location loc) {
+  public void add (long t0, long t1, Location loc) {
     // TimeLocation n = (TimeLocation) idIndex.get(id);
     TimeLocation n = null;
     if (n == null) {
-      n = new TimeLocation(id, t, loc);
+      n = new TimeLocation(t0, t1, loc);
       // idIndex.put(id, n);
       insertInOrder(n);
     }
     else {
       n.loc.reset(loc.getLatitude(), loc.getLongitude());
-      n.time = t;
+      n.start = t0;
+      n.end = t1;
       shiftPositionOf(n);
     }
   }
 
-  private void shiftPositionOf (TimeLocation n) {
-    int k = times.indexOf(n);
+  public void toXml (PrintWriter out) {
+    Const.openTag(out, Const.SCHEDULE);
+    Const.tagElement(out, Const.ORG_NAME, getName());
+    for (Iterator i = times.iterator(); i.hasNext(); )
+      ((TimeLocation) i.next()).toXml(out);
+    Const.closeTag(out, Const.SCHEDULE);
+  }
+
+  private void shiftPositionOf (TimeLocation loc) {
+    int k = times.indexOf(loc);
     int j = k;
-    if (j > 0 && ((TimeLocation) times.elementAt(j - 1)).time > n.time) {
+    if (j > 0 && ((TimeLocation) times.elementAt(j - 1)).start > loc.start) {
       j--;
-      while (j > 0 && ((TimeLocation) times.elementAt(j - 1)).time > n.time)
+      while (j > 0 && ((TimeLocation) times.elementAt(j - 1)).start > loc.start)
         j--;
     }
     else {
       while (j < times.size() - 1 &&
-          ((TimeLocation) times.elementAt(j + 1)).time < n.time)
+          ((TimeLocation) times.elementAt(j + 1)).start < loc.start)
       {
         j++;
       }
     }
     times.removeElementAt(k);
-    times.insertElementAt(n, j);
+    times.insertElementAt(loc, j);
+    // reconcile endpoints of this interval with neighbors, if necessary; when
+    // in doubt, starting times are accounted more accurate than ending times
+    TimeLocation neighbor = null;
+    if (j < times.size() - 1) {
+      neighbor = (TimeLocation) times.elementAt(j + 1);
+      if (neighbor.start < loc.end)
+        loc.end = neighbor.start;
+    }
+    if (j > 0) {
+      neighbor = (TimeLocation) times.elementAt(j - 1);
+      if (neighbor.end > loc.start)
+        neighbor.end = loc.start;
+    }
   }
 
-  private void insertInOrder (TimeLocation n) {
-    times.add(n);
-    shiftPositionOf(n);
+  private void insertInOrder (TimeLocation loc) {
+    times.add(loc);
+    shiftPositionOf(loc);
   }
 
   /**
@@ -121,10 +153,10 @@ public class SimpleTPLocation implements TPLocation {
     StringBuffer buf = new StringBuffer("SimpleTPLocation[");
     Iterator i = times.iterator();
     if (i.hasNext()) {
-      buf.append(((TimeLocation) i.next()).time);
+      buf.append(((TimeLocation) i.next()).start);
       while (i.hasNext()) {
         buf.append(", ");
-        buf.append(((TimeLocation) i.next()).time);
+        buf.append(((TimeLocation) i.next()).start);
       }
     }
     buf.append("]");
@@ -133,14 +165,23 @@ public class SimpleTPLocation implements TPLocation {
 
   // Keep UID, date, and location together
   private static class TimeLocation {
-    public String uid = null;
-    public long time = -1;
+    public long start = -1;
+    public long end = -1;
     public Location loc = null;
 
-    public TimeLocation (String id, long t, Location l) {
-      uid = id;
-      time = t;
+    public TimeLocation (long t0, long t1, Location l) {
+      start = t0;
+      end = t1;
       loc = l;
+    }
+
+    public void toXml (PrintWriter o) {
+      Const.openTag(o, Const.TIME_LOC);
+      Const.tagElement(o, Const.START, String.valueOf(start));
+      Const.tagElement(o, Const.END, String.valueOf(end));
+      Const.tagElement(o, Const.LATITUDE, String.valueOf(loc.getLatitude()));
+      Const.tagElement(o, Const.LONGITUDE, String.valueOf(loc.getLongitude()));
+      Const.closeTag(o, Const.TIME_LOC);
     }
   }
 }
