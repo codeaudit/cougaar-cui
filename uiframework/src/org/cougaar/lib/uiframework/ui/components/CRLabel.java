@@ -148,7 +148,8 @@ public class CRLabel extends JComponent
             case DOWN_UP:
                 float versionNumber =
                     Float.parseFloat(System.getProperty("java.class.version"));
-                startx = (versionNumber > 46) ? 0 : height - padding;
+                int diff = height - padding;
+                startx = (versionNumber > 46) ? diff/2 : diff;
                 starty = width;
                 pwidth = height;
                 pheight = width;
