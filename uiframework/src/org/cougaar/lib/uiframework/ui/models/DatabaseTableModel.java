@@ -1,5 +1,7 @@
 package org.cougaar.lib.uiframework.ui.models;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.swing.table.TableModel;
@@ -459,6 +461,29 @@ public class DatabaseTableModel implements TableModel
             fireTableChangedEvent(
                 new TableModelEvent(this, TableModelEvent.HEADER_ROW));
         }
+    }
+
+    public void sortRows(final int sortColumn)
+    {
+        Comparator c = new Comparator() {
+                public int compare(Object o1, Object o2)
+                {
+                    Vector v1 = (Vector)o1;
+                    Vector v2 = (Vector)o2;
+                    String s1 = v1.elementAt(sortColumn).toString();
+                    String s2 = v2.elementAt(sortColumn).toString();
+
+                    try {
+                        Float f1 = new Float(s1);
+                        Float f2 = new Float(s2);
+                        return f1.compareTo(f2);
+                    }
+                    catch(Exception e){}
+                    return s1.compareTo(s2);
+                }
+            };
+
+        Collections.sort(dataRows, c);
     }
 
     /**
