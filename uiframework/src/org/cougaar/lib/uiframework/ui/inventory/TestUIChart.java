@@ -21,7 +21,7 @@ public class TestUIChart
      InventoryChartUI icui = new InventoryChartUI();
      //icui.startup("3-FSB",  null, 994291200, 995155200);
      //icui.startup(null,  null, 0, 0, null, null);
-     icui.startup("3-FSB",  null, 994291200, 995155200, "65.84.104.67", "5555", 4);
+     icui.startup("3-FSB",  null, 994291200, 995155200, "localhost", "5555", 4);
      //icui.populate("3-FSB",  "MEAL READY-TO-EAT:NSN/8970001491094");
      //InventoryChartUI icui = new InventoryChartUI(null,  null, 0, 0);
      //InventoryChartUI icui = new InventoryChartUI(null,  null, 994291200, 995155200);

@@ -75,7 +75,7 @@ public class InventoryChartUI implements CougaarUI
     boolean buildFile = false;
     String fileName = null;
     String hp = null;
-    String clusterHost = "65.84.104.67";
+    String clusterHost = "localhost";
     String clusterPort = "5555";
     String thisCluster = null;
     String thisAsset = null;

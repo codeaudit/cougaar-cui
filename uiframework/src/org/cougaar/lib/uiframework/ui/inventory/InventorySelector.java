@@ -1641,7 +1641,7 @@ System.out.println("java.version: " + System.getProperty("java.version"));
      {
         String msg = "Enter cluster Log Plan Server location as host:port";
 
-        String host = "65.84.104.67";
+        String host = "localhost";
         String port = "5555";
         String defaultString = host + ":" + port;
         if ((messageString = OptionPane.showInputDialog(frame, msg, "Cluster Location", 3, null, null, defaultString)) == null)
