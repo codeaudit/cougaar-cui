@@ -116,7 +116,7 @@ public class PointViewGraph2D extends Graph2D
     return(tipText);
   }
 
-  protected Object[] getClosestPoint(int ix, int iy)
+  public Object[] getClosestPoint(int ix, int iy)
   {
     if (dataset.size() == 0)
     {

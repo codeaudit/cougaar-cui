@@ -21,7 +21,7 @@ import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 
 public class InventoryChartUI implements CougaarUI
 {
-  private static InventorySelector inventorySelector = null;
+  public static InventorySelector inventorySelector = null;
 
   public static final NSNItemUnits itemUnits = new NSNItemUnits("ItemUnits.txt");
 

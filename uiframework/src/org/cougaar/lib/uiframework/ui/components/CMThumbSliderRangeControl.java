@@ -96,8 +96,8 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
      */
     public void setRange(RangeModel range)
     {
-        slider.setValueAt(toSlider(range.getMin()), 0);
-        slider.setValueAt(toSlider(range.getMax()), 1);
+        slider.setValueAt(toSlider(range.getFMin()), 0);
+        slider.setValueAt(toSlider(range.getFMax()), 1);
 
         RangeModel newRange = getRange();
         firePropertyChange("range", range, newRange);
@@ -111,8 +111,7 @@ public class CMThumbSliderRangeControl extends COrderedLabeledMThumbSlider
      */
     public RangeModel getRange()
     {
-        return new RangeModel(Math.round(fromSlider(slider.getValueAt(0))),
-                         Math.round(fromSlider(slider.getValueAt(1))));
+        return new RangeModel(fromSlider(slider.getValueAt(0)), fromSlider(slider.getValueAt(1)));
     }
 
     /**

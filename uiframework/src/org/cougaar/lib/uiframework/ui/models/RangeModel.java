@@ -17,6 +17,9 @@ public class RangeModel
     private int min = 0;
     private int max = 0;
 
+    private float fMin = 0.0f;
+    private float fMax = 0.0f;
+
     /**
      * Create a new range object
      *
@@ -27,6 +30,22 @@ public class RangeModel
     {
         this.min = min;
         this.max = max;
+        fMin = (float)min;
+        fMax = (float)max;
+    }
+
+    /**
+     * Create a new range object
+     *
+     * @param min the minimum value for range.
+     * @param max the maximum value for range.
+     */
+    public RangeModel(float min, float max)
+    {
+        fMin = min;
+        fMax = max;
+        this.min = Math.round(min);
+        this.max = Math.round(max);
     }
 
     /**
@@ -37,6 +56,7 @@ public class RangeModel
     public void setMin(int min)
     {
         this.min = min;
+        fMin = (float)min;
     }
 
     /**
@@ -57,6 +77,7 @@ public class RangeModel
     public void setMax(int max)
     {
         this.max = max;
+        fMax = (float)max;
     }
 
     /**
@@ -70,13 +91,56 @@ public class RangeModel
     }
 
     /**
+     * Set the minimum value for range
+     *
+     * @param min the new minimum value for range
+     */
+    public void setFMin(float min)
+    {
+        fMin = min;
+        this.min = Math.round(min);
+    }
+
+    /**
+     * Get the minimum value for range
+     *
+     * @return the current minimum value for range
+     */
+    public float getFMin()
+    {
+        return(fMin);
+    }
+
+    /**
+     * Set the maximum value for range
+     *
+     * @param min the new maximum value for range
+     */
+    public void setFMax(float max)
+    {
+        fMax = max;
+        this.max = (int)max;
+        this.max = Math.round(max);
+    }
+
+    /**
+     * Get the maximum value for range
+     *
+     * @return the current maximum value for range
+     */
+     public float getFMax()
+    {
+        return(fMax);
+    }
+
+    /**
      * represent range as string
      *
      * @return string representation of range
      */
     public String toString()
     {
-        return (String.valueOf(min) + "-" + String.valueOf(max));
+        return (String.valueOf(fMin) + "-" + String.valueOf(fMax));
     }
 
     /**
@@ -90,7 +154,7 @@ public class RangeModel
         if (o instanceof RangeModel)
         {
             RangeModel r = (RangeModel)o;
-            if ((r.min == min) && (r.max == max))
+            if ((r.fMin == fMin) && (r.fMax == fMax))
             {
                 return true;
             }

@@ -12,7 +12,10 @@ public class NSNItemUnits implements Runnable
   public NSNItemUnits(String file)
   {
     this.file = file;
-    (new Thread(this)).start();
+
+    Thread thread = new Thread(this);
+    thread.setPriority(((thread.getPriority()-2) < Thread.MIN_PRIORITY) ? Thread.MIN_PRIORITY : (thread.getPriority()-2));
+    thread.start();
   }
 
   public void run()

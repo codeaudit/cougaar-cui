@@ -120,13 +120,13 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     {
       xaxis = new TimeAndDateAxis();
       xRC = new CMThumbSliderDateAndTimeRangeControl((float)xMinMax[0], (float)(xMinMax[1]));
-      xRC.setRange(new RangeModel((int)xMinMax[0], (int)(xMinMax[1])));
+      xRC.setRange(new RangeModel((float)xMinMax[0], (float)(xMinMax[1])));
     }
     else
     {
       xaxis = new Axis(Axis.BOTTOM);
       xRC = new CMThumbSliderRangeControl((float)xMinMax[0], (float)xMinMax[1]);
-      xRC.setRange(new RangeModel((int)xMinMax[0], (int)xMinMax[1]));
+      xRC.setRange(new RangeModel((float)xMinMax[0], (float)xMinMax[1]));
     }
     xRC.setDynamicLabelsVisible(false);
     xRC.addPropertyChangeListener("range", new RangeChangeListener(xRC, xMinMax, new Axis[] {xaxis}, xScrollSize, xRangeScrollLock));
@@ -140,7 +140,7 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     yaxisRight = new Axis(Axis.RIGHT);
 
     yRC = new CMThumbSliderRangeControl((float)yMinMax[0], (float)yMinMax[1]);
-    yRC.setRange(new RangeModel((int)yMinMax[0], (int)yMinMax[1]));
+    yRC.setRange(new RangeModel((float)yMinMax[0], (float)yMinMax[1]));
 
     yRC.setDynamicLabelsVisible(false);
     yRC.addPropertyChangeListener("range", new RangeChangeListener(yRC, yMinMax, new Axis[] {yaxisLeft, yaxisRight}, yScrollSize, yRangeScrollLock));
@@ -185,11 +185,11 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
       double yMax = graph.getYmaxInRange(xMinMax[0], xMinMax[1]);
       if (Double.isNaN(yMax))
       {
-        yRC.setRange(new RangeModel(0, 1));
+        yRC.setRange(new RangeModel(0.0f, 1.0f));
       }
       else
       {
-        yRC.setRange(new RangeModel((int)0, (int)(yMax + yMax*0.10)));
+        yRC.setRange(new RangeModel(0.0f, (float)(yMax + yMax*0.10)));
       }
     }
   }
@@ -273,6 +273,11 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     graph.suggestedMaxPointDist2 = value;
   }
 
+  public DataSet getClosestDataSet(int x, int y)
+  {
+    return((DataSet)graph.getClosestPoint(x, y)[1]);
+  }
+
   public void setShowGrid(boolean value)
   {
     graph.drawgrid = value;
@@ -327,7 +332,7 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
 
     if (xRangeScrollLock[0])
     {
-      xScrollSize[0] = xRC.getRange().getMax() - xRC.getRange().getMin();
+      xScrollSize[0] = xRC.getRange().getFMax() - xRC.getRange().getFMin();
     }
   }
 
@@ -356,7 +361,7 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
 
     if (yRangeScrollLock[0])
     {
-      yScrollSize[0] = yRC.getRange().getMax() - yRC.getRange().getMin();
+      yScrollSize[0] = yRC.getRange().getFMax() - yRC.getRange().getFMin();
     }
   }
 
@@ -408,6 +413,17 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     yaxisRight.detachAll();
   }
 
+  public void setXAxisExponentDisplayThreshold(int numDigits)
+  {
+    xaxis.exponentDisplayThreshold = numDigits;
+  }
+
+  public void setYAxisExponentDisplayThreshold(int numDigits)
+  {
+    yaxisLeft.exponentDisplayThreshold = numDigits;
+    yaxisRight.exponentDisplayThreshold = numDigits;
+  }
+
   public void setXAxisSigDigitDisplay(int numDigits)
   {
     xaxis.sigDigitDisplay = numDigits;
@@ -451,12 +467,12 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
 
   public RangeModel getTotalXRange()
   {
-    return(new RangeModel((int)graph.getXmin(), (int)graph.getXmax()));
+    return(new RangeModel((float)graph.getXmin(), (float)graph.getXmax()));
   }
 
   public RangeModel getTotalYRange()
   {
-    return(new RangeModel((int)graph.getYmin(), (int)graph.getYmax()));
+    return(new RangeModel((float)graph.getYmin(), (float)graph.getYmax()));
   }
 
   public void resetTotalRange()
@@ -472,32 +488,32 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     if (Double.isNaN(yMax))
     {
       yRC.setSliderRange(0.0f, 1.0f);
-      yRC.setRange(new RangeModel(0, 1));
+      yRC.setRange(new RangeModel(0.0f, 1.0f));
     }
     else
     {
       yRC.setSliderRange(0.0f, (float)(yMax + yMax*0.10));
-      yRC.setRange(new RangeModel((int)0, (int)(yMax + yMax*0.10)));
+      yRC.setRange(new RangeModel(0.0f, (float)(yMax + yMax*0.10)));
     }
   }
 
-  public void resetTotalXRange(int min, int max)
+  public void resetTotalXRange(float min, float max)
   {
-    xRC.setSliderRange((float)min, (float)max);
+    xRC.setSliderRange(min, max);
   }
 
-  public void resetTotalYRange(int min, int max)
+  public void resetTotalYRange(float min, float max)
   {
-    yRC.setSliderRange((float)min, (float)max);
+    yRC.setSliderRange(min, max);
   }
 
   public void resetRange()
   {
 //    xRC.setRange(new RangeModel((int)graph.getXmin(), (int)graph.getXmax()));
-    xRC.setRange(new RangeModel((int)xRC.getMinValue(), (int)xRC.getMaxValue()));
+    xRC.setRange(new RangeModel((float)xRC.getMinValue(), (float)xRC.getMaxValue()));
 //    yRC.setRange(new RangeModel((int)graph.getYmin(), (int)graph.getYmax()));
 //    yRC.setRange(new RangeModel(0, (int)graph.getYmax()));
-    yRC.setRange(new RangeModel((int)yRC.getMinValue(), (int)yRC.getMaxValue()));
+    yRC.setRange(new RangeModel((float)yRC.getMinValue(), (float)yRC.getMaxValue()));
   }
 
   public StackableBarDataSet createStackableBarDataSet(double width)
@@ -654,8 +670,8 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
 
   private void rangeChanged(CMThumbSliderRangeControl rC, double[] minMax, Axis[] axisList, double scrollSize, boolean scrollLock, PropertyChangeListener listener)
   {
-    double currentMin = rC.getRange().getMin();
-    double currentMax = rC.getRange().getMax();
+    double currentMin = rC.getRange().getFMin();
+    double currentMax = rC.getRange().getFMax();
 
     if ((currentMin == currentMax) || ((minMax[0] == currentMin) && (minMax[1] == currentMax)))
     {
@@ -667,21 +683,21 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
       rC.removePropertyChangeListener("range", listener);
       if (minMax[0] != currentMin)
       {
-        rC.setRange(new RangeModel((int)currentMin, (int)(currentMin + scrollSize)));
+        rC.setRange(new RangeModel((float)currentMin, (float)(currentMin + scrollSize)));
       }
       else if (minMax[1] != currentMax)
       {
-        rC.setRange(new RangeModel((int)(currentMax - scrollSize), (int)currentMax));
+        rC.setRange(new RangeModel((float)(currentMax - scrollSize), (float)currentMax));
       }
       else
       {
-        rC.setRange(new RangeModel((int)minMax[0], (int)minMax[1]));
+        rC.setRange(new RangeModel((float)minMax[0], (float)minMax[1]));
       }
       rC.addPropertyChangeListener("range", listener);
     }
 
-    minMax[0] = rC.getRange().getMin();
-    minMax[1] = rC.getRange().getMax();
+    minMax[0] = rC.getRange().getFMin();
+    minMax[1] = rC.getRange().getFMax();
 
     // Must set min and max
     for (int i=0; i<axisList.length; i++)
@@ -691,5 +707,51 @@ public class CChart extends javax.swing.JPanel implements ColorProducer, Propert
     }
 
     graph.repaint();
+  }
+  
+  public static void main(String[] args)
+  {
+    JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    frame.addWindowListener(new WindowAdapter()
+    {
+      public void windowClosed(WindowEvent e)
+      {
+        System.exit(0);
+      }
+    });
+
+    frame.getContentPane().setLayout(new BorderLayout());
+    CChart chart = new CChart("chartTitle", "xLabel", "yLabel", false);
+    frame.getContentPane().add(chart, BorderLayout.CENTER);
+    
+    double[] data = new double[10*2];
+    data[0] = 0.0;
+    data[1] = 1.3;
+    for (int i=2; i<data.length; i+=2)
+    {
+      data[i] = (double)i;
+      data[i+1] = (double)i/(double)data.length/2.0;
+    }
+
+    try
+    {
+      DataSet dataSet = new PolygonFillableDataSet(data, data.length/2, false);
+      chart.attachDataSet(dataSet);
+      chart.resetTotalRange();
+      chart.resetRange();
+
+      chart.setXAxisSigDigitDisplay(2);
+      chart.setYAxisSigDigitDisplay(2);
+      chart.setXAxisExponentDisplayThreshold(0);
+      chart.setYAxisExponentDisplayThreshold(0);
+    }
+    catch (Throwable t)
+    {
+      t.printStackTrace();
+    }
+    
+    frame.setSize(400, 400);
+    frame.show();
   }
 }

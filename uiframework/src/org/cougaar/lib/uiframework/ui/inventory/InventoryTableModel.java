@@ -142,7 +142,7 @@ public class InventoryTableModel extends AbstractTableModel
         }
       }
     	
-    	Vector newColumn = multiplyRows(rv, factor);
+    	Vector newColumn = multiplyRows(rv, factor, false);
     	if(newColumn != null)
       {
       	Vector newData = trimToOnhand(newColumn);
@@ -170,6 +170,7 @@ public class InventoryTableModel extends AbstractTableModel
     
     if(columnExists(InventoryScheduleNames.GOAL_LEVEL) && columnExists(InventoryScheduleNames.REORDER_LEVEL))
     {
+    	System.out.println("start target");
     	generatedColumn = combineDataColumns(InventoryScheduleNames.GOAL_LEVEL, InventoryScheduleNames.REORDER_LEVEL, "Experimental Column", true);
     	double factor = 0.5;
     	Vector rv = null;
@@ -182,7 +183,7 @@ public class InventoryTableModel extends AbstractTableModel
         }
       }
     	
-    	Vector newColumn = multiplyRows(rv, factor);
+    	Vector newColumn = multiplyRows(rv, factor, false);
     	if(newColumn != null)
       {
       	Vector newData = trimToOnhand(newColumn);
@@ -190,7 +191,7 @@ public class InventoryTableModel extends AbstractTableModel
         columnNames.add(InventoryScheduleNames.TARGET_LEVEL);
         
       }
-      
+      System.out.println("end target");
     }
     
     //  batch datasets for Projected Due In
@@ -731,7 +732,7 @@ public class InventoryTableModel extends AbstractTableModel
       else if(rdiVector != null && diVector != null && udiVector != null)
       {
 //        newRow = calcNewInRow(rdiVector, diVector, udiVector);
-        newRow = calcNewOutRow(rdiVector, diVector, false, true);
+        newRow = calcNewOutRow(rdiVector, diVector, false, false);
         newRow = calcNewOutRow(newRow, udiVector, false, true);
       }
       else if(rdiVector != null && udiVector != null && diVector == null)
@@ -1177,7 +1178,7 @@ public Vector calcNewOutRow(Vector rv, Vector dv, boolean sum, boolean previous)
 /*******************************************************************************************
 
 ********************************************************************************************/
-public Vector multiplyRows(Vector rv, double factor)
+public Vector multiplyRows(Vector rv, double factor, boolean filterZero)
   {
     Vector row = new Vector();
        
@@ -1196,7 +1197,7 @@ public Vector multiplyRows(Vector rv, double factor)
     	thisValue = 0;
     	ScheduleTableEntry newRow = new ScheduleTableEntry(0, thisTime, thisTime);  // thisTime has been set to the next time to make a row
       r = (ScheduleTableEntry) rv.elementAt(i);
-      if(r.quantity == 0)
+      if(r.quantity == 0 && filterZero)
         continue;           // don't calc a point for this one
       if(r != null)
       {

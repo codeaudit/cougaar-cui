@@ -52,7 +52,7 @@ import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionTimeStat
 import org.cougaar.domain.mlm.ui.planviewer.inventory.InventoryExecutionListener;
 
 
-public class InventorySelector implements CougaarUI
+public class InventorySelector implements CougaarUI, InventoryDataProvider
 {
   private static final int FILL_PATTERN = -2;
   private static final int VISIBLE      = -1;
@@ -71,6 +71,7 @@ public class InventorySelector implements CougaarUI
 //  CSplitPane innerSplit = new CSplitPane(JSplitPane.VERTICAL_SPLIT);
   JComboBox clusterNameBox = new JComboBox();
   JComboBox assetNameBox = new JComboBox();
+
   boolean doDisplayTable = true;
   boolean listFilled = false;
   String currentAsset = null;
@@ -85,7 +86,7 @@ public class InventorySelector implements CougaarUI
   Hashtable clusterURLs;
   Hashtable clusterContainer = new Hashtable(1);
   Hashtable clusterData = null;
-  Hashtable assetInventories = null;
+  
   String clusterName; // set from code base if called as applet
   String fileName = null;
   String cacheFileName = "inventoryCache.inv";
@@ -101,7 +102,8 @@ public class InventorySelector implements CougaarUI
   InventoryExecutionTimeStatusHandler timeStatusHandler=null;
   InventoryExecutionListener executionListener=null;
 
-  private BlackJackInventoryChart chart = new BlackJackInventoryChart("", null, "Quantity", true);
+//  private BlackJackInventoryChart chart = new BlackJackInventoryChart("", null, "Quantity", true);
+  public BlackJackInventoryChart chart = new BlackJackInventoryChart("", null, "Quantity", true);
   private CChartLegend legend = new CChartLegend();
   private JTable table = new JTable(new InventoryTableModel());
   private JScrollPane tableScrollPane = new JScrollPane(table);
@@ -134,6 +136,10 @@ public class InventorySelector implements CougaarUI
   private String cluster = null;
   private String asset = null;
 
+  private Hashtable mainChartVisibilityList = new Hashtable(1);
+  private Hashtable minorChart1VisibilityList = new Hashtable(1);
+  private Hashtable minorChart2VisibilityList = new Hashtable(1);
+
   public InventorySelector()
   {
   }
@@ -158,7 +164,8 @@ public class InventorySelector implements CougaarUI
     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     startParam = (int)sTime;
     endParam = (int)eTime;
-    assetInventories = new Hashtable(1);
+    
+    fileName = file;
 
     if(file != null )
     {
@@ -189,7 +196,13 @@ public class InventorySelector implements CougaarUI
         {
           if(buildFile)
             saveObject();
-          System.exit(0);
+          if (frame instanceof JFrame)
+          {
+            System.exit(0);
+          }
+          else if (frame instanceof JInternalFrame)
+          {
+          }
         }
       });
 
@@ -238,7 +251,14 @@ public class InventorySelector implements CougaarUI
    { //file not found or something wrong with opening it
     System.err.println("error opening  file"  +
                         filename );
-    System.exit(1);
+
+    if (frame instanceof JFrame)
+    {
+      System.exit(1);
+    }
+    else if (frame instanceof JInternalFrame)
+    {
+    }
    }
 
    try
@@ -322,7 +342,7 @@ public class InventorySelector implements CougaarUI
 
     clusterNameBox.addActionListener(new FillAssetList());
     JButton refreshButton = new JButton("Refresh");
-
+    refreshButton.setPreferredSize(new Dimension(100,25));
     refreshButton.addActionListener(new RefreshAction());
     assetNameBox.addActionListener(queryListener);
     queryPanel.add(clusterNameBox);
@@ -382,7 +402,7 @@ public class InventorySelector implements CougaarUI
            }
            else
            {
-            JOptionPane.showMessageDialog(null, "No Data in File", "alert", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(chart, "No Data in File", "alert", JOptionPane.ERROR_MESSAGE);
            }
         }
 
@@ -416,6 +436,13 @@ public class InventorySelector implements CougaarUI
     //System.out.println("Submitting: ASSET to: " + clusterName +
     //                   " for: " + PSP_id);
     String clusterURL = (String)clusterURLs.get(clusterName);
+    
+    if (clusterURL == null)
+    {
+      System.err.println("Error: No cluster URL found for " + clusterName);
+      return(null);
+    }
+    
     InputStream is = null;
     try
     {
@@ -499,7 +526,7 @@ public class InventorySelector implements CougaarUI
 
     }
     if (!vNames.isEmpty())
-    clusterName = (String)vNames.elementAt(0);
+      clusterName = (String)vNames.elementAt(0);
    
   }
 
@@ -528,6 +555,10 @@ public class InventorySelector implements CougaarUI
    JMenuItem openItem = (JMenuItem) fileMenu.add(new JMenuItem("Open"));
    openItem.setMnemonic('O');
    openItem.addActionListener(new GetFile());
+   
+   JMenuItem saveItem = (JMenuItem) fileMenu.add(new JMenuItem("Save and Exit"));
+   saveItem.setMnemonic('S');
+   saveItem.addActionListener(new SetFile());
 
    JMenuItem connectItem = (JMenuItem) fileMenu.add(new JMenuItem("Connect"));
    connectItem.setMnemonic('T');
@@ -925,8 +956,9 @@ public class InventorySelector implements CougaarUI
     for (int i=0; i<dataSets.length; i++)
     {
       menu = (JMenu)supplierChartMenu.add(new JMenu(dataSets[i].dataName));
-      DataSetTypeCheckListener listener = new DataSetTypeCheckListener((PolygonFillableDataSet)dataSets[i]);
-      MenuUtility.addCheckMenuItem(menu, "Visible", "" + VISIBLE, listener, dataSets[i].visible);
+      DataSetTypeCheckListener listener = new DataSetTypeCheckListener((PolygonFillableDataSet)dataSets[i], minorChart1VisibilityList);
+//      MenuUtility.addCheckMenuItem(menu, "Visible", "" + VISIBLE, listener, dataSets[i].visible);
+      addVisibilityCheck(menu, listener, (PolygonFillableDataSet)dataSets[i], minorChart1VisibilityList);
       MenuUtility.addCheckMenuItem(menu, "Use Fill Pattern", "" + FILL_PATTERN, listener, ((dataSets[i] instanceof PolygonFillableDataSet) && ((PolygonFillableDataSet)dataSets[i]).useFillPattern));
     }
 
@@ -935,8 +967,9 @@ public class InventorySelector implements CougaarUI
     for (int i=0; i<dataSets.length; i++)
     {
       menu = (JMenu)consumerChartMenu.add(new JMenu(dataSets[i].dataName));
-      DataSetTypeCheckListener listener = new DataSetTypeCheckListener((PolygonFillableDataSet)dataSets[i]);
-      MenuUtility.addCheckMenuItem(menu, "Visible", "" + VISIBLE, listener, dataSets[i].visible);
+      DataSetTypeCheckListener listener = new DataSetTypeCheckListener((PolygonFillableDataSet)dataSets[i], minorChart2VisibilityList);
+//      MenuUtility.addCheckMenuItem(menu, "Visible", "" + VISIBLE, listener, dataSets[i].visible);
+      addVisibilityCheck(menu, listener, (PolygonFillableDataSet)dataSets[i], minorChart2VisibilityList);
       MenuUtility.addCheckMenuItem(menu, "Use Fill Pattern", "" + FILL_PATTERN, listener, ((dataSets[i] instanceof PolygonFillableDataSet) && ((PolygonFillableDataSet)dataSets[i]).useFillPattern));
     }
   }
@@ -945,9 +978,10 @@ public class InventorySelector implements CougaarUI
   {
     ButtonGroup group = new ButtonGroup();
 
-    DataSetTypeCheckListener listener = new DataSetTypeCheckListener(dataSet);
+    DataSetTypeCheckListener listener = new DataSetTypeCheckListener(dataSet, mainChartVisibilityList);
 
-    MenuUtility.addCheckMenuItem(menu, "Visible", "" + VISIBLE, listener, dataSet.visible);
+//    MenuUtility.addCheckMenuItem(menu, "Visible", "" + VISIBLE, listener, dataSet.visible);
+    addVisibilityCheck(menu, listener, (PolygonFillableDataSet)dataSet, mainChartVisibilityList);
     MenuUtility.addCheckMenuItem(menu, "Use Fill Pattern", "" + FILL_PATTERN, listener, ((dataSet instanceof PolygonFillableDataSet) && ((PolygonFillableDataSet)dataSet).useFillPattern));
 
     group.add(MenuUtility.addRadioButtonMenuItem(menu, "Bar Chart", listener, "" + BAR, (dataSet instanceof BarDataSet) && (!dataSet.polygonFill)));
@@ -963,6 +997,26 @@ public class InventorySelector implements CougaarUI
     group.add(MenuUtility.addRadioButtonMenuItem(menu, "Filled Line Chart", listener, "" + FILLED_LINE, (dataSet.getClass().equals(PolygonFillableDataSet.class)) && (dataSet.polygonFill)));
   }
 
+  private void addVisibilityCheck(JMenu menu, DataSetTypeCheckListener listener, PolygonFillableDataSet dataSet, Hashtable visibilityList)
+  {
+    Hashtable groupVisibility = (Hashtable)visibilityList.get(dataSet.dataGroup);
+    if (groupVisibility == null)
+    {
+      groupVisibility = new Hashtable(1);
+      visibilityList.put(dataSet.dataGroup, groupVisibility);
+    }
+    
+    Boolean visible = (Boolean)groupVisibility.get(dataSet.dataName);
+    if (visible == null)
+    {
+      visible = new Boolean(dataSet.visible);
+      groupVisibility.put(dataSet.dataName, visible);
+    }
+    
+    dataSet.visible = visible.booleanValue();
+    
+    MenuUtility.addCheckMenuItem(menu, "Visible", "" + VISIBLE, listener, dataSet.visible);
+  }
 
   class ChartViewsCheckListener extends AbstractAction
   {
@@ -998,10 +1052,12 @@ public class InventorySelector implements CougaarUI
   class DataSetTypeCheckListener extends AbstractAction
   {
     private PolygonFillableDataSet dataSet = null;
+    private Hashtable visibilityList = null;
 
-    public DataSetTypeCheckListener(PolygonFillableDataSet dataSet)
+    public DataSetTypeCheckListener(PolygonFillableDataSet dataSet, Hashtable visibilityList)
     {
       this.dataSet = dataSet;
+      this.visibilityList = visibilityList;
     }
 
     public void actionPerformed(ActionEvent e)
@@ -1031,6 +1087,7 @@ public class InventorySelector implements CougaarUI
             if (!setPolygonFilled(dataSet, StepDataSet.class, false))
             {
               dataSet = replace(dataSet, new StepDataSet(data, data.length/2, false));
+              ((StepDataSet)dataSet).endPointLead = 60L*60L*24L;
             }
           break;
 
@@ -1038,6 +1095,7 @@ public class InventorySelector implements CougaarUI
             if (!setPolygonFilled(dataSet, StepDataSet.class, true))
             {
               dataSet = replace(dataSet, new StepDataSet(data, data.length/2, true));
+              ((StepDataSet)dataSet).endPointLead = 60L*60L*24L;
             }
           break;
 
@@ -1059,6 +1117,9 @@ public class InventorySelector implements CougaarUI
             if (e.getSource() instanceof JCheckBoxMenuItem)
             {
               chart.setVisible(dataSet, ((JCheckBoxMenuItem)e.getSource()).getState());
+
+              Hashtable groupVisibility = (Hashtable)visibilityList.get(dataSet.dataGroup);
+              groupVisibility.put(dataSet.dataName, new Boolean(dataSet.visible));
             }
           break;
 
@@ -1150,6 +1211,73 @@ public class InventorySelector implements CougaarUI
     }
   }
 
+  public String getSelectedCluster()
+  {
+    return(getSelectedItem(clusterNameBox));
+  }
+
+  public DataSet[] getAssetDataSets()
+  {
+    return(chart.mainChart.getDataSets());
+  }
+
+  public void setSelectedCluster(String selection)
+  {
+    setSelectedItem(clusterNameBox, selection);
+  }
+
+  public String getSelectedAsset()
+  {
+    return(getSelectedItem(assetNameBox));
+  }
+
+  public void setSelectedAsset(String selection)
+  {
+    setSelectedItem(assetNameBox, selection);
+  }
+
+  public String getFileName()
+  {
+    return(fileName);
+  }
+
+  public String getClusterHost()
+  {
+    return(clusterHost);
+  }
+
+  public String getClusterPort()
+  {
+    return(clusterPort);
+  }
+
+  protected String getSelectedItem(JComboBox comboBox)
+  {
+    String selected = null;
+    if ((comboBox != null) && (comboBox.getSelectedItem() != null))
+    {
+      selected = (String)comboBox.getSelectedItem();
+    }
+    
+    return(selected);
+  }
+
+  protected void setSelectedItem(JComboBox comboBox, String selection)
+  {
+    if (comboBox != null)
+    {
+      ComboBoxModel model = comboBox.getModel();
+      for (int i=0; i<model.getSize(); i++)
+      {
+        if (selection.equals(model.getElementAt(i)))
+        {
+          comboBox.setSelectedItem((String)selection);
+          break;
+        }
+      }
+    }
+  }
+
   class RefreshAction implements ActionListener
   {
     public void actionPerformed(ActionEvent e)
@@ -1157,6 +1285,110 @@ public class InventorySelector implements CougaarUI
       queryListener.performQuery(true);
     }
   }
+
+  private void updateChartView()
+  {
+    // Must set the total range of the chart slider
+    chart.resetTotalRange();
+    chart.resetRange();
+
+    // Set the slider to be in a two month range from the start of the data
+    long msInTwoMonths = 1000L*60L*60L*24L*30L*2L;
+    chart.setInitialRange(msInTwoMonths);
+    //System.out.println("st " + start);
+    if(startParam != 0)
+    {
+      //System.out.println("range " + startParam + " " + endParam);
+      chart.setXScrollerRange(new RangeModel(startParam, endParam));
+    }
+
+    setDataSetMenu();
+    frame.validate();
+
+    if (autoDataRefresh)
+    {
+      refreshTimer.restart();
+    }
+  }
+
+  // -------- InventoryDataProvider interface
+
+  public Hashtable getInventoryData(String clusterName, String assetName)
+  {
+    System.out.println("getInventoryData: " + clusterName + "   " + assetName);
+    
+    clusterName = clusterName == null ? getSelectedCluster() : clusterName;
+    assetName = assetName == null ? getSelectedAsset() : assetName;
+
+    InventoryQuery query = null;
+    Hashtable sets = null;
+    if ((clusterName != null) && (assetName != null))
+    {
+      try
+      {
+        if(!fileBased && !useCache)
+        {
+          Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
+          query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
+          new QueryHelper(query, hostAndPort + "$" + clusterName + "/", null, null, null, false, null);
+        }
+        else if(fileBased)
+        {
+        	//System.out.println("clusterName " + clusterName);
+          Hashtable assetList = (Hashtable) clusterData.get(clusterName);
+          UISimpleInventory inventory = (UISimpleInventory) assetList.get(assetName);
+          query = new InventoryQuery(inventory, clusterName, clusterContainer);
+          new QueryHelper(query, null, null, null);
+        }
+        else if(useCache)
+        {
+          if(clusterContainer.size() > 0)
+          {
+            Hashtable assetList = (Hashtable) clusterContainer.get(clusterName);
+            if(assetList.containsKey(assetName))
+            {
+              System.out.println("from cache");
+              UISimpleInventory inventory = (UISimpleInventory) assetList.get(assetName);
+              query = new InventoryQuery(inventory, clusterName, clusterContainer);
+              new QueryHelper(query, null, null, null);
+            }
+            else
+            {
+              System.out.println("from port");
+              setupTimeStatusHandler();
+              Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
+              query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
+              new QueryHelper(query, hostAndPort + "$" + clusterName + "/", null, null, null, false, null);
+            }
+          }
+        }
+      }
+      catch (Throwable t)
+      {
+        t.printStackTrace();
+      }
+
+      if (query != null)
+      {
+        sets = (Hashtable)query.getDataSets().clone();
+      }
+    }
+
+    return(sets);
+  }
+
+  public String getDefaultAssetName()
+  {
+    return(getSelectedAsset());
+  }
+
+  public String getDefaultOrganizationName()
+  {
+    return(getSelectedCluster());
+  }
+
+  // ---------------------------------------------------------
+
 
   class DoQuery implements ActionListener // listens on assetnamebox selecteditemchange
   {
@@ -1168,36 +1400,8 @@ public class InventorySelector implements CougaarUI
         refreshTimer.stop();
 
         InventoryQuery query = performQuery(true);
-
-        // Must set the total range of the chart slider
-        chart.resetTotalRange();
-
-        // Set the slider to be in a two month range from the start of the data
-        long msInTwoMonths = 1000L*60L*60L*24L*30L*2L;
-        chart.setInitialRange(msInTwoMonths);
-        //System.out.println("st " + start);
-        if(startParam != 0)
-        {
-          //System.out.println("range " + startParam + " " + endParam);
-          chart.setXScrollerRange(new RangeModel(startParam, endParam));
-        }
-
-        /*if (frame instanceof JFrame)
-        {
-          ((JFrame)frame).setTitle(query.model.getAssetName());
-        }
-        else if (frame instanceof JInternalFrame)
-        {
-          ((JInternalFrame)frame).setTitle(query.model.getAssetName());
-        }*/
-
-        setDataSetMenu();
-        frame.validate();
         
-        if (autoDataRefresh)
-        {
-          refreshTimer.restart();
-        }
+        updateChartView();
       }
       catch(Throwable ex)
       {
@@ -1219,7 +1423,8 @@ public class InventorySelector implements CougaarUI
         if(!fileBased && !useCache)
         {
           setupTimeStatusHandler();
-          query = new InventoryQuery(assetName, clusterName, clusterContainer, assetInventories);
+          Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
+          query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
           new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable, timeStatusHandler);
         }
         else if(fileBased)
@@ -1237,16 +1442,17 @@ public class InventorySelector implements CougaarUI
             Hashtable assetList = (Hashtable) clusterContainer.get(clusterName);
             if(assetList.containsKey(assetName))
             {
-              System.err.println("from cache");
+              System.out.println("from cache");
               UISimpleInventory inventory = (UISimpleInventory) assetList.get(assetName);
               query = new InventoryQuery(inventory, clusterName, clusterContainer);
               new QueryHelper(query, chart, table, legend);
             }
             else
             {
-              System.err.println("from port");
+              System.out.println("from port");
               setupTimeStatusHandler();
-              query = new InventoryQuery(assetName, clusterName, clusterContainer, assetInventories);
+              Hashtable clusterHash = (Hashtable) clusterContainer.get(clusterName);
+              query = new InventoryQuery(assetName, clusterName, clusterContainer, clusterHash);
               new QueryHelper(query, hostAndPort + "$" + clusterName + "/", chart, table, legend, doDisplayTable, timeStatusHandler);
             }
           }
@@ -1265,7 +1471,7 @@ public class InventorySelector implements CougaarUI
       {
         ex.printStackTrace();
       }
-      
+
       return(query);
     }
   }
@@ -1330,6 +1536,7 @@ public class InventorySelector implements CougaarUI
 	      			//  set currentAsset as selected item
 	      			assetNameBox.setSelectedItem(currentAsset);
 	      			queryListener.performQuery(false);
+              updateChartView();
 	      			foundMatch = true;
 	      			break;
 	      		}
@@ -1345,6 +1552,7 @@ public class InventorySelector implements CougaarUI
 		  			assetNameBox.setSelectedItem(myAssetNames.elementAt(0));
 		  			assetNameBox.addActionListener(queryListener);
 		  			queryListener.performQuery(false);
+            updateChartView();
 		   		}
 	      }
 	      else
@@ -1369,7 +1577,29 @@ public class InventorySelector implements CougaarUI
     }
   }
 
+  public class SetFile extends AbstractAction
+   {
 
+     public void actionPerformed(ActionEvent e)
+     {
+        JFileChooser fc = new JFileChooser(System.getProperty("user.dir") );
+        fc.setFileFilter(new InvFilter());
+        if(fc.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION)
+        {
+          //System.err.println("file is " + fc.getSelectedFile());
+          cacheFileName = fc.getSelectedFile().getName();
+          if(buildFile)
+            saveObject();
+          if (frame instanceof JFrame)
+          {
+            System.exit(0);
+          }
+          else if (frame instanceof JInternalFrame)
+          {
+          }
+        }
+     }
+   }
 
   public class GetFile extends AbstractAction
    {
@@ -1388,6 +1618,13 @@ public class InventorySelector implements CougaarUI
         }
      }
    }
+
+  public void loadInventoryFile(String fileName)
+  {
+    getFileData(fileName);
+    fileBased = true;
+    addClustersFromHash();
+  }
 
    public class GetConnectionData extends AbstractAction
    {
@@ -1417,6 +1654,7 @@ public class InventorySelector implements CougaarUI
         clusterHost = host;
         clusterPort = port;
         hostAndPort = "http://" + clusterHost + ":" + clusterPort + "/";
+        fileName = null;
         fileBased = false;
         addClusterList();
      }

@@ -22,9 +22,13 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
   public static final int SHOW_SUPPLIER_CHART = 2;
   public static final int SHOW_CONSUMER_CHART = 3;
 
-  private CChart mainChart = null;
-  private CChart minorChart1 = null;
-  private CChart minorChart2 = null;
+//  private CChart mainChart = null;
+//  private CChart minorChart1 = null;
+//  private CChart minorChart2 = null;
+
+  public CChart mainChart = null;
+  public CChart minorChart1 = null;
+  public CChart minorChart2 = null;
 
   private JPanel chartPanel = new JPanel(new GridBagLayout());
 
@@ -462,7 +466,7 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
 
     if (xRangeScrollLock)
     {
-      xScrollSize = xRC.getRange().getMax() - xRC.getRange().getMin();
+      xScrollSize = xRC.getRange().getFMax() - xRC.getRange().getFMin();
     }
   }
 
@@ -501,18 +505,19 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
     for (int i=0; i<chartList.length; i++)
     {
       chartList[i].resetTotalRange();
+      chartList[i].resetYRangeScroller();
+      chartList[i].recalculateAutoYRange();
     }
 
     RangeModel range = mainChart.getTotalXRange();
-
-    minorChart1.resetTotalXRange(range.getMin(), range.getMax());
-    minorChart2.resetTotalXRange(range.getMin(), range.getMax());
-    xRC.setSliderRange(range.getMin(), range.getMax());
+    minorChart1.resetTotalXRange(range.getFMin(), range.getFMax());
+    minorChart2.resetTotalXRange(range.getFMin(), range.getFMax());
+    xRC.setSliderRange(range.getFMin(), range.getFMax());
   }
 
   public void setInitialRange(long timeRange)
   {
-    xRC.setRange(new RangeModel((int)xRC.getMinValue(), (int)(xRC.getMinValue() + (timeRange/xRC.getTimeScale()))));
+    xRC.setRange(new RangeModel((float)xRC.getMinValue(), (float)(xRC.getMinValue() + (timeRange/xRC.getTimeScale()))));
   }  
 
   public void resetRange()
@@ -676,8 +681,8 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
 
   private void rangeChanged(CMThumbSliderRangeControl rC, double[] minMax, CChart[] chartList, double scrollSize, boolean scrollLock, PropertyChangeListener listener)
   {
-    double currentMin = rC.getRange().getMin();
-    double currentMax = rC.getRange().getMax();
+    double currentMin = rC.getRange().getFMin();
+    double currentMax = rC.getRange().getFMax();
 
     if ((currentMin == currentMax) || ((minMax[0] == currentMin) && (minMax[1] == currentMax)))
     {
@@ -689,26 +694,26 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
       rC.removePropertyChangeListener("range", listener);
       if (minMax[0] != currentMin)
       {
-        rC.setRange(new RangeModel((int)currentMin, (int)(currentMin + scrollSize)));
+        rC.setRange(new RangeModel((float)currentMin, (float)(currentMin + scrollSize)));
       }
       else if (minMax[1] != currentMax)
       {
-        rC.setRange(new RangeModel((int)(currentMax - scrollSize), (int)currentMax));
+        rC.setRange(new RangeModel((float)(currentMax - scrollSize), (float)currentMax));
       }
       else
       {
-        rC.setRange(new RangeModel((int)minMax[0], (int)minMax[1]));
+        rC.setRange(new RangeModel((float)minMax[0], (float)minMax[1]));
       }
       rC.addPropertyChangeListener("range", listener);
     }
 
-    minMax[0] = rC.getRange().getMin();
-    minMax[1] = rC.getRange().getMax();
+    minMax[0] = rC.getRange().getFMin();
+    minMax[1] = rC.getRange().getFMax();
 
     // Must set min and max
     if ((viewMode == SHOW_INVENTORY_CHART) || (scrollMainChart))
     {
-      mainChart.setXScrollerRange(new RangeModel((int)minMax[0], (int)minMax[1]));
+      mainChart.setXScrollerRange(new RangeModel((float)minMax[0], (float)minMax[1]));
     }
     else
     {
@@ -717,7 +722,7 @@ public class BlackJackInventoryChart extends javax.swing.JPanel implements Prope
 
     mainChart.setXDividers(minMax[0], minMax[1]);
 
-    minorChart1.setXScrollerRange(new RangeModel((int)minMax[0], (int)minMax[1]));
-    minorChart2.setXScrollerRange(new RangeModel((int)minMax[0], (int)minMax[1]));
+    minorChart1.setXScrollerRange(new RangeModel((float)minMax[0], (float)minMax[1]));
+    minorChart2.setXScrollerRange(new RangeModel((float)minMax[0], (float)minMax[1]));
   }
 }

@@ -145,6 +145,7 @@ public class InventoryQuery implements Query, PropertyChangeListener
       try {
         ObjectInputStream p = new ObjectInputStream(is);
         inventory = (UISimpleInventory)p.readObject();
+        //System.out.println("inventory = " + inventory);
         if(buildFile)
         {
           //System.out.println(assetName);
@@ -152,6 +153,7 @@ public class InventoryQuery implements Query, PropertyChangeListener
         }
       } catch (Exception e) {
         System.err.println("Object read exception: " + e);
+        //System.out.println("Object read exception: " + e);
         return;
       }
     }
@@ -199,18 +201,18 @@ public class InventoryQuery implements Query, PropertyChangeListener
 
   public boolean setChartData(String title, BlackJackInventoryChart chart, CChartLegend legend)
   {
+    chart.detachAllDataSets();
+    legend.removeAllDataSets();
+
+//      chart.setTitle(model.getAssetName());
+    // The slider control uses an int for range which cannot hold a millis since 1970 date so we scaled the data time
+    chart.setTimeScale(InventoryTableModel.timeScale);
+    // Set the chart Y-axis to display the same number of digits past the decimal as the table displays
+    chart.setYAxisSigDigitDisplay(2);
+
     if (inventory != null)
     {
 //      System.out.println("try for chart");
-
-      chart.detachAllDataSets();
-      legend.removeAllDataSets();
-
-//      chart.setTitle(model.getAssetName());
-      // The slider control uses an int for range which cannot hold a millis since 1970 date so we scaled the data time
-      chart.setTimeScale(InventoryTableModel.timeScale);
-      // Set the chart Y-axis to display the same number of digits past the decimal as the table displays
-      chart.setYAxisSigDigitDisplay(2);
 
       try
       {
@@ -313,11 +315,11 @@ public class InventoryQuery implements Query, PropertyChangeListener
         {
           LabelIcon icon = new LabelIcon(dataSet);
            TableCellRenderer headerRenderer = tblColumn[i].getHeaderRenderer();
-	   //A java V1.3 compatability thing-headerRenderers default is null
-	   if(headerRenderer == null) {
-	       headerRenderer = new DefaultTableCellRenderer();
-	       tblColumn[i].setHeaderRenderer(headerRenderer);
-	   }
+ 	   //A java V1.3 compatability thing-headerRenderers default is null
+ 	   if(headerRenderer == null) {
+ 	       headerRenderer = new DefaultTableCellRenderer();
+ 	       tblColumn[i].setHeaderRenderer(headerRenderer);
+ 	   }
            ((DefaultTableCellRenderer)headerRenderer).setIcon(icon);
           //System.out.println("persistent name " + model.getColumnName(i));
         }

@@ -75,6 +75,12 @@ public class QueryHelper implements ActionListener,
     
     clusterName = clusterURL.substring(clusterURL.indexOf('$')+1, clusterURL.length()-1);
     assetName = query.getQueryToSend();
+    
+    if (assetName == null)
+    {
+      assetName = "";
+    }
+    
     int indx = assetName.indexOf(":");
     if (indx > -1) assetName = assetName.substring(indx+1);
 
@@ -92,9 +98,11 @@ public class QueryHelper implements ActionListener,
     System.out.println("buildTableModel ");
     query.buildTableModel();
 
-    if (doDisplayTable)
+    if (doDisplayTable && table != null)
       displayTable(query);
-    displayChart();
+
+    if (chart != null)
+      displayChart();
   }
 
   /** Called by an application when data is retrieved from a file.
@@ -111,9 +119,11 @@ public class QueryHelper implements ActionListener,
     int indx = assetName.indexOf(":");
     query.buildTableModel();
 
-    if (doDisplayTable)
+    if (doDisplayTable && table != null)
       displayTable(query);
-    displayChart();
+
+    if (chart != null)
+      displayChart();
   }
 
 
@@ -159,7 +169,7 @@ public class QueryHelper implements ActionListener,
 
 
   private void displayErrorString(String reply) {
-    JOptionPane.showMessageDialog(null, reply, reply,
+    JOptionPane.showMessageDialog(chart, reply, reply,
                                   JOptionPane.ERROR_MESSAGE);
   }
 

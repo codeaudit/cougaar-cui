@@ -35,7 +35,7 @@ public class  InventoryScheduleNames implements PlotColors, UISimpleNamedSchedul
 
 
   // Not displayed
-  public static final String UNCONFIRMED_DUE_IN = "Projected Due In";
+  public static final String UNCONFIRMED_DUE_IN = "Unconfirmed Due In";
 
 
   public static final String INVENTORY_STATUS = "Inventory Status";
@@ -185,6 +185,8 @@ public final static String INACTIVE = "_INACTIVE"; // Suffix for inactive schedu
     {
       return(INACTIVE);
     }
+    else if(scheduleName.equals(UNCONFIRMED_DUE_IN))
+      return UNCONFIRMED_DUE_IN;
 
     return(null);
   }
@@ -294,6 +296,7 @@ public final static String INACTIVE = "_INACTIVE"; // Suffix for inactive schedu
     else if (scheduleName.equals(ON_HAND))
     {
       dataSet = new StepDataSet(data, data.length/2, true);
+      ((StepDataSet)dataSet).endPointLead = 60L*60L*24L;
     }
     else if (scheduleName.equals(DUE_OUT))
     {
