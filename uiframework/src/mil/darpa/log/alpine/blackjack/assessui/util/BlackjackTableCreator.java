@@ -189,7 +189,7 @@ public class BlackjackTableCreator
             }
             catch(SQLException e) {/* it doesn't yet exist; good */}
             stmt.executeUpdate("CREATE TABLE assessmentItemUnits " +
-                                "(nsn        VARCHAR2(32) NOT NULL," +
+                                "(nsn        VARCHAR(32) NOT NULL," +
                                  "unit_issue CHAR(2)      NOT NULL," +
                                 "primary key (nsn))");
         }
@@ -242,6 +242,9 @@ public class BlackjackTableCreator
         // item unit table (based on tables from blackjack8)
         if (createItemUnitTable)
         {
+            //dbURL = "jdbc:oracle:thin:@eiger.alpine.bbn.com:1521:alp";
+            //dbDriver = "oracle.jdbc.driver.OracleDriver";
+
             Connection anothercon = null;
             Statement anotherstmt = null;
             ResultSet anotherrs = null;
