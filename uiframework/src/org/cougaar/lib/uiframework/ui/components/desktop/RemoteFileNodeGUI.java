@@ -280,7 +280,7 @@ public class RemoteFileNodeGUI extends org.cougaar.lib.uiframework.ui.components
     return(true);
   }
   
-  //public Task createHeartBeatTask(RootFactory theLDMF, String org, String verb)
+  //public Task createHeartBeatTask(PlanningFactory theLDMF, String org, String verb)
   //{
   private FileNode createRemoteTreeModel(String parameters)
   {

@@ -23,7 +23,7 @@ package org.cougaar.lib.uiframework.ui.orglocation.psp;
 
 import java.util.*;
 
-import org.cougaar.core.plugin.PluginDelegate;
+import org.cougaar.planning.plugin.legacy.PluginDelegate;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.lib.planserver.*;
 

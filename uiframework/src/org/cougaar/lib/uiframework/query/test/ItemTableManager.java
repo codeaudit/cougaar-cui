@@ -21,7 +21,7 @@
 
 package org.cougaar.lib.uiframework.query.test;
 
-import org.cougaar.core.plugin.SimplePlugin;
+import org.cougaar.planning.plugin.legacy.SimplePlugin;
 import java.util.*;
 
 public class ItemTableManager extends SimplePlugin {

@@ -23,7 +23,7 @@ import org.cougaar.glm.ldm.asset.Organization;
 //import org.cougaar.glm.plugins.TaskUtils;
 
 import org.cougaar.planning.ldm.trigger.*;
-import org.cougaar.core.plugin.PluginDelegate;
+import org.cougaar.planning.plugin.legacy.PluginDelegate;
 
 import org.cougaar.util.UnaryPredicate;
 
@@ -37,7 +37,7 @@ import org.cougaar.util.UnaryPredicate;
 @version 1.0
 ***********************************************************************************************************************/
 
-public class DeskTopTestPlugin extends org.cougaar.core.plugin.SimplePlugin
+public class DeskTopTestPlugin extends org.cougaar.planning.plugin.legacy.SimplePlugin
 {
 	
 	

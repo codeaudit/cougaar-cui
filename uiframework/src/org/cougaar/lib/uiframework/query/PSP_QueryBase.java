@@ -25,7 +25,7 @@ import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
 import org.cougaar.lib.uiframework.transducer.elements.Structure;
 import org.cougaar.lib.uiframework.transducer.elements.PrettyPrinter;
 
-import org.cougaar.core.plugin.PluginDelegate;
+import org.cougaar.planning.plugin.legacy.PluginDelegate;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.lib.planserver.*;
 
