@@ -16,6 +16,7 @@ import org.cougaar.lib.uiframework.ui.components.CDesktopFrame;
 import org.cougaar.lib.uiframework.ui.components.CFrame;
 import org.cougaar.lib.uiframework.ui.components.CRangeButton;
 import org.cougaar.lib.uiframework.ui.components.CMThumbSliderThresholdControl;
+import org.cougaar.lib.uiframework.ui.components.CRLabel;
 import org.cougaar.lib.uiframework.ui.components.CSliderThresholdControl;
 import org.cougaar.lib.uiframework.ui.components.CStoplightTable;
 import org.cougaar.lib.uiframework.ui.components.CTreeButton;
@@ -44,8 +45,10 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private final static int spacing = 5;
     private DatabaseTableModel stoplightTableModel = new DatabaseTableModel();
     private VariableInterfaceManager variableManager;
+    private JLabel title = new JLabel("", JLabel.CENTER);
     private CStoplightTable stoplightChart;
     private JPanel thresholdsPanel = null;
+    private QueryGenerator queryGenerator = null;
 
     /**
      * Create a new stoplight panel
@@ -152,29 +155,24 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
         // create a new query generator to update stoplightTableModel based
         // on (and triggered by) changes to variable controls.
-        final QueryGenerator qg = new QueryGenerator(stoplightTableModel);
+        queryGenerator = new QueryGenerator(stoplightTableModel);
         variableManager =
             new VariableInterfaceManager(variables, useMenuButtons);
         variableManager.addVariableListener(
             new VariableInterfaceManager.VariableListener() {
                 public void variableChanged(VariableModel vm)
                 {
-                    qg.generateQuery(variableManager);
-                    updateThresholdExtents();
+                    updateView();
                 }
                 public void variablesSwapped(VariableModel vm1,
                                              VariableModel vm2)
                 {
-                    qg.generateQuery(variableManager);
-                    updateThresholdExtents();
+                    updateView();
                 }
             });
 
-        // generate initial query based on initial variable settings
-        qg.generateQuery(variableManager);
-
         final CViewFeatureSelectionControl viewPanel =
-            new CViewFeatureSelectionControl(BoxLayout.Y_AXIS);
+            new CViewFeatureSelectionControl(BoxLayout.X_AXIS);
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
 
         if (plaf)
@@ -185,50 +183,57 @@ public class StoplightPanel extends JPanel implements CougaarUI
         {
             thresholdsPanel = new CMThumbSliderThresholdControl(0f, 2f);
         }
-        updateThresholdExtents();
         thresholdsPanel.setBorder(
             BorderFactory.createTitledBorder("Color Thresholds"));
+
+        // generate initial query based on initial variable settings
+        updateView();
 
         JPanel fixedVariablesPanel = new JPanel(new FlowLayout());
         fixedVariablesPanel.setBorder(
             BorderFactory.createTitledBorder("Fixed Variables"));
-
-        //fixedVariablesPanel.setLayout(new BoxLayout(fixedVariablesPanel,
-        //                                            BoxLayout.Y_AXIS));
-        Box fvBox = new Box(BoxLayout.Y_AXIS);
+        Box fvBox = new Box(BoxLayout.X_AXIS);
         fvBox.add(variableManager.getDescriptor("Metric").getControl());
-        fvBox.add(Box.createVerticalStrut(spacing * 2));
+        fvBox.add(Box.createHorizontalStrut(spacing * 2));
         fvBox.add(variableManager.getDescriptor("Org").getControl());
         fixedVariablesPanel.add(fvBox);
 
-        // Create the chart and set chart controls
-        JPanel stoplightPanel = new JPanel(new BorderLayout());
+
+        JPanel independentVariablesPanel = new JPanel(new FlowLayout());
+        independentVariablesPanel.setBorder(
+            BorderFactory.createTitledBorder("Independent Variables"));
+        Box ivBox = new Box(BoxLayout.X_AXIS);
         Component xControl =
             ((VariableModel)variableManager.getDescriptors(
             VariableModel.X_AXIS).nextElement()).getControl();
         Component yControl =
             ((VariableModel)variableManager.getDescriptors(
             VariableModel.Y_AXIS).nextElement()).getControl();
-        GridBagLayout gbl = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx=0;
-        gbc.gridy=0;
-        gbc.weightx=1;
-        gbc.weighty=1;
-        gbc.insets = new Insets(spacing, spacing, spacing, spacing);
-        JPanel axisControlPanel = new JPanel(gbl);
-        gbc.anchor=GridBagConstraints.WEST;
-        gbl.setConstraints(yControl, gbc);
-        axisControlPanel.add(yControl);
-        gbc.anchor=GridBagConstraints.CENTER;
-        gbl.setConstraints(xControl, gbc);
-        axisControlPanel.add(xControl);
+        ivBox.add(new JLabel("X Axis: "));
+        ivBox.add(xControl);
+        ivBox.add(Box.createHorizontalStrut(spacing * 2));
+        ivBox.add(new JLabel("Y Axis: "));
+        ivBox.add(yControl);
+        independentVariablesPanel.add(ivBox);
+
+
+        // Create the chart and set chart controls
+        JPanel stoplightPanel = new JPanel(new BorderLayout());
+        CRLabel xAxisLabel = variableManager.getXAxisLabel();
+        JPanel xAxisPanel = new JPanel(new GridBagLayout());
+        xAxisPanel.add(xAxisLabel);
+        stoplightPanel.add(xAxisPanel, BorderLayout.NORTH);
+        CRLabel yAxisLabel = variableManager.getYAxisLabel();
+        yAxisLabel.setOrientation(CRLabel.DOWN_UP);
+        JPanel yAxisPanel = new JPanel(new GridBagLayout());
+        yAxisPanel.add(yAxisLabel);
+        stoplightPanel.add(yAxisPanel, BorderLayout.WEST);
 
         TableSorter sorter = new TableSorter(stoplightTableModel);
         stoplightChart = new CStoplightTable(sorter);
         sorter.addMouseListenerToHeaderInTable(stoplightChart);
         JScrollPane scrolledStoplightChart = new JScrollPane(stoplightChart);
-        stoplightPanel.add(axisControlPanel, BorderLayout.NORTH);
+        //stoplightPanel.add(axisControlPanel, BorderLayout.NORTH);
         stoplightPanel.add(scrolledStoplightChart, BorderLayout.CENTER);
         stoplightPanel.setBorder(BorderFactory.createEtchedBorder());
         stoplightChart.setViewFeatureSelectionControl(viewPanel);
@@ -268,24 +273,38 @@ public class StoplightPanel extends JPanel implements CougaarUI
             addMouseListener(doubleClickTableListener);
 
         // high level layout
-        gbl = new GridBagLayout();
-        gbc = new GridBagConstraints();
+        JPanel titlePanel = new JPanel();
+        titlePanel.add(title);
+        JPanel controlPanel = new JPanel(new BorderLayout());
+        GridBagLayout gbl = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx=0;
         gbc.weighty=0;
-        JPanel controlPanel = new JPanel(gbl);
+        JPanel topControlPanel = new JPanel(gbl);
         gbc.fill=GridBagConstraints.BOTH;
-        gbl.setConstraints(fixedVariablesPanel, gbc);
-        controlPanel.add(fixedVariablesPanel);
         gbl.setConstraints(viewPanel, gbc);
-        controlPanel.add(viewPanel);
+        topControlPanel.add(viewPanel);
         gbc.weightx=1;
         gbc.weighty=1;
         gbl.setConstraints(thresholdsPanel, gbc);
-        controlPanel.add(thresholdsPanel);
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(controlPanel, BorderLayout.NORTH);
+        topControlPanel.add(thresholdsPanel);
+        JPanel bottomControlPanel = new JPanel(gbl);
+        gbl.setConstraints(fixedVariablesPanel, gbc);
+        bottomControlPanel.add(fixedVariablesPanel);
+        gbl.setConstraints(independentVariablesPanel, gbc);
+        bottomControlPanel.add(independentVariablesPanel);
+        controlPanel.add(topControlPanel, BorderLayout.NORTH);
+        controlPanel.add(bottomControlPanel, BorderLayout.SOUTH);
+        add(titlePanel, BorderLayout.NORTH);
         add(stoplightPanel, BorderLayout.CENTER);
-        add(bottomPanel, BorderLayout.SOUTH);
+        add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    private void updateView()
+    {
+        queryGenerator.generateQuery(variableManager);
+        updateThresholdExtents();
+        title.setText(variableManager.toString());
     }
 
     private void doubleClickTableHandler(MouseEvent e)

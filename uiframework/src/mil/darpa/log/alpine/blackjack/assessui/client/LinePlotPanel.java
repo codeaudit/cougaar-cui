@@ -12,6 +12,7 @@ import org.cougaar.lib.uiframework.ui.components.CFrame;
 import org.cougaar.lib.uiframework.ui.components.CGraphFeatureSelectionControl;
 import org.cougaar.lib.uiframework.ui.components.CLinePlotChart;
 import org.cougaar.lib.uiframework.ui.components.CRangeButton;
+import org.cougaar.lib.uiframework.ui.components.CRLabel;
 import org.cougaar.lib.uiframework.ui.components.CRowHeaderTable;
 import org.cougaar.lib.uiframework.ui.components.CTreeButton;
 import org.cougaar.lib.uiframework.ui.models.DatabaseTableModel;
@@ -34,11 +35,8 @@ public class LinePlotPanel extends JPanel implements CougaarUI
     private CLinePlotChart chart = new CLinePlotChart(databaseTableModel);
     private final static int spacing = 5;
     private VariableInterfaceManager variableManager;
-    private TitledBorder titledBorder =
-        BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                                       "Line Plot Chart", TitledBorder.CENTER,
-                                       TitledBorder.DEFAULT_POSITION,
-                                       MetalLookAndFeel.getWindowTitleFont());
+    private TitledBorder titledBorder;
+    private QueryGenerator queryGenerator;
 
     /**
      * Creates new line plot panel in given frame.
@@ -167,14 +165,14 @@ public class LinePlotPanel extends JPanel implements CougaarUI
 
         // create a new query generator to update databaseTableModel based
         // on (and triggered by) changes to variable controls.
-        final QueryGenerator qg = new QueryGenerator(databaseTableModel);
+        queryGenerator = new QueryGenerator(databaseTableModel);
         variableManager =
             new VariableInterfaceManager(variables, useMenuButtons);
         variableManager.addVariableListener(
             new VariableInterfaceManager.VariableListener() {
                 public void variableChanged(VariableModel vm)
                 {
-                    qg.generateQuery(variableManager);
+                    updateView();
                 }
                 public void variablesSwapped(VariableModel vm1,
                                              VariableModel vm2)
@@ -186,34 +184,35 @@ public class LinePlotPanel extends JPanel implements CougaarUI
                     fixVariableValue(vm1);
                     fixVariableValue(vm2);
 
-                    qg.generateQuery(variableManager);
+                    updateView();
                 }
             });
 
-        // generate initial query based on initial variable settings
-        qg.generateQuery(variableManager);
-
         // Fixed Variables
-        JPanel fixedVariablesPanel = new JPanel(new FlowLayout());
+        JPanel fixedVariablesPanel = new JPanel();
         fixedVariablesPanel.setBorder(
             BorderFactory.createTitledBorder("Fixed Parameters"));
-        fixedVariablesPanel.add(
-            variableManager.getDescriptor("Item").getControl());
-        fixedVariablesPanel.add(Box.createHorizontalStrut(spacing * 2));
-        fixedVariablesPanel.add(
-            variableManager.getDescriptor("Org").getControl());
+        Box fvBox = new Box(BoxLayout.X_AXIS);
+        fvBox.add(variableManager.getDescriptor("Item").getControl());
+        fvBox.add(Box.createHorizontalStrut(spacing * 2));
+        fvBox.add(variableManager.getDescriptor("Org").getControl());
+        fixedVariablesPanel.add(fvBox);
 
         // Independent Variables
-        JPanel independentVariablesPanel = new JPanel(new FlowLayout());
+        JPanel independentVariablesPanel = new JPanel();
         independentVariablesPanel.setBorder(
-            BorderFactory.createTitledBorder("Independent Parameter"));
-        //independentVariablesPanel.add(((VariableModel)variableManager.
-        //                             getDescriptors(VariableModel.X_AXIS).
-        //                             nextElement()).getControl());
-        //independentVariablesPanel.add(Box.createHorizontalStrut(spacing * 2));
-        independentVariablesPanel.add(((VariableModel)variableManager.
-                                     getDescriptors(VariableModel.Y_AXIS).
-                                     nextElement()).getControl());
+            BorderFactory.createTitledBorder("Independent Parameters"));
+        Box ivBox = new Box(BoxLayout.X_AXIS);
+        ivBox.add(new JLabel("X Axis: "));
+        ivBox.add(((VariableModel)variableManager.
+                  getDescriptors(VariableModel.X_AXIS).nextElement()).
+                  getControl());
+        ivBox.add(Box.createHorizontalStrut(spacing * 2));
+        ivBox.add(new JLabel("Y Axis: "));
+        ivBox.add(((VariableModel)variableManager.
+                  getDescriptors(VariableModel.Y_AXIS).nextElement()).
+                  getControl());
+        independentVariablesPanel.add(ivBox);
 
         // Graph Feature Selection Control
         CGraphFeatureSelectionControl featureSelectionControl =
@@ -226,12 +225,26 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         //chart.getXAxis().setTitleText("Time (C+)");
         JPanel linePlotPanel = new JPanel(new BorderLayout());
         JPanel xAxisPanel = new JPanel();
-        xAxisPanel.add(((VariableModel)variableManager.
-            getDescriptors(VariableModel.X_AXIS).nextElement()).
-            getControl(), BorderLayout.SOUTH);
-        linePlotPanel.setBorder(titledBorder);
+        xAxisPanel.add(variableManager.getXAxisLabel());
+        //xAxisPanel.add(((VariableModel)variableManager.
+        //    getDescriptors(VariableModel.X_AXIS).nextElement()).
+        //    getControl(), BorderLayout.SOUTH);
+        JPanel yAxisPanel = new JPanel(new GridBagLayout());
+        CRLabel yAxisLabel = variableManager.getYAxisLabel();
+        yAxisLabel.setOrientation(CRLabel.DOWN_UP);
+        yAxisPanel.add(yAxisLabel);
         linePlotPanel.add(chart, BorderLayout.CENTER);
+        linePlotPanel.add(yAxisPanel, BorderLayout.WEST);
         linePlotPanel.add(xAxisPanel, BorderLayout.SOUTH);
+        titledBorder =
+            BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                            variableManager.toString(), TitledBorder.CENTER,
+                            TitledBorder.DEFAULT_POSITION,
+                            MetalLookAndFeel.getWindowTitleFont());
+        linePlotPanel.setBorder(titledBorder);
+
+        // generate initial query based on initial variable settings
+        updateView();
 
         // table panel
         JPanel tablePanel = new JPanel(new BorderLayout());
@@ -291,6 +304,13 @@ public class LinePlotPanel extends JPanel implements CougaarUI
                     }
                 });
         }
+    }
+
+    private void updateView()
+    {
+        queryGenerator.generateQuery(variableManager);
+        titledBorder.setTitle(variableManager.toString());
+        repaint();
     }
 
     /**
