@@ -56,8 +56,11 @@ public class JTreeInterpreter  {
         while (e.hasMoreElements())
         {
             Attribute a = (Attribute)e.nextElement();
-            String value = getFirstValForAttribute(a).trim();
-            nodeInfo.put(a.getName(), value);
+            String value = getFirstValForAttribute(a);
+            if (value != null)
+            {
+                nodeInfo.put(a.getName(), value.trim());
+            }
         }
 
         return nodeInfo;
