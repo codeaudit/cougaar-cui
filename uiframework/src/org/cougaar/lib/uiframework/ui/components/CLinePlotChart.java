@@ -131,7 +131,6 @@ public class CLinePlotChart extends Graph2D
         drawzero = true;
         drawgrid = true;
         borderTop = 10;
-        setDataBackground(Color.white);
 
         /*
         **      Load a file containing Marker definitions
@@ -171,14 +170,14 @@ public class CLinePlotChart extends Graph2D
         yaxis_right.setTitleColor(new Color(100,100,255) );
         */
 
-        regeneratePlots();
-
         tm.addTableModelListener(new TableModelListener() {
                 public void tableChanged(TableModelEvent e)
                 {
                     regeneratePlots();
                 }
             });
+
+        updateUI();
     }
 
     /**
