@@ -40,12 +40,6 @@ import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
 import org.cougaar.domain.planning.ldm.plan.ScheduleElementImpl;
 /* ===========  */
 
-/*
-import ui.SupKeeper;
-import ui.TreeBuilder;
-*/
-//import dom.DOMParserWrapper;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,16 +55,6 @@ public class OrgHierRelationship extends ScheduleElementImpl {
     other=cp.getOtherId();
     init(cp.getId(),cp.getStartTime(), cp.getEndTime(), cp.getRelationship(), other);
   }
-
-
-  // temporary for a quick test
-  public OrgHierRelationship(org.cougaar.lib.uiframework.ui.ohv.community.CommunityElementParser cp) {
-    String other=null;
-    hasSuperior=cp.hasSuperior();
-    other=cp.getOtherId();
-    init(cp.getId(),cp.getStartTime(), cp.getEndTime(), cp.getRelationship(), other);
-  }
-  // temporary for a quick test
 
 
   public boolean equals(OrgHierRelationship rhs) {
