@@ -66,6 +66,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private QueryGenerator queryGenerator = null;
     private static final Vector stoplightMetrics = new Vector();
     private UILaunchPopup uiLaunchPopup = new UILaunchPopup();
+    private JCheckBoxMenuItem autoScale =
+        new JCheckBoxMenuItem("Auto Scale", false);
 
     /**
      * Create a new stoplight panel
@@ -206,7 +208,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         viewPanel = new CViewFeatureSelectionControl(BoxLayout.Y_AXIS);
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
 
-        thresholdsPanel = new CMThumbSliderThresholdControl(0f, 2f);
+        thresholdsPanel = new CMThumbSliderThresholdControl(0f, 5f);
         thresholdsPanel.setBorder(
             BorderFactory.createTitledBorder("Color Thresholds"));
 
@@ -423,17 +425,43 @@ public class StoplightPanel extends JPanel implements CougaarUI
         mb.add(itemMenu, 1);
 
         //
-        // View Menu
+        // Thresholds Menu
         //
-        JMenu viewMenu = viewPanel.convertToMenu("View");
-        viewMenu.setMnemonic('V');
+        final JMenu thresholdsMenu = new JMenu("Thresholds");
+        thresholdsMenu.setMnemonic('T');
+
+        // threshold ranges
+        int[] ranges = {1, 2, 3, 5, 10, 100, 1000};
+        for (int i = 0; i < ranges.length; i++)
+        {
+            final int upperBound = ranges[i];
+            JMenuItem range = new JMenuItem("0 to " + upperBound);
+            thresholdsMenu.add(range);
+            range.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        thresholdsPanel.setSliderRange(0, upperBound);
+                        thresholdsPanel.evenlyDistributeValues();
+                    }
+                });
+        }
+
+        // Autoscale
+        autoScale.setMnemonic('A');
+        thresholdsMenu.add(autoScale);
+        autoScale.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e)
+                {
+                    updateThresholdExtents();
+                }
+            });
 
         // upper thresholds
-        viewMenu.add(new JSeparator());
+        thresholdsMenu.add(new JSeparator());
         final JCheckBoxMenuItem upperThresholds =
             new JCheckBoxMenuItem("Upper Thresholds", true);
         upperThresholds.setMnemonic('U');
-        viewMenu.add(upperThresholds);
+        thresholdsMenu.add(upperThresholds);
         upperThresholds.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent e)
                 {
@@ -441,6 +469,25 @@ public class StoplightPanel extends JPanel implements CougaarUI
                         setUpperThresholds(upperThresholds.isSelected());
                 }
             });
+
+        // Attach menu as right-click popup for threshold sliders as alternate
+        // point of access
+        thresholdsPanel.addMouseListener(new MouseAdapter() {
+                public void mouseReleased(MouseEvent e)
+                {
+                    thresholdsMenu.getPopupMenu().
+                        show(thresholdsPanel, e.getX(), e.getY());
+                    thresholdsMenu.getPopupMenu().setInvoker(thresholdsMenu);
+                }
+            });
+
+        mb.add(thresholdsMenu, 1);
+
+        //
+        // View Menu
+        //
+        JMenu viewMenu = viewPanel.convertToMenu("View");
+        viewMenu.setMnemonic('V');
 
         // refresh view
         viewMenu.add(new JSeparator());
@@ -575,46 +622,36 @@ public class StoplightPanel extends JPanel implements CougaarUI
 
     private void updateThresholdExtents()
     {
-        SliderControl thresholdsSlider = (SliderControl)thresholdsPanel;
-        if (stoplightMetrics.contains(
-            variableManager.getDescriptor("Metric").getValue().toString()))
+        if (autoScale.isSelected())
         {
-            if ((thresholdsSlider.getMinValue() != 0) ||
-                (thresholdsSlider.getMaxValue() != 4))
+            // find minimum and maximum values in table
+            float minValue = Float.MAX_VALUE;
+            float maxValue = Float.MIN_VALUE;
+            for (int row = 0; row < stoplightTableModel.getRowCount(); row++)
             {
-                thresholdsSlider.setMinValue(0);
-                thresholdsSlider.setMaxValue(4);
-                thresholdsSlider.evenlyDistributeValues();
-            }
-            return;
-        }
-
-        // find minimum and maximum values in table
-        float minValue = Float.MAX_VALUE;
-        float maxValue = Float.MIN_VALUE;
-        for (int row = 0; row < stoplightTableModel.getRowCount(); row++)
-        {
-            for (int column = 1; column < stoplightTableModel.getColumnCount();
-                 column++)
-            {
-                Object valueObj = stoplightTableModel.getValueAt(row, column);
-                if (valueObj instanceof Number)
+                for (int column = 1;
+                     column < stoplightTableModel.getColumnCount(); column++)
                 {
-                    float value = ((Number)valueObj).floatValue();
-                    minValue = Math.min(minValue, value);
-                    maxValue = Math.max(maxValue, value);
+                    Object valueObj =
+                        stoplightTableModel.getValueAt(row, column);
+                    if (valueObj instanceof Number)
+                    {
+                        float value = ((Number)valueObj).floatValue();
+                        minValue = Math.min(minValue, value);
+                        maxValue = Math.max(maxValue, value);
+                    }
                 }
             }
-        }
 
-        float newShift =
-            thresholdsSlider.roundAndSetSliderRange(minValue, maxValue);
-        // if new slider range was modified by an exponential amount,
-        // redistribute threshold values
-        if (newShift != shift)
-        {
-            thresholdsSlider.evenlyDistributeValues();
-            shift = newShift;
+            float newShift =
+                thresholdsPanel.roundAndSetSliderRange(minValue, maxValue);
+            // if new slider range was modified by an exponential amount,
+            // redistribute threshold values
+            if (newShift != shift)
+            {
+                thresholdsPanel.evenlyDistributeValues();
+                shift = newShift;
+            }
         }
     }
     private float shift = 0;
