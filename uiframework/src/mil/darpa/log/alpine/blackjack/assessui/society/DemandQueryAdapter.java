@@ -12,6 +12,8 @@ import mil.darpa.log.alpine.blackjack.assessui.util.AggInfoEncoder;
 import org.cougaar.domain.glm.plugins.TaskUtils;
 
 import org.cougaar.domain.planning.ldm.asset.Asset;
+import org.cougaar.domain.planning.ldm.asset.TypeIdentificationPG;
+
 import org.cougaar.domain.planning.ldm.measure.CountRate;
 import org.cougaar.domain.planning.ldm.measure.Rate;
 import org.cougaar.domain.planning.ldm.plan.AspectType;
@@ -55,6 +57,8 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
         if (t.getVerb().equals(Constants.Verb.PROJECTSUPPLY) == true) {
 
+          // Pull out the start time and put it in a string
+
           Preference start_pref = t.getPreference (AspectType.START_TIME);
           if (start_pref != null) {
             time_double = new Double (start_pref.getScoringFunction().getBest().getAspectValue().getValue());
@@ -68,6 +72,8 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           else if (time_long < earliest_time)
             earliest_time = time_long;
 
+          // Pull out the end time and put it in a string
+
           Preference end_pref = t.getPreference (AspectType.END_TIME);
 
           if (end_pref != null) {
@@ -76,6 +82,8 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
 
           time_long = time_double.longValue ();
           end_time = String.valueOf (time_long);
+
+          // Find what the demand rate is and put it in a string
 
           Rate demand_rate = TaskUtils.getRate (t);
 
@@ -86,6 +94,8 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
           else
             System.out.println ("No rate");
 
+          // Find the organization in the "For" preposition
+
           PrepositionalPhrase for_phrase = t.getPrepositionalPhrase ("For");
 
           if (for_phrase != null) {
@@ -95,11 +105,23 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
             }
           }
 
-          PrepositionalPhrase oftype_phrase = t.getPrepositionalPhrase ("OfType");
+          // Find the item name in direct object's type identification
 
-          if (oftype_phrase != null) {
-            item = (String) oftype_phrase.getIndirectObject();
+          Asset direct_object = t.getDirectObject();
+
+          if (direct_object == null) {
+            System.out.println ("WARNING: No direct object found");
+            continue;
           }
+
+          TypeIdentificationPG type_id_pg = direct_object.getTypeIdentificationPG();
+
+          if (type_id_pg == null) {
+            System.out.println ("WARNING: no typeIdentificationPG for asset");
+            continue;
+          }
+
+          item = getItemId (type_id_pg.getTypeIdentification());
 
 /*
           if (index < 5) {
@@ -127,13 +149,11 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
     } /* while iter */
 
     System.out.println ("**************************************************************************");
-    System.out.println ("**************************************************************************");
-    System.out.println ("Sending " + index + " records, earliest start time is " + earliest_time);
-    System.out.println ("**************************************************************************");
+    System.out.println ("DemandQueryAdapter sending " + index + " records, earliest start time is " + earliest_time);
     System.out.println ("**************************************************************************");
 
     output_xml += myEncoder.encodeEndOfXML();
-  }
+  } /* end of execute */
 
   public void returnVal (OutputStream out) {
 
@@ -147,6 +167,25 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
     }
 
     send_xml = false;
-  }
+  } /* end of returnVal */
+
+  private String getItemId(String id) {
+
+    String itemType;
+    String itemId;
+
+    if (id.startsWith("NSN/")) {
+      itemType = "NSN";
+      itemId = id.substring(itemType.length() + 1); // Mind the '/'
+      return itemId;
+    }
+    else if (id.startsWith("CAGEPN/")) {
+      itemType = "CAGEPN";
+      itemId = id.substring(itemType.length() + 1); // Mind the '/'
+      return itemId;
+    }
+    else
+      return id;
+  } /* end of getItemId */
 
 }

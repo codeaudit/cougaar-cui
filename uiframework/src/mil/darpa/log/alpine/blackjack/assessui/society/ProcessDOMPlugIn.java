@@ -41,8 +41,6 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
 
     Enumeration doc_enum = documents.elements();
 
-    int index = 1;
-
     while (doc_enum.hasMoreElements()) {
 
       PlanObject po = (PlanObject) doc_enum.nextElement();
@@ -58,13 +56,11 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
           xml_output = AggInfoEncoder.getStartXMLString();
           CreateXMLOutputString (dom.getDocumentElement());
 
-          System.out.println ("***************************************");
-          System.out.println ("Sending XML to EJB");
-          System.out.println ("***************************************");
-//          System.out.println (xml_output);
-          index++;
-
           SendXMLOutputString ();
+
+          System.out.println ("***************************************");
+          System.out.println ("Sent XML to EJB");
+          System.out.println ("***************************************");
 
           // Remove the object from the log plan
           publishRemove (po);
@@ -109,9 +105,16 @@ public class ProcessDOMPlugIn extends SimplePlugIn {
       con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
       DataOutputStream out = new DataOutputStream(con.getOutputStream());
       String content = "updateXML=" + xml_output;
+
+      System.out.println ("***************************************");
+      System.out.println ("Sending XML to EJB");
+      System.out.println ("***************************************");
+
       out.writeBytes(content);
       out.flush();
       out.close();
+
+      System.out.println ("Waiting for EJB response");
 
       BufferedReader d = new BufferedReader(new InputStreamReader (con.getInputStream()));
       StringBuffer returnString = new StringBuffer();
