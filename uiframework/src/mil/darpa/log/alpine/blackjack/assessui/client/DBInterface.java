@@ -130,9 +130,11 @@ public class DBInterface extends DBDatasource
     {
         DefaultMutableTreeNode p;
         DefaultMutableTreeNode groupB;
+        DefaultMutableTreeNode groupC;
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("");
         root.add(p = new DefaultMutableTreeNode("Group A"));
         root.add(groupB = new DefaultMutableTreeNode("Group B"));
+        root.add(groupC = new DefaultMutableTreeNode("Group C"));
 
 
         for (int i = 0; i < metrics.length; i++)
@@ -145,9 +147,13 @@ public class DBInterface extends DBDatasource
             {
                 p.add(new DefaultMutableTreeNode(ht));
             }
-            else
+            else if ((i == 0) || (i == 2) || (i == 4))
             {
                 groupB.add(new DefaultMutableTreeNode(ht));
+            }
+            else
+            {
+                groupC.add(new DefaultMutableTreeNode(ht));
             }
         }
 
