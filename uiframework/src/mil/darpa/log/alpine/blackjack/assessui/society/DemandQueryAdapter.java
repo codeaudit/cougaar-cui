@@ -27,7 +27,7 @@ public class DemandQueryAdapter extends CustomQueryBaseAdapter {
   private AggInfoEncoder myEncoder = new AggInfoEncoder();
   private AggInfoStructure myStructure;
 
-  public void execute (Collection matches) {
+  public void execute (Collection matches, String eventName) {
 
     Iterator iter = matches.iterator();
     int index;
