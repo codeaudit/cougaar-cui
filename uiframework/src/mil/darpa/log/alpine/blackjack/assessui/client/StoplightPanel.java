@@ -36,6 +36,7 @@ import org.cougaar.lib.uiframework.ui.models.RangeModel;
 import org.cougaar.lib.uiframework.ui.models.StoplightThresholdModel;
 import org.cougaar.lib.uiframework.ui.models.VariableModel;
 import org.cougaar.lib.uiframework.ui.util.CougaarUI;
+import org.cougaar.lib.uiframework.ui.util.SelectableHashtable;
 import org.cougaar.lib.uiframework.ui.util.Selector;
 import org.cougaar.lib.uiframework.ui.util.SliderControl;
 import org.cougaar.lib.uiframework.ui.util.TableSorter;
@@ -58,6 +59,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     private JLabel title = new JLabel("", JLabel.CENTER);
     private CStoplightTable stoplightChart;
     private JPanel thresholdsPanel = null;
+    private CComboSelector metricSelector = null;
     private CViewFeatureSelectionControl viewPanel = null;
     private QueryGenerator queryGenerator = null;
     private static final Vector stoplightMetrics = new Vector();
@@ -102,6 +104,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
     public void install(JFrame frame)
     {
         frame.getContentPane().add(this);
+        populateMenuBar(frame.getJMenuBar());
     }
 
     /**
@@ -113,6 +116,10 @@ public class StoplightPanel extends JPanel implements CougaarUI
     public void install(JInternalFrame frame)
     {
         frame.getContentPane().add(this);
+        JMenuBar mb = new JMenuBar();
+        mb.add(new JMenu());
+        populateMenuBar(mb);
+        frame.setJMenuBar(mb);
     }
 
     /**
@@ -145,7 +152,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         root = DBInterface.orgTree;
         CTreeButton orgTreeButton = new CTreeButton(  root, root);
 
-        CComboSelector metricSelector = new CComboSelector(metrics);
+        metricSelector = new CComboSelector(metrics);
 
         CRangeButton rangeButton =
             new CRangeButton("C", DBInterface.minTimeRange,
@@ -198,6 +205,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
 
         // item view panel
+        /* moved to menubar
         JPanel itemPanel = new JPanel(new GridBagLayout());
         //itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
         itemPanel.setBorder(BorderFactory.createTitledBorder("Items"));
@@ -256,7 +264,7 @@ public class StoplightPanel extends JPanel implements CougaarUI
                     }
                 }
             });
-
+        */
         if (plaf)
         {
             thresholdsPanel = new CSliderThresholdControl(0f, 2f);
@@ -374,24 +382,122 @@ public class StoplightPanel extends JPanel implements CougaarUI
         gbc.weighty=0;
         JPanel topControlPanel = new JPanel(gbl);
         gbc.fill=GridBagConstraints.BOTH;
-        gbl.setConstraints(itemPanel, gbc);
-        topControlPanel.add(itemPanel);
-        gbl.setConstraints(viewPanel, gbc);
-        topControlPanel.add(viewPanel);
+        gbl.setConstraints(fixedVariablesPanel, gbc);
+        topControlPanel.add(fixedVariablesPanel);
+        //gbl.setConstraints(itemPanel, gbc);
+        //topControlPanel.add(itemPanel);
+        //gbl.setConstraints(viewPanel, gbc);
+        //topControlPanel.add(viewPanel);
         gbc.weightx=1;
         gbc.weighty=1;
         gbl.setConstraints(thresholdsPanel, gbc);
         topControlPanel.add(thresholdsPanel);
         JPanel bottomControlPanel = new JPanel(gbl);
-        gbl.setConstraints(fixedVariablesPanel, gbc);
-        bottomControlPanel.add(fixedVariablesPanel);
+        //gbl.setConstraints(fixedVariablesPanel, gbc);
+        //bottomControlPanel.add(fixedVariablesPanel);
+        gbc.weightx=0;
+        gbc.weighty=0;
         gbl.setConstraints(independentVariablesPanel, gbc);
         bottomControlPanel.add(independentVariablesPanel);
+        independentVariablesPanel.setPreferredSize(new Dimension(0,0));
         controlPanel.add(topControlPanel, BorderLayout.NORTH);
         controlPanel.add(bottomControlPanel, BorderLayout.SOUTH);
         add(titlePanel, BorderLayout.NORTH);
         add(stoplightPanel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    private void populateMenuBar(JMenuBar mb)
+    {
+        JMenu itemMenu = new JMenu("Items");
+        itemMenu.setMnemonic('I');
+
+        // item labels
+        final String descriptionString =  "Show Description";
+        final String codeString = "Show Code";
+        CRadioButtonSelectionControl itemDisplayPanel =
+            new CRadioButtonSelectionControl(new String[]{descriptionString,
+                                                          codeString},
+                                             BoxLayout.Y_AXIS);
+        itemDisplayPanel.setSelectedItem(descriptionString);
+        itemDisplayPanel.addPropertyChangeListener("selectedItem",
+                                                new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    String newValue = e.getNewValue().toString();
+                    String newShowProperty =
+                        newValue.equals(descriptionString) ? "UID" : "ITEM_ID";
+                    DBInterface.setNewShowProperty(DBInterface.itemTree,
+                                                   newShowProperty);
+                    updateView();
+                    //stoplightTableModel.fireTableChangedEvent(
+                    //    new TableModelEvent(stoplightTableModel,
+                    //                        TableModelEvent.HEADER_ROW));
+                }
+            });
+        ButtonGroup bg = itemDisplayPanel.convertToMenuItems();
+        Enumeration mis = bg.getElements();
+        while (mis.hasMoreElements())
+        {
+            itemMenu.add((JMenuItem)mis.nextElement());
+        }
+        itemMenu.add(new JSeparator());
+
+        // item aggregation
+        final JCheckBoxMenuItem aggregateItems =
+            new JCheckBoxMenuItem("Aggregate");
+        aggregateItems.setMnemonic('A');
+        itemMenu.add(aggregateItems);
+        aggregateItems.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent e)
+                {
+                    boolean newSelection = aggregateItems.isSelected();
+                    if (newSelection != queryGenerator.getAggregateItems())
+                    {
+                        queryGenerator.setAggregateItems(newSelection);
+                        updateView();
+                    }
+                }
+            });
+        aggregateItems.setEnabled(
+            stoplightMetrics.contains(metricSelector.getSelectedItem()));
+        metricSelector.addPropertyChangeListener("selectedItem",
+                                                 new PropertyChangeListener(){
+                public void propertyChange(PropertyChangeEvent e)
+                {
+                    String newSelectedMetric = e.getNewValue().toString();
+                    if (stoplightMetrics.contains(newSelectedMetric))
+                    {
+                        aggregateItems.setEnabled(true);
+                    }
+                    else
+                    {
+                        aggregateItems.setSelected(false);
+                        aggregateItems.setEnabled(false);
+                    }
+                }
+            });
+
+        // refresh item weights
+        /* not ready yet
+        final JMenuItem refreshItemWeights =
+            new JMenuItem("Refresh Item Weights");
+        refreshItemWeights.setMnemonic('R');
+        itemMenu.add(refreshItemWeights);
+        refreshItemWeights.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e)
+                {
+                    DBInterface.itemTree = DBInterface.createItemTree();
+                    updateView();
+                }
+            });
+        */
+
+        mb.add(itemMenu, 1);
+
+        JMenu viewMenu = viewPanel.convertToMenu("View");
+        viewMenu.setMnemonic('V');
+        mb.add(viewMenu, 1);
     }
 
     private void updateView()

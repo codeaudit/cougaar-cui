@@ -50,7 +50,7 @@ public class CFrameLauncher extends CFrame
 
     private void init()
     {
-        lafMenu.setEnabled(false);
+        //lafMenu.setEnabled(false);
         mainPanel = new CPanel();
         getContentPane().add(mainPanel);
 
@@ -98,13 +98,13 @@ public class CFrameLauncher extends CFrame
 
                     try
                     {
-	                Constructor c =
+	                      Constructor c =
                             cougaarUIClass.getConstructor(constParamClasses);
                         CougaarUI cougaarUI =
                             (CougaarUI)c.newInstance(constParams);
                         CFrame frame = new CFrame();
                         cougaarUI.install(frame);
-                        frame.getLookAndFeelPulldown().setEnabled(false);
+                        //frame.getLookAndFeelPulldown().setEnabled(false);
                         frame.setTitle(name);
                         //frame.getLookAndFeelPulldown().
                         //    setEnabled(cougaarUI.supportsPlaf());

@@ -110,7 +110,8 @@ public class LinePlotPanel extends JPanel implements CougaarUI
      */
     public boolean supportsPlaf()
     {
-        return plaf;
+        //return plaf;
+        return true;
     }
 
     /**
@@ -280,10 +281,11 @@ public class LinePlotPanel extends JPanel implements CougaarUI
         gbc.fill=GridBagConstraints.BOTH;
         gbl.setConstraints(fixedVariablesPanel, gbc);
         controlPanel.add(fixedVariablesPanel);
-        gbl.setConstraints(independentVariablesPanel, gbc);
-        controlPanel.add(independentVariablesPanel);
         gbc.weightx=0;
         gbc.weighty=0;
+        gbl.setConstraints(independentVariablesPanel, gbc);
+        controlPanel.add(independentVariablesPanel);
+        independentVariablesPanel.setPreferredSize(new Dimension(0, 0));
         gbl.setConstraints(featureSelectionControl, gbc);
         controlPanel.add(featureSelectionControl);
         final JSplitPane chartPanel =

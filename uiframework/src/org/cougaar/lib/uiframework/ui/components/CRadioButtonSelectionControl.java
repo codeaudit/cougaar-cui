@@ -62,7 +62,12 @@ public class CRadioButtonSelectionControl extends JPanel
 
         add(box);
 
+        addDefaultActionListener();
         currentSelection = getSelectedItem();
+    }
+
+    private void addDefaultActionListener()
+    {
         addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e)
                 {
@@ -72,6 +77,34 @@ public class CRadioButtonSelectionControl extends JPanel
                                        currentSelection);
                 }
             });
+    }
+
+    /**
+     * Convert panel based control to menu items for use in a pulldown menu
+     *
+     * @return button group of radio button menu items
+     */
+    public ButtonGroup convertToMenuItems()
+    {
+        ButtonGroup menuRadioButtons = new ButtonGroup();
+
+        Enumeration buttons = radioButtons.getElements();
+
+        while (buttons.hasMoreElements())
+        {
+            AbstractButton radioButton = (AbstractButton)buttons.nextElement();
+            JRadioButtonMenuItem radioButtonItem =
+                new JRadioButtonMenuItem(radioButton.getText(),
+                                         radioButton.isSelected());
+            radioButtonItem.setActionCommand(radioButton.getText());
+            menuRadioButtons.add(radioButtonItem);
+        }
+
+        radioButtons = menuRadioButtons;
+
+        addDefaultActionListener();
+
+        return radioButtons;
     }
 
     /**
@@ -94,7 +127,7 @@ public class CRadioButtonSelectionControl extends JPanel
 
         while (buttons.hasMoreElements())
         {
-            JRadioButton radioButton = (JRadioButton)buttons.nextElement();
+            AbstractButton radioButton = (AbstractButton)buttons.nextElement();
             if (radioButton.getText().equals(selectedItem))
             {
                 Object oldSelection = currentSelection;
@@ -117,7 +150,7 @@ public class CRadioButtonSelectionControl extends JPanel
 
         while (buttons.hasMoreElements())
         {
-            JRadioButton radioButton = (JRadioButton)buttons.nextElement();
+            AbstractButton radioButton = (AbstractButton)buttons.nextElement();
             if (radioButton.isSelected())
             {
                 return radioButton.getText();
@@ -138,7 +171,7 @@ public class CRadioButtonSelectionControl extends JPanel
 
         while (buttons.hasMoreElements())
         {
-            JRadioButton radioButton = (JRadioButton)buttons.nextElement();
+            AbstractButton radioButton = (AbstractButton)buttons.nextElement();
             radioButton.addActionListener(al);
         }
     }
@@ -154,7 +187,7 @@ public class CRadioButtonSelectionControl extends JPanel
 
         while (buttons.hasMoreElements())
         {
-            JRadioButton radioButton = (JRadioButton)buttons.nextElement();
+            AbstractButton radioButton = (AbstractButton)buttons.nextElement();
             radioButton.removeActionListener(al);
         }
     }

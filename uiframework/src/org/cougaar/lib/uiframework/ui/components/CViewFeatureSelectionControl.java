@@ -12,13 +12,17 @@ package org.cougaar.lib.uiframework.ui.components;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
+import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.event.*;
 
 /**
  * Control used to select view related features of a stoplight chart.
  * Used to select whether chart should use color, value, or both when
- * displaying a data point in a cell.
+ * displaying a data point in a cell.<BR><BR>
+ *
+ * bounded properties: mode, fitHorizontally, fitVertically
+ *
  */
 public class CViewFeatureSelectionControl extends JPanel
 {
@@ -33,8 +37,8 @@ public class CViewFeatureSelectionControl extends JPanel
 
     private CRadioButtonSelectionControl modeControl = null;
     private static String[] selections = {COLOR, VALUE, BOTH};
-    private JCheckBox fitHorizontallyControl = null;
-    private JCheckBox fitVerticallyControl = null;
+    private AbstractButton fitHorizontallyControl = null;
+    private AbstractButton fitVerticallyControl = null;
 
     /**
      * Default constructor.  Create new view feature selection control with
@@ -98,6 +102,11 @@ public class CViewFeatureSelectionControl extends JPanel
         fitVerticallyControl = new JCheckBox("Fit Vertically");
         fitControls.add(fitVerticallyControl);
         add(fitControls);
+        addActionListenersToFitControls();
+    }
+
+    private void addActionListenersToFitControls()
+    {
         fitHorizontallyControl.addChangeListener(new ChangeListener() {
                 public void stateChanged(ChangeEvent e)
                 {
@@ -114,6 +123,39 @@ public class CViewFeatureSelectionControl extends JPanel
                         "fitVertically", !newState, newState);
                 }
             });
+    }
+
+    /**
+     * Convert panel based control to a pulldown menu.
+     *
+     * @param menuName label for menu
+     * @return menu version of control
+     */
+    public JMenu convertToMenu(String menuName)
+    {
+        JMenu menu = new JMenu(menuName);
+
+        ButtonGroup bg = modeControl.convertToMenuItems();
+        Enumeration mis = bg.getElements();
+        while (mis.hasMoreElements())
+        {
+            menu.add((JMenuItem)mis.nextElement());
+        }
+        menu.add(new JSeparator());
+
+        fitHorizontallyControl =
+            new JCheckBoxMenuItem(fitHorizontallyControl.getText(),
+                                  fitHorizontallyControl.isSelected());
+        fitHorizontallyControl.setMnemonic('H');
+        fitVerticallyControl =
+            new JCheckBoxMenuItem(fitVerticallyControl.getText(),
+                                  fitVerticallyControl.isSelected());
+        fitVerticallyControl.setMnemonic('V');
+        addActionListenersToFitControls();
+        menu.add(fitHorizontallyControl);
+        menu.add(fitVerticallyControl);
+
+        return menu;
     }
 
     /**
