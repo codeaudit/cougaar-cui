@@ -221,22 +221,6 @@ public class DBDatasource
     }
 
     /**
-     * Creates a tree model (viewable by a JTree) based on the contents of the
-     * given structure.
-     *
-     * @param s structure on which to base contents of tree model
-     * @return tree model based on the contents of the given structure.
-     */
-    public static DefaultMutableTreeNode createTree(Structure s)
-    {
-        JTreeInterpreter jti = new JTreeInterpreter();
-        DefaultMutableTreeNode dmtn =
-            (DefaultMutableTreeNode)jti.generate(s).getModel().getRoot();
-        //trimUIDs(dmtn);
-        return dmtn;
-    }
-
-    /**
      * Searches through a table for each of a list of search values.  Returns
      * a list of values from the result columns that are found.  One result
      * value is returned for each search value.
