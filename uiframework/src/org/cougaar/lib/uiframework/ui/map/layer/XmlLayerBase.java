@@ -1,10 +1,10 @@
 /* **********************************************************************
- * 
+ *
  *  BBNT Solutions LLC, A part of GTE
  *  10 Moulton St.
  *  Cambridge, MA 02138
  *  (617) 873-2000
- * 
+ *
  *  Copyright (C) 1998, 2000
  *  This software is subject to copyright protection under the laws of
  *  the United States and other countries.
@@ -12,9 +12,9 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/layer/Attic/XmlLayerBase.java,v $
- * $Revision: 1.4 $
- * $Date: 2001-03-02 17:43:47 $
- * $Author: krotherm $
+ * $Revision: 1.5 $
+ * $Date: 2001-03-06 18:42:03 $
+ * $Author: pfischer $
  *
  * **********************************************************************
  */
@@ -42,6 +42,8 @@ import com.bbn.openmap.Environment;
 
 import com.bbn.openmap.event.*;
 import org.cougaar.lib.uiframework.ui.components.*;
+import org.cougaar.lib.uiframework.ui.util.*;
+import mil.darpa.log.alpine.blackjack.assessui.client.LinePlotPanel;
 import mil.darpa.log.alpine.blackjack.assessui.client.StoplightPanel;
 
 /**
@@ -101,7 +103,7 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
      * Invoked when the projection has changed or this Layer has been
      * added to the MapBean.
      * @param e ProjectionEvent
-     */    
+     */
     public void projectionChanged (ProjectionEvent e) {
 	projection = e.getProjection();
 	repaintLayer();
@@ -163,67 +165,94 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
    // myState.resetMarkers();
    //}
 
-	/**
-	 * Note: A layer interested in receiving mouse events should
-	 * implement this function.  Otherwise, return null (the default).
-	 */
-	public synchronized MapMouseListener getMapMouseListener(){
-	    return this;
-	}
-	/**
-	 * Return a list of the modes that are interesting to the
-	 * MapMouseListener.  You MUST override this with the modes you're
-	 * interested in.
-	 */
-	public String[] getMouseModeServiceList(){
+
+    /**
+     * Note: A layer interested in receiving mouse events should
+     * implement this function.  Otherwise, return null (the default).
+     */
+    public synchronized MapMouseListener getMapMouseListener(){
+        return this;
+    }
+
+    /**
+     * Return a list of the modes that are interesting to the
+     * MapMouseListener.  You MUST override this with the modes you're
+     * interested in.
+     */
+    public String[] getMouseModeServiceList(){
 	String[] services = {"Gestures" };
 	return services;
-	}
-	
+    }
 
     CFrame cframe;
 
-    protected void displayStoplight(String org) {
-	try {
-	    cframe = new CFrame();
-	    StoplightPanel slp = new StoplightPanel(false);
-	    slp.getVariableInterfaceManager().getDescriptor("Org").
-		setValue(org);
-	    cframe.getContentPane().add(slp);
-	    cframe.setVisible(true);
-	} catch (Exception ex) {
-	    fireRequestMessage("Warning:  Double-click caught and attempt to display chart failed for organization: ["+org+"].\n  Check connection to database.  Check that database has data for the organization.");	
-	    ex.printStackTrace();
-	}
+    protected void launchUI(final String uiName, final String org) {
+        Cursor wait = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+        final Component root = XmlLayerBase.this.getTopLevelAncestor();
+        XmlLayerBase.this.getParent().setCursor(wait);
+        root.setCursor(wait);
+        (new Thread() {
+            public void run()
+            {
+	        try {
+	            cframe = new CFrame();
+                    VariableInterfaceManager vim = null;
+                    if (uiName.equals("Stoplight"))
+                    {
+	                StoplightPanel slp = new StoplightPanel(false);
+                        cframe.getContentPane().add(slp);
+                        vim = slp.getVariableInterfaceManager();
+                    }
+                    else
+                    {
+                        LinePlotPanel lpp = new LinePlotPanel(false);
+                        cframe.getContentPane().add(lpp);
+                        vim = lpp.getVariableInterfaceManager();
+                    }
+	            vim.getDescriptor("Org").setValue(org);
+	            cframe.setVisible(true);
+	        } catch (Exception ex) {
+	            fireRequestMessage(
+                        "Warning:  Attempt to display chart failed for " +
+                        "organization: ["
+                        + org + "].\n  Check connection to database.  Check" +
+                        " that database has data for the organization.");
+	            ex.printStackTrace();
+	        } finally {
+                    Cursor defaultc = Cursor.getDefaultCursor();
+                    root.setCursor(defaultc);
+                    XmlLayerBase.this.getParent().setCursor(defaultc);
+                }
+            }
+        }).start();
     }
 
-  OMGraphic findClosest(int x, int y, float limit) {
-    return myState.findClosest(x,y,limit);
-  }
+    OMGraphic findClosest(int x, int y, float limit) {
+        return myState.findClosest(x,y,limit);
+    }
 
-	/**
-	 * Invoked when the mouse has been clicked on a component.
-	 * @param e MouseEvent
-	 * @return false
-	 */
-    public boolean mouseClicked(MouseEvent e){ 
+    /**
+     * Invoked when the mouse has been clicked on a component.
+     * @param e MouseEvent
+     * @return false
+     */
+    public boolean mouseClicked(MouseEvent e){
 	OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
-	System.out.println("mouseClicked event: "+e);
 	if(omgr != null){
-	    System.out.println("mouseClicked omgr: "+omgr);
-	    if(e.getClickCount() >= 2){	         
-		displayStoplight(getOrgName(omgr));
+	    if(e.getClickCount() >= 2){
+	    	launchUI("Stoplight", getOrgName(omgr));
 	    }
 	} else {
 	    return false;
 	}
-	return true; 	
+	return true;
     }
 
 
-  Unit getUnit(OMGraphic omgr) {
-    return myState.getUnit(omgr);
-  }
+    Unit getUnit(OMGraphic omgr) {
+        return myState.getUnit(omgr);
+    }
+
     public void colorCodeUnits(String metric) {
 	// for each unit
 	//for (Iterator it=myState.markerIterator();it.hasNext();)
@@ -245,7 +274,7 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 		((VecIcon)omgr).setMessageAddon(msg);
 	    }
 	    System.err.println("colorCodeUnits: "+msg);
-	    
+
 	}
 	repaintLayer();
     }
@@ -261,8 +290,9 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	}
 	return name;
     }
-	public boolean mouseMoved(MouseEvent e){  
-	    
+
+    public boolean mouseMoved(MouseEvent e){
+
 	    // OMGraphic omgr = (OMGraphic)omList.findClosest(e.getX(),e.getY(),4.0f);
       //OMGraphic omgr = (OMGraphic)myState.findClosest(e.getX(),e.getY(),4);
      OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
@@ -279,8 +309,8 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 			+"  Double-Clicking on icon brings up a chart.  ";
 		    // 		if (omgr instanceof ArmoredVecIcon) {
 		    // 		    msg=((ArmoredVecIcon)omgr).getLabel()+"  "+msg;
-		    // 		    // if (curCcu==ccuA) { curCcu=ccuB ; } 
-		    // 		    // else { curCcu=ccuA; } 
+		    // 		    // if (curCcu==ccuA) { curCcu=ccuB ; }
+		    // 		    // else { curCcu=ccuA; }
 		    // 		} else if (omgr instanceof InfantryVecIcon) {
 		    // 		    msg=((InfantryVecIcon)omgr).getLabel()+"  "+msg;
 		    // 		}
@@ -291,9 +321,9 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 		    String addon= (fl2==null) ?  "null" : fl2.toString();
 		    msg+="Value for "+metric+": "+addon;
 		    // curCcu.setColor(unit,metric);
-		    
+
 		}
-		    
+
 		fireRequestInfoLine(msg);
 	    } else {
 		fireRequestInfoLine("");
@@ -305,36 +335,64 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 		// 		//System.out.println("MouseMove Kicking repaint");
 		// 	    }
 	    }
-	    
-	    // 	if(omgr instanceof OMBitmap){ 
-	    // 	    omgr.select();	  
+
+	    // 	if(omgr instanceof OMBitmap){
+	    // 	    omgr.select();
 	    // 	    omgr.generate(oldProjection);
 	    // 	    lastSelected = omgr;
 	    // 	    //System.out.println("MouseMove Kicking repaint");
 	    // 	    repaint();
 // 	}
-	    
+
 	return true;
 	}
 
     //// just here because mouse i/f requires
-    
+
     /**
      * Invoked when a mouse button has been pressed on a component.
      * @param e MouseEvent
      * @return false
      */
-    public boolean mousePressed(MouseEvent e){ 
-	return false;
+    public boolean mousePressed(MouseEvent e){
+        return false;
     }
-    
+
+    private class OrgPopupListener implements ActionListener {
+        private String org;
+        public OrgPopupListener(String org) {
+            this.org = org;
+        }
+        public void actionPerformed(final ActionEvent e) {
+            launchUI(((JMenuItem)e.getSource()).getText(), org);
+        }
+    }
+
     /**
      * Invoked when a mouse button has been released on a component.
      * @param e MouseEvent
      * @return false
      */
-    public boolean mouseReleased(MouseEvent e){      
-	return false;
+    public boolean mouseReleased(MouseEvent e){
+	final OMGraphic omgr = findClosest(e.getX(),e.getY(),4);
+	if(omgr != null){
+            if (e.isPopupTrigger())
+            {
+                ActionListener orgListener =
+                    new OrgPopupListener(getOrgName(omgr));
+                final JPopupMenu popup = new JPopupMenu();
+                JMenuItem stoplight = new JMenuItem("Stoplight");
+                stoplight.addActionListener(orgListener);
+                popup.add(stoplight);
+                JMenuItem lineplot = new JMenuItem("Line Plot");
+                lineplot.addActionListener(orgListener);
+                popup.add(lineplot);
+                popup.show(XmlLayerBase.this, e.getX(), e.getY());
+            }
+	} else {
+	    return false;
+	}
+	return true;
     }
     /**
      * Invoked when the mouse enters a component.
@@ -343,7 +401,7 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
     public void mouseEntered(MouseEvent e){
 	return;
     }
-    
+
     /**
      * Invoked when the mouse exits a component.
      * @param e MouseEvent
@@ -352,12 +410,12 @@ public class XmlLayerBase extends Layer implements MapMouseListener {
 	return;
     }
     /**
-     * Invoked when a mouse button is pressed on a component and then 
+     * Invoked when a mouse button is pressed on a component and then
      * dragged.  The listener will receive these events if it
      * @param e MouseEvent
      * @return false
      */
-    public boolean mouseDragged(MouseEvent e){      
+    public boolean mouseDragged(MouseEvent e){
 	return false;
     }
     /**
