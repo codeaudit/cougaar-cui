@@ -60,9 +60,6 @@ import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 import org.cougaar.mlm.ui.data.UISimpleInventory;
 import org.cougaar.mlm.ui.planviewer.ConnectionHelper;
 import org.cougaar.mlm.ui.planviewer.XMLClientConfiguration;
-import org.cougaar.glm.execution.eg.ClusterInfo;
-
-
 
 public class InventorySelector implements CougaarUI, InventoryDataProvider
 {
