@@ -89,7 +89,7 @@ public class PointToolTipManager extends MouseAdapter
         }
     }
 
-    private static interface Popup
+    private static interface ToolTipPopup
     {
 
         public abstract void addMouseListener(PointToolTipManager tooltipmanager);
@@ -104,7 +104,7 @@ public class PointToolTipManager extends MouseAdapter
     }
 
     class JPanelPopup extends JPanel
-        implements Popup
+        implements ToolTipPopup
     {
 
         public void addMouseListener(PointToolTipManager tooltipmanager)
@@ -157,7 +157,7 @@ public class PointToolTipManager extends MouseAdapter
     }
 
     class PanelPopup extends Panel
-        implements Popup
+        implements ToolTipPopup
     {
 
         public void addMouseListener(PointToolTipManager tooltipmanager)
@@ -203,7 +203,7 @@ public class PointToolTipManager extends MouseAdapter
     }
 
     class WindowPopup extends Window
-        implements Popup
+        implements ToolTipPopup
     {
 
         boolean firstShow;
@@ -264,7 +264,7 @@ public class PointToolTipManager extends MouseAdapter
     MouseEvent mouseEvent;
     boolean showImmediately;
     static final PointToolTipManager sharedInstance = new PointToolTipManager();
-    Popup tipWindow;
+    ToolTipPopup tipWindow;
     JToolTip tip;
     private Rectangle popupRect;
     private Rectangle popupFrameRect;
