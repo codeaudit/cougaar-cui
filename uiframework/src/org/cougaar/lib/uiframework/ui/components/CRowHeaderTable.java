@@ -93,6 +93,14 @@ public class CRowHeaderTable extends JTable
                     cm.removeColumn(cm.getColumn(0));
                 }
             }
+
+            if ((rowHeader != null) && (cornerHeader != null))
+            {
+                ((AbstractTableModel)rowHeader.getModel()).
+                    fireTableStructureChanged();
+                ((AbstractTableModel)cornerHeader.getModel()).
+                    fireTableStructureChanged();
+            }
         }
     }
 
@@ -272,7 +280,7 @@ public class CRowHeaderTable extends JTable
                         }
                     }
 
-                    for (int i = columnStart; i < columnCount; i++)
+                    for (int i = 0; i < columnCount; i++)
                     {
                         TableColumn c = getColumnModel().getColumn(i);
                         c.setHeaderRenderer(headerCellRenderer);

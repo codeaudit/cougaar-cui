@@ -80,7 +80,7 @@ public class CStoplightTable extends CRowHeaderTable
      */
     public TableCellRenderer getCellRenderer(int row, int column)
     {
-        if ((row >= rowStart) && (column >= columnStart))
+        if (row >= rowStart)
         {
             return stoplightCellRenderer;
         }
