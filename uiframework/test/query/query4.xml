@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <a name="query"/>
+  <list>
+    <a name="fields">
+      <a name="PigLatin"/>
+      <a name="HundredMinusSum"/>
+    </a>
+    <a name="dimensions">
+      <list>
+        <a name="name"><val>Items</val></a>
+        <list>
+          <a name="name"><val>All Items</val></a>
+          <list><a name="name"><val>Medical</val></a></list>
+          <list><a name="name"><val>Spare Parts</val></a></list>
+        </list>
+      </list>
+      <list>
+        <a name="name"><val>Days</val></a>
+        <list>
+          <a name="name"><val>0 6</val></a>
+          <list><a name="name"><val>0</val></a></list>
+          <list><a name="name"><val>1</val></a></list>
+          <!--
+          <list><a name="name"><val>2</val></a></list>
+          <list><a name="name"><val>3</val></a></list>
+          <list><a name="name"><val>4</val></a></list>
+          <list><a name="name"><val>5</val></a></list>
+          <list><a name="name"><val>6</val></a></list>
+          -->
+        </list>
+      </list>
+    </a>
+  </list>
+</structure>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <a name="query"/>
+  <list>
+    <a name="fields">
+      <a name="Quantity"/>
+    </a>
+    <a name="dimensions">
+      <list>
+        <a name="name"><val>Items</val></a>
+        <list>
+          <a name="name"><val>All Items</val></a>
+          <a name="agg">
+            <a name="mode"><val>all leaves</val></a>
+          </a>
+        </list>
+      </list>
+    </a>
+  </list>
+</structure>

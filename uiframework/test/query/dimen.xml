@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <list><a name="name"><val>All Items</val></a>
+    <list><a name="name"><val>Medical</val></a></list>
+    <list><a name="name"><val>Subsistence</val></a></list>
+    <list><a name="name"><val>Fuel</val></a></list>
+    <list><a name="name"><val>Spare Parts</val></a>
+      <list><a name="name"><val>Automotive</val></a></list>
+    </list>
+  </list>
+</structure>

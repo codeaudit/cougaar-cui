@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <a name="query"/>
+  <list>
+    <a name="fields">
+      <a name="PigLatin"/>
+    </a>
+    <a name="dimensions">
+      <list>
+        <a name="name"><val>Items</val></a>
+        <list>
+          <a name="name"><val>All Items</val></a>
+          <list><a name="name"><val>Medical</val></a></list>
+          <list><a name="name"><val>Spare Parts</val></a></list>
+        </list>
+      </list>
+    </a>
+  </list>
+</structure>
