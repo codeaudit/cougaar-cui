@@ -58,11 +58,14 @@ public class CFrameLauncher extends CFrame
         for (int i = 0; i < fileMenu.getItemCount(); i++)
         {
             JMenuItem mi = fileMenu.getItem(i);
-            String menuLabel = mi.getText();
-            if ((menuLabel.equals("Close")) || (menuLabel.equals("Print")))
+            if (mi != null)
             {
-                fileMenu.remove(mi);
-                i--;
+                String menuLabel = mi.getText();
+                if ((menuLabel.equals("Close")) || (menuLabel.equals("Print")))
+                {
+                    fileMenu.remove(mi);
+                    i--;
+                }
             }
         }
     }
@@ -98,7 +101,7 @@ public class CFrameLauncher extends CFrame
 
                     try
                     {
-	                      Constructor c =
+                        Constructor c =
                             cougaarUIClass.getConstructor(constParamClasses);
                         CougaarUI cougaarUI =
                             (CougaarUI)c.newInstance(constParams);

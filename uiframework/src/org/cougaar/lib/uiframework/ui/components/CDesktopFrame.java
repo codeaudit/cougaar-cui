@@ -113,7 +113,7 @@ public class CDesktopFrame extends CFrame
 
         // add new window to window menu
         final JMenuItem mi = (JMenuItem)windowMenu.add(new JMenuItem(title));
-	mi.addActionListener(new WindowAction(f));
+        mi.addActionListener(new WindowAction(f));
 
         f.addInternalFrameListener(new InternalFrameAdapter() {
                 public void internalFrameClosed(InternalFrameEvent e)
@@ -188,6 +188,7 @@ public class CDesktopFrame extends CFrame
             createMenuItem(fileMenu, "Close", 'C', "", new CloseAction());
 
         // put the exit option back at the end of menu
+        fileMenu.add(new JSeparator());
         fileMenu.add(comps[comps.length - 1]);
 
         // ***** create View Menu
@@ -242,11 +243,11 @@ public class CDesktopFrame extends CFrame
     private class PrintAction extends AbstractAction
     {
         // if false, just the active window
-	private CDesktopFrame swingset;
+        private CDesktopFrame swingset;
         private boolean wholeDesktop;
         protected PrintAction(CDesktopFrame swingset, boolean wholeDesktop) {
             super("PrintAction");
-	    this.swingset = swingset;
+            this.swingset = swingset;
             this.wholeDesktop = wholeDesktop;
         }
 
@@ -286,7 +287,7 @@ public class CDesktopFrame extends CFrame
 
     private class CreateViewAction extends AbstractAction {
         private String title;
-	private Class viewClass;
+        private Class viewClass;
         private Class[] constParamClasses;
         private Object[] constParams;
         protected CreateViewAction(String title, Class viewClass,
@@ -294,7 +295,7 @@ public class CDesktopFrame extends CFrame
                                    Object[] constParams)
         {
             super("CreateViewAction");
-	    this.viewClass = viewClass;
+            this.viewClass = viewClass;
             this.constParamClasses = constParamClasses;
             this.constParams = constParams;
             this.title = title;

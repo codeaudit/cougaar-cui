@@ -170,109 +170,121 @@ public class CFrame extends JFrame implements Printable
     /**
      * Create menus
      */
-    private JMenuBar createMenus() {
-	JMenuItem mi;
-	// ***** create the menubar ****
-	menuBar = new JMenuBar();
+    private JMenuBar createMenus()
+    {
+        JMenuItem mi;
+        // ***** create the menubar ****
+        menuBar = new JMenuBar();
 
-	// ***** create File menu
-	fileMenu = (JMenu) menuBar.add(new JMenu("File"));
+        // ***** create File menu
+        fileMenu = (JMenu) menuBar.add(new JMenu("File"));
         fileMenu.setMnemonic('F');
         createMenuItem(fileMenu, "Print", 'P', "", new PrintAction(this));
         createMenuItem(fileMenu, "Close", 'C', "", new CloseAction(this));
+        fileMenu.add(new JSeparator());
         createMenuItem(fileMenu, "Exit", 'E', "", new ExitAction());
 
-
-	// ***** create laf switcher menu
-	lafMenu = (JMenu) menuBar.add(new JMenu("Look & Feel"));
+        // ***** create laf switcher menu
+        lafMenu = (JMenu) menuBar.add(new JMenu("Look & Feel"));
         lafMenu.setMnemonic('L');
 
-	mi = createLafMenuItem(lafMenu, "Java Look & Feel", 'J', "", metal);
-	mi.setSelected(true); // this is the default l&f
+        mi = createLafMenuItem(lafMenu, "Java Look & Feel", 'J', "", metal);
+        mi.setSelected(true); // this is the default l&f
         metalMenuItem = mi;
 
-	createLafMenuItem(lafMenu, "Macintosh Look & Feel", 'M', "", mac);
+        createLafMenuItem(lafMenu, "Macintosh Look & Feel", 'M', "", mac);
 
-	createLafMenuItem(lafMenu, "Motif Look & Feel", 'F', "", motif);
+        createLafMenuItem(lafMenu, "Motif Look & Feel", 'F', "", motif);
 
-	createLafMenuItem(lafMenu, "Windows Look & Feel", 'W', "", windows);
+        createLafMenuItem(lafMenu, "Windows Look & Feel", 'W', "", windows);
 
-	// ***** create themes menu
-	themesMenu = (JMenu) menuBar.add(new JMenu("Themes"));
+        // ***** create themes menu
+        themesMenu = (JMenu) menuBar.add(new JMenu("Themes"));
         themesMenu.setMnemonic('T');
 
-	mi = createThemesMenuItem(themesMenu, "Default", 'D', "",
-            new DefaultMetalTheme());
-	mi.setSelected(true); // This is the default theme
+        mi = createThemesMenuItem(themesMenu, "Default", 'D', "",
+                                  new DefaultMetalTheme());
+        mi.setSelected(true); // This is the default theme
 
-	createThemesMenuItem(themesMenu, "Aqua", 'A', "", new AquaTheme());
+        createThemesMenuItem(themesMenu, "Aqua", 'A', "", new AquaTheme());
 
-	createThemesMenuItem(themesMenu, "Charcoal", 'C', "", new CharcoalTheme());
+        createThemesMenuItem(themesMenu, "Charcoal", 'C', "",
+                             new CharcoalTheme());
 
-	createThemesMenuItem(themesMenu, "High Contrast", 'H', "", new ContrastTheme());
+        createThemesMenuItem(themesMenu, "High Contrast", 'H', "",
+                             new ContrastTheme());
 
-	createThemesMenuItem(themesMenu, "Emerald", 'E', "", new EmeraldTheme());
+        createThemesMenuItem(themesMenu, "Emerald", 'E', "",
+                             new EmeraldTheme());
 
-	createThemesMenuItem(themesMenu, "Ruby", 'R', "", new RubyTheme());
+        createThemesMenuItem(themesMenu, "Ruby", 'R', "", new RubyTheme());
 
-	createThemesMenuItem(themesMenu, "Presentation", 'P', "", new DemoMetalTheme());
+        createThemesMenuItem(themesMenu, "Presentation", 'P', "",
+                             new DemoMetalTheme());
 
-	createThemesMenuItem(themesMenu, "Sandstone", 'S', "", new KhakiMetalTheme());
+        createThemesMenuItem(themesMenu, "Sandstone", 'S', "",
+                             new KhakiMetalTheme());
 
-	createThemesMenuItem(themesMenu, "Big High Contrast", 'I', "", new BigContrastMetalTheme());
+        createThemesMenuItem(themesMenu, "Big High Contrast", 'I', "",
+                             new BigContrastMetalTheme());
 
         createThemesMenuItem(themesMenu, "Blue", 'B', "", new BlueTheme());
 
-        createThemesMenuItem(themesMenu, "Cougaar", 'O', "", new CougaarTheme());
+        createThemesMenuItem(themesMenu, "Cougaar", 'O', "",
+                             new CougaarTheme());
 
-        createThemesMenuItem(themesMenu, "Cougaar Presentation", 'O', "", new CougaarPresentationTheme());
+        createThemesMenuItem(themesMenu, "Cougaar Presentation", 'O', "",
+                             new CougaarPresentationTheme());
 
-	return menuBar;
+        return menuBar;
     }
 
     /**
      * Creates a generic menu item
      */
     protected JMenuItem createMenuItem(JMenu menu, String label, char mnemonic,
-			       String accessibleDescription, Action action) {
+             String accessibleDescription, Action action) {
         JMenuItem mi = (JMenuItem) menu.add(new JMenuItem(label));
-	mi.setMnemonic(mnemonic);
-	mi.getAccessibleContext().setAccessibleDescription(accessibleDescription);
-	mi.addActionListener(action);
-	if(action == null) {
-	    mi.setEnabled(false);
-	}
-	return mi;
+        mi.setMnemonic(mnemonic);
+        mi.getAccessibleContext().
+            setAccessibleDescription(accessibleDescription);
+        mi.addActionListener(action);
+        if(action == null) {
+            mi.setEnabled(false);
+        }
+        return mi;
     }
 
     /**
      * Creates a JRadioButtonMenuItem for the Themes menu
      */
-    private JMenuItem createThemesMenuItem(JMenu menu, String label, char mnemonic,
-			       String accessibleDescription, DefaultMetalTheme theme) {
-        JRadioButtonMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(label));
-	themesMenuGroup.add(mi);
-	mi.setMnemonic(mnemonic);
-	mi.getAccessibleContext().setAccessibleDescription(accessibleDescription);
-	mi.addActionListener(new ChangeThemeAction(this, theme));
+    private JMenuItem createThemesMenuItem(JMenu menu, String label,
+        char mnemonic, String accessibleDescription, DefaultMetalTheme theme) {
+        JRadioButtonMenuItem mi =
+            (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(label));
+        themesMenuGroup.add(mi);
+        mi.setMnemonic(mnemonic);
+        mi.getAccessibleContext().
+            setAccessibleDescription(accessibleDescription);
+        mi.addActionListener(new ChangeThemeAction(this, theme));
 
-	return mi;
+        return mi;
     }
 
     /**
      * Creates a JRadioButtonMenuItem for the Look and Feel menu
      */
-    private JMenuItem createLafMenuItem(JMenu menu, String label, char mnemonic,
-			       String accessibleDescription, String laf) {
-        JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(label));
-	lafMenuGroup.add(mi);
-	mi.setMnemonic(mnemonic);
-	mi.getAccessibleContext().setAccessibleDescription(accessibleDescription);
-	mi.addActionListener(new ChangeLookAndFeelAction(this, laf));
+    private JMenuItem createLafMenuItem(JMenu menu, String label,
+            char mnemonic, String accessibleDescription, String laf) {
+        JMenuItem mi =
+            (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(label));
+        lafMenuGroup.add(mi);
+        mi.setMnemonic(mnemonic);
+        mi.getAccessibleContext().setAccessibleDescription(accessibleDescription);
+        mi.addActionListener(new ChangeLookAndFeelAction(this, laf));
+        mi.setEnabled(isAvailableLookAndFeel(laf));
 
-	mi.setEnabled(isAvailableLookAndFeel(laf));
-
-	return mi;
+        return mi;
     }
 
     /**
@@ -300,64 +312,64 @@ public class CFrame extends JFrame implements Printable
      * Stores the current L&F, and calls updateLookAndFeel, below
      */
     public void setLookAndFeel(String laf) {
-	if(currentLookAndFeel != laf) {
-	    currentLookAndFeel = laf;
-	    themesMenu.setEnabled(laf == metal);
-	    updateLookAndFeel();
-	}
+        if(currentLookAndFeel != laf) {
+            currentLookAndFeel = laf;
+            themesMenu.setEnabled(laf == metal);
+            updateLookAndFeel();
+        }
     }
 
     /**
      * Sets the current L&F on each demo module
      */
     public void updateLookAndFeel() {
-	try {
-	    UIManager.setLookAndFeel(currentLookAndFeel);
-	    SwingUtilities.updateComponentTreeUI(this);
-	} catch (Exception ex) {
-	    System.out.println("Failed loading L&F: " + currentLookAndFeel);
-	    System.out.println(ex);
-	}
+        try {
+            UIManager.setLookAndFeel(currentLookAndFeel);
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (Exception ex) {
+            System.out.println("Failed loading L&F: " + currentLookAndFeel);
+            System.out.println(ex);
+        }
     }
 
     private class ChangeLookAndFeelAction extends AbstractAction {
-	CFrame swingset;
-	String laf;
+        CFrame swingset;
+        String laf;
         protected ChangeLookAndFeelAction(CFrame swingset, String laf) {
             super("ChangeTheme");
-	    this.swingset = swingset;
-	    this.laf = laf;
+            this.swingset = swingset;
+            this.laf = laf;
         }
 
         public void actionPerformed(ActionEvent e) {
-	    swingset.setLookAndFeel(laf);
-	}
+            swingset.setLookAndFeel(laf);
+        }
     }
 
     protected static DefaultMetalTheme currentTheme = new DefaultMetalTheme();
     private class ChangeThemeAction extends AbstractAction {
-	CFrame swingset;
-	DefaultMetalTheme theme;
+        CFrame swingset;
+        DefaultMetalTheme theme;
         protected ChangeThemeAction(CFrame swingset, DefaultMetalTheme theme) {
             super("ChangeTheme");
-	    this.swingset = swingset;
-	    this.theme = theme;
+            this.swingset = swingset;
+            this.theme = theme;
         }
 
         public void actionPerformed(ActionEvent e) {
-	    MetalLookAndFeel.setCurrentTheme(theme);
+            MetalLookAndFeel.setCurrentTheme(theme);
             currentTheme = theme;
-	    swingset.updateLookAndFeel();
-	}
+            swingset.updateLookAndFeel();
+        }
     }
 
     private class PrintAction extends AbstractAction
     {
-	private Component comp;
+        private Component comp;
         protected PrintAction(Component comp)
         {
             super("PrintAction");
-	    this.comp = comp;
+            this.comp = comp;
         }
 
         public void actionPerformed(ActionEvent e)
@@ -372,14 +384,14 @@ public class CFrame extends JFrame implements Printable
     }
 
     private class CloseAction extends AbstractAction {
-	CFrame cframe;
+        CFrame cframe;
         protected CloseAction(CFrame cframe) {
             super("CloseAction");
             this.cframe = cframe;
         }
 
         public void actionPerformed(ActionEvent e) {
-	    cframe.dispose();
+            cframe.dispose();
         }
     }
 
@@ -389,7 +401,12 @@ public class CFrame extends JFrame implements Printable
         }
 
         public void actionPerformed(ActionEvent e) {
-	    System.exit(0);
+            int selection = JOptionPane.showConfirmDialog(CFrame.this,
+                        "Would you like to exit this application?");
+            if (selection == JOptionPane.OK_OPTION)
+            {
+                System.exit(0);
+            }
         }
     }
 }
