@@ -15,6 +15,10 @@ import org.cougaar.lib.aggagent.ldm.PlanObject;
 import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableWrapper;
 
 public class OrgSubPlugIn extends SimplePlugIn {
+  // a couple of constants
+  private static String SUBORDINATE = "ADMINISTRATIVESUBORDINATE";
+  private static String SUPERIOR = "ADMINISTRATIVESUPERIOR";
+
   // store the information in a hashtable keyed by organization
   private Hashtable table = null;
 
@@ -70,12 +74,12 @@ public class OrgSubPlugIn extends SimplePlugIn {
           {
             String superior = findChildValue("superior", child);
             String subordinate = findChildValue("subordinate", child);
-            long start = Long.parseLong(findChildValue("startTime", child));
-            long end = Long.parseLong(findChildValue("endTime", child));
+            long start = Long.parseLong(findChildValue("start", child));
+            long end = Long.parseLong(findChildValue("end", child));
             insertRelation(
-              superior, "ADMINISTRATIVESUBORDINATE", subordinate, start, end);
+              superior, SUBORDINATE, subordinate, start, end);
             insertRelation(
-              subordinate, "ADMINISTRATIVESUPERIOR", superior, start, end);
+              subordinate, SUPERIOR, superior, start, end);
           }
         }
       }
