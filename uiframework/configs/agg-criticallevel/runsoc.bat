@@ -19,6 +19,7 @@ REM " TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR"
 REM " PERFORMANCE OF THE COUGAAR SOFTWARE."
 REM "</copyright>"
 
+REM OBSOLETE! Use %COUGAAR_INSTALL_PATH%/bin/Node.bat <node name>
 
 setlocal
 
@@ -27,14 +28,12 @@ set NODE=AggCriticalNode
 set EXECLASS=org.cougaar.core.node.Node
 set NODEARGS=-c -n %NODE%
 
-set BASELIB=%ALP_INSTALL_PATH%\lib
+set BASELIB=%COUGAAR_INSTALL_PATH%\lib
 set CPATH=%BASELIB%\core.jar
 set CPATH=%CPATH%;%BASELIB%\glm.jar
-set CPATH=%CPATH%;%BASELIB%\planserver.jar
 set CPATH=%CPATH%;%BASELIB%\aggagent.jar
-set CPATH=%CPATH%;%BASELIB%\xalan.jar
-set CPATH=%CPATH%;%BASELIB%\xerces.jar
-set CPATH=%CPATH%;%BASELIB%\xml4j_2_0_11.jar
+set CPATH=%CPATH%;%COUGAAR_INSTALL_PATH%\sys\xercesImpl.jar
+set CPATH=%CPATH%;%COUGAAR_INSTALL_PATH%\sys\xml-apis.jar
 set CPATH=%CPATH%;%BASELIB%\uiframework.jar
 
 java -Xmx128M -cp %CPATH% %EXECLASS% %NODEARGS%
