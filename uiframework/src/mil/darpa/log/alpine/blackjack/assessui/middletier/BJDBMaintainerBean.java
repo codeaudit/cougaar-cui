@@ -139,6 +139,10 @@ if (index == 0) {
 
                 int item_id = getItemID (myStruct.getItem());
 
+                // If item not in table, skip it
+                if (item_id == -1)
+                    continue;
+
                 int org_id = getOrgID (myStruct.getOrg());
 
                 if (myStruct.getTime() != null) {
@@ -158,10 +162,6 @@ if (index == 0) {
 
                 putValuesInTable (org_id, item_id, start_time_in_days, end_time_in_days, metric_id, rate_float);
 
-/* Commented out to try to get the demo to work.  We will */
-/* try to do aggregation at the user interface client.    */
-//                aggregateByOrg (org_id, item_id, metric_id, start_time_in_days, end_time_in_days);
-
                 System.out.println ("");
                 System.out.print ("" + index);
 
@@ -170,8 +170,6 @@ if (index == 0) {
             } /* end of while */
 
             System.out.println ("Done, processed " + index + " records");
-
-//            aggregateItems (item_list);
 
             // Save the work in the database
             connection.commit();
@@ -194,10 +192,6 @@ if (index == 0) {
     }
 
     private PreparedStatement updateAssessmentData = null;
-//    private PreparedStatement updateAssessmentAggregation = null;
-//    private PreparedStatement sumAssessmentAggregation = null;
-//    private PreparedStatement selectItemId = null;
-//    private PreparedStatement selectOrgId = null;
 
     private void createPreparedStatements () {
         try {
@@ -205,21 +199,6 @@ if (index == 0) {
                 connection.prepareStatement("UPDATE assessmentData " +
                     "SET assessmentValue = ? WHERE org = ? AND item = ? " +
                     "AND metric = ? AND unitsOfTime >= ? AND unitsOfTime < ?");
-
-/*
-            updateAssessmentAggregation =
-                connection.prepareStatement("UPDATE assessmentData " +
-                    "SET assessmentValue = ? WHERE org = ? AND item = ? " +
-                    "AND metric = ? AND unitsOfTime = ?");
-
-            sumAssessmentAggregation =
-                connection.prepareStatement("SELECT sum(assessmentvalue) FROM assessmentData WHERE item = ? and metric = ? and unitsoftime = ? and org in (select id from assessmentorgs where parent = ?)");
-*/
-
-//            selectItemId =
-//                connection.prepareStatement("SELECT id FROM itemWeights WHERE item_id = '?'");
-//            selectOrgId =
-//                connection.prepareStatement("SELECT id FROM assessmentOrgs WHERE name = '?'");
         }
         catch(SQLException e)
         {
@@ -288,38 +267,8 @@ if (index == 0) {
                 item_id = rs.getInt ("ID");
             }
             else {
-                int parent_id = 0;
-                String parent_desc;
-
-                System.out.println ("" + item_field_name + " not found in itemWeights table.  Going to insert new item in the table");
-
-                // If it wasn't in the table, find the maximum id
-                rs = stmt.executeQuery("SELECT max(id) FROM itemWeights");
-
-                if (rs.next()) {
-                    item_id = rs.getInt("MAX(ID)");
-                    item_id++;
-                }
-                else {
-                    // this is the first row in the table
-                    item_id = 0;
-                }
-
-                rs = stmt.executeQuery("SELECT id,item_id FROM itemWeights where ITEM_ID = 'ALL_ITEMS'");
-
-                if (rs.next()) {
-                    parent_id = rs.getInt("ID");
-                    parent_desc = rs.getString("ITEM_ID");
-                }
-                else {
-                    // this is the first row in the table
-                    parent_id = 0;
-                    parent_desc = "";
-                }
-
-                // Insert the item with the top of the tree as the parent
-                stmt.executeUpdate("INSERT INTO itemWeights VALUES (" + item_id + ", '" + item_field_name + "', " + parent_id + ", '" + parent_desc + "', '" + item_field_name + "', 0)");
-
+                System.out.println ("Item " + item_field_name + " not in table!");
+                item_id = -1;
             }
             return item_id;
         }
@@ -457,115 +406,6 @@ System.out.print ("insert"+time_index);
 
         return (time_in_days);
     }
-
-    private void aggregateByOrg (int org_id,
-                                 int item_id,
-                                 int metric_id,
-                                 int start_time,
-                                 int end_time) {
-
-        int time_index;
-        int parent_org_id = 0;
-
-        try
-        {
-            System.out.print ("Looking for parent of:" + org_id);
-
-            // See if the current org_list id is in the table already
-            ResultSet rs = stmt.executeQuery("SELECT parent FROM assessmentOrgs WHERE id = " + org_id);
-
-            if (rs.next()) { // get the parent id value
-                parent_org_id = rs.getInt ("parent");
-
-                // See if the parent_org_id is actually in the table.
-                // If it isn't in the table, return, since it means we reached the top of the tree
-                ResultSet rs2 = stmt.executeQuery("SELECT parent FROM assessmentOrgs WHERE id = " + parent_org_id);
-
-                // We've reached the top of the tree
-                if (!rs2.next()) {
-                    System.out.println ("No parent");
-                    return;
-                }
-            } /* end of if */
-            else {
-                System.out.println ("No parent");
-                return;
-            }
-
-            System.out.println ("");
-
-            // Aggregate for this parent and item
-
-            for (time_index = start_time; time_index < end_time; time_index++) {
-
-                // The effective query is
-                // SELECT sum(assessmentvalue) FROM assessmentData
-                // WHERE item = item_id and metric = metric_id
-                // and unitsoftime = time_index and org in
-                // (select id from assessmentorgs where parent = parent_org_id)
-
-/*
-                sumAssessmentAggregation.setFloat(1,item_id);
-                sumAssessmentAggregation.setInt(2,metric_id);
-                sumAssessmentAggregation.setInt(3,time_index);
-                sumAssessmentAggregation.setInt(4,parent_org_id);
-                rs = sumAssessmentAggregation.executeQuery();
-*/
-
-                if (rs.next()) { // get the sum
-                    float sum = rs.getFloat ("sum(assessmentvalue)");
-                    int rc = 0;
-
-                    System.out.println ("org " + parent_org_id +
-                                        ", item " + item_id +
-                                        ", time " + time_index + ", sum is " + sum);
-
-                    // The effective update is
-                    // UPDATE assessmentData SET assessmentValue = sum
-                    // WHERE org = parent_org_id AND item = item_id
-                    // AND metric = metric_id AND unitsOfTime = time_index
-
-/*
-                    updateAssessmentAggregation.setFloat(1,sum);
-                    updateAssessmentAggregation.setInt(2,parent_org_id);
-                    updateAssessmentAggregation.setInt(3,item_id);
-                    updateAssessmentAggregation.setInt(4,metric_id);
-                    updateAssessmentAggregation.setInt(5,time_index);
-                    rc = updateAssessmentAggregation.executeUpdate();
-*/
-
-                    // If the update was not successful, do an insert
-                    if (rc != 1) {
-                        stmt.executeUpdate("INSERT INTO assessmentData VALUES (" + parent_org_id + ", " + item_id + ", " + time_index + ", " + metric_id + ", " + sum + ")");
-                    }
-                }
-            } /* end of for time_index */
-        } /* end of try */
-        catch(SQLException e)
-        {
-            System.out.println ("SQL error code " + e.getErrorCode());
-            System.out.println (e.getMessage());
-            throw new EJBException(e);
-        }
-        catch(Exception e)
-        {
-            throw new EJBException(e);
-        }
-
-        aggregateByOrg (parent_org_id, item_id, metric_id, start_time, end_time);
-    } /* end of aggregateByOrg */
-
-    private void aggregateItems (Vector org_list) {
-
-      int index;
-
-      for (index = 0; index < org_list.size(); index++) {
-          System.out.print ((String) org_list.elementAt(index) + " ");
-      }
-
-      System.out.println ("");
-
-    } /* end of aggregateItems */
 
     public void ejbActivate() {}
     public void ejbPassivate() {}
