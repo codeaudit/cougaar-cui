@@ -136,48 +136,6 @@ public class QueryGenerator
         // aggregation across a time range must be done at the client (here)
         // other aggregation has already been taken care of before DB table.
         if (debug) System.out.println("Aggregating across time range");
-        /*
-        DatabaseTableModel.Combiner combiner =
-            new DatabaseTableModel.Combiner() {
-                public Object combine(Object obj1, Object obj2)
-                {
-                    Object combinedObject = null;
-                    if (obj1 instanceof Float)
-                    {
-                        float f1 = ((Float)obj1).floatValue();
-                        float f2 = ((Float)obj2).floatValue();
-                        float f1Badness = Math.abs(f1 - 1);
-                        float f2Badness = Math.abs(f2 - 1);
-                        combinedObject = (f1Badness > f2Badness) ? obj1 : obj2;
-                    }
-                    else
-                    {
-                        combinedObject = obj1;
-                    }
-
-                    return combinedObject;
-                }
-            };
-        */
-        DatabaseTableModel.Combiner combiner =
-            new DatabaseTableModel.Combiner() {
-                public Object combine(Object obj1, Object obj2)
-                {
-                    Object combinedObject = null;
-                    if (obj1 instanceof Float)
-                    {
-                        float f1 = ((Float)obj1).floatValue();
-                        float f2 = ((Float)obj2).floatValue();
-                        combinedObject = new Float(f1 + f2);
-                    }
-                    else
-                    {
-                        combinedObject = obj1;
-                    }
-
-                    return combinedObject;
-                }
-            };
         VariableModel timeDescriptor = vim.getDescriptor("Time");
         if (timeDescriptor.getState() == VariableModel.FIXED)
         {
@@ -188,7 +146,8 @@ public class QueryGenerator
                                         dbTableModel.getColumnIndex("metric")};
             dbTableModel.aggregateRows(significantColumns,
                                        timeRange.toString(),
-                                       timeHeaderColumn, combiner);
+                                       timeHeaderColumn,
+                                       new AverageCombiner());
         }
 
         // transform based on needed X and Y variables
@@ -515,6 +474,71 @@ public class QueryGenerator
             System.out.println("\n Demand values for all items at time C+" +
                                time);
             printHashtable(ht);
+        }
+    }
+
+    private class FurthestFromOneCombiner
+        implements DatabaseTableModel.Combiner
+    {
+        public Object combine(Object obj1, Object obj2)
+        {
+            Object combinedObject = null;
+            if (obj1 instanceof Float)
+            {
+                float f1 = ((Float)obj1).floatValue();
+                float f2 = ((Float)obj2).floatValue();
+                float f1Badness = Math.abs(f1 - 1);
+                float f2Badness = Math.abs(f2 - 1);
+                combinedObject = (f1Badness > f2Badness) ? obj1 : obj2;
+            }
+            else
+            {
+                combinedObject = obj1;
+            }
+
+            return combinedObject;
+        }
+
+        public Object finalize(Object obj, int numRowsCombined)
+        {
+            return obj;
+        }
+    };
+
+    private class AdditiveCombiner implements DatabaseTableModel.Combiner
+    {
+        public Object combine(Object obj1, Object obj2)
+        {
+            Object combinedObject = null;
+            if (obj1 instanceof Float)
+            {
+                float f1 = ((Float)obj1).floatValue();
+                float f2 = ((Float)obj2).floatValue();
+                combinedObject = new Float(f1 + f2);
+            }
+            else
+            {
+                combinedObject = obj1;
+            }
+
+            return combinedObject;
+        }
+
+        public Object finalize(Object obj, int numRowsCombined)
+        {
+            return obj;
+        }
+    };
+
+    private class AverageCombiner extends AdditiveCombiner
+    {
+        public Object finalize(Object obj, int numRowsCombined)
+        {
+            if (obj instanceof Float)
+            {
+                return new Float((((Number)obj).floatValue())/numRowsCombined);
+            }
+            return obj;
         }
     }
 
