@@ -18,7 +18,7 @@ import org.cougaar.lib.uiframework.ui.util.SelectableHashtable;
  */
 public class CRowHeaderTable extends JTable
 {
-    private static final int MIN_CELL_CHARACTER_WIDTH = 4;
+    private static final int MIN_CELL_CHARACTER_WIDTH = 7;
     private int minCellWidth = 0;
     private HeaderCellRenderer headerCellRenderer = new HeaderCellRenderer();
     private JTable cornerHeader = createCornerHeader();
