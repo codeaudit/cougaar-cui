@@ -15,6 +15,9 @@ public class BlackjackTableCreator
     private static String user;
     private static String password;
     private static boolean randomdata = Boolean.getBoolean("RANDOMDATA");
+    private static boolean createItemTable = Boolean.getBoolean("CREATEITEMS");
+    private static int startTime = Integer.getInteger("STARTTIME").intValue();
+    private static int endTime = Integer.getInteger("ENDTIME").intValue();
 
     public static void main(String[] args)
     {
@@ -124,16 +127,19 @@ public class BlackjackTableCreator
                                  "name   CHAR(50)     NOT NULL," +
                                  "primary key (id)            )");
 
-        try
+        if (createItemTable)
         {
-            stmt.executeUpdate("DROP TABLE assessmentItems");
-        }
-        catch(SQLException e) {} // it doesn't yet exist; good
-        stmt.executeUpdate("CREATE TABLE assessmentItems " +
+            try
+            {
+                stmt.executeUpdate("DROP TABLE itemWeights");
+            }
+            catch(SQLException e) {} // it doesn't yet exist; good
+            stmt.executeUpdate("CREATE TABLE itemWeights" +
                                 "(id     INTEGER      NOT NULL," +
                                  "parent INTEGER      NOT NULL," +
                                  "name   CHAR(50)     NOT NULL," +
                                  "primary key (id)            )");
+        }
 
         try
         {
@@ -158,9 +164,12 @@ public class BlackjackTableCreator
         config.setPrimaryKeys(new String[] {"keynum"});
         saveInDb(readFromFile("orgTree.xml"), null, config);
 
-        // Item Tree
-        config.setDbTable("assessmentItems");
-        saveInDb(readFromFile("itemTree.xml"), null, config);
+        if (createItemTable)
+        {
+            // Item Tree
+            config.setDbTable("itemWeights");
+            saveInDb(readFromFile("itemTree.xml"), null, config);
+        }
     }
 
     private static void populateOtherTables(Statement stmt) throws Exception
@@ -177,11 +186,11 @@ public class BlackjackTableCreator
         // Value table
         Random rand = new Random();
         int orgSize = getNumberOfRows(stmt, "assessmentOrgs");
-        int itemSize = getNumberOfRows(stmt, "assessmentItems");
+        int itemSize = getNumberOfRows(stmt, "itemWeights");
         int metricSize = getNumberOfRows(stmt, "assessmentMetrics");
         for (int org=0; org<orgSize; org++)
             for (int item=0; item<itemSize; item++)
-                for (int time=0; time<30; time++)
+                for (int time=startTime; time<endTime; time++)
                     for (int metric=0; metric<metricSize; metric++)
                         stmt.executeUpdate("INSERT INTO assessmentData VALUES"
                                            + " (" + org + ", " + item + ", " +
