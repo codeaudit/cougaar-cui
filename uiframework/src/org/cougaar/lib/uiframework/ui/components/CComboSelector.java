@@ -52,6 +52,11 @@ public class CComboSelector extends JComboBox implements Selector
                 {
                     Object oldSelectedItem = selectedItem;
                     selectedItem = getSelectedItem();
+                    if (selectedItem == null)
+                    {
+                        selectedItem = oldSelectedItem;
+                        setSelectedItem(selectedItem);
+                    }
                     firePropertyChange("selectedItem", oldSelectedItem,
                                        selectedItem);
                 }
