@@ -347,27 +347,20 @@ public class MappedTransducer extends SqlTransducer {
   private static SqlTableMap makeConfig (boolean extra) {
     SqlTableMap ret = new SqlTableMap();
     StringBuffer table = new StringBuffer("stuff_n_note");
-    StringBuffer stuff = new StringBuffer();
-    StringBuffer note = new StringBuffer();
 
     if (extra) {
-      table.append(" s, extra e");
-      stuff.append("s.");
-      note.append("s.");
+      table.append(", extra");
     }
-
-    stuff.append("stuff");
-    note.append("note");
 
     ret.setDbTable(table.toString());
     ret.setIdKey("id");
     ret.setParentKey("parent");
-    ret.addContentKey("content", stuff.toString());
-    ret.addContentKey("annotation", note.toString());
+    ret.addContentKey("content", "stuff");
+    ret.addContentKey("annotation", "note");
     if (extra) {
-      ret.addContentKey("extra_field", "e.extra");
-      ret.setPrimaryTableName("s");
-      ret.setJoinConditions("s.id = e.id");
+      ret.addContentKey("extra_field", "extra");
+      ret.setPrimaryTableName("stuff_n_note");
+      ret.setJoinConditions("stuff_n_note.id = extra.id");
     }
     ret.setPrimaryKeys(new String[] {"keynum"});
     return ret;

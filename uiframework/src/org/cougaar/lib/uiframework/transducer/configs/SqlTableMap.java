@@ -58,9 +58,9 @@ public class SqlTableMap {
    *  and primary IDs.  For example, when joining tables "fred" and "john",
    *  where "fred" contains the parent-child relationships, call:
    *  <pre>
-   *    setDbTable("fred f, john j");
-   *    setPrimaryTableName("f");
-   *    setJoinConditions("f.id = j.id");
+   *    setDbTable("fred, john");
+   *    setPrimaryTableName("fred");
+   *    setJoinConditions("fred.id = john.id");
    *  </pre>
    *  Setting this parameter is unnecessary when only one table is used or when
    *  there are no column name conflicts among the tables being joined.
