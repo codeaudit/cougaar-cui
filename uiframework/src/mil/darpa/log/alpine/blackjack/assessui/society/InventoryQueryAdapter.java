@@ -29,10 +29,11 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
   private static final String METRIC = "Inventory";
 
   private StringBuffer output_xml;
-  private boolean send_xml = false;
+  private boolean send_xml;
   private int xml_count;
   private AggInfoEncoder myEncoder = new AggInfoEncoder();
-  private AggInfoStructure nextStructure = null;
+  private AggInfoStructure nextStructure;
+  String org;
 
   public void execute (Collection matches, String eventName) {
 
@@ -42,8 +43,10 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
     index = 0;
     xml_count = 0;
-
-    output_xml = myEncoder.encodeStartOfXML(METRIC);
+    output_xml = null;
+    send_xml = false;
+    nextStructure = null;
+    org = null;
 
     while (iter.hasNext()) {
 
@@ -53,7 +56,6 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
         Inventory in = (Inventory) o;
 
-        String org = null;
         String item = null;
         String start_time = null;
         String end_time = null;
@@ -136,7 +138,7 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
 
           // If the structure is null, create one
           if (nextStructure == null) {
-            nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
+            nextStructure = new AggInfoStructure (item, start_time, end_time, rate);
           }
           // If the rates are the same, and the start time of the new record
           // is the same as the end time of the old record, then combine
@@ -147,8 +149,8 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
           }
           // Output the record and start a new one
           else {
-            writeStructureToXML (nextStructure);
-            nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
+            writeStructureToXML (org, nextStructure);
+            nextStructure = new AggInfoStructure (item, start_time, end_time, rate);
           }
         } /* end of while */
 
@@ -158,14 +160,17 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
     } /* while iter */
 
     if (nextStructure != null) {
-      writeStructureToXML (nextStructure);
+      writeStructureToXML (org, nextStructure);
     }
 
     System.out.println ("**************************************************************************");
     System.out.println ("Inventory sending " + index + " records, amounts to " + xml_count + " xml records");
     System.out.println ("**************************************************************************");
 
-    myEncoder.encodeEndOfXML(output_xml);
+    if (send_xml) {
+      myEncoder.encodeEndOfXML(output_xml);
+      System.out.println ("Ending XML");
+    }
   } /* end of execute */
 
   public void returnVal (OutputStream out) {
@@ -186,22 +191,18 @@ public class InventoryQueryAdapter extends CustomQueryBaseAdapter {
     send_xml = false;
   } /* end of returnVal */
 
-  private void writeStructureToXML (AggInfoStructure new_structure) {
+  private void writeStructureToXML (String org, AggInfoStructure new_structure) {
+    // We are about to send a new one
+    if (!send_xml) {
+      output_xml = myEncoder.encodeStartOfXML(org, METRIC);
+      System.out.println ("Beginning XML");
+    }
+
     myEncoder.encodeDataAtom (output_xml, new_structure);
 
     xml_count++;
 
     send_xml = true;
-
-/*
-    if (xml_count == 1) {
-      System.out.println ("item is " + new_structure.getItem());
-      System.out.println ("org is " + new_structure.getOrg());
-      System.out.println ("start_time is " + new_structure.getStartTime());
-      System.out.println ("end_time is " + new_structure.getEndTime());
-      System.out.println ("rate is " + new_structure.getRate());
-    }
-*/
 
   } /* end of writeStructureToXML */
 

@@ -31,21 +31,22 @@ public class DueOutQueryAdapter extends CustomQueryBaseAdapter {
   private static final String METRIC = "Due Outs";
 
   private StringBuffer output_xml;
-  private boolean send_xml = false;
+  private boolean send_xml;
   private int xml_count;
   private AggInfoEncoder myEncoder = new AggInfoEncoder();
-  private AggInfoStructure nextStructure = null;
+  private AggInfoStructure nextStructure;
 
   public void execute (Collection matches, String eventName) {
 
     Iterator iter = matches.iterator();
     int index;
-    int inventory_count = 1;
 
     index = 0;
     xml_count = 0;
-
-    output_xml = myEncoder.encodeStartOfXML(METRIC);
+    output_xml = null;
+    send_xml = false;
+    nextStructure = null;
+    String org = null;
 
 try {
 
@@ -57,7 +58,6 @@ try {
 
         Inventory in = (Inventory) o;
 
-        String org = null;
         String item = null;
         String start_time = null;
         String end_time = null;
@@ -86,8 +86,6 @@ try {
         }
 
         Enumeration schedule_list = s1.getRoleScheduleElements();
-
-        inventory_count++;
 
         int looping = 0;
 
@@ -180,7 +178,7 @@ try {
 
               // If the structure is null, create one
               if (nextStructure == null) {
-                nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
+                nextStructure = new AggInfoStructure (item, start_time, end_time, rate);
               }
               else if ((item.compareTo (nextStructure.getItem()) == 0) &&
                        (start_time.compareTo (nextStructure.getStartTime()) == 0) &&
@@ -195,8 +193,8 @@ try {
               // Output the record and start a new one
               else {
                 System.out.println ("");
-                writeStructureToXML (nextStructure);
-                nextStructure = new AggInfoStructure (org, item, start_time, end_time, rate);
+                writeStructureToXML (org, nextStructure);
+                nextStructure = new AggInfoStructure (item, start_time, end_time, rate);
               }
 
               // One more record parsed
@@ -216,14 +214,16 @@ catch (Exception e) {
 }
 
     if (nextStructure != null) {
-      writeStructureToXML (nextStructure);
+      writeStructureToXML (org, nextStructure);
     }
 
     System.out.println ("**************************************************************************");
     System.out.println ("DueOuts sending " + index + " records, amounts to " + xml_count + " xml records");
     System.out.println ("**************************************************************************");
 
-    myEncoder.encodeEndOfXML(output_xml);
+    if (send_xml) {
+      myEncoder.encodeEndOfXML(output_xml);
+    }
   } /* end of execute */
 
   public void returnVal (OutputStream out) {
@@ -244,7 +244,13 @@ catch (Exception e) {
     send_xml = false;
   } /* end of returnVal */
 
-  private void writeStructureToXML (AggInfoStructure new_structure) {
+  private void writeStructureToXML (String org, AggInfoStructure new_structure) {
+
+    // We are getting ready to send a new one
+    if (!send_xml) {
+      output_xml = myEncoder.encodeStartOfXML(org, METRIC);
+    }
+
     myEncoder.encodeDataAtom (output_xml, new_structure);
 
     xml_count++;
