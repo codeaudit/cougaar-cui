@@ -440,6 +440,23 @@ public class DatabaseTableModel implements TableModel
     }
 
     /**
+     * Insert a new row into model. (filled with nulls)
+     *
+     * @param rowIndex where to insert new row
+     */
+    public synchronized void insertRow(int rowIndex)
+    {
+        Vector newRow = new Vector();
+        for (int column=0; column < getColumnCount(); column++)
+        {
+            newRow.add("N/A");
+        }
+        dataRows.add(newRow);
+        fireTableChangedEvent(
+            new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+    }
+
+    /**
      * transpose the contents of this model.
      * Rows become columns and columns become rows.
      */
@@ -697,7 +714,7 @@ public class DatabaseTableModel implements TableModel
     /**
      * For debug.  Prints out contents of model to standard out
      */
-    private void printDataMatrix()
+    public void printDataMatrix()
     {
         System.out.println(dataRows.size() + " rows, " +
                            ((Vector)dataRows.elementAt(0)).size() +" columns");
