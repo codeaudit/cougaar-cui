@@ -1,6 +1,7 @@
 
 package org.cougaar.lib.uiframework.ui.orglocation.psp;
 
+import java.text.*;
 import java.util.*;
 
 import org.w3c.dom.*;
@@ -10,6 +11,7 @@ import org.cougaar.lib.planserver.*;
 
 import org.cougaar.lib.uiframework.query.*;
 import org.cougaar.lib.uiframework.query.generic.*;
+import org.cougaar.lib.uiframework.ui.orglocation.data.DayBaseModel;
 
 /**
  *  This class is a container for a QueryInterpreter designed to answer queries
@@ -38,6 +40,16 @@ public class PSP_LocQuery extends PSP_QueryBase {
    *  reference becomes available.
    */
   protected void initQueryInterpreter (PlanServiceContext psc) {
+    // set up DayBaseModel
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    try {
+      DayBaseModel.baseTimeMillis = sdf.parse("2005/08/15").getTime();
+    }
+    catch (Exception buzz_off) {
+      buzz_off.printStackTrace();
+    }
+
+    // create the query interpreter
     responder = new GenericInterpreter();
 
     // add the attributes
