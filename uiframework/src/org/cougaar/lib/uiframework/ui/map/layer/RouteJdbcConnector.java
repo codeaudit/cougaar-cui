@@ -36,7 +36,7 @@ import org.cougaar.lib.uiframework.ui.map.layer.cgmicon.OMWideLine;
 
 
 /***********************************************************************************************************************
-<b>Description</b>: AssetJdbcPlugIn is a plugin which connects to the payment asset database
+<b>Description</b>: AssetJdbcPlugin is a plugin which connects to the payment asset database
                                      to update the customer info.
 
 <br><br><b>Notes</b>:<br>

@@ -29,7 +29,7 @@ import org.cougaar.lib.uiframework.ui.orglocation.data.Const;
 
 /**
  *  The predicate that detects the table of Locations.  The same predicate
- *  class is used by LocSchedulePlugIn and the PSP classes that use the table.
+ *  class is used by LocSchedulePlugin and the PSP classes that use the table.
  */
 public class TableSeeker implements UnaryPredicate {
   /**

@@ -21,10 +21,10 @@
 
 package org.cougaar.lib.uiframework.query.test;
 
-import org.cougaar.core.plugin.SimplePlugIn;
+import org.cougaar.core.plugin.SimplePlugin;
 import java.util.*;
 
-public class ItemTableManager extends SimplePlugIn {
+public class ItemTableManager extends SimplePlugin {
   private Hashtable table = new Hashtable();
   private String[] items = {
     "All Items",

@@ -25,7 +25,7 @@ import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
 import org.cougaar.lib.uiframework.transducer.elements.Structure;
 import org.cougaar.lib.uiframework.transducer.elements.PrettyPrinter;
 
-import org.cougaar.core.plugin.PlugInDelegate;
+import org.cougaar.core.plugin.PluginDelegate;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.lib.planserver.*;
 
@@ -75,18 +75,18 @@ public abstract class PSP_QueryBase
   protected boolean echo_results = false;
 
   /**
-   *  Cache a reference to a PlugInDelegate, as obtained through the
+   *  Cache a reference to a PluginDelegate, as obtained through the
    *  PlanServiceContext supplied through the first call to execute.  This
    *  reference is used by the local QueryInterpreter for all of its access to
    *  the logplan.
    */
-  protected PlugInDelegate plugin = null;
+  protected PluginDelegate plugin = null;
 
   /**
    *  <p>
    *  Field a request from an HTTP client.  The request should be posed as an
    *  HTTP POST, and its body should contain the XML for a Structure.  The
-   *  first time this method is called, a reference to a PlugInDelegate is
+   *  first time this method is called, a reference to a PluginDelegate is
    *  obtained and cached locally for future use.  Additionally, some
    *  implementation-specific initialization code is executed.
    *  </p><p>
@@ -101,7 +101,7 @@ public abstract class PSP_QueryBase
       throws Exception
   {
     if (firstCall) {
-      plugin = psc.getServerPlugInSupport().getDirectDelegate();
+      plugin = psc.getServerPluginSupport().getDirectDelegate();
       initQueryInterpreter(psc);
       firstCall = false;
     }
@@ -164,7 +164,7 @@ public abstract class PSP_QueryBase
    *  Override this method with code to initialize the QueryInterpreter
    *  instance used by this PSP for answering requests.  In some cases, all of
    *  the initialization can be performed in the implementation class's
-   *  constructor.  This method, however, is called after the PlugInDelegate
+   *  constructor.  This method, however, is called after the PluginDelegate
    *  reference is available, which may be required for some initializations.
    *  The default implementation does nothing.
    */
@@ -180,7 +180,7 @@ public abstract class PSP_QueryBase
   protected abstract QueryInterpreter getQueryInterpreter ();
 
   /**
-   *  Use a reference to the local PlugIn as a means of accessing the Cluster's
+   *  Use a reference to the local Plugin as a means of accessing the Cluster's
    *  logplan.  This method is exposed to allow the QueryInterpreter, which may
    *  have access to this PSP_queryAdapter, to generate responses based Objects
    *  found on the logplan.

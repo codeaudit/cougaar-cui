@@ -35,7 +35,7 @@ public abstract class Const {
   public static String START = "startTime";
   public static String END = "endTime";
 
-  // Name of the Org Location Table which is shared by LocSchedulePlugIn,
+  // Name of the Org Location Table which is shared by LocSchedulePlugin,
   // PSP_LocQuery, and PSP_LocSummary
   public static String TABLE_NAME = "OrgLocations";
 

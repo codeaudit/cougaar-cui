@@ -37,7 +37,7 @@ import org.cougaar.lib.uiframework.ui.orglocation.data.DayBaseModel;
  *  This class is a container for a QueryInterpreter designed to answer queries
  *  about the locations (latitude and longitude) of organizations.  It is
  *  intended to run inside an Aggregation Agent Cluster, where relevant data
- *  is available (provided by a LocSchedulePlugIn).
+ *  is available (provided by a LocSchedulePlugin).
  */
 public class PSP_LocQuery extends PSP_QueryBase {
   private GenericInterpreter responder = null;
@@ -56,7 +56,7 @@ public class PSP_LocQuery extends PSP_QueryBase {
    *  Override this method with code to initialize the QueryInterpreter
    *  instance used by this PSP for answering requests.  In some cases, all of
    *  the initialization can be performed in the implementation class's
-   *  constructor.  This method, however, is called after the PlugInDelegate
+   *  constructor.  This method, however, is called after the PluginDelegate
    *  reference becomes available.
    */
   protected void initQueryInterpreter (PlanServiceContext psc) {
@@ -89,7 +89,7 @@ public class PSP_LocQuery extends PSP_QueryBase {
   private QueryDimension createDimension (PlanServiceContext psc) {
     TPLocDimension ret = new TPLocDimension();
     ret.setName("OrgLocations");
-    ret.setPlugIn(psc.getServerPlugInSupport().getDirectDelegate());
+    ret.setPlugin(psc.getServerPluginSupport().getDirectDelegate());
     return ret;
   }
 }

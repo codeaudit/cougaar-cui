@@ -25,7 +25,7 @@ import org.cougaar.util.UnaryPredicate;
 
 /**
  *  The predicate that detects the table of Relationships amont the
- *  Organizations.  The same predicate class is used by both the OrgSubPlugIn
+ *  Organizations.  The same predicate class is used by both the OrgSubPlugin
  *  and the PSP_OrgSub classes, both of which use the table. 
  */
 public class TableSeeker implements UnaryPredicate {

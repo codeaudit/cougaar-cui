@@ -35,7 +35,7 @@ import org.cougaar.lib.planserver.PlanServiceUtilities;
 /**
  *  The PSP_OrgSub class is a class of PSPs for the Aggregation Agent that
  *  report on relationships among the Organizations in a society.  The
- *  information required for it to do its job is provided by the OrgSubPlugIn,
+ *  information required for it to do its job is provided by the OrgSubPlugin,
  *  which must also reside on the AggAgent.  The output produced by this class
  *  conforms to the DTD
  *  <pre>
@@ -130,7 +130,7 @@ public class PSP_OrgSub extends PSP_BaseAdapter implements PlanServiceProvider {
   // Use COUGAAR resources to find the relationship table on the logplan, if it
   // exists.
   private Hashtable findTable (PlanServiceContext psc) {
-    Collection c = psc.getServerPlugInSupport().queryForSubscriber(tableSeeker);
+    Collection c = psc.getServerPluginSupport().queryForSubscriber(tableSeeker);
     if (!c.isEmpty())
       return ((TableWrapper) c.iterator().next()).getTable();
     return null;

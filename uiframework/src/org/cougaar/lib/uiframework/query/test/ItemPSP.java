@@ -45,7 +45,7 @@ public class ItemPSP extends PSP_QueryBase {
    *  Override this method with code to initialize the QueryInterpreter
    *  instance used by this PSP for answering requests.  In some cases, all of
    *  the initialization can be performed in the implementation class's
-   *  constructor.  This method, however, is called after the PlugInDelegate
+   *  constructor.  This method, however, is called after the PluginDelegate
    */
   protected void initQueryInterpreter (PlanServiceContext psc) {
     responder = new GenericInterpreter();

@@ -23,7 +23,7 @@ import org.cougaar.glm.ldm.asset.Organization;
 //import org.cougaar.glm.plugins.TaskUtils;
 
 import org.cougaar.planning.ldm.trigger.*;
-import org.cougaar.core.plugin.PlugInDelegate;
+import org.cougaar.core.plugin.PluginDelegate;
 
 import org.cougaar.util.UnaryPredicate;
 
@@ -37,7 +37,7 @@ import org.cougaar.util.UnaryPredicate;
 @version 1.0
 ***********************************************************************************************************************/
 
-public class DeskTopTestPlugIn extends org.cougaar.core.plugin.SimplePlugIn
+public class DeskTopTestPlugin extends org.cougaar.core.plugin.SimplePlugin
 {
 	
 	
@@ -69,11 +69,11 @@ public class DeskTopTestPlugIn extends org.cougaar.core.plugin.SimplePlugIn
   }
  
   /*********************************************************************************************************************
-  <b>Description</b>: Looks at the PlugIn parameters for the debug value.
+  <b>Description</b>: Looks at the Plugin parameters for the debug value.
 	*********************************************************************************************************************/
   private void parseParameters()
   {
-  	// Look through the PlugIn parameters for the packer time
+  	// Look through the Plugin parameters for the packer time
   	//System.out.println("&&&& parsing");
     //Vector pVec = getParameters();
     //if (pVec.size() > 0)

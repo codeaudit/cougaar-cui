@@ -23,7 +23,7 @@ package org.cougaar.lib.uiframework.ui.orglocation.psp;
 
 import java.util.*;
 
-import org.cougaar.core.plugin.PlugInDelegate;
+import org.cougaar.core.plugin.PluginDelegate;
 import org.cougaar.util.UnaryPredicate;
 import org.cougaar.lib.planserver.*;
 
@@ -36,14 +36,14 @@ import org.cougaar.lib.uiframework.ui.orglocation.plugin.TableSeeker;
 public class TPLocDimension extends QueryDimension {
   private static UnaryPredicate tableFinder = new TableSeeker();
   private LocRootNode root = new LocRootNode();
-  private PlugInDelegate plugin = null;
+  private PluginDelegate plugin = null;
   private boolean initialized = false;
 
   public TPLocDimension () {
     root.setDimension(this);
   }
 
-  public void setPlugIn (PlugInDelegate pid) {
+  public void setPlugin (PluginDelegate pid) {
     plugin = pid;
   }
 

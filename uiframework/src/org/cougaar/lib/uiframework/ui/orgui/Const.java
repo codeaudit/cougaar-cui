@@ -39,7 +39,7 @@ public abstract class Const {
   public static String START = "starttime";
   public static String END = "endtime";
 
-  // name of the relationships table shared by OrgSubPlugIn and PSP_OrgSub
+  // name of the relationships table shared by OrgSubPlugin and PSP_OrgSub
   public static String TABLE_NAME = "OrgRelTable";
 
   // An inane predicate class for filtering schedules.  This is necessary
