@@ -7,7 +7,7 @@ set NODE=MapAggNode
 set EXECLASS=org.cougaar.core.society.Node
 set NODEARGS=-c -n %NODE%
 
-set BASELIB=s:\alp70\alp\lib
+set BASELIB=s:\alp0312\alp\lib
 set CPATH=%BASELIB%\core.jar
 set CPATH=%CPATH%;%BASELIB%\glm.jar
 set CPATH=%CPATH%;%BASELIB%\planserver.jar
