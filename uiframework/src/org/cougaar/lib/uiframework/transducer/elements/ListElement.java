@@ -107,6 +107,18 @@ public class ListElement extends Element {
     return children.elements();
   }
 
+  /**
+   *  Report the number of children currently held by this ListElement.
+   *  @return the number of child Elements
+   */
+  public int getChildCount () {
+    return children.size();
+  }
+
+  /**
+   *  Tell whether or not this node has any children.
+   *  @return true if and only if this ListElement has at least one child.
+   */
   public boolean hasChildren () {
     return children.size() > 0;
   }

@@ -45,6 +45,16 @@ public class Attribute extends ListElement {
   }
 
   /**
+   *  Construct an Attribute with a single child.
+   *  @param n the name of the Attribute being created
+   *  @param elt the Element being inserted as a child
+   */
+  public Attribute (String n, Element elt) {
+    name = n;
+    addChild(elt);
+  }
+
+  /**
    *  Since this Element is an instance of Attribute, return a reference as the
    *  more specific type.
    *  @return the reference to this as an Attribute

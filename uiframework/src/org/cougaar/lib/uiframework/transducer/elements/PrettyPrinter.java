@@ -25,6 +25,15 @@ public class PrettyPrinter {
 
   /**
    *  Create a new PrettyPrinter instance with output directed to the provided
+   *  OutputStream.  The String used for indentations consists of two spaces.
+   *  @param o the recipient of the formatted output
+   */
+  public PrettyPrinter (OutputStream o) {
+    this(new PrintWriter(o));
+  }
+
+  /**
+   *  Create a new PrettyPrinter instance with output directed to the provided
    *  PrintWriter.  Also provided by the caller is a String to use in the
    *  output's indentation (it should probably be spaces or tabs).
    *  @param o the recipient of the formatted output
@@ -33,6 +42,17 @@ public class PrettyPrinter {
   public PrettyPrinter (PrintWriter o, String i) {
     out = o;
     indentString = i;
+  }
+
+  /**
+   *  Create a new PrettyPrinter instance with output directed to the provided
+   *  OutputStream.  Also provided by the caller is a String to use in the
+   *  output's indentation (it should probably be spaces or tabs).
+   *  @param o the recipient of the formatted output
+   *  @param i the indentation String
+   */
+  public PrettyPrinter (OutputStream o, String i) {
+    this(new PrintWriter(o), i);
   }
 
   /**
@@ -88,5 +108,12 @@ public class PrettyPrinter {
    */
   public void flush () {
     out.flush();
+  }
+
+  /**
+   *  Close the underlying PrintWriter
+   */
+  public void close () {
+    out.close();
   }
 }
