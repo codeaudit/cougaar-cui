@@ -3,6 +3,7 @@ package org.cougaar.lib.uiframework.ui.components.mthumbslider;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Hashtable;
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -17,6 +18,7 @@ public class COrderedLabeledMThumbSlider extends JPanel
     private static final int MAJOR_TICK_SPACING = 10;
     private int numThumbs = 0;
     private float minValue = 0f;
+    private float maxValue = 0f;
     private float unit =  0f;
 
     protected CMThumbSlider slider;
@@ -66,13 +68,86 @@ public class COrderedLabeledMThumbSlider extends JPanel
      */
     private void initialize(float minValue, float maxValue)
     {
-        this.minValue = minValue;
-
         slider = new CMThumbSlider(numThumbs);
         slider.setOpaque(false);
         slider.putClientProperty( "JSlider.isFilled", Boolean.TRUE );
         add(slider, BorderLayout.CENTER);
 
+        setSliderRange(minValue, maxValue);
+
+        for (int i = 0; i < numThumbs; i++)
+        {
+            BoundedRangeModel model = slider.getModelAt(i);
+            model.addChangeListener(new OrderChangeListener(i));
+        }
+
+        slider.setMinorTickSpacing(MAJOR_TICK_SPACING / 2);
+        slider.setMajorTickSpacing(MAJOR_TICK_SPACING);
+        slider.setPaintLabels(true);
+        slider.setPaintTicks(true);
+
+        slider.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent e)
+                {
+                    validate();
+                    repaint();
+                }
+            });
+
+        adjustValueLabelHeight();
+    }
+
+    /**
+     * Get the minimum value of this slider
+     *
+     * @return the minimum value of this slider
+     */
+    public float getMinValue()
+    {
+        return minValue;
+    }
+
+    /**
+     * Set the minimum value of this slider
+     *
+     * @param minValue the minimum value of this slider
+     */
+    public void setMinValue(float minValue)
+    {
+        setSliderRange(minValue, maxValue);
+    }
+
+    /**
+     * Get the maximum value of this slider
+     *
+     * @return the maximum value of this slider
+     */
+    public float getMaxValue()
+    {
+        return maxValue;
+    }
+
+    /**
+     * Set the maximum value of this slider
+     *
+     * @param maxValue the maximum value of this slider
+     */
+    public void setMaxValue(float maxValue)
+    {
+        setSliderRange(minValue, maxValue);
+    }
+
+    private void setSliderRange(float minValue, float maxValue)
+    {
+        // Try to maintain the same values if possible
+        Vector currentValues = new Vector();
+        for (int i = 0; i < numThumbs; i++)
+        {
+            currentValues.add(new Float(fromSlider(slider.getValueAt(i))));
+        }
+
+        this.minValue = minValue;
+        this.maxValue = maxValue;
         unit = (maxValue - minValue) / 100f;
 
         if (Math.abs(maxValue) > 10)
@@ -91,30 +166,23 @@ public class COrderedLabeledMThumbSlider extends JPanel
             BoundedRangeModel model = slider.getModelAt(i);
             model.setMaximum(sliderMax);
             model.setMinimum(sliderMin);
-            model.addChangeListener(new OrderChangeListener(i));
         }
 
         Hashtable valueLabels = new Hashtable();
         for (int i = 0; i <= 100; i += MAJOR_TICK_SPACING)
         {
-            JLabel newLabel = new JLabel(labelFormat.format(fromSlider(i)));
-            valueLabels.put(new Integer(i), newLabel);
+            valueLabels.put(new Integer(i),
+                            new JLabel(labelFormat.format(fromSlider(i))));
         }
         slider.setLabelTable(valueLabels);
-        slider.setMinorTickSpacing(MAJOR_TICK_SPACING / 2);
-        slider.setMajorTickSpacing(MAJOR_TICK_SPACING);
-        slider.setPaintLabels(true);
-        slider.setPaintTicks(true);
 
-        slider.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent e)
-                {
-                    validate();
-                    repaint();
-                }
-            });
-
-        adjustValueLabelHeight();
+        // Set sliders to old current values
+        for (int i = 0; i < currentValues.size(); i++)
+        {
+            Float currentValue = (Float)currentValues.elementAt(i);
+            slider.setValueAt(toSlider(currentValue.floatValue()), i);
+        }
+        SwingUtilities.updateComponentTreeUI(this);
     }
 
     /**

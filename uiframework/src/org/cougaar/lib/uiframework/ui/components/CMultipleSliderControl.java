@@ -22,7 +22,7 @@ public class CMultipleSliderControl extends JPanel
     }
 
     /**
-     * Creates new slider control uding the given labels.
+     * Creates new slider control using the given labels.
      *
      * @param sliderLabels an array of labels for the sliders
      * @param minValue the minimum value for all sliders
@@ -56,8 +56,54 @@ public class CMultipleSliderControl extends JPanel
             // show ticks on the last slider only
             if ((i + 1) == sliderLabels.length)
             {
-                slider.showTicks();
+                slider.setShowTicks(true);
             }
+        }
+    }
+
+    /**
+     * Get the minimum value of these sliders
+     *
+     * @return the minimum value of these sliders
+     */
+    public float getMinValue()
+    {
+        return getSlider(0).getMinValue();
+    }
+
+    /**
+     * Set the minimum value of these sliders
+     *
+     * @param minValue the minimum value of these sliders
+     */
+    public void setMinValue(float minValue)
+    {
+        for (int i = 0; i < sliderLabels.length; i++)
+        {
+            getSlider(i).setMinValue(minValue);
+        }
+    }
+
+    /**
+     * Get the maximum value of these sliders
+     *
+     * @return the maximum value of these sliders
+     */
+    public float getMaxValue()
+    {
+        return getSlider(0).getMaxValue();
+    }
+
+    /**
+     * Set the maximum value of these sliders
+     *
+     * @param maxValue the maximum value of these sliders
+     */
+    public void setMaxValue(float maxValue)
+    {
+        for (int i = 0; i < sliderLabels.length; i++)
+        {
+            getSlider(i).setMaxValue(maxValue);
         }
     }
 

@@ -22,6 +22,9 @@ public class CLabeledSlider extends JPanel
     /** the static label */
     private JLabel label;
 
+    /** the dynamic label */
+    private JLabel valueLabel;
+
     /** the slider */
     private JSlider slider;
 
@@ -33,6 +36,9 @@ public class CLabeledSlider extends JPanel
 
     /** minimum value of slider */
     private float minValue = 0f;
+
+    /** maximum value of slider */
+    private float maxValue = 0f;
 
     /** the floating point value that corresponds to 1 unit on the slider */
     private float unit =  0f;
@@ -115,6 +121,76 @@ public class CLabeledSlider extends JPanel
     }
 
     /**
+     * Get the minimum value of this slider
+     *
+     * @return the minimum value of this slider
+     */
+    public float getMinValue()
+    {
+        return minValue;
+    }
+
+    /**
+     * Set the minimum value of this slider
+     *
+     * @param minValue the minimum value of this slider
+     */
+    public void setMinValue(float minValue)
+    {
+        setSliderRange(minValue, maxValue);
+    }
+
+    /**
+     * Get the maximum value of this slider
+     *
+     * @return the maximum value of this slider
+     */
+    public float getMaxValue()
+    {
+        return maxValue;
+    }
+
+    /**
+     * Set the maximum value of this slider
+     *
+     * @param maxValue the maximum value of this slider
+     */
+    public void setMaxValue(float maxValue)
+    {
+        setSliderRange(minValue, maxValue);
+    }
+
+    private void setSliderRange(float minValue, float maxValue)
+    {
+        // Try to maintain the same value if possible
+        float currentValue = getValue();
+
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        unit = (maxValue - minValue) / 100f;
+
+        if (Math.abs(maxValue) > 10)
+        {
+            labelFormat = new DecimalFormat("####");
+        }
+        else
+        {
+            labelFormat = new DecimalFormat("##.##");
+        }
+
+        Hashtable valueLabels = new Hashtable();
+        for (int i = 0; i <= 100; i += MAJOR_TICK_SPACING)
+        {
+            valueLabels.put(new Integer(i),
+                            new JLabel(labelFormat.format(fromSlider(i))));
+        }
+        slider.setLabelTable(valueLabels);
+
+        valueLabel.setText(getStringValue());
+        setValue(currentValue);
+    }
+
+    /**
      * Initializes new labeled slider.
      *
      * @param labelString the static label for the slider
@@ -127,23 +203,11 @@ public class CLabeledSlider extends JPanel
     private void init(String labelString, int labelWidth, float minValue,
                       float maxValue)
     {
-        this.minValue = minValue;
-        unit = (maxValue - minValue) / 100f;
-
-        if (Math.abs(maxValue) > 10)
-        {
-            labelFormat = new DecimalFormat("####");
-        }
-        else
-        {
-            labelFormat = new DecimalFormat("##.##");
-        }
-
         labelPanel = new JPanel(new BorderLayout());
         label = new JLabel(labelString + ": ");
         label.setVerticalAlignment(JLabel.TOP);
         labelPanel.add(label, BorderLayout.WEST);
-        final JLabel valueLabel = new JLabel();
+        valueLabel = new JLabel();
         labelPanel.add(valueLabel, BorderLayout.CENTER);
         setLabelWidth(labelWidth);
         valueLabel.setVerticalAlignment(JLabel.TOP);
@@ -151,16 +215,10 @@ public class CLabeledSlider extends JPanel
         add(labelPanel, BorderLayout.WEST);
 
         slider = new JSlider(0, 100);
-        Hashtable valueLabels = new Hashtable();
-        for (int i = 0; i <= 100; i += MAJOR_TICK_SPACING)
-        {
-            valueLabels.put(new Integer(i),
-                            new JLabel(labelFormat.format(fromSlider(i))));
-        }
-        slider.setLabelTable(valueLabels);
+        slider.setMinorTickSpacing(5);
+        slider.setMajorTickSpacing(MAJOR_TICK_SPACING);
         add(slider, BorderLayout.CENTER);
 
-        valueLabel.setText(getStringValue());
         slider.addChangeListener(new ChangeListener() {
                 public void stateChanged(ChangeEvent e)
                 {
@@ -170,6 +228,8 @@ public class CLabeledSlider extends JPanel
                                                      getValue());
                 }
             });
+
+        setSliderRange(minValue, maxValue);
     }
 
     /**
@@ -183,11 +243,25 @@ public class CLabeledSlider extends JPanel
     }
 
     /**
-     * Show labeled tick marks under slider.
+     * Set whether to show labeled tick marks under slider.
+     *
+     * @param if true, slider will have labeled tick marks.
      */
-    public void showTicks()
+    public void setShowTicks(boolean showTicks)
     {
-        showTicks(slider);
+        slider.setPaintLabels(showTicks);
+        slider.setPaintTicks(showTicks);
+    }
+
+    /**
+     * Get whether slider is showing labeled tick marks.
+     *
+     * @return if true, slider is showing labeled tick marks.
+     *
+     */
+    public boolean getShowTicks()
+    {
+        return slider.getPaintTicks();
     }
 
     /**
@@ -230,19 +304,6 @@ public class CLabeledSlider extends JPanel
     public void removeChangeListener(ChangeListener changeListener)
     {
         slider.removeChangeListener(changeListener);
-    }
-
-    /**
-     * Configures the slider to show it's tick marks
-     *
-     * @param slider the slider to configure
-     */
-    private static void showTicks(JSlider slider)
-    {
-        slider.setMinorTickSpacing(5);
-        slider.setMajorTickSpacing(MAJOR_TICK_SPACING);
-        slider.setPaintLabels(true);
-        slider.setPaintTicks(true);
     }
 
     /**
