@@ -246,32 +246,7 @@ public class DatabaseTableModel implements TableModel
             }
 
             // get the data
-            int rowCount = 1;
-            while(rs.next())
-            {
-                rowCount++;
-                Vector dataRow = new Vector();
-                for (int i = 1; i <= numColumns; i++)
-                {
-                    if ((i <= rowHeaders) || (rowCount <= columnHeaders))
-                    {
-                        dataRow.add(rs.getString(i));
-                    }
-                    else
-                    {
-                        String assessmentValue;
-                        if ((assessmentValue = rs.getString(i)) == null)
-                        {
-                            dataRow.add("N/A");
-                        }
-                        else
-                        {
-                            dataRow.add(Float.valueOf(assessmentValue));
-                        }
-                    }
-                }
-                dataRows.add(dataRow);
-            }
+            addDataFromResultSet(rs, rowHeaders, columnHeaders, numColumns);
         }
         catch(SQLException e)
         {
@@ -293,6 +268,88 @@ public class DatabaseTableModel implements TableModel
 
         fireTableChangedEvent(
             new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+    }
+
+    /**
+     * Set a database query to add the result set of which to this model.
+     * Only append query whose result sets have the same format as the
+     * existing result set.
+     *
+     * @param sqlQuery the SQL query to send to database
+     * @param rowHeaders the number of leading columns that should be considered
+     *                   row headers in the result set.
+     * @param columnHeaders the number of leading rows that should be
+     *                      considered column headers in the result set.
+     */
+    public synchronized
+        void appendDBQuery(String sqlQuery, int rowHeaders, int columnHeaders)
+    {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try
+        {
+            //con = DBDatasource.establishConnection();
+            con = DBDatasource.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sqlQuery);
+
+            // get the data
+            addDataFromResultSet(rs, rowHeaders, columnHeaders,
+                                 rs.getMetaData().getColumnCount());
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                //if (con != null) con.close();
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        fireTableChangedEvent(
+            new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+    }
+
+    private void
+        addDataFromResultSet(ResultSet rs, int rowHeaders, int columnHeaders,
+                             int numColumns) throws SQLException
+    {
+        int rowCount = 1;
+        while(rs.next())
+        {
+            rowCount++;
+            Vector dataRow = new Vector();
+            for (int i = 1; i <= numColumns; i++)
+            {
+                if ((i <= rowHeaders) || (rowCount <= columnHeaders))
+                {
+                    dataRow.add(rs.getString(i));
+                }
+                else
+                {
+                    String assessmentValue;
+                    if ((assessmentValue = rs.getString(i)) == null)
+                    {
+                        dataRow.add("N/A");
+                    }
+                    else
+                    {
+                        dataRow.add(Float.valueOf(assessmentValue));
+                    }
+                }
+            }
+            dataRows.add(dataRow);
+        }
     }
 
     /**
