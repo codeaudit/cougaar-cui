@@ -16,8 +16,8 @@
  * **********************************************************************
  *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/OpenMap.java,v $
- * $Revision: 1.2 $
- * $Date: 2001-02-22 18:03:38 $
+ * $Revision: 1.3 $
+ * $Date: 2001-02-22 20:37:03 $
  * $Author: pfischer $
  *
  * ***********************************************************************/
@@ -32,6 +32,7 @@ import java.net.*;
 import java.util.*;
 import java.beans.Beans;
 import javax.swing.*;
+import javax.swing.border.*;
 import javax.swing.border.BevelBorder;
 
 import com.bbn.openmap.MouseDelegator;
@@ -47,7 +48,7 @@ import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 import org.cougaar.lib.uiframework.ui.components.CFrame;
 import org.cougaar.lib.uiframework.ui.map.util.*; // only for JTIButton, etc.
-import javax.swing.border.*;
+import org.cougaar.lib.uiframework.ui.util.CougaarUI;
 
 import org.cougaar.lib.uiframework.ui.map.layer.TimedXmlLayer;
 import org.cougaar.lib.uiframework.ui.map.layer.XmlLayer;
@@ -61,7 +62,7 @@ import org.cougaar.lib.uiframework.ui.map.layer.XmlLayerBase;
  * This is a sample application using the MapBean.
  *
  */
-public class OpenMap implements Serializable {
+public class OpenMap implements Serializable, CougaarUI {
 
     /** The name of the properties file to read. */
     public static String propsFileName = "openmap.properties";
@@ -89,7 +90,53 @@ public class OpenMap implements Serializable {
     /** The layer handler, for dynamic adjustments of layers. */
     protected LayerHandler layerHandler;
 
+    /** main application frame **/
+    protected JFrame frame;
+
     protected OMToolSet omts;
+
+    /**
+     * Install this user interface in the passed in JInternalFrame.
+     * Required for implementation of CougaarUI interface.
+     *
+     * @param f internal frame to which this user interface should be added
+     */
+    public void install(JFrame f)
+    {
+        frame.setVisible(false);
+        f.setContentPane(frame.getContentPane());
+        f.setJMenuBar(frame.getJMenuBar());
+    }
+
+    /**
+     * Install this user interface in the passed in JFrame.
+     * Required for implementation of CougaarUI interface.
+     *
+     * @param f frame to which this user interface should be added
+     */
+    public void install(JInternalFrame f)
+    {
+        frame.setVisible(false);
+        f.setContentPane(frame.getContentPane());
+
+        // remove laf and themes menus from inner frame
+        JMenuBar mb = frame.getJMenuBar();
+        mb.remove(4);
+        mb.remove(4);
+        f.setJMenuBar(mb);
+    }
+
+    /**
+     * Returns true if this UI supports pluggable look and feel.  Otherwise,
+     * only Metal look and feel support is assumed.
+     * Required for implementation of CougaarUI interface.
+     *
+     * @return true if UI supports pluggable look and feel.
+     */
+    public boolean supportsPlaf()
+    {
+        return true;
+    }
 
     /**
      * Loads properties from a java resource.  This will load the
@@ -500,6 +547,16 @@ public class OpenMap implements Serializable {
 	props = new Properties();
     }
 
+    private boolean showUponInit = true;
+
+    public OpenMap(boolean initApp)
+    {
+        showUponInit = false;
+        if (initApp) init(null);
+	props = new Properties();
+        if (initApp) init();
+    }
+
     /**
      * Load default properties, and then launch OpenMap.  Kept here to
      * preserve the API.
@@ -535,7 +592,7 @@ public class OpenMap implements Serializable {
 
     public void startApplet (){
 
-	JFrame frame = null;
+	frame = null;
 	JRootPane rootPane = null;
 	boolean addLayerButton = true;
 	boolean addOverviewButton = true;
@@ -663,7 +720,7 @@ public class OpenMap implements Serializable {
 
 	    // compose the frame, but don't show it here
 	    frame.setBounds(x, y, w, h);
-	    frame.show();
+            frame.setVisible(showUponInit);
 	}
 
 	// set up the listeners
@@ -675,7 +732,7 @@ public class OpenMap implements Serializable {
 
     public void start (){
 
-	JFrame frame = null;
+	frame = null;
 	JRootPane rootPane = null;
 	boolean addLayerButton = true;
 	boolean addOverviewButton = true;
@@ -828,7 +885,7 @@ public class OpenMap implements Serializable {
 
 	    // compose the frame, but don't show it here
 	    frame.setBounds(x, y, w, h);
-	    frame.show();
+            frame.setVisible(showUponInit);
 	}
 
 	// set up the listeners
