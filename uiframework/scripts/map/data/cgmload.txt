@@ -1,34 +1,73 @@
-infantry	data/cgm/cgmicons/3115f.cgm	platoon
-light infantry	data/cgm/cgmicons/31151f.cgm	section
-mechanized infantry	data/cgm/cgmicons/31156f.cgm	squad
-armor	data/cgm/cgmicons/3112f.cgm	company
-armored cavalry	data/cgm/cgmicons/311821f.cgm	battalion
-recon	data/cgm/cgmicons/311823f.cgm	regiment
-airborne	data/cgm/cgmicons/31154f.cgm	brigade
-air assault	data/cgm/cgmicons/31155f.cgm	division
-field artillery	data/cgm/cgmicons/3117f.cgm	corps
-air defense	data/cgm/cgmicons/3111f.cgm	squad
-supply	data/cgm/cgmicons/3133f.cgm	army
-maintenance	data/cgm/cgmicons/3135f.cgm	
-medical	data/cgm/cgmicons/3132f.cgm
-subsistence	data/cgm/cgmicons/31333f.cgm
-clothing	data/cgm/cgmicons/31334f.cgm
-petroleum	data/cgm/cgmicons/31335f.cgm
-construction materials	data/cgm/cgmicons/31336f.cgm
-ammunition	data/cgm/cgmicons/31337f.cgm
-personal demand	data/cgm/cgmicons/31338f.cgm
-major end items	data/cgm/cgmicons/31339f.cgm
-anti-armor	data/cgm/cgmicons/3113f.cgm	squad
-aviation	data/cgm/cgmicons/3114f.cgm	section
-attack helicopter	data/cgm/cgmicons/311421f.cgm	platoon
-air cavalry	data/cgm/cgmicons/311824f.cgm	company
-engineer	data/cgm/cgmicons/3116f.cgm	battalion
-chemical	data/cgm/cgmicons/3121f.cgm	regiment
-signal	data/cgm/cgmicons/3124f.cgm	brigade
-intelligence	data/cgm/cgmicons/3122216f.cgm	division
-transport	data/cgm/cgmicons/3134f.cgm	corps
-medical supply	data/cgm/cgmicons/313310f.cgm
-repair parts supply	data/cgm/cgmicons/313311f.cgm
+3115f	data/cgm/cgmicons/3115f.cgm
+31151f	data/cgm/cgmicons/31151f.cgm
+31156f	data/cgm/cgmicons/31156f.cgm
+3112f	data/cgm/cgmicons/3112f.cgm
+311821f	data/cgm/cgmicons/311821f.cgm
+311823f	data/cgm/cgmicons/311823f.cgm
+31154f	data/cgm/cgmicons/31154f.cgm
+31155f	data/cgm/cgmicons/31155f.cgm
+3117f	data/cgm/cgmicons/3117f.cgm
+3111f	data/cgm/cgmicons/3111f.cgm
+3133f	data/cgm/cgmicons/3133f.cgm
+3135f	data/cgm/cgmicons/3135f.cgm
+3132f	data/cgm/cgmicons/3132f.cgm
+31333f	data/cgm/cgmicons/31333f.cgm
+31334f	data/cgm/cgmicons/31334f.cgm
+31335f	data/cgm/cgmicons/31335f.cgm
+31336f	data/cgm/cgmicons/31336f.cgm
+31337f	data/cgm/cgmicons/31337f.cgm
+31337f	data/cgm/cgmicons/31338f.cgm
+31339f	data/cgm/cgmicons/31339f.cgm
+3113f	data/cgm/cgmicons/3113f.cgm
+3114f	data/cgm/cgmicons/3114f.cgm
+311421f	data/cgm/cgmicons/311421f.cgm
+311824f	data/cgm/cgmicons/311824f.cgm
+3116f	data/cgm/cgmicons/3116f.cgm
+3121f	data/cgm/cgmicons/3121f.cgm
+3124f	data/cgm/cgmicons/3124f.cgm
+3122216f	data/cgm/cgmicons/3122216f.cgm
+3134f	data/cgm/cgmicons/3134f.cgm
+313310f	data/cgm/cgmicons/313310f.cgm
+313311f	data/cgm/cgmicons/313311f.cgm
 ordnance	data/cgm/cgmicons/ordnance.cgm
-313f	data/cgm/cgmicons/313f.cgm	
-31152f	data/cgm/cgmicons/31152f.cgm	
+3115f	data/cgm/cgmicons/3115f.cgm
+313f	data/cgm/cgmicons/313f.cgm
+31152f	data/cgm/cgmicons/31152f.cgm
+31161f	data/cgm/cgmicons/31161f.cgm
+311711f	data/cgm/cgmicons/311711f.cgm
+31173f	data/cgm/cgmicons/31173f.cgm
+3118f	data/cgm/cgmicons/3118f.cgm
+3122f	data/cgm/cgmicons/3122f.cgm
+31158f	data/cgm/cgmicons/31158f.cgm
+31232f	data/cgm/cgmicons/31232f.cgm
+31142f	data/cgm/cgmicons/31142f.cgm
+311616f	data/cgm/cgmicons/311616f.cgm
+311212f	data/cgm/cgmicons/311212f.cgm
+31341f	data/cgm/cgmicons/31341f.cgm
+31171f	data/cgm/cgmicons/31171f.cgm
+312f	data/cgm/cgmicons/312f.cgm
+311426f	data/cgm/cgmicons/311426f.cgm
+31341f	data/cgm/cgmicons/31341f.cgm
+3117221f	data/cgm/cgmicons/3117221f.cgm
+31121f	data/cgm/cgmicons/31121f.cgm
+31323f	data/cgm/cgmicons/31323f.cgm
+311223f	data/cgm/cgmicons/311223f.cgm
+311f	data/cgm/cgmicons/311f.cgm
+311618f	data/cgm/cgmicons/311618f.cgm
+313113f	data/cgm/cgmicons/313113f.cgm
+2115f	data/cgm/cgmicons/2115f.cgm
+2116f	data/cgm/cgmicons/2116f.cgm
+2118f	data/cgm/cgmicons/2118f.cgm
+211f	data/cgm/cgmicons/211f.cgm
+21232f	data/cgm/cgmicons/21232f.cgm
+21233f	data/cgm/cgmicons/21233f.cgm
+212f	data/cgm/cgmicons/212f.cgm
+21f	data/cgm/cgmicons/21f.cgm
+31187f	data/cgm/cgmicons/31187f.cgm
+31114f	data/cgm/cgmicons/31114f.cgm
+313314f	data/cgm/cgmicons/313314f.cgm
+3133143f	data/cgm/cgmicons/3133143f.cgm
+31144f	data/cgm/cgmicons/31144f.cgm
+31157f	data/cgm/cgmicons/31157f.cgm
+41f	data/cgm/cgmicons/refugee2.cgm
+redcrossf	data/cgm/cgmicons/redcrescent2.cgm
