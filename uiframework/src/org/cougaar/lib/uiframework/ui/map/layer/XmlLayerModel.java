@@ -27,6 +27,7 @@ import com.bbn.openmap.event.*;
 import org.cougaar.lib.uiframework.transducer.XmlInterpreter;
 import org.cougaar.lib.uiframework.transducer.elements.Structure;
 import org.cougaar.lib.uiframework.ui.map.util.NamedLocationM;
+// import org.cougaar.lib.uiframework.ui.map.query.TimedLocationQuery;
 
 class XmlLayerModel {
     // class State {
@@ -48,12 +49,6 @@ class XmlLayerModel {
   }
 
     UnitTypeDictionary unitTypeDictionary=new UnitTypeDictionary();
-
-    
-    protected String getUnitType(String unitName) {
-	return unitTypeDictionary.getUnitType(unitName);	
-    }
-
 
 	private void makeInfantryUnit(float lat, float lon, Color color,
 				      String label, String msg, Hashtable data) 
@@ -135,6 +130,10 @@ class XmlLayerModel {
 	    
 	}
 	
+    
+    protected String getUnitType(String unitName) {
+	return unitTypeDictionary.getUnitType(unitName);	
+    }
 
     /*
     class UnitTypeDictionary {
@@ -199,66 +198,139 @@ class XmlLayerModel {
 		//   }
     // }
 
-	XmlLayerModel() {
-	    // OMGraphicList omlist=omList;
-	    OMGraphic omgraphic;
- 	    // Vector list = markers;
-	    HashSet hs;
-      String uriString=null;
-      String fString=null;
-      String unitTypeFile = Environment.get("xml.unitTypeFile");
-      uriString = Environment.get("xml.locations.url");
-      fString= Environment.get("xml.locations");
-      System.out.println("XMLlayer.XmlLayerModel *** uriString from environment is "+uriString);
-      if (uriString==null) {
-        uriString="file:/c:/dev/ui/gmc/tdcr/minilltcsm.xml";
-        uriString="file:/c:/dev/opmp/reltimedloc_h.xml";
-        System.out.println("Using default uriString: "+uriString);
-      }
-      if (fString==null) {
-        fString="c:\\dev\\opmp\\mplustcm.xml";
-        System.out.println("No fs_parm use: "+fString);
-      }
-      if (unitTypeFile==null) {
-	  System.err.println("Warning:  Unit type file is not defined.");
-      } else {
-	  try {
-	      FileInputStream fin = new FileInputStream(unitTypeFile);
-	      unitTypeDictionary.load(fin);
-	  } catch (Exception ex) {
-	      System.err.println("Warning:  Exception thrown while reading unit type data from ["+unitTypeFile+"].");	      
-	  }
-      }
+    String uriString=null;
+    String fString=null;
+    boolean smartUpdate=false;
 
-	    try {
-		XmlInterpreter xint = new XmlInterpreter();
-    Structure str;
-//		FileInputStream fin = new FileInputStream("c:\\dev\\ui\\gmc\\tdcr\\minilltcsm.xml");
-      try {
-        System.err.println("Attempting to read from URL: "+uriString);
-		    URL url = new URL(uriString);
-        InputStream fin = url.openStream();
-		    str = xint.readXml(fin);
-		    fin.close();
-      } catch (Exception exc) {
-        System.err.println("Attempting to read: "+fString);
-        FileInputStream fin = new FileInputStream(fString);
-		    str = xint.readXml(fin);
-		    fin.close();
-      }
-		System.err.println("Structure: ");
-    xint.writeXml(str, System.err);
-
-    load(str);
-
-
-	    } catch (Exception ex) {
-		ex.printStackTrace();
-	    }
-
-	    System.out.println("leaving State()");
-
+    XmlLayerModel() {
+	// OMGraphicList omlist=omList;
+	OMGraphic omgraphic;
+	// Vector list = markers;
+	HashSet hs;
+	String unitTypeFile = Environment.get("xml.unitTypeFile");
+	uriString = Environment.get("xml.locations.url");
+	fString= Environment.get("xml.locations");
+	
+	String smartUpdateString=null;
+	smartUpdateString= Environment.get("xml.smart.update");
+	if (smartUpdateString!=null && smartUpdateString.equalsIgnoreCase("true") ) {
+	    smartUpdate=true;
 	}
+	System.out.println("XMLlayer.XmlLayerModel *** uriString from environment is "+uriString);
+	if (uriString==null) {
+	    uriString="file:/c:/dev/ui/gmc/tdcr/minilltcsm.xml";
+	    uriString="file:/c:/dev/opmp/reltimedloc_h.xml";
+	    System.out.println("Using default uriString: "+uriString);
+	}
+	if (fString==null) {
+	    fString="c:\\dev\\opmp\\mplustcm.xml";
+	    System.out.println("No fs_parm use: "+fString);
+	}
+	if (unitTypeFile==null) {
+	    System.err.println("Warning:  Unit type file is not defined.");
+	} else {
+	    try {
+		FileInputStream fin = new FileInputStream(unitTypeFile);
+		unitTypeDictionary.load(fin);
+	    } catch (Exception ex) {
+		System.err.println("Warning:  Exception thrown while reading unit type data from ["+unitTypeFile+"].");	      
+	    }
+	}
+	
+	obtainData();
+// 	try {
+// 	    XmlInterpreter xint = new XmlInterpreter();
+// 	    Structure str;
+
+// 	    try {
+// 		System.err.println("Attempting to read from URL: "+uriString);
+// 		URL url = new URL(uriString);
+		
+// 		//         InputStream fin = url.openStream();
+// 		// 		    str = xint.readXml(fin);
+// 		// 		    fin.close();		
+// 		// replaced prior 3 lines with these
+// 		int day=0;
+// 		str = TimedLocationQuery.performTimedQuery(day, url);
+// 		// should replace the above line with the following:
+// 		// str = TimedLocationQuery.performQuery(url);
+
+// 		if (str==null) {
+// 		    str = readFileInput(xint, fString);
+// 		}
+// 		System.err.println("After timed query");
+// 	    } catch (Exception exc) {
+// 		str = readFileInput(xint, fString);
+// 	    }
+// 	    System.err.println("Structure: ");
+// 	    xint.writeXml(str, System.err);
+	    
+// 	    load(str);
+	    
+	    
+// 	} catch (Exception ex) {
+// 	    ex.printStackTrace();
+// 	}
+	
+	System.out.println("leaving State()");
+	
+    }
+    
+    public void obtainData() {
+	System.err.println("XMLLayerModel obtainData()");
+ 	try {
+ 	    XmlInterpreter xint = new XmlInterpreter();
+ 	    Structure str;
+	    
+	    try {
+		System.err.println("Attempting to read from URL: "+uriString);
+		URL url = new URL(uriString);
+		
+// 		//         InputStream fin = url.openStream();
+// 		// 		    str = xint.readXml(fin);
+// 		// 		    fin.close();		
+// 		// replaced prior 3 lines with these
+// 		int day=0;
+// 		str = TimedLocationQuery.performTimedQuery(day, url);
+// 		// should replace the above line with the following:
+// 		// str = TimedLocationQuery.performQuery(url);
+
+		InputStream fin = url.openStream();
+		str = xint.readXml(fin);
+		fin.close();		
+
+// 		// replaced prior 3 lines with these
+// 		int day=0;
+// 		str = TimedLocationQuery.performTimedQuery(day, url);
+// 		// should replace the above line with the following:
+// 		// str = TimedLocationQuery.performQuery(url);
+		
+		if (str==null) {
+		    str = readFileInput(xint, fString);
+		}
+		System.err.println("After query");
+	    } catch (Exception exc) {
+		str = readFileInput(xint, fString);
+	    }
+	    System.err.println("Structure: ");
+	    xint.writeXml(str, System.err);
+	    
+	    load(str);
+	    
+	    
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	}
+    }
+
+    protected Structure readFileInput(XmlInterpreter xint, String fString) 
+    throws java.io.IOException {
+	System.err.println("Attempting to read: "+fString);
+	FileInputStream fin = new FileInputStream(fString);
+	Structure str = xint.readXml(fin);
+	fin.close();
+	return str;
+    }
 
    void load(Structure s) {
     System.out.println("XmlLayerModel.load()");

@@ -29,6 +29,7 @@ import org.cougaar.lib.uiframework.transducer.elements.Structure;
 // import org.cougaar.lib.uiframework.ui.map.util.NamedLocationTM;
 import org.cougaar.lib.uiframework.ui.map.util.NamedLocationTime;
 import org.cougaar.domain.planning.ldm.plan.ScheduleImpl;
+import org.cougaar.lib.uiframework.ui.map.query.TimedLocationQuery;
 
 class TimedXmlLayerModel extends XmlLayerModel {
     OMGraphicList curTimeMarkers;
@@ -167,8 +168,62 @@ class TimedXmlLayerModel extends XmlLayerModel {
     }
 
 
+    public void obtainData() {
+	System.err.println("TimedXMLLayerModel obtainData()");
+	obtainData(1);
+    }
+
+    public void obtainData(int day) {
+	System.err.println("TimedXMLLayerModel obtainData() for day "+day);
+ 	try {
+ 	    XmlInterpreter xint = new XmlInterpreter();
+ 	    Structure str;
+	    
+	    try {
+		System.err.println("Attempting to perform query on URL: "+uriString);
+		URL url = new URL(uriString);
+		
+// 		//         InputStream fin = url.openStream();
+// 		// 		    str = xint.readXml(fin);
+// 		// 		    fin.close();		
+// 		// replaced prior 3 lines with these
+// 		int day=0;
+// 		str = TimedLocationQuery.performTimedQuery(day, url);
+// 		// should replace the above line with the following:
+// 		// str = TimedLocationQuery.performQuery(url);
+
+		// int day=0;
+		if (!smartUpdate) {
+		    str = TimedLocationQuery.performTimedQuery(day, url);
+		} else {
+		    // should replace the above line with the following:
+		    str = TimedLocationQuery.performQuery(url);
+		}
+		
+		if (str==null) {
+		    str = readFileInput(xint, fString);
+		}
+		System.err.println("After timed query");
+	    } catch (Exception exc) {
+		str = readFileInput(xint, fString);
+	    }
+	    System.err.println("Structure: ");
+	    xint.writeXml(str, System.err);
+	    
+	    load(str);
+	    
+	    
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	}
+    }
+
+
   void setTime(long time) {
       System.out.println("tmodel setTime");
+      if (!smartUpdate) {
+	  obtainData((int)time);
+      }
       curTimeMarkers.clear();
       // Collection nls=NamedLocationTM.getNamedLocationsAtTime(allNLUnits, time);
       Collection nls=NamedLocationTime.getNamedLocationsAtTime(allNLUnits, time);
