@@ -169,6 +169,26 @@ public class QueryGenerator
         if (debug) System.out.println("Done.  Firing table change event");
         dbTableModel.fireTableChangedEvent(
             new TableModelEvent(dbTableModel, TableModelEvent.HEADER_ROW));
+
+        // derive unit column if needed
+        /*
+        if (yDescName.equals("Item"))
+        {
+            dbTableModel.insertColumn(1);
+            dbTableModel.setColumnName(1, "Units");
+            for (int row = 0; row < dbTableModel.getRowCount(); row++)
+            {
+                DefaultMutableTreeNode tn =
+                    (DefaultMutableTreeNode)dbTableModel.getValueAt(row, 0);
+                Hashtable ht = (Hashtable)tn.getUserObject();
+                Object units = ht.get("UNITS");
+                if (units != null)
+                {
+                    dbTableModel.setValueAt(ht.get("UNITS"), row, 1);
+                }
+            }
+        }
+        */
     }
 
     /**
