@@ -84,11 +84,8 @@ public class OMWidePoly extends OMPoly
         {
 //            if(setPaint(g))
             g.fillPolygon(ai2, ai3, ai2.length);
-            if(!isSameColor)
-            {
-                g.setColor(getDisplayColor());
-                g.drawPolyline(ai2, ai3, ai2.length);
-            }
+            g.setColor(getDisplayColor());
+            g.drawPolyline(ai2, ai3, ai2.length);
         }
         else
         {

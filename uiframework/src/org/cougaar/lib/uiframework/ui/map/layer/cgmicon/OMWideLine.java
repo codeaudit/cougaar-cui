@@ -70,9 +70,9 @@ public class OMWideLine extends OMLine
 
     if(doArrowHead)
     {
-        for(int j = 0; j < arrowHead.length; j++)
-            arrowHead[j].draw(g);
-
+//        for(int j = 0; j < arrowhead.length; j++)
+//            arrowhead[j].draw(g);
+        throw (new UnsupportedOperationException("Arrowhead not implemented"));
     }
     if(Debug.debugging("arc") && arc != null)
     {

@@ -13,7 +13,7 @@
 
 package org.cougaar.lib.uiframework.ui.map.layer.cgmicon;
 
-import java.util.Vector;
+import java.util.*;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -197,10 +197,10 @@ public class OMCGM extends OMGraphic
     // LatLonPoint llp2 = new LatLonPoint (latOrigin + 0.1, lonOrigin + 0.1);
     LatLonPoint llp2 = new LatLonPoint (latOrigin + (permScale * 0.3f), lonOrigin + (permScale * 0.3f));
 
-    Vector xys = proj.forwardLine(llp1, llp2, LineType.Straight, -1);
+    ArrayList xys = proj.forwardLine(llp1, llp2, LineType.Straight, -1);
 
-    int x[] = (int[]) xys.elementAt(0);
-    int y[] = (int[]) xys.elementAt(1);
+    int x[] = (int[]) xys.get(0);
+    int y[] = (int[]) xys.get(1);
 
 //        System.out.println ("x range: " + (x[1] - x[0]) );
 //        System.out.println ("y range: " + (y[0] - y[1]) );
@@ -366,10 +366,10 @@ public class OMCGM extends OMGraphic
 
      LatLonPoint llp2 = new LatLonPoint (toLat, toLon);
 
-     Vector xys = oldProjection.forwardLine(llp1, llp2, LineType.Straight, -1);
+     ArrayList xys = oldProjection.forwardLine(llp1, llp2, LineType.Straight, -1);
 
-      int x[] = (int[]) xys.elementAt(0);
-      int y[] = (int[]) xys.elementAt(1);
+      int x[] = (int[]) xys.get(0);
+      int y[] = (int[]) xys.get(1);
 
 //        System.out.println ("x range: " + (x[1] - x[0]) );
 //        System.out.println ("y range: " + (y[0] - y[1]) );

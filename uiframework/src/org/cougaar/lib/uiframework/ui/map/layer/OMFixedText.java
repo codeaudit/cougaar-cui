@@ -20,7 +20,7 @@
  */
 package org.cougaar.lib.uiframework.ui.map.layer;
 
-import java.util.Vector;
+import java.util.*;
 
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -129,10 +129,10 @@ public class OMFixedText extends OMText
     LatLonPoint llp1 = new LatLonPoint (lat, lon);
     LatLonPoint llp2 = new LatLonPoint (lat + fixedTextSize, lon + fixedTextSize);
 
-    Vector xys = proj.forwardLine(llp1, llp2, LineType.Straight, -1);
+    ArrayList xys = proj.forwardLine(llp1, llp2, LineType.Straight, -1);
 
 //    int x[] = (int[]) xys.elementAt(0);
-    int y[] = (int[]) xys.elementAt(1);
+    int y[] = (int[]) xys.get(1);
 
 //        System.out.println ("OMFixedText y range: " + (y[0] - y[1]) );
     int fontSize = (y[0] - y[1]);         // ( x[1] - x[0], y[0] - y[1]);

@@ -88,7 +88,7 @@ class PspIconLayerModelBase
 
 
    Iterator markerIterator() {
-      Vector vec=markers.getTargets();
+      java.util.List vec=markers.getTargets();
       if (vec==null) {
         vec=new Vector();
       }
