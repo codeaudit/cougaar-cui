@@ -99,12 +99,17 @@ public class QueryGenerator
     {
         DatabaseTableModel tm = new DatabaseTableModel();
         StringBuffer query =
-            new StringBuffer("SELECT * FROM assessmentData WHERE (");
+            new StringBuffer("SELECT * FROM ");
 
-        // filter data needed based on org, item, metric, time
+        // select from the correct metric table
+        query.append(
+            DBInterface.lookupValue(DBInterface.getTableName("metric"),
+                                    "name", "table_name", metric));
+
+        // filter data needed based on org, item, time
+        query.append(" WHERE (");
         query.append(generateWhereClause("org", orgs));
         query.append(" AND " + generateWhereClause("item", item));
-        query.append(" AND " + generateWhereClause("metric", metric));
         query.append(" AND "+generateWhereClause("time",String.valueOf(time)));
         query.append(")");
 
@@ -420,38 +425,60 @@ public class QueryGenerator
         generateQueryUsingRootNode(VariableInterfaceManager vim,
                                    String varName, TreeNode tn, String metric)
     {
-        String id = ((Hashtable)
-                        ((DefaultMutableTreeNode)
-                            tn).getUserObject()).get("ID").toString();
+        StringBuffer query = new StringBuffer();
 
-        StringBuffer query = new StringBuffer("SELECT ");
-        query.append(id);
-        query.append(
-            " AS \"ORG\", item, unitsOfTime, metric, sum(assessmentData.assessmentValue)" +
-            " AS \"ASSESSMENTVALUE\" FROM assessmentData WHERE (");
-
-        // filter data needed based on org, item, metric, time
-        if (debug) System.out.println("Generating Org where clause");
-        query.append(generateWhereClause("Org", getLeafList(tn).elements()));
-        if (debug) System.out.println("Generating Item where clause");
-        query.append(" AND "+generateWhereClause(vim.getDescriptor("Item")));
-
-        // do this right - later
-        if (debug) System.out.println("Generating Metric where clause");
+        // determine whether single or multiple metric
         if (metric.equals("Group A") || metric.equals("Group B"))
         {
-            query.append(" AND "+generateWhereClause(vim.getDescriptor("Metric")));
+            DefaultMutableTreeNode metricNode =
+                (DefaultMutableTreeNode)vim.getDescriptor("Metric").getValue();
+            Enumeration metrics = metricNode.children();
+            while (metrics.hasMoreElements())
+            {
+                String childMetric = ((DefaultMutableTreeNode)
+                    metrics.nextElement()).getUserObject().toString();
+                query.append(
+                    generateQueryUsingRootNode(vim, varName, tn, childMetric));
+                if (metrics.hasMoreElements())
+                {
+                    query.append(" UNION ALL ");
+                }
+            }
         }
         else
         {
-            query.append(" AND "+generateWhereClause("Metric", metric));
+            String org_id = ((Hashtable)
+                             ((DefaultMutableTreeNode)
+                                tn).getUserObject()).get("ID").toString();
+
+            String metric_catalog_table = DBInterface.getTableName("Metric");
+            String metric_id =  DBInterface.lookupValue(metric_catalog_table,
+                                                        "name", "id", metric);
+            String metric_table =
+                DBInterface.lookupValue(metric_catalog_table,
+                                        "name", "table_name", metric);
+
+            query.append("SELECT ");
+            query.append(org_id);
+            query.append(" AS \"ORG\", item, unitsOfTime, ");
+            query.append(metric_id);
+            query.append(" as \"METRIC\", sum(");
+            query.append(metric_table);
+            query.append(".assessmentValue) AS \"ASSESSMENTVALUE\" FROM ");
+            query.append(metric_table);
+            query.append(" WHERE (");
+
+            // filter data needed based on org, item, metric, time
+            if (debug) System.out.println("Generating Org where clause");
+            query.append(generateWhereClause("Org", getLeafList(tn).elements()));
+            if (debug) System.out.println("Generating Item where clause");
+            query.append(" AND "+generateWhereClause(vim.getDescriptor("Item")));
+            if (debug) System.out.println("Generating Time where clause");
+            query.append(" AND "+generateWhereClause(vim.getDescriptor("Time")));
+            query.append(")");
+
+            query.append(" GROUP BY item, unitsOfTime");
         }
-
-        if (debug) System.out.println("Generating Time where clause");
-        query.append(" AND "+generateWhereClause(vim.getDescriptor("Time")));
-        query.append(")");
-
-        query.append(" GROUP BY item, unitsOfTime, metric");
 
         return query.toString();
     }

@@ -39,14 +39,10 @@ public class DBInterface extends DBDatasource
         orgTree = createTree(getTableName("org"));
 
     /** Minimum time found in time column of assessment data */
-    public static int minTimeRange =
-        getIntFromQuery("SELECT MIN(" + DBInterface.getColumnName("Time") +
-                        ") FROM AssessmentData");
+    public static int minTimeRange = getTimeExt(false);
 
     /** Maximum time found in time column of assessment data */
-    public static int maxTimeRange =
-        getIntFromQuery("SELECT MAX(" + DBInterface.getColumnName("Time") +
-                        ") FROM AssessmentData");
+    public static int maxTimeRange = getTimeExt(true);
 
     /** Array of strings that represent blackjack metric types */
     public static final Object[]
@@ -56,6 +52,25 @@ public class DBInterface extends DBDatasource
 
     /** Tree that represents blackjack metric groupings */
     public static DefaultMutableTreeNode metricTree = makeMetricTree();
+
+    /** used to get min or max time for all metrics */
+    private static int getTimeExt(boolean max)
+    {
+        Vector metricTables =
+            executeVectorReturnQuery("SELECT table_name FROM " +
+                                     DBInterface.getTableName("Metric"));
+        int time = max ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        String function = max ? "MAX" : "MIN";
+        for (int i = 0; i < metricTables.size(); i++)
+        {
+            int queryResult = getIntFromQuery("SELECT " + function + "(" +
+                               DBInterface.getColumnName("Time") +
+                               ") FROM "+metricTables.elementAt(i).toString());
+            time = max?Math.max(queryResult, time):Math.min(queryResult, time);
+        }
+
+        return time;
+    }
 
     /**
      * Gets tree representation of data in specified table.  Table must follow
