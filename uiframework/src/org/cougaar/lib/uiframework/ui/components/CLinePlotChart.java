@@ -73,14 +73,14 @@ public class CLinePlotChart extends Graph2D
     {
         super.updateUI();
 
-        setDataBackground(MetalLookAndFeel.getControl());
-
         if (UIManager.get("Graph.dataSeries1") == null)
         {
+            setDataBackground(Color.white);
             plotColor = defaultColors;
         }
         else
         {
+            setDataBackground(MetalLookAndFeel.getControl());
             Vector plotColors = new Vector();
             int i = 1;
             Object nextResource = null;
@@ -107,6 +107,8 @@ public class CLinePlotChart extends Graph2D
             yaxis_left.setLabelFont(MetalLookAndFeel.getSubTextFont()); // tick labels
             yaxis_left.setTitleFont(MetalLookAndFeel.getControlTextFont());
         }
+
+        regeneratePlots();
     }
 
     /**
@@ -128,6 +130,7 @@ public class CLinePlotChart extends Graph2D
         drawzero = true;
         drawgrid = true;
         borderTop = 10;
+        setDataBackground(Color.white);
 
         /*
         **      Load a file containing Marker definitions
@@ -239,6 +242,8 @@ public class CLinePlotChart extends Graph2D
      */
     private void regeneratePlots()
     {
+        if (tm == null) return;
+
         detachDataSets();
 
         // find start of data (i.e. lose headers)
