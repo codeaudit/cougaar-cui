@@ -338,7 +338,7 @@ public class QueryGenerator
         // derive unit column if needed
         String metric = vim.getDescriptor("Metric").getValue().toString();
         if (yDescName.equals("Item") &&
-            !metric.equals(INV_SAF_METRIC))
+            !metric.equals(INV_SAF_METRIC) && !metric.equals(RES_DEM_METRIC))
         {
             if (debug) System.out.println("Adding unit of issue column");
             dbTableModel.insertColumn(1);
