@@ -352,7 +352,8 @@ public class StoplightPanel extends JPanel implements CougaarUI
         VariableInterfaceManager linePlotVIM =
             lpp.getVariableInterfaceManager();
 
-        linePlotVIM.getDescriptor("Metric").setValue("Stoplight Components");
+        linePlotVIM.getDescriptor("Metric").
+            setValue(UIConstants.STOPLIGHT_UI_NAME + " Components");
         linePlotVIM.setYAxis("Metric");
 
         // set stoplight's fixed variable values in line plot
