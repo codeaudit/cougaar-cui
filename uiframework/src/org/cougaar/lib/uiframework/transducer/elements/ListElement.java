@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2001 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
- * 
+ *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
  *  PROVIDED 'AS IS' WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR
  *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF
@@ -61,11 +61,21 @@ public class ListElement extends Element {
   /**
    *  Add an Attribute to this ListElement.  It will be added to a table where
    *  it can be found by its name.
+   *  @param name the name of the Attribute sought
    *  @param a the Attribute to be added
    */
   public void addAttribute (Attribute a) {
     if (attributes != null)
       attributes.put(a.getName(), a);
+  }
+
+  /**
+   * Remove an Attribute from this ListElement.
+   * @param name the name of the Attribute to remove.
+   * @return the attribute that was removed.
+   */
+  public Attribute removeAttribute(String name) {
+    return (Attribute) attributes.remove(name);
   }
 
   /**
