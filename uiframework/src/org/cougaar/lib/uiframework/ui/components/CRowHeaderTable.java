@@ -601,8 +601,13 @@ public class CRowHeaderTable extends JTable
             {
                 if (value instanceof DefaultMutableTreeNode)
                 {
-                    Object userObject =
-                        ((DefaultMutableTreeNode)value).getUserObject();
+                    DefaultMutableTreeNode tn = (DefaultMutableTreeNode)value;
+                    if (!tn.isLeaf())
+                    {
+                        setText("(+) " + getText());
+                    }
+
+                    Object userObject = tn.getUserObject();
                     if (userObject instanceof SelectableHashtable)
                     {
                         SelectableHashtable sht =
