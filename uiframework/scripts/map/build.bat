@@ -31,6 +31,10 @@ set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\layer\*.java
 set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\query\*.java
 set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\app\*.java
 
+REM ****  CGM Icons
+set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\layer\cgmicon\*.java
+set SRC_FILES=%SRC_FILES%  %MAP_SRC_HOME%\layer\cgmicon\cgm\*.java
+
 
 @rem Here's where the compiler lives and the flags we like to give it
 @rem set JAVAC=c:\jdk1.2.2\bin\javac
@@ -38,7 +42,10 @@ set JAVAC=javac
 set JAVAFLAGS= -g  %deprec% -classpath %LIB_PATH% -d %CUR_BIN_DIR%
 
 echo This should be compiled with Javac version 1.2.2 
+
+echo on
 %JAVAC% %JAVAFLAGS% %SRC_FILES%
+rem echo off
 
 goto ok
 
