@@ -50,29 +50,23 @@ public class JTreeInterpreter  {
 	return name;
     }
 
-    private String getNodeUID(ListElement le) {
-	Attribute atr=le.getAttribute("UID");
-	return getFirstValForAttribute(atr);
-// 	String name="NO_NAME";
-// 	Enumeration en1=null;
-// 	ValElement val=null;
+    private Object getNodeInfo(ListElement le) {
+        Hashtable nodeInfo = new SelectableHashtable("UID");
+        Enumeration e = le.getAttributes();
+        while (e.hasMoreElements())
+        {
+            Attribute a = (Attribute)e.nextElement();
+            String value = getFirstValForAttribute(a).trim();
+            nodeInfo.put(a.getName(), value);
+        }
 
-// 	if (atr != null) {
-// 	    en1=atr.getChildren();
-// 	}
-// 	if (en1!=null && en1.hasMoreElements()) {
-// 	    val=((Element)en1.nextElement()).getAsValue();
-// 	}
-// 	if (val!=null) {
-// 	    name = val.getValue();
-// 	}
-// 	return name;
+        return nodeInfo;
     }
 
     private DefaultMutableTreeNode generateBranch(ListElement le) {
 	DefaultMutableTreeNode branch;
-	String name = getNodeUID(le);
-	branch = new DefaultMutableTreeNode(name);
+	Object nodeInfo = getNodeInfo(le);
+	branch = new DefaultMutableTreeNode(nodeInfo);
 
 	for (Enumeration en=le.getChildren(); en.hasMoreElements(); ) {
 	// for each child of le that is a list
