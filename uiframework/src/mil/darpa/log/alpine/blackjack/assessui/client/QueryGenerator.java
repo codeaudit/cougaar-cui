@@ -22,6 +22,7 @@ import org.cougaar.lib.uiframework.ui.util.VariableInterfaceManager;
 public class QueryGenerator
 {
     private static final boolean debug = false;
+    private static final String NO_DATA = "No Data Available";
 
     /** the database table model to set queries on. */
     private DatabaseTableModel dbTableModel;
@@ -312,6 +313,15 @@ public class QueryGenerator
             while (newColumnHeaders.hasMoreElements())
             {
                 String name = newColumnHeaders.nextElement().toString();
+                if (tm.getColumnCount() <= columnCount)
+                {
+                    if (tm.getRowCount() == 0)
+                    {
+                        tm.insertRow(0);
+                    }
+                    tm.insertColumn(columnCount);
+                    tm.setColumnName(columnCount, NO_DATA);
+                }
                 tm.setColumnName(columnCount++, name);
             }
         }
@@ -336,7 +346,17 @@ public class QueryGenerator
             int rowCount = 0;
             while (newRowHeaders.hasMoreElements())
             {
-                tm.setValueAt(newRowHeaders.nextElement(), rowCount++, 0);
+                if (tm.getRowCount() <= rowCount)
+                {
+                    tm.insertRow(rowCount);
+                    if (tm.getColumnCount() == 1)
+                    {
+                        tm.insertColumn(1);
+                        tm.setColumnName(1, NO_DATA);
+                    }
+                }
+                Object header = newRowHeaders.nextElement();
+                tm.setValueAt(header, rowCount++, 0);
             }
         }
     }
@@ -367,6 +387,20 @@ public class QueryGenerator
                         {
                             newHeaderObjects.add(child);
                             break;
+                        }
+                    }
+                }
+
+                // fill with N/As if data does not exist
+                if (newHeaderObjects.size() != tn.getChildCount())
+                {
+                    for (int ci = 0; ci < tn.getChildCount(); ci++)
+                    {
+                        DefaultMutableTreeNode child =
+                            (DefaultMutableTreeNode)tn.getChildAt(ci);
+                        if (!newHeaderObjects.contains(child))
+                        {
+                            newHeaderObjects.add(child);
                         }
                     }
                 }
