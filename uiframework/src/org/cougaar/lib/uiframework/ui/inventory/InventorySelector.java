@@ -178,6 +178,8 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
   {
     frame = installFrame;
 
+System.out.println("java.version: " + System.getProperty("java.version"));
+
     if (installFrame.getJMenuBar() == null)
     {
       installFrame.setJMenuBar(new JMenuBar());
@@ -465,7 +467,8 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
     } catch (Exception e)
     {
       
-      System.err.println("error getting asstenames from stream");
+      System.err.println("error getting asset names from stream");
+      e.printStackTrace();
     }
     Collections.sort(assetNames);
     //System.out.println("assetsNames " + assetNames);

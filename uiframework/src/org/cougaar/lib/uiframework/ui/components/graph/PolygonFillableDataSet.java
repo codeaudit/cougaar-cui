@@ -129,7 +129,6 @@ public class PolygonFillableDataSet extends DataSet
     int ycmin = clip.y;
     int ycmax = clip.y + clip.height;
 
-
     //    Is there any data to draw? Sometimes the draw command will
     //    will be called before any data has been placed in the class.
     if ( pointData == null || dataLength < stride )
@@ -152,7 +151,7 @@ public class PolygonFillableDataSet extends DataSet
       x0 = (int)(w.x + ((pointData[0] + xValueOffset - xmin)/xrange)*w.width);
       y0 = (int)(w.y + (1.0 - (pointData[1] + yValueOffset + height - ymin)/yrange)*w.height);
 
-      if (polygonFill)
+/*      if (polygonFill)
       {
         // (y0 < ycmin) can be true but the total filled polygon can still be inside
         if (x0 < xcmin || x0 > xcmax || y0 > ycmax)
@@ -163,6 +162,13 @@ public class PolygonFillableDataSet extends DataSet
       else
       {
         if (x0 < xcmin || x0 > xcmax || y0 < ycmin || y0 > ycmax)
+        {
+          inside0 = false;
+        }
+      }*/
+      if (polygonFill)
+      {
+        if (y0 > ycmax)
         {
           inside0 = false;
         }
@@ -191,7 +197,7 @@ public class PolygonFillableDataSet extends DataSet
       {
         x1 = (int)(w.x + ((pointData[i] + xValueOffset - xmin)/xrange)*w.width);
         y1 = (int)(w.y + (1.0 - (pointData[i+1] + yValueOffset + height - ymin)/yrange)*w.height);
-
+/*
         if (polygonFill)
         {
           // (y1 < ycmin) can be true but the total filled polygon can still be inside
@@ -203,6 +209,14 @@ public class PolygonFillableDataSet extends DataSet
         else
         {
           if ( x1 < xcmin || x1 > xcmax || y1 < ycmin || y1 > ycmax)
+          {
+            inside1 = false;
+          }
+        }*/
+
+        if (polygonFill)
+        {
+          if (y1 > ycmax)
           {
             inside1 = false;
           }
@@ -310,6 +324,13 @@ public class PolygonFillableDataSet extends DataSet
       inside0 = inside1;
       x0 = x1;
       y0 = y1;
+    }
+
+    // No points to draw
+    if (pointCount == 0)
+    {
+//      System.out.println("No points to draw: " + dataName);
+      return;
     }
 
     if (polygonFill)
