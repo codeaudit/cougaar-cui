@@ -76,7 +76,7 @@ public class InventoryChartUI implements CougaarUI
     String fileName = null;
     String hp = null;
     String clusterHost = "localhost";
-    String clusterPort = "5555";
+    String clusterPort = "8800";
     String thisCluster = null;
     String thisAsset = null;
     long startTime = 0;

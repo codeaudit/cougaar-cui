@@ -78,10 +78,10 @@ public class InventorySelector implements CougaarUI, InventoryDataProvider
   String currentAsset = null;
   boolean buildFile = true;
   String clusterHost = "localhost";
-  String clusterPort = "5555";
+  String clusterPort = "8800";
   String SET_ASSET = "Set Asset";
   String SET_CLUSTER = "Set Cluster";
-  String hostAndPort = null; // defaults to http://localhost:5555/
+  String hostAndPort = null; // defaults to http://localhost:8800/
   String buttonFileText = "Read Clusters From File";
   String buttonPortText = "Read Clusters From Port";
   Hashtable clusterURLs;
@@ -1648,7 +1648,8 @@ System.out.println("java.version: " + System.getProperty("java.version"));
         String msg = "Enter cluster Log Plan Server location as host:port";
 
         String host = "localhost";
-        String port = "5555";
+        String port = "8800";
+
         String defaultString = host + ":" + port;
         if ((messageString = OptionPane.showInputDialog(frame, msg, "Cluster Location", 3, null, null, defaultString)) == null)
         {
