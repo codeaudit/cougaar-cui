@@ -284,27 +284,26 @@ public class QueryGenerator
                 {
                     Vector v1 = (Vector)o1;
                     Vector v2 = (Vector)o2;
-                    String s1 = convert(v1.elementAt(0));
-                    String s2 = convert(v2.elementAt(0));
+                    String s1 = convert(v1.elementAt(0), "ITEM_ID");
+                    String s2 = convert(v2.elementAt(0), "ITEM_ID");
 
-                    try {
-                        Float f1 = new Float(s1);
-                        Float f2 = new Float(s2);
-                        return f1.compareTo(f2);
+                    // comp. for bad NSNs for Class I
+                    if (s1.startsWith("NSN/89") && s2.startsWith("NSN/89"))
+                    {
+                        s1 = convert(v1.elementAt(0), "UID");
+                        s2 = convert(v2.elementAt(0), "UID");
                     }
-                    catch(Exception e){}
+
                     return s1.compareTo(s2);
                 }
 
-                private String convert(Object o)
+                private String convert(Object o, String key)
                 {
                     try
                     {
                         DefaultMutableTreeNode tn = (DefaultMutableTreeNode)o;
                         String s = ((Hashtable)
-                            tn.getUserObject()).get("ITEM_ID").toString();
-                        if (s.startsWith("NSN/"))
-                            s = s.substring(4);
+                            tn.getUserObject()).get(key).toString();
                         return s;
                     } catch (Exception e) {}
 
