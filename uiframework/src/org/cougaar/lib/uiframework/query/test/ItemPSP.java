@@ -27,7 +27,7 @@ public class ItemPSP extends PSP_QueryBase {
    *  the initialization can be performed in the implementation class's
    *  constructor.  This method, however, is called after the PlugInDelegate
    */
-  protected void initQueryInterpreter () {
+  protected void initQueryInterpreter (PlanServiceContext psc) {
     responder = new GenericInterpreter();
     responder.addAttribute(new ItemGrabber(this));
     responder.addDimension(createItemDimension());

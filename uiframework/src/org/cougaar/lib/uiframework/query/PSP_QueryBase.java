@@ -82,7 +82,7 @@ public abstract class PSP_QueryBase
   {
     if (firstCall) {
       plugin = psc.getServerPlugInSupport().getDirectDelegate();
-      initQueryInterpreter();
+      initQueryInterpreter(psc);
       firstCall = false;
     }
 
@@ -148,7 +148,7 @@ public abstract class PSP_QueryBase
    *  reference is available, which may be required for some initializations.
    *  The default implementation does nothing.
    */
-  protected void initQueryInterpreter () {
+  protected void initQueryInterpreter (PlanServiceContext psc) {
   }
 
   /**
