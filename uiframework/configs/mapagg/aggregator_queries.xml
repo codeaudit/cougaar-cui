@@ -1,22 +1,675 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xml>
 
-  <!-- poll some clusters in the society (cuimap UI) -->
   <source ignore="false">
-    <name>3ID-HHC</name>
-    <pollInterval>10000</pollInterval>
+    <name>2-BDE-3ID-HHC</name>
+    <pollInterval>20000</pollInterval>
     <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
   </source>
 
   <source ignore="false">
-    <name>3-BDE-2ID-HHC</name>
-    <pollInterval>10000</pollInterval>
+    <name>126-MEDTM-FSURG</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-7-INFBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>147-MEDLOGBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MassawaPort</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>418-TKCO-POL</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SubsistenceICP</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-69-ARBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>26-FSB</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>7-MAR</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>296-SPTBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FUTURE</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MedicalDepot</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-DISCOM-HHC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>agg</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DFSP</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>OrganicAir</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortEustisITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>WestoverAirSquadron</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>TheaterMCC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-FSB</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MAG-11</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SunnyPointPort</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>GlobalSeaAmmo</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MedicalVendor</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>TheaterAir</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>416-TKCO-POL</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>HOST-NATION-REFINERY</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>4-64-ARBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MWSG-37</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DET-3-AAVBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-11-MAR</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DET-7-ESBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>CSSG-1</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>GlobalAir</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MedicalCBU</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>mapagg</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>21-MED-CSHOSP</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FuelCBU</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>10-TCBN-HHC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FuelDepot</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortBraggITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>McChordAirSquadron</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>WestoverWing</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>89-TKCO-CGO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>1-7-MAR</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-MAWFWD</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MedicalICP</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DoverWing</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SavannahPort</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FuelICP</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SupplyDepotITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>61-ASMEDBN-MEDCO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>2-7-INFBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortCarsonITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>VMFA-232</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>JTF-HHC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>1-64-ARBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>24-SPTGP-HHC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortSamHoustonITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>CONUSGround</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DLAHQ</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>TheaterSea</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>PAKISTAN-REFUGEES</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortHoodITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>TheaterFort</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>6thAMSMcGuire</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>CharlestonWing</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>TRANSCOM</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SubsistenceCSI</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SubsistenceDepot</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MWSS-374</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>GlobalSea</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SubsistenceVendor</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>McGuireWing</name>
+    <pollInterval>20000</pollInterval>
     <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
   </source>
 
   <source ignore="false">
     <name>1-BDE-3ID-HHC</name>
-    <pollInterval>10000</pollInterval>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FuelVendor</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>AmmoDepotITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>1-23-INFBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>TheaterGround</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>180-TCBN-HHD</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MARFORCENT</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>1-MEF</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>CharlestonAirSquadron</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>McChordWing</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>553-CSB-HHD</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>1-MEB</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>NCA</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>APS-3</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>INDUSTRIAL-BASE</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>ohvagg</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>KarachiPort</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>BeaumontPort</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-BDE-2ID-HHC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortStewartITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3-15-INFBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>24-CSB-HHD</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>2-3-INFBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>5-20-INFBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SubsistenceCBU</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortBenningITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>110-QMCO-POLSPLY</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>CENTCOM-HHC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>HNS</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>SparePartsICP</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DoverAirSquadron</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>703-MSB</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>MedicalCSI</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FortLewisITO</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>DET-1-SUPBN</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>3ID-HHC</name>
+    <pollInterval>20000</pollInterval>
+    <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
+  </source>
+
+  <source ignore="false">
+    <name>FuelCSI</name>
+    <pollInterval>20000</pollInterval>
     <pspquery>alpine/demo/GENERIC.PSP?ORG_LOC</pspquery>
   </source>
 
