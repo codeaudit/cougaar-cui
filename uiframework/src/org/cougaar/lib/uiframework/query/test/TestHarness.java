@@ -42,13 +42,13 @@ public class TestHarness {
 
   private static Structure readQuery (String file) throws Exception {
     XmlInterpreter xint = new XmlInterpreter();
-    Structure s = xint.readXml(new FileInputStream("test/" + file));
+    Structure s = xint.readXml(new FileInputStream(file));
     return s;
   }
 
   private static QueryDimension configureDimension () throws Exception {
     XmlInterpreter xint = new XmlInterpreter();
-    Structure s = xint.readXml(new FileInputStream("test/dimen.xml"));
+    Structure s = xint.readXml(new FileInputStream("dimen.xml"));
     TreeDimension dim = new TreeDimension();
     dim.setName("Items");
     dim.configure(s);
