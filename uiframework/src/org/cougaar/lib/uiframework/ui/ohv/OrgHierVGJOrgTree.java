@@ -156,6 +156,9 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 				      "_init.gml");
       String fileSeparator=System.getProperty("file.separator"); // "\\";
       String init_filename=loadClusterInitPath+fileSeparator+name+loadClusterInitSuffix;
+      String showProviderControl=RuntimeParameters
+	      .getLoudSystemProperty("showProviderControl",
+				      "true");
       System.out.println("initFilename is ["+init_filename+"]");
       vgj=VGJ.create();
       gw=new GraphWindow(true);
@@ -168,7 +171,10 @@ public class OrgHierVGJOrgTree  implements OrgHierModelViewer {
 
       vgj.setGraph(mygraph);
       vgj.setCanvasTitle(name+" Community");
-      vgj.addControl(relList);
+      System.out.println("showProviderControl: "+showProviderControl);
+      if (showProviderControl!=null && showProviderControl.equalsIgnoreCase("true")) {
+	  vgj.addControl(relList);
+      }
 
       setDrillDownAttributes(vgj, mygraph);
 // 	    vgj.drillDownNode(mygraph, "CENTCOM-HHC", true);
