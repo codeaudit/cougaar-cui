@@ -93,7 +93,6 @@ public class CRowHeaderTable extends JTable
                     cm.removeColumn(cm.getColumn(0));
                 }
             }
-
             if ((rowHeader != null) && (cornerHeader != null))
             {
                 ((AbstractTableModel)rowHeader.getModel()).
@@ -242,7 +241,7 @@ public class CRowHeaderTable extends JTable
                 {
                     if ((rowHeader == null)||(getParent() == null)) return;
 
-                    // Promary Row Headers are sized to show contents
+                    // Primary Row Headers are sized to show contents
                     int headCount = rowHeader.getModel().getColumnCount();
                     int totalWidth = 0;
                     for (int column = 0; column < headCount; column++)
@@ -252,11 +251,11 @@ public class CRowHeaderTable extends JTable
                     }
                     totalWidth += 10;
                     rowHeader.setPreferredScrollableViewportSize(
-                        new Dimension(totalWidth,
-                                      rowHeader.getPreferredSize().height));
+                       new Dimension(totalWidth,
+                       rowHeader.getPreferredScrollableViewportSize().height));
                     cornerHeader.setPreferredScrollableViewportSize(
-                        new Dimension(totalWidth,
-                                      cornerHeader.getPreferredSize().height));
+                       new Dimension(totalWidth,
+                       cornerHeader.getPreferredScrollableViewportSize().height));
 
                     // Set data cell widths
                     // (only use horizontal scroll bar if needed)
@@ -291,8 +290,13 @@ public class CRowHeaderTable extends JTable
 
                     // Ensure that table repaints correctly
                     getTableHeader().resizeAndRepaint();
-                    rowHeader.invalidate();
-                    invalidate();
+                    rowHeader.sizeColumnsToFit(-1);
+                    rowHeader.revalidate();
+                    rowHeader.repaint();
+                    cornerHeader.sizeColumnsToFit(-1);
+                    cornerHeader.revalidate();
+                    cornerHeader.repaint();
+                    revalidate();
                     repaint();
                 }
             });
@@ -385,9 +389,11 @@ public class CRowHeaderTable extends JTable
 
         TableColumn column = table.getColumnModel().getColumn(columnIndex);
         column.setMinWidth(targetWidth);
+        column.setPreferredWidth(targetWidth);
         column.setMaxWidth(targetWidth + 25);
         column = cornerHeader.getColumnModel().getColumn(columnIndex);
         column.setMinWidth(targetWidth);
+        column.setPreferredWidth(targetWidth);
         column.setMaxWidth(targetWidth + 25);
 
         return targetWidth;
@@ -404,7 +410,7 @@ public class CRowHeaderTable extends JTable
             String dispValue = (value == null) ? "" : value.toString();
             setText(dispValue);
             setToolTipText(dispValue);
-            if (row < rowStart)
+            if ((row < rowStart) || (column == 1))
             {
                  setHorizontalAlignment(JLabel.CENTER);
             }
