@@ -196,7 +196,7 @@ System.out.println ("c_time_sec_int is " + c_time_sec_int);
                 if (index % NUM_RECORDS_BEFORE_COMMIT == 0) {
                     // Save the work in the database
                     connection.commit();
-                    System.out.print ("(" + NUM_RECORDS_BEFORE_COMMIT + ")");
+                    System.out.print ("(" + index + ")");
                 }
             } /* end of while */
 
