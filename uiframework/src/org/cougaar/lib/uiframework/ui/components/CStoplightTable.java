@@ -223,16 +223,18 @@ public class CStoplightTable extends CRowHeaderTable
         new DecimalFormat("####.##");
     private class StoplightCellRenderer extends DefaultTableCellRenderer
     {
+        private JTable table;
+        private Object value;
+        private int row;
+        private int column;
+
         public StoplightCellRenderer()
         {
             super();
             setHorizontalAlignment(JLabel.CENTER);
         }
 
-        public Component
-            getTableCellRendererComponent(JTable table, Object value,
-                                      boolean isSelected, boolean hasFocus,
-                                      int row, int column)
+        public String getToolTipText()
         {
             // Create tooltip for each data cell to describe the row, column,
             // and value of that cell.
@@ -244,12 +246,25 @@ public class CStoplightTable extends CRowHeaderTable
             toolTipText.append(table.getModel().getValueAt(row, 0));
             toolTipText.append(")");
 
-            if (!value.toString().equals(DatabaseTableModel.NO_VALUE))
+            String valueString = value.toString();
+            if (!valueString.equals(DatabaseTableModel.NO_VALUE))
             {
                 toolTipText.append(": ");
-                toolTipText.append(value.toString());
+                toolTipText.append(valueString);
             }
-            setToolTipText(toolTipText.toString());
+
+            return toolTipText.toString();
+        }
+
+        public Component
+            getTableCellRendererComponent(JTable table, Object value,
+                                      boolean isSelected, boolean hasFocus,
+                                      int row, int column)
+        {
+            this.table = table;
+            this.value = value;
+            this.row = row;
+            this.column = column;
 
             colorRenderer(value);
             setFont(table.getFont());
@@ -259,15 +274,8 @@ public class CStoplightTable extends CRowHeaderTable
             }
             else
             {
-                setText("");
+                setText(null);
             }
-
-	          // ---- begin optimization to avoid painting background ----
-	          Color back = getBackground();
-	          boolean colorMatch = (back != null) &&
-                ( back.equals(table.getBackground()) ) && table.isOpaque();
-            setOpaque(!colorMatch);
-	          // ---- end optimization to aviod painting background ----
 
             return this;
         }
@@ -278,7 +286,10 @@ public class CStoplightTable extends CRowHeaderTable
             {
                 // enforce black fonts
                 // (otherwise L&F themes could make unreadable)
-                setForeground(Color.black);
+                if (getForeground() != Color.black)
+                {
+                    setForeground(Color.black);
+                }
 
                 if (value instanceof Number)
                 {
@@ -291,21 +302,33 @@ public class CStoplightTable extends CRowHeaderTable
                     if ((compValue.compareTo(greenMin) >= 0) &&
                         (compValue.compareTo(greenMax) <= 0))
                     {
-                        setBackground(Color.green);
+                        if (getBackground() != Color.green)
+                        {
+                            setBackground(Color.green);
+                        }
                     }
                     else if ((compValue.compareTo(yellowMin) >= 0) &&
                              (compValue.compareTo(yellowMax) <= 0))
                     {
-                        setBackground(Color.yellow);
+                        if (getBackground() != Color.yellow)
+                        {
+                            setBackground(Color.yellow);
+                        }
                     }
                     else
                     {
-                        setBackground(Color.red);
+                        if (getBackground() != Color.red)
+                        {
+                            setBackground(Color.red);
+                        }
                     }
                 }
                 else
                 {
-                    setBackground(naGrey);
+                    if (getBackground() != naGrey)
+                    {
+                        setBackground(naGrey);
+                    }
                 }
             }
             else
