@@ -72,17 +72,24 @@ public class DBInterface extends DBDatasource
      */
     public static DefaultMutableTreeNode createItemTree()
     {
+        String itemTable = getTableName("item");
         SqlTableMap config = new SqlTableMap();
-        config.setDbTable(getTableName("item"));
+        config.setDbTable(itemTable);
+        config.setDbTable(itemTable + ", assessmentItemUnits");
+        config.setPrimaryTableName(itemTable);
+        config.setJoinConditions("assessmentItemUnits.nsn(+)=" + itemTable + ".item_id");
         config.setIdKey("id");
         config.setParentKey("parent_id");
         config.addContentKey("UID", "name");
         config.addContentKey("ID", "id");
         config.addContentKey("ITEM_ID", "item_id");
-        //config.addContentKey("annotation", "note");
+        config.addContentKey("UNITS", "unit_issue");
         config.setPrimaryKeys(new String[] {"keynum"});
-
-        return createTree(restoreFromDb(config));
+        Structure trees = restoreFromDb(config);
+        System.out.println("Item Tree Read from Database");
+        DefaultMutableTreeNode tree = createTree(trees);
+        System.out.println("Item Tree Ready");
+        return tree;
     }
 
     private static DefaultMutableTreeNode makeMetricTree()
