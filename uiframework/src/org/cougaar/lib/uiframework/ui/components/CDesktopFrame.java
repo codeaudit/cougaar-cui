@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.lang.reflect.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
@@ -48,6 +49,7 @@ public class CDesktopFrame extends CFrame
 
     // Menus
     private JMenu viewMenu = null;
+    private JMenu windowMenu = null;
 
     /**
      * Add a new tool to the view pulldown menu
@@ -97,11 +99,31 @@ public class CDesktopFrame extends CFrame
             SwingUtilities.invokeLater(new Runnable() {
                     public void run()
                     {
-                        // workaround for appearent jdk1.2 Swing bug
+                        // workaround for apparent jdk1.2 Swing bug
                         f.setSize(801, 500);
                     }
                 });
         }
+
+        // add new window to window menu
+        final JMenuItem mi = (JMenuItem)windowMenu.add(new JMenuItem(title));
+	mi.addActionListener(new WindowAction(f));
+
+        f.addInternalFrameListener(new InternalFrameAdapter() {
+                public void internalFrameClosed(InternalFrameEvent e)
+                {
+                    // remove frame's menu item from window menu
+                    windowMenu.remove(mi);
+
+                    // try to make another frame active
+                    JInternalFrame[] ifs = desktopPane.getAllFrames();
+                    int ai = usingJdk13orGreater() ? 0 : 1;
+                    try {ifs[ai].setSelected(true);}catch(Exception ex){}
+
+                    f.removeInternalFrameListener(this);
+                    f.dispose();
+                }
+            });
     }
 
     private class CDesktopPane extends JDesktopPane
@@ -130,19 +152,49 @@ public class CDesktopFrame extends CFrame
      * Create new menus and menu items
      */
     private void addMenus() {
+        //
+        // ***** modify File Menu
+        //
+        Component[] comps = fileMenu.getMenuComponents();
+        fileMenu.removeAll();
+
         JMenu printMenu = new JMenu("Print");
         printMenu.setMnemonic('P');
-        fileMenu.remove(0);
-        fileMenu.add(printMenu, 0);
+        fileMenu.add(printMenu);
         createMenuItem(printMenu, "Entire Desktop", 'D', "",
                        new PrintAction(this, true));
         createMenuItem(printMenu, "Selected View", 'S', "",
                        new PrintAction(this, false));
 
+        // close active inner frame with close (not whole window)
+        createMenuItem(fileMenu, "Close", 'C', "", new CloseAction());
+
+        // put the exit option back at the end of menu
+        fileMenu.add(comps[comps.length - 1]);
+
         // ***** create View Menu
-        //viewMenu = (JMenu)menuBar.add(new JMenu("View"));
         viewMenu = (JMenu)menuBar.add(new JMenu("View"), 1);
         viewMenu.setMnemonic('V');
+
+        // ***** create Window Menu
+        windowMenu = (JMenu)menuBar.add(new JMenu("Window"));
+        windowMenu.setMnemonic('W');
+
+        // disable window menu when empty
+        windowMenu.setEnabled(false);
+        windowMenu.getPopupMenu().addContainerListener(new ContainerListener(){
+                public void componentAdded(ContainerEvent e)
+                {
+                    windowMenu.setEnabled(true);
+                }
+                public void componentRemoved(ContainerEvent e)
+                {
+                    if (windowMenu.getPopupMenu().getComponentCount() == 0)
+                    {
+                        windowMenu.setEnabled(false);
+                    }
+                }
+            });
     }
 
     private class PrintAction extends AbstractAction
@@ -218,6 +270,35 @@ public class CDesktopFrame extends CFrame
             {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    private class CloseAction extends AbstractAction {
+        protected CloseAction() {
+            super("CloseAction");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            // jdk1.3: use desktopPane.getSelectedFrame()
+            JInternalFrame frame = getSelectedFrame();
+
+            if (frame != null)
+            {
+                try{frame.setClosed(true);}catch(Exception ex){}
+            }
+        }
+    }
+
+    private class WindowAction extends AbstractAction {
+        private JInternalFrame frame;
+        protected WindowAction(JInternalFrame frame) {
+            super("WindowAction");
+            this.frame = frame;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            // try to make frame active
+            try {frame.setSelected(true);}catch(Exception ex){}
         }
     }
 

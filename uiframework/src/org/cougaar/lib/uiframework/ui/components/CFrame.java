@@ -158,7 +158,8 @@ public class CFrame extends JFrame implements Printable
 	fileMenu = (JMenu) menuBar.add(new JMenu("File"));
         fileMenu.setMnemonic('F');
         createMenuItem(fileMenu, "Print", 'P', "", new PrintAction(this));
-        createMenuItem(fileMenu, "Exit", 'E', "", new ExitAction(this));
+        createMenuItem(fileMenu, "Close", 'C', "", new CloseAction(this));
+        createMenuItem(fileMenu, "Exit", 'E', "", new ExitAction());
 
 
 	// ***** create laf switcher menu
@@ -297,7 +298,7 @@ public class CFrame extends JFrame implements Printable
 	}
     }
 
-    class ChangeLookAndFeelAction extends AbstractAction {
+    private class ChangeLookAndFeelAction extends AbstractAction {
 	CFrame swingset;
 	String laf;
         protected ChangeLookAndFeelAction(CFrame swingset, String laf) {
@@ -312,7 +313,7 @@ public class CFrame extends JFrame implements Printable
     }
 
     protected static DefaultMetalTheme currentTheme = new DefaultMetalTheme();
-    class ChangeThemeAction extends AbstractAction {
+    private class ChangeThemeAction extends AbstractAction {
 	CFrame swingset;
 	DefaultMetalTheme theme;
         protected ChangeThemeAction(CFrame swingset, DefaultMetalTheme theme) {
@@ -328,7 +329,7 @@ public class CFrame extends JFrame implements Printable
 	}
     }
 
-    class PrintAction extends AbstractAction
+    private class PrintAction extends AbstractAction
     {
 	private Component comp;
         protected PrintAction(Component comp)
@@ -348,11 +349,21 @@ public class CFrame extends JFrame implements Printable
         }
     }
 
-    class ExitAction extends AbstractAction {
-	CFrame swingset;
-        protected ExitAction(CFrame swingset) {
+    private class CloseAction extends AbstractAction {
+	CFrame cframe;
+        protected CloseAction(CFrame cframe) {
+            super("CloseAction");
+            this.cframe = cframe;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+	    cframe.dispose();
+        }
+    }
+
+    private class ExitAction extends AbstractAction {
+        protected ExitAction() {
             super("ExitAction");
-	    this.swingset = swingset;
         }
 
         public void actionPerformed(ActionEvent e) {
