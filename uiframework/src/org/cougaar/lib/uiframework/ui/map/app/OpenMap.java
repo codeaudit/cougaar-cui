@@ -1,25 +1,25 @@
 /* **********************************************************************
- * 
+ *
  *    Use, duplication, or disclosure by the Government is subject to
  * 	     restricted rights as set forth in the DFARS.
- *  
+ *
  * 			   BBNT Solutions LLC
- * 			      A Part of  
- * 			         GTE      
+ * 			      A Part of
+ * 			         GTE
  * 			  10 Moulton Street
  * 			 Cambridge, MA 02138
  * 			    (617) 873-3000
- *  
+ *
  * 	  Copyright 1998, 2000 by BBNT Solutions LLC,
  * 		A part of GTE, all rights reserved.
- *  
+ *
  * **********************************************************************
- * 
+ *
  * $Source: /opt/rep/cougaar/cui/uiframework/src/org/cougaar/lib/uiframework/ui/map/app/Attic/OpenMap.java,v $
- * $Revision: 1.1 $
- * $Date: 2001-02-15 13:22:34 $
- * $Author: krotherm $
- * 
+ * $Revision: 1.2 $
+ * $Date: 2001-02-22 18:03:38 $
+ * $Author: pfischer $
+ *
  * ***********************************************************************/
 
 package org.cougaar.lib.uiframework.ui.map.app;
@@ -45,7 +45,7 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
-// import assessment.*;
+import org.cougaar.lib.uiframework.ui.components.CFrame;
 import org.cougaar.lib.uiframework.ui.map.util.*; // only for JTIButton, etc.
 import javax.swing.border.*;
 
@@ -124,7 +124,7 @@ public class OpenMap implements Serializable {
 				+ resourceName);
 		}
 		return false;
-	    }		
+	    }
 
 	}
     }
@@ -150,7 +150,7 @@ public class OpenMap implements Serializable {
 			    + url);
 	    }
 	    return false;
-	}		
+	}
 
     }
 
@@ -236,7 +236,7 @@ public class OpenMap implements Serializable {
 		// File is missing.
 	    }
 
-	    // load properties from home directory                         
+	    // load properties from home directory
 	    String homeDir = System.getProperty("user.home");
 	    if (loadProperties && homeDir != null) {
 		loadProps(props, homeDir, propsFileName);
@@ -303,12 +303,12 @@ public class OpenMap implements Serializable {
 				     "debug.plugin"
 		       });
 	    Environment.init(applet);
-	    
+
 	}
     }
 
 
-    // kwr 
+    // kwr
 
     /**
      * Start OpenMap Viewer as a standalone application.
@@ -326,7 +326,7 @@ public class OpenMap implements Serializable {
 
 
     public static void main (String[] args) {
-      System.out.println("alp openmap") ;  
+      System.out.println("alp openmap") ;
 	    // static initializations of Debugging and Environment
 	    init(null);
 	    // start instance of OpenMap
@@ -335,14 +335,14 @@ public class OpenMap implements Serializable {
     }
 
 
-    public static OpenMap generateMapBean(JPanel panel) 
+    public static OpenMap generateMapBean(JPanel panel)
     {
 	OpenMap om;
 	init(null);
 	om=new OpenMap();
 	om.initApplication(true);
 	om.prepareMap(panel);  // similar to start()
-	
+
 	return om;
     }
 
@@ -356,9 +356,9 @@ public class OpenMap implements Serializable {
 
 	if (Debug.debugging("version")){
 	// output version information
-	    Debug.output("OpenMap Viewer " + 
+	    Debug.output("OpenMap Viewer " +
 			 Environment.get(Environment.Version));
-	    Debug.output("Build " + 
+	    Debug.output("Build " +
 			 Environment.get(Environment.BuildDate, "<no build tag>"));
 	    Debug.output("OpenMap Viewer running inside " +
 			 Environment.get("java.vendor") + " Java VM on " +
@@ -376,7 +376,7 @@ public class OpenMap implements Serializable {
 	    map = new BufferedMapBean();
 	}
 
-	/* =========== 
+	/* ===========
 	   =========== */
 	// moved lower in method
 	// controls = getToolPanel();
@@ -398,10 +398,10 @@ public class OpenMap implements Serializable {
 	}
 
 	// add the menu
-	// no rootpane -- add in again later 
+	// no rootpane -- add in again later
 	// rootPane.setJMenuBar(menu);
 
-	// no rootpane -- add in again later 
+	// no rootpane -- add in again later
         //final JLayeredPane desktop = rootPane.getLayeredPane();
 	//desktop.setOpaque(true);
 
@@ -422,12 +422,12 @@ public class OpenMap implements Serializable {
 	mi.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		info.displayURL(Environment.get(Environment.HelpURL, 
+		info.displayURL(Environment.get(Environment.HelpURL,
 		"http://javamap.bbn.com/projects/openmap/openmap_maindes.html"));
 	    }
 	});
 	mi.setActionCommand("showHelp");
-	//menu.setHelpMenu(helpMenu);Use this when Sun decides to implement it 
+	//menu.setHelpMenu(helpMenu);Use this when Sun decides to implement it
 	menu.add(helpMenu);
 
 
@@ -467,7 +467,7 @@ public class OpenMap implements Serializable {
 							  2, //right
 							  Color.gray));
 	}
-	
+
 	// show the window
 	if (Environment.isApplication()) {
 	    // get starting width and height
@@ -527,14 +527,14 @@ public class OpenMap implements Serializable {
 	start();
     }
 
-    /** 
+    /**
      * Launch OpenMap, assuming that all the properties have been set.
      */
 
     // JRootPane rootPane = null;
 
     public void startApplet (){
-	
+
 	JFrame frame = null;
 	JRootPane rootPane = null;
 	boolean addLayerButton = true;
@@ -543,9 +543,9 @@ public class OpenMap implements Serializable {
 
 	if (Debug.debugging("version")){
 	    // output version information
-	    Debug.output("OpenMap Viewer " + 
+	    Debug.output("OpenMap Viewer " +
 			 Environment.get(Environment.Version));
-	    Debug.output("Build " + 
+	    Debug.output("Build " +
 			 Environment.get(Environment.BuildDate, "<no build tag>"));
 	    Debug.output("OpenMap Viewer running inside " +
 			 Environment.get("java.vendor") + " Java VM on " +
@@ -604,12 +604,12 @@ public class OpenMap implements Serializable {
 	mi.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		info.displayURL(Environment.get(Environment.HelpURL, 
+		info.displayURL(Environment.get(Environment.HelpURL,
 		"http://javamap.bbn.com/projects/openmap/openmap_maindes.html"));
 	    }
 	});
 	mi.setActionCommand("showHelp");
-	//menu.setHelpMenu(helpMenu);Use this when Sun decides to implement it 
+	//menu.setHelpMenu(helpMenu);Use this when Sun decides to implement it
 	menu.add(helpMenu);
 
 	addToolPanelControls() ;
@@ -644,7 +644,7 @@ public class OpenMap implements Serializable {
 							  2, //right
 							  Color.gray));
 	}
-	
+
 	// show the window
 	if (Environment.isApplication()) {
 	    // get starting width and height
@@ -682,7 +682,8 @@ public class OpenMap implements Serializable {
 
 	// get the Root window
 	if (Environment.isApplication()) {
-	    frame = new JFrame(Environment.get(Environment.Title));
+	    //frame = new JFrame(Environment.get(Environment.Title));
+            frame = new CFrame(Environment.get(Environment.Title), true);
 	    rootPane = frame.getRootPane();
 
 	    // listen for window close event
@@ -699,9 +700,9 @@ public class OpenMap implements Serializable {
 
 	if (Debug.debugging("version")){
 	// output version information
-	    Debug.output("OpenMap Viewer " + 
+	    Debug.output("OpenMap Viewer " +
 			 Environment.get(Environment.Version));
-	    Debug.output("Build " + 
+	    Debug.output("Build " +
 			 Environment.get(Environment.BuildDate, "<no build tag>"));
 	    Debug.output("OpenMap Viewer running inside " +
 			 Environment.get("java.vendor") + " Java VM on " +
@@ -752,8 +753,13 @@ public class OpenMap implements Serializable {
 
   	menu.add(layerHandler.getLayersMenu("Edit Layers..."));
 
-    ThemesMenu tmenu=new ThemesMenu(frame);
-    menu.add(tmenu);
+        // reuse theme and look and feel selection menus from CFrame
+        if (frame instanceof CFrame)
+        {
+            CFrame cFrame = (CFrame)frame;
+            menu.add(cFrame.getLookAndFeelPulldown());
+            menu.add(cFrame.getThemesPulldown());
+        }
 
 	// Add an extra help menu to the menubar.  Have the InformationDelegator
 	// show the help pages.
@@ -763,12 +769,12 @@ public class OpenMap implements Serializable {
 	mi.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		info.displayURL(Environment.get(Environment.HelpURL, 
+		info.displayURL(Environment.get(Environment.HelpURL,
 		"http://javamap.bbn.com/projects/openmap/openmap_maindes.html"));
 	    }
 	});
 	mi.setActionCommand("showHelp");
-	//menu.setHelpMenu(helpMenu);Use this when Sun decides to implement it 
+	//menu.setHelpMenu(helpMenu);Use this when Sun decides to implement it
 	menu.add(helpMenu);
 
 	addToolPanelControls() ;
@@ -803,7 +809,7 @@ public class OpenMap implements Serializable {
 							  2, //right
 							  Color.gray));
 	}
-	
+
 	// show the window
 	if (Environment.isApplication()) {
 	    // get starting width and height
@@ -837,7 +843,7 @@ public class OpenMap implements Serializable {
 
     void addToolPanelControls() {
 	ToolPanel tp = getToolPanel();
-	
+
 	String[] choices = {"Eritrea", "Pakistan", "World"};
 	ActionListener cbl = new ActionListener() {
 		public void actionPerformed(ActionEvent e)
@@ -848,7 +854,7 @@ public class OpenMap implements Serializable {
 		    setMapDisplayFor(newValue);
 		}
 	    };
-	
+
 	TitledComboBox mycb = new TitledComboBox("Jump to", choices, cbl);
 	omts.add(mycb);
     //	================================
@@ -977,14 +983,14 @@ public class OpenMap implements Serializable {
     System.out.println("bfile: "+bfile);
     JTIButton jtib=new JTIButton(bfile,
 				 jtibaction);
-    jtib.setLabel("Select A Metric");
+    jtib.setText("Select A Metric");
     // jtib.setSize(400, jtib.getHeight()); // not having any effect
     JFrame jf = jtib.getMenuFrame();
     jf.setSize(400,200);
     jf.setLocation(610,120);
     jf.setTitle("Color Code for Metric");
     omts.add(jtib);
-    
+
 
     tp.add(omts);
     tp.setFloatable(false);// cannot detach
@@ -1019,7 +1025,7 @@ public class OpenMap implements Serializable {
 
     }
 
-    /**  
+    /**
      * Sets the type of gui components to be used in the OpenMap
      * application.  You are responsible for hooking them up here,
      * too, if you want them to communication with each other.
@@ -1048,14 +1054,14 @@ public class OpenMap implements Serializable {
 	tp.add(omts);
 	tp.setFloatable(false);// cannot detach
 	setToolPanel(tp);
-	
+
 	InformationDelegator id = new InformationDelegator();
 	// InformationDelegator handles the display of popup text/html
 	// information.
 	id.setMap(map);
 	id.setFloatable(false);
 
-	DistanceMouseMode distMode = 
+	DistanceMouseMode distMode =
 	    new DistanceMouseMode(true, id, DistanceMouseMode.DISTANCE_MILE);
 	// Add the distance mouse mode to the mouse delegator
 	md.addMouseMode(distMode);
@@ -1145,9 +1151,9 @@ public class OpenMap implements Serializable {
 	return menu;
     }
 
-    /** 
+    /**
      * Set the layer handler for the cale - called in init(), in case
-     * you want something different.  
+     * you want something different.
      * @param newLayerHandler
      */
     public void setLayerHandler(LayerHandler newLayerHandler){
@@ -1171,7 +1177,7 @@ class TitledComboBox extends JPanel {
 	setBorder(BorderFactory
 		  .createTitledBorder(BorderFactory
 				      .createEtchedBorder(), label));
-	
+
 
 	combo = new JComboBox(choices);
 	combo.setSelectedIndex(0);
@@ -1187,4 +1193,4 @@ class TitledComboBox extends JPanel {
 
 
 
- 
+
