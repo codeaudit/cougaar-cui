@@ -1,7 +1,7 @@
 package mil.darpa.log.alpine.blackjack.assessui.client;
 
 import org.cougaar.lib.uiframework.ui.components.CDesktopFrame;
-import org.cougaar.lib.uiframework.ui.map.app.OpenMap;
+import org.cougaar.lib.uiframework.ui.map.app.CMap;
 
 /**
  * Blackjack Assessment Desktop UI main application class.  Includes
@@ -28,7 +28,7 @@ public class BJAssessmentDesktop extends CDesktopFrame
 
         boolean plaf = Boolean.getBoolean("PLAF"); // will be used in future
 
-        addTool("Map View", 'M', OpenMap.class,
+        addTool("Map View", 'M', CMap.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         addTool("Stoplight View", 'S', StoplightPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(false)});
@@ -38,12 +38,12 @@ public class BJAssessmentDesktop extends CDesktopFrame
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
         addTool("Lineplot View (PLAF)", 'i', LinePlotPanel.class,
                 new Class[]{boolean.class}, new Object[]{new Boolean(true)});
-        addTool("Stoplight View (Old Style)", 'o', StoplightPanel.class,
-                new Class[]{boolean.class, boolean.class},
-                new Object[]{new Boolean(false), new Boolean(false)});
-        addTool("Lineplot View (Old Style)", 'n', LinePlotPanel.class,
-                new Class[]{boolean.class, boolean.class},
-                new Object[]{new Boolean(false), new Boolean(false)});
+        //addTool("Stoplight View (Old Style)", 'o', StoplightPanel.class,
+        //        new Class[]{boolean.class, boolean.class},
+        //        new Object[]{new Boolean(false), new Boolean(false)});
+        //addTool("Lineplot View (Old Style)", 'n', LinePlotPanel.class,
+        //        new Class[]{boolean.class, boolean.class},
+        //        new Object[]{new Boolean(false), new Boolean(false)});
         setVisible(true);
     }
 
