@@ -43,7 +43,8 @@ public class PSP_LocQuery extends PSP_QueryBase {
     dim.setName("Org");
 
     ListDimNode root = new ListDimNode("All Orgs");
-    root.addMembers(new String[] {"Fred", "Joe", "Sam", "Herbie"});
+    root.addMembers(
+      new String[] {"3ID", "3-69-ARBN", "3-FSB"});
     dim.setRoot(root);
 
     return dim;
@@ -52,7 +53,7 @@ public class PSP_LocQuery extends PSP_QueryBase {
   private QueryDimension createTimeDimension () {
     IntegerDimension dim = new IntegerDimension();
     dim.setName("Time");
-    dim.setRoot(new IntDimNode(-100, 100));
+    dim.setRoot(new IntDimNode(-100, 1000));
     return dim;
   }
 }
